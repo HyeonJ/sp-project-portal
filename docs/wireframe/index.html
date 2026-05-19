@@ -118,6 +118,18 @@ button{cursor:pointer;font:inherit}
   .wf-side{display:none}
   .wf-grid.c4,.wf-grid.c3,.wf-grid.c2,.wf-grid.split-2-1,.wf-grid.split-3-2{grid-template-columns:1fr}
 }
+
+/* 화면 설계서 라벨 — 평소 숨김, embed-mode일 때만 표시 */
+.info-label,.ctrl-label{display:none}
+body.embed-mode .info-label,body.embed-mode .ctrl-label{
+  display:inline-flex;align-items:center;justify-content:center;
+  min-width:26px;height:26px;padding:0 7px;border-radius:50%;
+  font-size:14px;font-weight:700;font-family:var(--body);
+  vertical-align:middle;margin:0 5px;
+  box-shadow:0 1px 3px rgba(0,0,0,.15);line-height:1;
+}
+body.embed-mode .info-label{background:#fff3b0;color:#7a5c00;border:2px solid #d4a017}
+body.embed-mode .ctrl-label{background:#ffd6cc;color:#9a3a25;border:2px solid #d4513a}
 </style>
 </head>
 <body>
@@ -125,7 +137,8 @@ button{cursor:pointer;font:inherit}
 
 <aside class="side">
   <h1>sp-project-portal 와이어프레임</h1>
-  <span class="ver">v0.8 · S4 draft 케이스 + S6 잠금 케이스 동시 시각화</span>
+  <span class="ver">v0.9 · 화면 설계서 라벨 + 사이드바 7개 메뉴 통일</span>
+  <noscript></noscript>
   <nav>
     <div class="group">공통</div>
     <a href="#s0" data-screen="s0">0. 공통 레이아웃<small>인증 전 / 글로벌 / 프로젝트</small></a>
@@ -173,19 +186,19 @@ button{cursor:pointer;font:inherit}
 
   <h3 class="section-h">0-1. 인증 전 (Public)</h3>
   <div class="wf" style="max-width:780px">
-    <div class="wf-header"><span class="logo">sp-project-portal</span></div>
+    <div class="wf-header"><span class="info-label">1</span><span class="ctrl-label">A</span><span class="logo">sp-project-portal</span></div>
     <div style="padding:40px 18px;text-align:center;color:var(--muted);font-size:12px">메인 콘텐츠 영역 (로그인 / 초대 수락 / 비밀번호 재설정)</div>
   </div>
 
   <h3 class="section-h">0-2. 인증 후 (글로벌)</h3>
   <div class="wf">
     <div class="wf-header">
-      <span class="logo">sp-project-portal</span>
-      <div class="wf-input line" style="max-width:280px">프로젝트 검색</div>
+      <span class="info-label">1</span><span class="ctrl-label">A</span><span class="logo">sp-project-portal</span>
+      <div class="wf-input line" style="max-width:280px"><span class="info-label">2</span><span class="ctrl-label">B</span>프로젝트 검색</div>
       <span class="spacer"></span>
-      <span class="wf-tag">알림</span>
-      <span class="wf-tag">계정 ▾</span>
-      <span class="wf-tag">로그아웃</span>
+      <span class="wf-tag"><span class="info-label">3</span><span class="ctrl-label">C</span>알림</span>
+      <span class="wf-tag"><span class="info-label">4</span><span class="ctrl-label">D</span>계정 ▾</span>
+      <span class="wf-tag"><span class="ctrl-label">E</span>로그아웃</span>
     </div>
     <div style="padding:40px 18px;text-align:center;color:var(--muted);font-size:12px">메인 콘텐츠 (프로젝트 목록 / 관리자 메뉴 / 계정 설정)</div>
   </div>
@@ -194,17 +207,17 @@ button{cursor:pointer;font:inherit}
   <div class="wf">
     <div class="wf-header">
       <span class="logo">sp-project-portal</span>
-      <span class="wf-tag">프로젝트명 ▾</span>
-      <div class="wf-input line" style="max-width:240px">통합 검색</div>
+      <span class="wf-tag"><span class="info-label">5</span><span class="ctrl-label">F</span>프로젝트명 ▾</span>
+      <div class="wf-input line" style="max-width:240px"><span class="ctrl-label">G</span>통합 검색</div>
       <span class="spacer"></span>
       <span class="wf-tag">알림</span><span class="wf-tag">계정 ▾</span><span class="wf-tag">로그아웃</span>
     </div>
     <div class="wf-row">
       <div class="wf-side">
+        <span class="info-label">6</span><span class="ctrl-label">H</span>
         <div class="item active">◆ 대시보드</div>
         <div class="item">─ 요구사항</div>
         <div class="item">─ 산출물</div>
-        <div class="item">─ 워크플로우</div>
         <div class="item">─ 결함</div>
         <div class="item">─ TC <span class="tag">팀</span></div>
         <div class="item">─ AI 개발 <span class="tag">팀</span></div>
@@ -231,15 +244,16 @@ button{cursor:pointer;font:inherit}
       <div class="wf-card" style="width:340px">
         <h3 class="wf-title" style="text-align:center">로그인</h3>
         <div class="wf-form-row" style="flex-direction:column;gap:4px;margin-bottom:14px">
-          <label style="min-width:0">이메일</label>
-          <div class="wf-input">[입력]</div>
+          <label style="min-width:0"><span class="info-label">1</span>이메일</label>
+          <div class="wf-input"><span class="ctrl-label">A</span>[입력]</div>
         </div>
         <div class="wf-form-row" style="flex-direction:column;gap:4px;margin-bottom:18px">
-          <label style="min-width:0">비밀번호</label>
-          <div class="wf-input">[입력]</div>
+          <label style="min-width:0"><span class="info-label">2</span>비밀번호</label>
+          <div class="wf-input"><span class="ctrl-label">B</span>[입력]</div>
         </div>
-        <button class="wf-btn primary" style="width:100%;padding:10px">로그인</button>
-        <div style="text-align:center;margin-top:14px;font-size:11px;color:var(--muted)">· 비밀번호 재설정</div>
+        <div style="min-height:20px;margin-bottom:10px;text-align:center;font-size:11px;color:var(--muted)"><span class="info-label">3</span>에러 메시지 (실패 시)</div>
+        <button class="wf-btn primary" style="width:100%;padding:10px"><span class="ctrl-label">C</span>로그인</button>
+        <div style="text-align:center;margin-top:14px;font-size:11px;color:var(--muted)"><span class="ctrl-label">D</span>· 비밀번호 재설정 · <span class="ctrl-label">E</span>초대 받기?</div>
       </div>
     </div>
   </div>
@@ -334,7 +348,6 @@ button{cursor:pointer;font:inherit}
         <div class="item active">◆ 대시보드 <span class="tag">12/24</span></div>
         <div class="item">─ 요구사항 <span class="tag">44</span></div>
         <div class="item">─ 산출물 <span class="tag">4</span></div>
-        <div class="item">─ 워크플로우</div>
         <div class="item">─ 결함 <span class="tag">6</span></div>
         <div class="item">─ TC <span class="tag">팀</span></div>
         <div class="item">─ AI 개발 <span class="tag">잠금</span></div>
@@ -431,28 +444,32 @@ button{cursor:pointer;font:inherit}
     <div class="wf-header"><span class="logo">sp-project-portal</span><span class="wf-tag">A 프로젝트 ▾</span><div class="wf-input line" style="max-width:240px">통합 검색</div></div>
     <div class="wf-row">
       <div class="wf-side">
+        <span class="ctrl-label">A</span>
         <div class="switcher"><b>A 프로젝트</b><span>㈜OO · SaaS</span></div>
-        <div class="item">─ 대시보드</div>
-        <div class="item active">◆ 요구사항</div>
-        <div class="item">─ 산출물</div>
-        <div class="item">─ 워크플로우</div>
+        <div class="item">─ 대시보드 <span class="tag">12/24</span></div>
+        <div class="item active">◆ 요구사항 <span class="tag">44</span></div>
+        <div class="item">─ 산출물 <span class="tag">4</span></div>
+        <div class="item">─ 결함 <span class="tag">6</span></div>
+        <div class="item">─ TC <span class="tag">팀</span></div>
+        <div class="item">─ AI 개발 <span class="tag">잠금</span></div>
+        <div class="item">─ 설정 <span class="tag">팀</span></div>
       </div>
       <div class="wf-main">
         <div class="wf-bar">
           <div>
             <h3 class="wf-title">요구사항 정의서</h3>
-            <p class="wf-subtitle">현재 버전: <b>v3</b> · <span class="wf-tag" style="background:#fff3cd;color:#664d03">draft</span> 작성 중 (검토 요청 전) · 마지막 편집 2026-05-19 16:20</p>
+            <p class="wf-subtitle"><span class="info-label">1</span>현재 버전: <b>v3</b> · <span class="wf-tag" style="background:#fff3cd;color:#664d03">draft</span> 작성 중 (검토 요청 전) · <span class="info-label">2</span>마지막 편집 2026-05-19 16:20</p>
           </div>
           <div class="wf-bar" style="gap:6px">
             <span style="font-size:11px;color:var(--muted)">버전 보기</span>
-            <span class="wf-tag">v3 · draft (최신, 미발송) ▾</span>
+            <span class="wf-tag"><span class="info-label">3</span><span class="ctrl-label">B</span>v3 · draft (최신, 미발송) ▾</span>
           </div>
         </div>
 
         <div class="wf-card" style="margin-bottom:14px">
-          <div class="wf-bar"><div class="wf-label">파일 묶음 (v3 draft — 4개)</div><span style="font-size:11px;color:#664d03">편집 가능 · 검토 요청 발송 시 잠금</span></div>
+          <div class="wf-bar"><div class="wf-label"><span class="info-label">4</span>파일 묶음 (v3 draft — 4개)</div><span style="font-size:11px;color:#664d03">편집 가능 · 검토 요청 발송 시 잠금</span></div>
           <div class="wf-card" style="margin-top:6px">
-            <div class="wf-bar"><span style="font-size:12px">📄 main-srs.pdf  ·  1.9MB  ·  메인 사이트 요구사항 <span style="color:var(--muted);font-size:11px">(v2에서 교체됨)</span></span><div class="wf-btn-row"><button class="wf-btn ghost">다운로드</button><button class="wf-btn ghost">교체</button><button class="wf-btn ghost">삭제</button></div></div>
+            <div class="wf-bar"><span style="font-size:12px"><span class="info-label">5</span>📄 main-srs.pdf  ·  1.9MB  ·  메인 사이트 요구사항 <span style="color:var(--muted);font-size:11px">(v2에서 교체됨)</span></span><div class="wf-btn-row"><button class="wf-btn ghost"><span class="ctrl-label">C</span>다운로드</button><button class="wf-btn ghost"><span class="ctrl-label">D</span>교체</button><button class="wf-btn ghost"><span class="ctrl-label">E</span>삭제</button></div></div>
           </div>
           <div class="wf-card" style="margin-top:6px">
             <div class="wf-bar"><span style="font-size:12px">📄 admin-srs.pdf  ·  0.6MB  ·  어드민 요구사항 <span style="color:var(--muted);font-size:11px">(v2 동일)</span></span><div class="wf-btn-row"><button class="wf-btn ghost">다운로드</button><button class="wf-btn ghost">교체</button><button class="wf-btn ghost">삭제</button></div></div>
@@ -464,7 +481,7 @@ button{cursor:pointer;font:inherit}
             <div class="wf-bar"><span style="font-size:12px">📄 glossary.pdf  ·  0.2MB  ·  용어집 <span class="wf-tag" style="font-size:10px;background:#cfe2ff;color:#0a4b8a;padding:2px 6px">NEW</span></span><div class="wf-btn-row"><button class="wf-btn ghost">다운로드</button><button class="wf-btn ghost">교체</button><button class="wf-btn ghost">삭제</button></div></div>
           </div>
           <div style="margin-top:12px">
-            <button class="wf-btn primary">+ 파일 업로드</button>
+            <button class="wf-btn primary"><span class="ctrl-label">F</span>+ 파일 업로드</button>
             <span style="font-size:11px;color:var(--muted)">현재 버전(v3 draft)에 파일 추가 — OS 다이얼로그 (모달 없음, 인-페이지)</span>
           </div>
           <p class="wf-subtitle" style="margin-top:10px;font-size:11px">※ <b>v3는 draft</b> = 파일 카드에서 직접 [+ 파일 업로드]·[교체]·[삭제] 자유. 변경은 활동 이력 미기록 (Git commit 패턴).</p>
@@ -474,9 +491,9 @@ button{cursor:pointer;font:inherit}
         </div>
 
         <div class="wf-card" style="margin-bottom:14px">
-          <div class="wf-bar"><div class="h" style="margin:0">활동 이력 (8)</div><span style="font-size:11px;color:var(--muted)">전체 버전 통합 · 시간순 · 영구 보존</span></div>
+          <div class="wf-bar"><div class="h" style="margin:0"><span class="info-label">6</span>활동 이력 (8)</div><span style="font-size:11px;color:var(--muted)">전체 버전 통합 · 시간순 · 영구 보존</span></div>
           <div class="wf-comment">
-            <div class="meta">📦 PM · 05-19 11:20 · 새 버전 생성</div>
+            <div class="meta"><span class="info-label">7</span>📦 PM · 05-19 11:20 · 새 버전 생성</div>
             <div class="body"><b>v1 스냅샷 생성</b> — 초안 등록 <span style="color:var(--muted);font-size:11px">(파일 1개: main-srs.pdf)</span></div>
           </div>
           <div class="wf-comment">
@@ -506,21 +523,21 @@ button{cursor:pointer;font:inherit}
           <div class="wf-comment">
             <div class="meta">💬 PM · 05-19 16:20 · 코멘트</div>
             <div class="body">§7 보안 NFR 초안 추가했습니다. 내부 검토 후 v3 검토 요청 발송 예정.</div>
-            <div class="wf-btn-row" style="margin-top:6px"><button class="wf-btn ghost">수정 (본인만)</button><button class="wf-btn ghost">삭제 (본인 또는 관리자)</button></div>
+            <div class="wf-btn-row" style="margin-top:6px"><button class="wf-btn ghost"><span class="ctrl-label">G</span>수정 (본인만)</button><button class="wf-btn ghost"><span class="ctrl-label">H</span>삭제 (본인 또는 관리자)</button></div>
           </div>
-          <div class="wf-input" style="min-height:48px;margin-top:8px">자유 코멘트 작성 (최신 버전 선택 시에만 활성). 시스템 이벤트는 자동 기록.</div>
+          <div class="wf-input" style="min-height:48px;margin-top:8px"><span class="info-label">8</span><span class="ctrl-label">I</span>자유 코멘트 작성 (최신 버전 선택 시에만 활성). 시스템 이벤트는 자동 기록.</div>
           <div style="text-align:right;margin-top:6px"><button class="wf-btn primary">등록</button></div>
           <p class="wf-subtitle" style="margin-top:6px;font-size:11px">※ 코멘트 수정: 본인만. 삭제: 본인 + 관리자(부적절 코멘트 강제 삭제, 감사 로그 기록). 시스템 이벤트는 영구 보존.</p>
           <p class="wf-subtitle" style="margin-top:4px;font-size:11px">※ draft 안의 파일 추가·교체·삭제는 활동 이력 미기록 — 다음 [+ 새 버전 만들기] 시점의 변경 요약 메모로 통합 (Git commit 패턴).</p>
         </div>
 
         <div class="wf-card">
-          <div class="wf-bar"><div class="wf-label">액션 영역</div><span style="font-size:11px;color:var(--muted)">최신 버전(v3 draft)에서 활성</span></div>
+          <div class="wf-bar"><div class="wf-label">액션 영역</div><span style="font-size:11px;color:var(--muted)"><span class="info-label">9</span>최신 버전(v3 draft)에서 활성</span></div>
           <div class="wf-btn-row">
-            <button class="wf-btn">[팀] + 새 버전 만들기</button>
-            <button class="wf-btn primary">[팀] 검토 요청 발송</button>
-            <button class="wf-btn" disabled style="opacity:.5;cursor:not-allowed">[고객] 컨펌</button>
-            <button class="wf-btn" disabled style="opacity:.5;cursor:not-allowed">[고객] 반려</button>
+            <button class="wf-btn"><span class="ctrl-label">J</span>[팀] + 새 버전 만들기</button>
+            <button class="wf-btn primary"><span class="ctrl-label">K</span>[팀] 검토 요청 발송</button>
+            <button class="wf-btn" disabled style="opacity:.5;cursor:not-allowed"><span class="ctrl-label">L</span>[고객] 컨펌</button>
+            <button class="wf-btn" disabled style="opacity:.5;cursor:not-allowed"><span class="ctrl-label">M</span>[고객] 반려</button>
           </div>
           <p class="wf-subtitle" style="margin-top:8px;font-size:11px">※ draft 상태에서는 <b>[검토 요청 발송]</b>이 다음 액션 (primary 강조). 누르는 순간 v3 잠금 + 고객사 알림. 고객사 [컨펌/반려]는 검토 요청 발송 후 활성.</p>
         </div>
@@ -567,15 +584,19 @@ button{cursor:pointer;font:inherit}
     <div class="wf-header"><span class="logo">sp-project-portal</span><span class="wf-tag">A 프로젝트 ▾</span></div>
     <div class="wf-row">
       <div class="wf-side">
-        <div class="switcher"><b>A 프로젝트</b></div>
-        <div class="item">─ 대시보드</div>
-        <div class="item">─ 요구사항</div>
-        <div class="item active">◆ 산출물</div>
+        <div class="switcher"><b>A 프로젝트</b><span>㈜OO · SaaS</span></div>
+        <div class="item">─ 대시보드 <span class="tag">12/24</span></div>
+        <div class="item">─ 요구사항 <span class="tag">44</span></div>
+        <div class="item active">◆ 산출물 <span class="tag">4</span></div>
+        <div class="item">─ 결함 <span class="tag">6</span></div>
+        <div class="item">─ TC <span class="tag">팀</span></div>
+        <div class="item">─ AI 개발 <span class="tag">잠금</span></div>
+        <div class="item">─ 설정 <span class="tag">팀</span></div>
       </div>
       <div class="wf-main">
         <h3 class="wf-title">산출물</h3>
         <div class="wf-tabs">
-          <div class="tab active">IA</div>
+          <div class="tab active"><span class="info-label">1</span><span class="ctrl-label">B</span>IA</div>
           <div class="tab">디자인 시안</div>
           <div class="tab">프로토타입</div>
           <div class="tab">Figma</div>
@@ -583,19 +604,19 @@ button{cursor:pointer;font:inherit}
 
         <div class="wf-card" style="margin-bottom:14px">
           <div class="wf-bar">
-            <div><h4 style="margin:0;font-size:14px">IA (정보구조도)</h4><p class="wf-subtitle">현재 버전: <b>v1.0</b> (컨펌 완료 — 2026-05-19) · 슬롯 스냅샷 단위</p></div>
+            <div><h4 style="margin:0;font-size:14px"><span class="info-label">2</span>IA (정보구조도)</h4><p class="wf-subtitle"><span class="info-label">3</span>현재 버전: <b>v1.0</b> (컨펌 완료 — 2026-05-19) · 슬롯 스냅샷 단위</p></div>
             <div class="wf-bar" style="gap:6px">
-              <span class="wf-tag dark">컨펌 완료</span>
-              <span class="wf-tag">v1.0 (최신) ▾</span>
+              <span class="wf-tag dark"><span class="info-label">4</span>컨펌 완료</span>
+              <span class="wf-tag"><span class="info-label">5</span><span class="ctrl-label">C</span>v1.0 (최신) ▾</span>
             </div>
           </div>
 
-          <div class="wf-bar" style="margin-top:10px;padding:0"><div class="wf-label" style="margin:0">파일 묶음 (v1.0 스냅샷 — 1개)</div><span style="font-size:11px;color:var(--muted)">읽기 전용 · 다운로드만</span></div>
+          <div class="wf-bar" style="margin-top:10px;padding:0"><div class="wf-label" style="margin:0"><span class="info-label">6</span>파일 묶음 (v1.0 스냅샷 — 1개)</div><span style="font-size:11px;color:var(--muted)">읽기 전용 · 다운로드만</span></div>
           <div class="wf-card" style="margin-top:6px">
-            <div class="wf-bar"><span style="font-size:12px">📄 ia-v1.0.pdf  ·  2.4MB  ·  메인 사이트맵</span><button class="wf-btn">다운로드</button></div>
+            <div class="wf-bar"><span style="font-size:12px"><span class="info-label">7</span>📄 ia-v1.0.pdf  ·  2.4MB  ·  메인 사이트맵</span><button class="wf-btn"><span class="ctrl-label">D</span>다운로드</button></div>
           </div>
           <div style="margin-top:12px">
-            <button class="wf-btn ghost" disabled style="opacity:.5;cursor:not-allowed">+ 파일 업로드</button>
+            <button class="wf-btn ghost" disabled style="opacity:.5;cursor:not-allowed"><span class="ctrl-label">E</span>+ 파일 업로드</button>
             <span style="font-size:11px;color:var(--muted)">현재 버전에 파일 추가. <b>draft 상태에서만 활성</b> — v1.0은 컨펌 완료라 비활성.</span>
           </div>
           <p class="wf-subtitle" style="margin-top:10px;font-size:11px">※ 버전 = 슬롯 스냅샷 단위. IA도 다중 파일 가능 (예: 메인·어드민·모바일 분리).</p>
@@ -606,12 +627,12 @@ button{cursor:pointer;font:inherit}
         </div>
 
         <div class="wf-card" style="margin-bottom:14px">
-          <div class="wf-bar"><div class="h" style="margin:0">활동 이력 (4)</div><span style="font-size:11px;color:var(--muted)">전체 버전 통합 · 시간순 · 영구 보존</span></div>
-          <div class="wf-comment"><div class="meta">📦 PM · 05-19 09:00 · 새 버전 생성</div><div class="body"><b>v1.0 스냅샷 생성</b> — IA 초안 <span style="color:var(--muted);font-size:11px">(파일 1개: ia.pdf)</span></div></div>
+          <div class="wf-bar"><div class="h" style="margin:0"><span class="info-label">8</span>활동 이력 (4)</div><span style="font-size:11px;color:var(--muted)">전체 버전 통합 · 시간순 · 영구 보존</span></div>
+          <div class="wf-comment"><div class="meta"><span class="info-label">9</span>📦 PM · 05-19 09:00 · 새 버전 생성</div><div class="body"><b>v1.0 스냅샷 생성</b> — IA 초안 <span style="color:var(--muted);font-size:11px">(파일 1개: ia.pdf)</span></div></div>
           <div class="wf-comment"><div class="meta">📨 PM · 05-19 09:05 · 검토 요청</div><div class="body">고객사에 v1.0 검토 요청 발송 (M1)</div></div>
-          <div class="wf-comment"><div class="meta">💬 PM · 05-19 09:10 · 코멘트</div><div class="body">메뉴 항목 누락 없는지 확인 부탁드립니다.</div></div>
+          <div class="wf-comment"><div class="meta">💬 PM · 05-19 09:10 · 코멘트</div><div class="body">메뉴 항목 누락 없는지 확인 부탁드립니다.<div class="wf-btn-row" style="margin-top:6px"><button class="wf-btn ghost"><span class="ctrl-label">F</span>수정</button><button class="wf-btn ghost"><span class="ctrl-label">G</span>삭제</button></div></div></div>
           <div class="wf-comment"><div class="meta">✅ 고객사 · 05-19 11:30 · 컨펌</div><div class="body"><b>v1.0 스냅샷 컨펌 완료</b> (Gate 11 통과)</div></div>
-          <div class="wf-input" style="min-height:48px;margin-top:8px">자유 코멘트 작성 (컨펌 완료 후에도 코멘트 작성 가능)</div>
+          <div class="wf-input" style="min-height:48px;margin-top:8px"><span class="ctrl-label">H</span>자유 코멘트 작성 (컨펌 완료 후에도 코멘트 작성 가능)</div>
           <div style="text-align:right;margin-top:6px"><button class="wf-btn primary">등록</button></div>
           <p class="wf-subtitle" style="margin-top:6px;font-size:11px">※ 코멘트 수정: 본인만. 삭제: 본인 + 관리자(부적절 코멘트 강제 삭제, 감사 로그 기록).</p>
         </div>
@@ -619,10 +640,10 @@ button{cursor:pointer;font:inherit}
         <div class="wf-card">
           <div class="wf-label">액션 영역</div>
           <div class="wf-btn-row">
-            <button class="wf-btn primary">[팀] + 새 버전 만들기</button>
-            <button class="wf-btn">[팀] 검토 요청 발송</button>
-            <button class="wf-btn">[고객] 컨펌</button>
-            <button class="wf-btn">[고객] 반려</button>
+            <button class="wf-btn primary"><span class="ctrl-label">I</span>[팀] + 새 버전 만들기</button>
+            <button class="wf-btn"><span class="ctrl-label">J</span>[팀] 검토 요청 발송</button>
+            <button class="wf-btn"><span class="ctrl-label">K</span>[고객] 컨펌</button>
+            <button class="wf-btn"><span class="ctrl-label">L</span>[고객] 반려</button>
           </div>
         </div>
       </div>
@@ -653,8 +674,20 @@ button{cursor:pointer;font:inherit}
   </div>
 
   <div class="wf">
-    <div class="wf-header"><span class="logo">sp-project-portal</span><span class="wf-tag">A 프로젝트 ▾</span></div>
-    <div class="wf-main" style="padding:24px">
+    <div class="wf-header"><span class="logo">sp-project-portal</span><span class="wf-tag">A 프로젝트 ▾</span><div class="wf-input line" style="max-width:240px">통합 검색</div></div>
+    <div class="wf-row">
+      <div class="wf-side">
+        <div class="switcher"><b>A 프로젝트</b><span>㈜OO · SaaS</span></div>
+        <div class="item">─ 대시보드 <span class="tag">12/24</span></div>
+        <div class="item">─ 요구사항 <span class="tag">44</span></div>
+        <div class="item">─ 산출물 <span class="tag">4</span></div>
+        <div class="item">─ 결함 <span class="tag">6</span></div>
+        <div class="item">─ TC <span class="tag">팀</span></div>
+        <div class="item">─ AI 개발 <span class="tag">잠금</span></div>
+        <div class="item">─ 설정 <span class="tag">팀</span></div>
+      </div>
+      <div class="wf-main" style="padding:24px">
+        <p class="wf-subtitle" style="margin-bottom:10px;font-size:11px">※ 통합 검색은 헤더 검색바(또는 단축키)에서 진입 — 사이드바 active 없음</p>
       <div class="wf-input" style="margin-bottom:10px">검색: 대시보드</div>
       <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px">
         <span class="wf-tag">구분 ▾</span>
@@ -693,6 +726,7 @@ button{cursor:pointer;font:inherit}
           <div class="it"><span>게이트 9 컨펌 통과 — "대시보드 영역 매트릭스 보강 후 컨펌"</span><span class="t">05-19</span></div>
         </div>
       </div>
+      </div>
     </div>
   </div>
 
@@ -715,9 +749,20 @@ button{cursor:pointer;font:inherit}
   </div>
 
   <div class="wf">
-    <div class="wf-header"><span class="logo">sp-project-portal</span><span class="wf-tag">A 프로젝트 ▾</span></div>
-    <div class="wf-main" style="padding:24px">
-      <h3 class="wf-title" style="margin-bottom:14px">AI 자동 개발</h3>
+    <div class="wf-header"><span class="logo">sp-project-portal</span><span class="wf-tag">A 프로젝트 ▾</span><div class="wf-input line" style="max-width:240px">통합 검색</div></div>
+    <div class="wf-row">
+      <div class="wf-side">
+        <div class="switcher"><b>A 프로젝트</b><span>㈜OO · SaaS</span></div>
+        <div class="item">─ 대시보드 <span class="tag">12/24</span></div>
+        <div class="item">─ 요구사항 <span class="tag">44</span></div>
+        <div class="item">─ 산출물 <span class="tag">4</span></div>
+        <div class="item">─ 결함 <span class="tag">6</span></div>
+        <div class="item">─ TC <span class="tag">팀</span></div>
+        <div class="item active">◆ AI 개발 <span class="tag">진행</span></div>
+        <div class="item">─ 설정 <span class="tag">팀</span></div>
+      </div>
+      <div class="wf-main" style="padding:24px">
+        <h3 class="wf-title" style="margin-bottom:14px">AI 자동 개발</h3>
 
       <div class="wf-card" style="margin-bottom:14px">
         <div class="wf-bar"><div class="h" style="margin:0">현재 작업</div><span class="wf-tag dark">⏳ 진행 중 (5/8)</span></div>
@@ -746,6 +791,7 @@ button{cursor:pointer;font:inherit}
           <div class="it"><span>2026-05-18 18:00 성공</span><span class="wf-btn">패키지 다운로드</span></div>
         </div>
       </div>
+      </div>
     </div>
   </div>
 
@@ -770,8 +816,13 @@ button{cursor:pointer;font:inherit}
     <div class="wf-header"><span class="logo">sp-project-portal</span><span class="wf-tag">A 프로젝트 ▾</span></div>
     <div class="wf-row">
       <div class="wf-side">
-        <div class="switcher"><b>A 프로젝트</b></div>
-        <div class="item">─ 대시보드</div>
+        <div class="switcher"><b>A 프로젝트</b><span>㈜OO · SaaS</span></div>
+        <div class="item">─ 대시보드 <span class="tag">12/24</span></div>
+        <div class="item">─ 요구사항 <span class="tag">44</span></div>
+        <div class="item">─ 산출물 <span class="tag">4</span></div>
+        <div class="item">─ 결함 <span class="tag">6</span></div>
+        <div class="item">─ TC <span class="tag">팀</span></div>
+        <div class="item">─ AI 개발 <span class="tag">잠금</span></div>
         <div class="item active">◆ 설정 <span class="tag">팀</span></div>
         <div class="item sub">─ 기본 정보</div>
         <div class="item sub active">─ 멤버·초대</div>
@@ -825,9 +876,14 @@ button{cursor:pointer;font:inherit}
     <div class="wf-header"><span class="logo">sp-project-portal</span><span class="wf-tag">A 프로젝트 ▾</span></div>
     <div class="wf-row">
       <div class="wf-side">
-        <div class="switcher"><b>A 프로젝트</b></div>
-        <div class="item">─ 대시보드</div>
-        <div class="item active">◆ 결함</div>
+        <div class="switcher"><b>A 프로젝트</b><span>㈜OO · SaaS</span></div>
+        <div class="item">─ 대시보드 <span class="tag">12/24</span></div>
+        <div class="item">─ 요구사항 <span class="tag">44</span></div>
+        <div class="item">─ 산출물 <span class="tag">4</span></div>
+        <div class="item active">◆ 결함 <span class="tag">6</span></div>
+        <div class="item">─ TC <span class="tag">팀</span></div>
+        <div class="item">─ AI 개발 <span class="tag">잠금</span></div>
+        <div class="item">─ 설정 <span class="tag">팀</span></div>
       </div>
       <div class="wf-main">
         <div class="wf-bar"><h3 class="wf-title">결함 관리</h3><button class="wf-btn primary">+ 결함 등록</button></div>
@@ -922,12 +978,12 @@ button{cursor:pointer;font:inherit}
   <div class="wf-modal">
     <div class="h"><span>검토 요청 발송</span><span style="cursor:pointer">✕</span></div>
     <div class="body">
-      <div class="wf-form-row"><label>대상</label><div class="wf-input">A 프로젝트 - IA</div></div>
-      <div class="wf-form-row"><label>현재 버전</label><div class="wf-input">v1.0</div></div>
-      <div class="wf-form-row" style="align-items:start"><label>요청 메시지<br><small style="color:var(--muted);font-size:10px">(선택)</small></label><div class="wf-input" style="min-height:60px">메시지 입력</div></div>
-      <div class="note" style="margin-top:12px">· 고객사에 이메일 발송 (REQ-NTF-001)<br>· 검토 결과 알림 수신</div>
+      <div class="wf-form-row"><label><span class="info-label">1</span>대상</label><div class="wf-input">A 프로젝트 - IA</div></div>
+      <div class="wf-form-row"><label><span class="info-label">2</span>현재 버전</label><div class="wf-input">v1.0</div></div>
+      <div class="wf-form-row" style="align-items:start"><label><span class="info-label">3</span>요청 메시지<br><small style="color:var(--muted);font-size:10px">(선택)</small></label><div class="wf-input" style="min-height:60px"><span class="ctrl-label">A</span>메시지 입력</div></div>
+      <div class="note" style="margin-top:12px"><span class="info-label">4</span>· 고객사에 이메일 발송 (REQ-NTF-001)<br>· 검토 결과 알림 수신</div>
     </div>
-    <div class="footer"><button class="wf-btn">취소</button><button class="wf-btn primary">요청 발송</button></div>
+    <div class="footer"><button class="wf-btn"><span class="ctrl-label">B</span>취소</button><button class="wf-btn primary"><span class="ctrl-label">C</span>요청 발송</button></div>
   </div>
 </section>
 
@@ -941,13 +997,13 @@ button{cursor:pointer;font:inherit}
   <div class="wf-modal">
     <div class="h"><span>검토 결과</span><span style="cursor:pointer">✕</span></div>
     <div class="body">
-      <div class="wf-form-row"><label>대상</label><div class="wf-input">A 프로젝트 - IA v1.0</div></div>
-      <div class="wf-form-row" style="align-items:center"><label>결과</label>
-        <div style="display:flex;gap:14px"><span><input type="radio" checked> 컨펌</span><span><input type="radio"> 반려</span></div>
+      <div class="wf-form-row"><label><span class="info-label">1</span>대상</label><div class="wf-input">A 프로젝트 - IA v1.0</div></div>
+      <div class="wf-form-row" style="align-items:center"><label><span class="info-label">2</span>결과</label>
+        <div style="display:flex;gap:14px"><span><input type="radio" checked> <span class="ctrl-label">A</span>컨펌</span><span><input type="radio"> <span class="ctrl-label">B</span>반려</span></div>
       </div>
-      <div class="wf-form-row" style="align-items:start"><label>사유<br><small style="color:var(--muted);font-size:10px">(반려 시 필수)</small></label><div class="wf-input" style="min-height:60px">사유 입력</div></div>
+      <div class="wf-form-row" style="align-items:start"><label><span class="info-label">3</span>사유<br><small style="color:var(--muted);font-size:10px">(반려 시 필수)</small></label><div class="wf-input" style="min-height:60px"><span class="ctrl-label">C</span>사유 입력</div></div>
     </div>
-    <div class="footer"><button class="wf-btn">취소</button><button class="wf-btn primary">제출</button></div>
+    <div class="footer"><button class="wf-btn"><span class="ctrl-label">D</span>취소</button><button class="wf-btn primary"><span class="ctrl-label">E</span>제출</button></div>
   </div>
   <div class="note" style="max-width:520px">반려 사유는 워크플로우 이력에 영구 보존 (REQ-CMT-002).</div>
 </section>
@@ -992,13 +1048,13 @@ button{cursor:pointer;font:inherit}
   <div class="wf-modal" style="max-width:560px">
     <div class="h"><span>새 버전 만들기 (v3 생성)</span><span style="cursor:pointer">✕</span></div>
     <div class="body">
-      <div class="wf-form-row"><label>대상</label><div class="wf-input">A 프로젝트 - 요구사항 정의서</div></div>
-      <div class="wf-form-row"><label>베이스 → 신규</label><div class="wf-input">v2 (파일 3개) → <b>v3</b> (자동 증가)</div></div>
+      <div class="wf-form-row"><label><span class="info-label">1</span>대상</label><div class="wf-input">A 프로젝트 - 요구사항 정의서</div></div>
+      <div class="wf-form-row"><label><span class="info-label">2</span>베이스 → 신규</label><div class="wf-input">v2 (파일 3개) → <b>v3</b> (자동 증가)</div></div>
 
-      <div class="wf-form-row" style="align-items:start"><label>파일 묶음<br><small style="color:var(--muted);font-size:10px">(v2 사본 자동 로드)</small></label>
+      <div class="wf-form-row" style="align-items:start"><label><span class="info-label">3</span>파일 묶음<br><small style="color:var(--muted);font-size:10px">(v2 사본 자동 로드)</small></label>
         <div style="flex:1">
           <div class="wf-card" style="padding:8px 10px;margin-bottom:6px;font-size:12px">
-            <div class="wf-bar"><span>📄 main-srs.pdf <span style="color:var(--muted);font-size:11px">— v2 베이스</span></span><div class="wf-btn-row"><button class="wf-btn ghost">교체</button><button class="wf-btn ghost">삭제</button></div></div>
+            <div class="wf-bar"><span>📄 main-srs.pdf <span style="color:var(--muted);font-size:11px">— v2 베이스</span></span><div class="wf-btn-row"><button class="wf-btn ghost"><span class="ctrl-label">A</span>교체</button><button class="wf-btn ghost"><span class="ctrl-label">B</span>삭제</button></div></div>
           </div>
           <div class="wf-card" style="padding:8px 10px;margin-bottom:6px;font-size:12px">
             <div class="wf-bar"><span>📄 admin-srs.pdf <span style="color:var(--muted);font-size:11px">— v2 베이스</span></span><div class="wf-btn-row"><button class="wf-btn ghost">교체</button><button class="wf-btn ghost">삭제</button></div></div>
@@ -1006,12 +1062,12 @@ button{cursor:pointer;font:inherit}
           <div class="wf-card" style="padding:8px 10px;margin-bottom:6px;font-size:12px">
             <div class="wf-bar"><span>📄 api-spec.pdf <span style="color:var(--muted);font-size:11px">— v2 베이스</span></span><div class="wf-btn-row"><button class="wf-btn ghost">교체</button><button class="wf-btn ghost">삭제</button></div></div>
           </div>
-          <button class="wf-btn ghost" style="margin-top:4px">+ 파일 추가</button>
+          <button class="wf-btn ghost" style="margin-top:4px"><span class="ctrl-label">C</span>+ 파일 추가</button>
           <p style="font-size:10px;color:var(--muted);margin:6px 0 0">PDF · 문서 등 (50MB/파일, REQ-FILE-001). 다중 파일 자유.</p>
         </div>
       </div>
 
-      <div class="wf-form-row" style="align-items:start"><label>변경 요약<br><small style="color:var(--muted);font-size:10px">(필수)</small></label><div class="wf-input" style="min-height:48px">예) admin-srs 신규 추가, main-srs §5 NFR 보강</div></div>
+      <div class="wf-form-row" style="align-items:start"><label><span class="info-label">4</span>변경 요약<br><small style="color:var(--muted);font-size:10px">(필수)</small></label><div class="wf-input" style="min-height:48px"><span class="ctrl-label">D</span>예) admin-srs 신규 추가, main-srs §5 NFR 보강</div></div>
 
       <div class="note" style="margin-top:12px">
         · 생성 시 <b>v3 스냅샷이 draft 상태로 생성</b>, 활동 이력에 생성 이벤트 + 변경 요약 자동 기록<br>
@@ -1021,7 +1077,7 @@ button{cursor:pointer;font:inherit}
         · <b>컨펌 완료 상태</b>에서 v3 생성 시 이전 컨펌 자동 무효화 + 게이트 재잠금 (REQ-WF-005)
       </div>
     </div>
-    <div class="footer"><button class="wf-btn">취소</button><button class="wf-btn primary">v3 생성 (draft)</button></div>
+    <div class="footer"><button class="wf-btn"><span class="ctrl-label">E</span>취소</button><button class="wf-btn primary"><span class="ctrl-label">F</span>v3 생성 (draft)</button></div>
   </div>
 </section>
 
@@ -1086,8 +1142,19 @@ function activate(id){
   window.scrollTo({top:0,behavior:'instant'});
 }
 links.forEach(a=>a.addEventListener('click',e=>{e.preventDefault();activate(a.dataset.screen)}));
-const initial=(location.hash&&location.hash.slice(1))||localStorage.getItem('spp-wf-screen')||'s3';
-if(document.getElementById(initial))activate(initial);
+// Embed mode: ?screen=s4 → 사이드바 숨김 + 해당 화면만 단독 표시 (화면 설계서에서 iframe 임베드용)
+const params=new URLSearchParams(location.search);
+const embedTarget=params.get('screen');
+if(embedTarget&&document.getElementById(embedTarget)){
+  document.body.classList.add('embed-mode');
+  const style=document.createElement('style');
+  style.textContent='body.embed-mode .page{grid-template-columns:1fr !important}body.embed-mode .side{display:none !important}body.embed-mode .main{padding:16px 20px !important;max-width:none !important}body.embed-mode{background:#fff}body.embed-mode .screen-head{display:none}';
+  document.head.appendChild(style);
+  activate(embedTarget);
+}else{
+  const initial=(location.hash&&location.hash.slice(1))||localStorage.getItem('spp-wf-screen')||'s3';
+  if(document.getElementById(initial))activate(initial);
+}
 </script>
 </body>
 </html>

@@ -1,0 +1,655 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>sp-project-portal 화면 설계서</title>
+<style>
+:root{
+  --bg:#f6f7f9;--surface:#fff;--fg:#1c2230;--muted:#6b7384;
+  --border:#e3e6ec;--border-strong:#c6ccd6;--border-solid:#d3d8e0;
+  --accent:#2f6cf6;--info:#fff7d6;--info-fg:#7a5c00;--ctrl:#ffe6e0;--ctrl-fg:#9a3a25;
+  --font:-apple-system,BlinkMacSystemFont,'SF Pro Text','Noto Sans KR',system-ui,sans-serif;
+  --mono:'JetBrains Mono','IBM Plex Mono',ui-monospace,Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.5 var(--font)}
+.layout{display:grid;grid-template-columns:240px minmax(0,1fr);min-height:100vh}
+aside.side{background:#1f2331;color:#dde2ec;padding:20px 18px;position:sticky;top:0;height:100vh;overflow:auto}
+aside.side h1{margin:0 0 6px;font-size:14px;color:#fff}
+aside.side .ver{display:block;color:#8b94a5;font-size:11px;margin-bottom:18px}
+aside.side .group{font-size:10px;color:#8b94a5;text-transform:uppercase;letter-spacing:.06em;margin:14px 0 6px}
+aside.side a{display:flex;justify-content:space-between;text-decoration:none;color:#dde2ec;padding:7px 8px;border-radius:6px;font-size:13px}
+aside.side a small{color:#8b94a5;font-size:10px}
+aside.side a.active{background:#2c3346;color:#fff}
+aside.side a.todo{opacity:.45}
+main{padding:28px 32px 80px;overflow:auto;max-width:1280px}
+.screen{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:24px;margin-bottom:32px;scroll-margin-top:20px}
+.screen-head{border-bottom:1px solid var(--border);padding-bottom:14px;margin-bottom:18px}
+.screen-head .eyebrow{margin:0 0 4px;font:11px/1.4 var(--mono);color:var(--muted);text-transform:uppercase}
+.screen-head h2{margin:0;font-size:22px;letter-spacing:-.01em}
+.screen-head .meta{margin:8px 0 0;color:var(--muted);font-size:12px;font-family:var(--mono)}
+.screen-head .desc{margin:8px 0 0;color:var(--fg);font-size:13px;line-height:1.6}
+.section{margin-top:22px}
+.section h3{margin:0 0 10px;font-size:15px;display:flex;align-items:center;gap:8px}
+.section h3 .num{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:6px;background:var(--accent);color:#fff;font-size:12px;font-weight:700}
+.section p.hint{margin:0 0 10px;color:var(--muted);font-size:12px}
+.wf-frame{width:100%;height:80vh;min-height:540px;border:1px solid var(--border);border-radius:10px;background:#fff;display:block}
+table.spec{width:100%;border-collapse:collapse;font-size:13px}
+table.spec th,table.spec td{padding:8px 10px;border-bottom:1px solid var(--border);text-align:left;vertical-align:top}
+table.spec thead th{font-size:11px;font-family:var(--mono);text-transform:uppercase;color:var(--muted);background:#fafbfc;border-bottom:1px solid var(--border-solid)}
+table.spec td.id{font-weight:600;white-space:nowrap;text-align:center;width:48px;padding:8px 4px}
+table.spec td.id .badge{display:inline-flex;align-items:center;justify-content:center;min-width:30px;height:30px;padding:0 8px;border-radius:50%;font-size:15px;font-weight:700;line-height:1;box-shadow:0 1px 3px rgba(0,0,0,.12)}
+table.spec td.id.info .badge{background:#fff3b0;color:#7a5c00;border:2px solid #d4a017}
+table.spec td.id.ctrl .badge{background:#ffd6cc;color:#9a3a25;border:2px solid #d4513a}
+table.spec td.id.val .badge{background:#dbeafe;color:#1f3a8a;border:2px solid #6691e7;font-family:var(--mono);font-size:12px;min-width:52px;border-radius:14px}
+table.spec td.id.val{width:64px}
+table.spec td.type{font-family:var(--mono);font-size:11px;color:var(--muted)}
+table.spec td .vref{display:inline-block;padding:1px 6px;border-radius:4px;font-size:10px;font-family:var(--mono);background:#e7f0ff;color:#1f3a8a;text-decoration:none;border:1px solid #c0d3f7;margin-left:4px}
+.tag{display:inline-block;padding:2px 7px;border-radius:6px;font-size:11px;border:1px solid var(--border-strong);color:var(--muted);background:#fff}
+.matrix th,.matrix td{text-align:center}
+.matrix th.row-h,.matrix td.row-h{text-align:left;font-weight:600;background:#fafbfc;width:160px}
+.callout{border-left:3px solid var(--accent);padding:8px 12px;background:#eef3ff;color:#1f3a8a;font-size:12px;border-radius:0 6px 6px 0;margin-top:8px}
+.divider{margin:48px 0 32px;border:0;border-top:1px solid var(--border)}
+
+/* 디자인 토큰 시각화 카드 */
+.token-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-top:10px}
+.token-card{border:1px solid var(--border);border-radius:10px;overflow:hidden;background:var(--surface);font-size:12px}
+.token-card .swatch{height:64px;display:flex;align-items:flex-end;padding:8px;color:#fff;font-weight:600;font-size:11px}
+.token-card .swatch.lite{color:var(--fg)}
+.token-card .meta{padding:10px 12px}
+.token-card .meta b{display:block;margin-bottom:2px;font-size:13px}
+.token-card .meta code{font-size:11px;color:var(--muted);font-family:var(--mono)}
+.type-sample{padding:12px 16px;border:1px solid var(--border);border-radius:8px;margin-bottom:8px;background:var(--surface)}
+.type-sample .label{font-family:var(--mono);font-size:10px;color:var(--muted);text-transform:uppercase;margin-bottom:6px}
+.spacing-row{display:flex;align-items:center;gap:14px;padding:6px 0}
+.spacing-row .bar{background:#2f6cf6;height:14px;border-radius:3px}
+.spacing-row .lab{font-family:var(--mono);font-size:11px;min-width:40px;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="layout">
+<aside class="side">
+  <h1>화면 설계서</h1>
+  <span class="ver">v0.3 · 그룹 1~2 완료</span>
+
+  <div class="group">공통 (그룹 1)</div>
+  <a href="#design-tokens">디자인 토큰 <small>색·타이포·간격</small></a>
+  <a href="#scr-lay">SCR-LAY <small>공통 레이아웃</small></a>
+
+  <div class="group">핵심 도메인 (그룹 2)</div>
+  <a href="#scr-req-001">SCR-REQ-001 <small>요구사항</small></a>
+  <a href="#scr-dsn-001">SCR-DSN-001 <small>산출물</small></a>
+  <a href="#mod-ver-001">MOD-VER-001 <small>새 버전</small></a>
+  <a href="#mod-wf-001">MOD-WF-001 <small>검토 요청</small></a>
+  <a href="#mod-wf-002">MOD-WF-002 <small>컨펌/반려</small></a>
+
+  <div class="group">진입·랜딩 (그룹 3)</div>
+  <a class="todo" href="#">SCR-PRJ-001 <small>대시보드</small></a>
+  <a href="#scr-aut-001">SCR-AUT-001 <small>로그인</small></a>
+  <a class="todo" href="#">SCR-GLB-001 <small>프로젝트 목록</small></a>
+
+  <div class="group">부가 (그룹 4)</div>
+  <a class="todo" href="#">SCR-SCH-001 <small>통합 검색</small></a>
+  <a class="todo" href="#">SCR-DEV-001 <small>AI 개발 진행</small></a>
+  <a class="todo" href="#">SCR-TST-001~004 <small>TC·결함</small></a>
+  <a class="todo" href="#">MOD-DEV-001 <small>AI 개발 시작</small></a>
+
+  <div class="group">계정·관리 (그룹 5)</div>
+  <a class="todo" href="#">SCR-AUT-002~004 <small>비밀번호·초대</small></a>
+  <a class="todo" href="#">SCR-ACC-001 <small>계정 설정</small></a>
+  <a class="todo" href="#">SCR-ADM-001~005 <small>관리자</small></a>
+  <a class="todo" href="#">SCR-SET-001~003 <small>프로젝트 설정</small></a>
+  <a class="todo" href="#">SCR-PRJ-002 <small>프로젝트 생성</small></a>
+  <a class="todo" href="#">MOD-AUT-001 <small>초대 재발송</small></a>
+
+  <div class="group">시스템 (그룹 6)</div>
+  <a class="todo" href="#">SCR-SYS-401~500 <small>오류 페이지</small></a>
+
+  <div class="group" style="margin-top:24px">공통 명세</div>
+  <a href="#validation">공통 검증 규칙 <small>V-001~</small></a>
+</aside>
+
+<main>
+
+<!-- ============================== 디자인 토큰 ============================== -->
+<section class="screen" id="design-tokens">
+  <div class="screen-head">
+    <p class="eyebrow">화면 설계서 · 그룹 1 · 공통</p>
+    <h2>디자인 토큰 (Design Tokens)</h2>
+    <p class="meta">출처: Gate 13 컨펌된 시안 <b>A. Precision grid</b> (<code>docs/design/candidates.html</code>)</p>
+    <p class="desc"><b>Description:</b> 모든 화면이 공통으로 사용하는 색·타이포·간격·모서리·그림자 토큰. 와이어프레임 단계에서는 회색조 골격이고, 본 토큰은 디자인 시안 채택 후 추출. 코드 구현 시 CSS 변수로 매핑.</p>
+  </div>
+
+  <div class="section">
+    <h3><span class="num">1</span> 색 팔레트</h3>
+    <p class="hint">A. Precision grid 톤 — 차가운 화이트 + 코발트 블루. OKLCH 색공간 사용 (P3 디스플레이 호환).</p>
+    <div class="token-grid">
+      <div class="token-card"><div class="swatch" style="background:oklch(58% .18 255)">PRIMARY</div><div class="meta"><b>Primary</b><code>oklch(58% .18 255)</code><br><code>#2f6cf6 근사</code></div></div>
+      <div class="token-card"><div class="swatch lite" style="background:oklch(99% .002 240)">BG</div><div class="meta"><b>Background</b><code>oklch(99% .002 240)</code></div></div>
+      <div class="token-card"><div class="swatch lite" style="background:oklch(100% 0 0);border:1px solid #ddd">SURFACE</div><div class="meta"><b>Surface</b><code>oklch(100% 0 0)</code></div></div>
+      <div class="token-card"><div class="swatch" style="background:oklch(18% .012 250)">FG</div><div class="meta"><b>Foreground</b><code>oklch(18% .012 250)</code></div></div>
+      <div class="token-card"><div class="swatch lite" style="background:oklch(54% .012 250);color:#fff">MUTED</div><div class="meta"><b>Muted</b><code>oklch(54% .012 250)</code></div></div>
+      <div class="token-card"><div class="swatch lite" style="background:oklch(92% .005 250)">BORDER</div><div class="meta"><b>Border</b><code>oklch(92% .005 250)</code></div></div>
+      <div class="token-card"><div class="swatch" style="background:oklch(48% .16 145)">OK</div><div class="meta"><b>Success</b><code>oklch(48% .16 145)</code></div></div>
+      <div class="token-card"><div class="swatch" style="background:oklch(56% .13 75)">WARN</div><div class="meta"><b>Warning</b><code>oklch(56% .13 75)</code></div></div>
+      <div class="token-card"><div class="swatch" style="background:oklch(56% .18 25)">HOT</div><div class="meta"><b>Danger</b><code>oklch(56% .18 25)</code></div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3><span class="num">2</span> 타이포그래피</h3>
+    <p class="hint">한국어 우선, 시스템 폰트 fallback. 본문 14px / 행간 1.5 기본.</p>
+    <div class="type-sample"><div class="label">Display · 680/-.01em — h1·heading</div><div style="font:680 34px/1.12 -apple-system,'SF Pro Display',system-ui,sans-serif;letter-spacing:-.01em">운영 관제형 포털 디자인</div></div>
+    <div class="type-sample"><div class="label">Title · 680/22px</div><div style="font:680 22px/1.18 system-ui,sans-serif;letter-spacing:-.01em">SCR-REQ-001 · 요구사항 파일 페이지</div></div>
+    <div class="type-sample"><div class="label">Body · 14px/1.5</div><div>한 버전 = 그 시점의 파일 N개 묶음 전체 (슬롯 스냅샷). 협의 산출물의 컨펌·반려·검토 요청 단위.</div></div>
+    <div class="type-sample"><div class="label">Caption · 11~12px / muted</div><div style="font-size:12px;color:var(--muted)">최신 버전 선택 시에만 작성 가능</div></div>
+    <div class="type-sample"><div class="label">Mono · JetBrains Mono / IBM Plex Mono</div><div style="font-family:var(--mono);font-size:13px">REQ-FILE-002 · MOD-VER-001 · /projects/{id}/requirements</div></div>
+  </div>
+
+  <div class="section">
+    <h3><span class="num">3</span> 간격 (Spacing scale)</h3>
+    <p class="hint">4의 배수 기반. 컴포넌트 내부 패딩·간격은 4·8·12, 카드·섹션 간격은 16·24·32.</p>
+    <div class="spacing-row"><span class="lab">4</span><div class="bar" style="width:4px"></div><span style="color:var(--muted);font-size:11px">icon-gap, 인라인 microspace</span></div>
+    <div class="spacing-row"><span class="lab">8</span><div class="bar" style="width:8px"></div><span style="color:var(--muted);font-size:11px">버튼 내부, 칩 간격</span></div>
+    <div class="spacing-row"><span class="lab">12</span><div class="bar" style="width:12px"></div><span style="color:var(--muted);font-size:11px">폼 row 간격</span></div>
+    <div class="spacing-row"><span class="lab">16</span><div class="bar" style="width:16px"></div><span style="color:var(--muted);font-size:11px">카드 내부 패딩</span></div>
+    <div class="spacing-row"><span class="lab">24</span><div class="bar" style="width:24px"></div><span style="color:var(--muted);font-size:11px">섹션 간격</span></div>
+    <div class="spacing-row"><span class="lab">32</span><div class="bar" style="width:32px"></div><span style="color:var(--muted);font-size:11px">페이지 가장자리 여백</span></div>
+    <div class="spacing-row"><span class="lab">48</span><div class="bar" style="width:48px"></div><span style="color:var(--muted);font-size:11px">대형 블록 간격, 빈 상태 위아래</span></div>
+  </div>
+
+  <div class="section">
+    <h3><span class="num">4</span> 모서리·그림자</h3>
+    <table class="spec">
+      <thead><tr><th>토큰</th><th>값</th><th>용도</th></tr></thead>
+      <tbody>
+        <tr><td>radius-sm</td><td class="type">6px</td><td>버튼, 칩, 작은 input</td></tr>
+        <tr><td>radius-md</td><td class="type">8px</td><td>일반 input, dropdown</td></tr>
+        <tr><td>radius-lg</td><td class="type">12px</td><td>카드</td></tr>
+        <tr><td>radius-xl</td><td class="type">14~18px</td><td>대형 패널, 모달</td></tr>
+        <tr><td>shadow-sm</td><td class="type">0 1px 2px rgba(0,0,0,.06)</td><td>카드 기본</td></tr>
+        <tr><td>shadow-md</td><td class="type">0 4px 16px rgba(0,0,0,.08)</td><td>모달, 드롭다운</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout"><b>구현 매핑</b>: CSS 변수로 일괄 적용. Tailwind 사용 시 <code>tailwind.config.js</code>의 <code>theme.extend</code>에 token name과 값을 동일 매핑. 다크 모드는 MVP 범위 제외.</div>
+</section>
+
+<!-- ============================== SCR-LAY 공통 레이아웃 ============================== -->
+<section class="screen" id="scr-lay">
+  <div class="screen-head">
+    <p class="eyebrow">화면 설계서 · 그룹 1 · 공통</p>
+    <h2>SCR-LAY · 공통 레이아웃</h2>
+    <p class="meta">3가지 변형: 인증 전 (Public) / 인증 후 글로벌 / 인증 후 프로젝트 컨텍스트</p>
+    <p class="desc"><b>Description:</b> 모든 화면이 공유하는 헤더·사이드바·푸터 골격. 라우트 패턴(인증 / 글로벌 / 프로젝트 컨텍스트)에 따라 다른 레이아웃 적용.</p>
+  </div>
+
+  <div class="section">
+    <h3><span class="num">1</span> 화면</h3>
+    <iframe class="wf-frame" src="../wireframe/index.html?screen=s0" title="공통 레이아웃 와이어프레임"></iframe>
+  </div>
+
+  <div class="section">
+    <h3><span class="num">2</span> Information</h3>
+    <table class="spec">
+      <thead><tr><th>No</th><th>설명</th><th>Type</th><th>출처</th></tr></thead>
+      <tbody>
+        <tr><td class="id info"><span class="badge">1</span></td><td>제품 로고</td><td class="type">Image</td><td class="type">static asset</td></tr>
+        <tr><td class="id info"><span class="badge">2</span></td><td>프로젝트 검색 입력 (글로벌 컨텍스트)</td><td class="type">Search bar</td><td class="type">REQ-PRJ-003</td></tr>
+        <tr><td class="id info"><span class="badge">3</span></td><td>알림 (미확인 카운트)</td><td class="type">Badge</td><td class="type">REQ-NTF-001</td></tr>
+        <tr><td class="id info"><span class="badge">4</span></td><td>로그인 사용자 이름·역할</td><td class="type">String</td><td class="type">session.user</td></tr>
+        <tr><td class="id info"><span class="badge">5</span></td><td>현재 프로젝트명 (프로젝트 컨텍스트)</td><td class="type">String</td><td class="type">project.name</td></tr>
+        <tr><td class="id info"><span class="badge">6</span></td><td>프로젝트 메뉴 (권한별 노출)</td><td class="type">List&lt;NavItem&gt;</td><td class="type">권한 매트릭스 §3</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <h3><span class="num">3</span> Controls</h3>
+    <table class="spec">
+      <thead><tr><th>No</th><th>액션</th><th>Type</th><th>Effect</th></tr></thead>
+      <tbody>
+        <tr><td class="id ctrl"><span class="badge">A</span></td><td>로고 클릭</td><td class="type">Link</td><td class="type">→ 글로벌 컨텍스트면 SCR-GLB-001, 프로젝트 컨텍스트면 SCR-PRJ-001</td></tr>
+        <tr><td class="id ctrl"><span class="badge">B</span></td><td>프로젝트 검색 (글로벌)</td><td class="type">Input + 결과 dropdown</td><td class="type">실시간 검색, 클릭 시 프로젝트 진입</td></tr>
+        <tr><td class="id ctrl"><span class="badge">C</span></td><td>알림 클릭</td><td class="type">Popover</td><td class="type">최근 알림 10건 + 전체 보기 링크</td></tr>
+        <tr><td class="id ctrl"><span class="badge">D</span></td><td>계정 드롭다운</td><td class="type">Dropdown</td><td class="type">[계정 설정 → SCR-ACC-001] / [로그아웃]</td></tr>
+        <tr><td class="id ctrl"><span class="badge">E</span></td><td>로그아웃</td><td class="type">Button (MOD-ACC-001)</td><td class="type">세션 종료 → SCR-AUT-001</td></tr>
+        <tr><td class="id ctrl"><span class="badge">F</span></td><td>프로젝트명 클릭 (드롭다운)</td><td class="type">Dropdown</td><td class="type">담당/참여 프로젝트 목록, 선택 시 컨텍스트 전환</td></tr>
+        <tr><td class="id ctrl"><span class="badge">G</span></td><td>통합 검색 (프로젝트)</td><td class="type">Search bar</td><td class="type">→ SCR-SCH-001 (REQ-SCH-001)</td></tr>
+        <tr><td class="id ctrl"><span class="badge">H</span></td><td>사이드바 메뉴 항목 클릭</td><td class="type">Nav Link</td><td class="type">각 SCR로 이동, 권한 없으면 항목 자체 미노출</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <h3><span class="num">4</span> States (변형 매트릭스)</h3>
+    <table class="spec matrix">
+      <thead><tr><th>레이아웃</th><th>로고</th><th>검색</th><th>알림·계정</th><th>사이드바</th></tr></thead>
+      <tbody>
+        <tr><td class="row-h">인증 전 (Public)</td><td>✅</td><td>❌</td><td>❌</td><td>❌</td></tr>
+        <tr><td class="row-h">인증 후 (글로벌)</td><td>✅</td><td>✅ 프로젝트 검색</td><td>✅</td><td>❌</td></tr>
+        <tr><td class="row-h">인증 후 (프로젝트)</td><td>✅</td><td>✅ 통합 검색</td><td>✅</td><td>✅ 7개 메뉴 (대시보드·요구사항·산출물·결함·TC·AI 개발·설정)</td></tr>
+      </tbody>
+    </table>
+    <div class="callout"><b>사이드바 메뉴 권한 매트릭스</b>는 <code>requirements.md</code> §3 권한 매트릭스 단일 진실 원천 참조. TC·AI 개발·설정은 [팀] 전용이라 고객사에게는 미노출.</div>
+  </div>
+</section>
+
+
+<!-- ============================== SCR-REQ-001 (이미 작성됨) ============================== -->
+<section class="screen" id="scr-req-001">
+  <div class="screen-head">
+    <p class="eyebrow">화면 설계서 · 그룹 2 · 핵심 도메인</p>
+    <h2>SCR-REQ-001 · 요구사항 파일 페이지 (draft 상태 케이스)</h2>
+    <p class="meta">Path: 프로젝트 워크스페이스 &gt; 사이드바 &gt; 요구사항 &nbsp;·&nbsp; URL: <code>/projects/{id}/requirements</code> &nbsp;·&nbsp; 권한: 공통</p>
+    <p class="desc"><b>Description:</b> 요구사항 정의서를 슬롯 스냅샷 단위로 관리. 한 버전 = 파일 N개 묶음 전체. 현재 시나리오는 v3 draft (검토 요청 전), 파일 카드 직접 편집 가능.</p>
+  </div>
+
+  <div class="section">
+    <h3><span class="num">1</span> 화면</h3>
+    <iframe class="wf-frame" src="../wireframe/index.html?screen=s4" title="SCR-REQ-001 와이어프레임"></iframe>
+  </div>
+
+  <div class="section">
+    <h3><span class="num">2</span> Information</h3>
+    <table class="spec">
+      <thead><tr><th>No</th><th>설명</th><th>Type</th><th>출처</th></tr></thead>
+      <tbody>
+        <tr><td class="id info"><span class="badge">1</span></td><td>현재 버전 라벨 ("v3 · draft 작성 중 (검토 요청 전)")</td><td class="type">String + Badge</td><td class="type">slot.version, slot.status</td></tr>
+        <tr><td class="id info"><span class="badge">2</span></td><td>마지막 편집 시각</td><td class="type">DateTime (KST)</td><td class="type">slot.updated_at</td></tr>
+        <tr><td class="id info"><span class="badge">3</span></td><td>버전 드롭다운 라벨</td><td class="type">String</td><td class="type">slot.version + status</td></tr>
+        <tr><td class="id info"><span class="badge">4</span></td><td>파일 묶음 카운트</td><td class="type">Integer</td><td class="type">files.length</td></tr>
+        <tr><td class="id info"><span class="badge">5</span></td><td>파일 카드 (파일명·크기·설명, NEW/교체됨 배지)</td><td class="type">List&lt;File&gt;</td><td class="type">files[]</td></tr>
+        <tr><td class="id info"><span class="badge">6</span></td><td>활동 이력 카운트</td><td class="type">Integer</td><td class="type">activities.length</td></tr>
+        <tr><td class="id info"><span class="badge">7</span></td><td>활동 이력 항목 (시각·작성자·이벤트·본문)</td><td class="type">List&lt;Activity&gt;</td><td class="type">activities[]</td></tr>
+        <tr><td class="id info"><span class="badge">8</span></td><td>자유 코멘트 작성란 안내</td><td class="type">String (정적)</td><td class="type">i18n</td></tr>
+        <tr><td class="id info"><span class="badge">9</span></td><td>액션 영역 안내</td><td class="type">String (정적)</td><td class="type">i18n</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <h3><span class="num">3</span> Controls</h3>
+    <table class="spec">
+      <thead><tr><th>No</th><th>액션 설명</th><th>Type</th><th>Effect</th></tr></thead>
+      <tbody>
+        <tr><td class="id ctrl"><span class="badge">A</span></td><td>사이드바 메뉴</td><td class="type">Nav Link</td><td class="type">→ SCR-LAY 참조</td></tr>
+        <tr><td class="id ctrl"><span class="badge">B</span></td><td>버전 드롭다운</td><td class="type">Dropdown</td><td class="type">슬롯 스냅샷 전환, 잠긴 버전은 읽기 전용</td></tr>
+        <tr><td class="id ctrl"><span class="badge">C</span></td><td>파일 [다운로드]</td><td class="type">Button</td><td class="type">파일 바이너리 응답</td></tr>
+        <tr><td class="id ctrl"><span class="badge">D</span></td><td>파일 [교체] <a class="vref" href="#validation">V-001</a></td><td class="type">Button + File picker</td><td class="type">OS 다이얼로그 → 즉시 교체 (활동 이력 미기록)</td></tr>
+        <tr><td class="id ctrl"><span class="badge">E</span></td><td>파일 [삭제]</td><td class="type">Button + Confirm</td><td class="type">인라인 확인 → 즉시 삭제</td></tr>
+        <tr><td class="id ctrl"><span class="badge">F</span></td><td>[+ 파일 업로드] <a class="vref" href="#validation">V-001</a></td><td class="type">Button + File picker</td><td class="type">OS 다이얼로그 → 즉시 추가 (모달 없음)</td></tr>
+        <tr><td class="id ctrl"><span class="badge">G</span></td><td>코멘트 [수정] (본인만) <a class="vref" href="#validation">V-002</a></td><td class="type">Button</td><td class="type">인라인 편집 → PATCH</td></tr>
+        <tr><td class="id ctrl"><span class="badge">H</span></td><td>코멘트 [삭제] (본인 + 관리자) <a class="vref" href="#validation">V-002</a></td><td class="type">Button + Confirm</td><td class="type">DELETE. 관리자는 감사 로그 기록</td></tr>
+        <tr><td class="id ctrl"><span class="badge">I</span></td><td>자유 코멘트 [등록] <a class="vref" href="#validation">V-003</a></td><td class="type">Textarea + Button</td><td class="type">POST → 활동 이력 추가</td></tr>
+        <tr><td class="id ctrl"><span class="badge">J</span></td><td>[팀] + 새 버전 만들기 <a class="vref" href="#validation">V-004</a></td><td class="type">Button → MOD-VER-001</td><td class="type">모달 열림</td></tr>
+        <tr><td class="id ctrl"><span class="badge">K</span></td><td>[팀] 검토 요청 발송 <a class="vref" href="#validation">V-005</a></td><td class="type">Button → MOD-WF-001</td><td class="type">발송 시 버전 잠금 + 고객사 이메일</td></tr>
+        <tr><td class="id ctrl"><span class="badge">L</span></td><td>[고객] 컨펌</td><td class="type">Button → MOD-WF-002</td><td class="type">게이트 해제</td></tr>
+        <tr><td class="id ctrl"><span class="badge">M</span></td><td>[고객] 반려 <a class="vref" href="#validation">V-006</a></td><td class="type">Button → MOD-WF-002</td><td class="type">사유 필수</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <h3><span class="num">4</span> States</h3>
+    <p style="margin:6px 0;font-size:12px;color:var(--muted)"><b>4-1. 버전 상태 × 컨트롤 활성도</b> (PM 기준)</p>
+    <table class="spec matrix">
+      <thead><tr><th>컨트롤</th><th>draft</th><th>검토중</th><th>컨펌 완료</th><th>반려</th></tr></thead>
+      <tbody>
+        <tr><td class="row-h">B/C 버전·다운로드</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td></tr>
+        <tr><td class="row-h">D/E/F 파일 편집</td><td>✅</td><td>❌</td><td>❌</td><td>❌</td></tr>
+        <tr><td class="row-h">I 자유 코멘트</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td></tr>
+        <tr><td class="row-h">J 새 버전 만들기</td><td>✅</td><td>✅<br><small>검토 요청 회수</small></td><td>✅<br><small>컨펌 무효화</small></td><td>✅</td></tr>
+        <tr><td class="row-h">K 검토 요청 발송</td><td>✅</td><td>❌</td><td>❌</td><td>❌</td></tr>
+      </tbody>
+    </table>
+
+    <p style="margin:14px 0 6px;font-size:12px;color:var(--muted)"><b>4-2. 권한 × 컨트롤 가시성</b></p>
+    <table class="spec matrix">
+      <thead><tr><th>컨트롤</th><th>관리자</th><th>프로젝트팀</th><th>고객사</th></tr></thead>
+      <tbody>
+        <tr><td class="row-h">D/E/F 파일 편집</td><td>❌</td><td>✅</td><td>❌</td></tr>
+        <tr><td class="row-h">H 코멘트 삭제</td><td>✅ 본인+타인</td><td>✅ 본인</td><td>✅ 본인</td></tr>
+        <tr><td class="row-h">J/K 새 버전·검토 요청</td><td>❌</td><td>✅</td><td>❌</td></tr>
+        <tr><td class="row-h">L/M 컨펌·반려</td><td>❌</td><td>❌</td><td>✅</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout"><b>버전 상태 전이</b>: <code>draft</code> → (K) → <code>검토중</code> → (L) → <code>컨펌</code> · (M) → <code>반려</code>. 잠긴 상태에서 J 실행 시 v+1 draft 생성 + 이전 요청·컨펌 자동 회수·무효화 (REQ-WF-001·005).</div>
+  </div>
+</section>
+
+<!-- ============================== SCR-DSN-001 ============================== -->
+<section class="screen" id="scr-dsn-001">
+  <div class="screen-head">
+    <p class="eyebrow">화면 설계서 · 그룹 2 · 핵심 도메인</p>
+    <h2>SCR-DSN-001 · 산출물 단계별 페이지 (IA 컨펌 완료 케이스)</h2>
+    <p class="meta">Path: 프로젝트 &gt; 사이드바 &gt; 산출물 &gt; {slug} &nbsp;·&nbsp; URL: <code>/projects/{id}/deliverables/{slug}</code> (slug: <code>ia</code>/<code>design</code>/<code>prototype</code>/<code>figma</code>) &nbsp;·&nbsp; 권한: 공통</p>
+    <p class="desc"><b>Description:</b> 단계별 산출물(IA/디자인/프로토타입/Figma)을 슬롯 스냅샷 단위로 관리. SCR-REQ-001과 동일 패턴. 현재 시나리오는 IA v1.0 컨펌 완료 (잠긴 상태).</p>
+  </div>
+
+  <div class="section">
+    <h3><span class="num">1</span> 화면</h3>
+    <iframe class="wf-frame" src="../wireframe/index.html?screen=s6" title="SCR-DSN-001 와이어프레임"></iframe>
+  </div>
+
+  <div class="section">
+    <h3><span class="num">2</span> Information</h3>
+    <table class="spec">
+      <thead><tr><th>No</th><th>설명</th><th>Type</th><th>출처</th></tr></thead>
+      <tbody>
+        <tr><td class="id info"><span class="badge">1</span></td><td>단계 탭 (IA / 디자인 시안 / 프로토타입 / Figma)</td><td class="type">Tabs</td><td class="type">URL slug</td></tr>
+        <tr><td class="id info"><span class="badge">2</span></td><td>현재 단계명 (예: "IA (정보구조도)")</td><td class="type">String</td><td class="type">slug 매핑</td></tr>
+        <tr><td class="id info"><span class="badge">3</span></td><td>현재 버전 라벨 (예: "v1.0 (컨펌 완료 — 2026-05-19) · 슬롯 스냅샷 단위")</td><td class="type">String</td><td class="type">slot.version + status</td></tr>
+        <tr><td class="id info"><span class="badge">4</span></td><td>상태 배지 (컨펌 완료 / 검토중 / draft / 반려)</td><td class="type">Badge</td><td class="type">slot.status</td></tr>
+        <tr><td class="id info"><span class="badge">5</span></td><td>버전 드롭다운 라벨</td><td class="type">String</td><td class="type">slot.version</td></tr>
+        <tr><td class="id info"><span class="badge">6</span></td><td>파일 묶음 카운트</td><td class="type">Integer</td><td class="type">files.length</td></tr>
+        <tr><td class="id info"><span class="badge">7</span></td><td>파일 카드 (파일명·크기·설명)</td><td class="type">List&lt;File&gt;</td><td class="type">files[]</td></tr>
+        <tr><td class="id info"><span class="badge">8</span></td><td>활동 이력 카운트</td><td class="type">Integer</td><td class="type">activities.length</td></tr>
+        <tr><td class="id info"><span class="badge">9</span></td><td>활동 이력 항목</td><td class="type">List&lt;Activity&gt;</td><td class="type">activities[]</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <h3><span class="num">3</span> Controls</h3>
+    <table class="spec">
+      <thead><tr><th>No</th><th>액션</th><th>Type</th><th>Effect</th></tr></thead>
+      <tbody>
+        <tr><td class="id ctrl"><span class="badge">A</span></td><td>사이드바 메뉴</td><td class="type">Nav Link</td><td class="type">→ SCR-LAY 참조</td></tr>
+        <tr><td class="id ctrl"><span class="badge">B</span></td><td>단계 탭 클릭</td><td class="type">Tab Link</td><td class="type">URL slug 변경 (<code>/deliverables/design</code> 등). 클라이언트 사이드 라우팅</td></tr>
+        <tr><td class="id ctrl"><span class="badge">C</span></td><td>버전 드롭다운</td><td class="type">Dropdown</td><td class="type">슬롯 스냅샷 전환</td></tr>
+        <tr><td class="id ctrl"><span class="badge">D</span></td><td>파일 [다운로드]</td><td class="type">Button</td><td class="type">파일 바이너리 응답</td></tr>
+        <tr><td class="id ctrl"><span class="badge">E</span></td><td>[+ 파일 업로드] <a class="vref" href="#validation">V-001</a></td><td class="type">Button + File picker</td><td class="type">draft에서만 활성. 현재 v1.0 컨펌이라 비활성</td></tr>
+        <tr><td class="id ctrl"><span class="badge">F</span></td><td>코멘트 [수정] (본인만) <a class="vref" href="#validation">V-002</a></td><td class="type">Button</td><td class="type">PATCH</td></tr>
+        <tr><td class="id ctrl"><span class="badge">G</span></td><td>코멘트 [삭제] (본인 + 관리자) <a class="vref" href="#validation">V-002</a></td><td class="type">Button + Confirm</td><td class="type">DELETE. 관리자는 감사 로그</td></tr>
+        <tr><td class="id ctrl"><span class="badge">H</span></td><td>자유 코멘트 [등록] <a class="vref" href="#validation">V-003</a></td><td class="type">Textarea + Button</td><td class="type">POST</td></tr>
+        <tr><td class="id ctrl"><span class="badge">I</span></td><td>[팀] + 새 버전 만들기 <a class="vref" href="#validation">V-004</a></td><td class="type">Button → MOD-VER-001</td><td class="type">컨펌 무효화 경고 동반 (REQ-WF-005)</td></tr>
+        <tr><td class="id ctrl"><span class="badge">J</span></td><td>[팀] 검토 요청 발송 <a class="vref" href="#validation">V-005</a></td><td class="type">Button → MOD-WF-001</td><td class="type">draft에서만 활성</td></tr>
+        <tr><td class="id ctrl"><span class="badge">K</span></td><td>[고객] 컨펌</td><td class="type">Button → MOD-WF-002</td><td class="type">게이트(11/13/15) 해제</td></tr>
+        <tr><td class="id ctrl"><span class="badge">L</span></td><td>[고객] 반려 <a class="vref" href="#validation">V-006</a></td><td class="type">Button → MOD-WF-002</td><td class="type">사유 필수</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <h3><span class="num">4</span> States (slug별)</h3>
+    <table class="spec matrix">
+      <thead><tr><th>slug</th><th>관련 게이트</th><th>현재 케이스</th></tr></thead>
+      <tbody>
+        <tr><td class="row-h"><code>ia</code></td><td>Gate 11</td><td>v1.0 컨펌 완료 (시범 시나리오)</td></tr>
+        <tr><td class="row-h"><code>design</code></td><td>Gate 13</td><td>v2 컨펌 완료 (A. Precision grid)</td></tr>
+        <tr><td class="row-h"><code>prototype</code></td><td>Gate 15</td><td>14단계 등록 예정 — draft 진입 시 활성</td></tr>
+        <tr><td class="row-h"><code>figma</code></td><td>—</td><td>16~17단계 산출. 게이트 없음, AI 개발 사전조건</td></tr>
+      </tbody>
+    </table>
+    <div class="callout"><b>SCR-REQ-001과 동일 패턴</b>이지만 차이점: ① 단계 탭(B) 추가, ② 컨펌 완료가 게이트 통과로 연결, ③ AI 개발 사전조건 자료의 일부.</div>
+  </div>
+</section>
+
+<!-- ============================== MOD-VER-001 ============================== -->
+<section class="screen" id="mod-ver-001">
+  <div class="screen-head">
+    <p class="eyebrow">화면 설계서 · 그룹 2 · 핵심 도메인</p>
+    <h2>MOD-VER-001 · 새 버전 만들기 모달</h2>
+    <p class="meta">트리거: SCR-REQ-001·SCR-DSN-001 액션 영역 [팀] + 새 버전 만들기 &nbsp;·&nbsp; 권한: 프로젝트팀</p>
+    <p class="desc"><b>Description:</b> 슬롯 스냅샷 단위로 v+1 draft 생성. 현재 버전 파일 묶음 베이스 자동 로드, 추가/교체/삭제 + 변경 요약 메모 → 확정 시 v+1 draft.</p>
+  </div>
+
+  <div class="section">
+    <h3><span class="num">1</span> 화면</h3>
+    <iframe class="wf-frame" src="../wireframe/index.html?screen=m4" title="MOD-VER-001 와이어프레임"></iframe>
+  </div>
+
+  <div class="section">
+    <h3><span class="num">2</span> Information</h3>
+    <table class="spec">
+      <thead><tr><th>No</th><th>설명</th><th>Type</th><th>출처</th></tr></thead>
+      <tbody>
+        <tr><td class="id info"><span class="badge">1</span></td><td>대상 슬롯명 (예: "A 프로젝트 - 요구사항 정의서")</td><td class="type">String</td><td class="type">slot.label</td></tr>
+        <tr><td class="id info"><span class="badge">2</span></td><td>베이스 → 신규 버전 (예: "v2 (파일 3개) → v3 (자동 증가)")</td><td class="type">String</td><td class="type">prev.version + auto-increment</td></tr>
+        <tr><td class="id info"><span class="badge">3</span></td><td>파일 묶음 (v2 사본 자동 로드)</td><td class="type">List&lt;File&gt;</td><td class="type">prev.files[] (clone)</td></tr>
+        <tr><td class="id info"><span class="badge">4</span></td><td>변경 요약 라벨 + 필수 표시</td><td class="type">String (정적)</td><td class="type">i18n</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <h3><span class="num">3</span> Controls</h3>
+    <table class="spec">
+      <thead><tr><th>No</th><th>액션</th><th>Type</th><th>Effect</th></tr></thead>
+      <tbody>
+        <tr><td class="id ctrl"><span class="badge">A</span></td><td>파일 [교체] (각 파일별)</td><td class="type">Button + File picker</td><td class="type">목록 내 파일 교체 (확정 전까지 메모리 상태)</td></tr>
+        <tr><td class="id ctrl"><span class="badge">B</span></td><td>파일 [삭제] (각 파일별)</td><td class="type">Button</td><td class="type">목록에서 제거</td></tr>
+        <tr><td class="id ctrl"><span class="badge">C</span></td><td>[+ 파일 추가]</td><td class="type">Button + File picker</td><td class="type">목록에 추가 (50MB/파일, V-001)</td></tr>
+        <tr><td class="id ctrl"><span class="badge">D</span></td><td>변경 요약 입력 <a class="vref" href="#validation">V-004</a></td><td class="type">Textarea (required)</td><td class="type">활동 이력 본문이 됨</td></tr>
+        <tr><td class="id ctrl"><span class="badge">E</span></td><td>[취소]</td><td class="type">Button</td><td class="type">모달 닫기, 변경 폐기</td></tr>
+        <tr><td class="id ctrl"><span class="badge">F</span></td><td>[v3 생성 (draft)]</td><td class="type">Button (submit)</td><td class="type">POST → v+1 draft 스냅샷 생성. 검토중·컨펌 상태에서는 자동 회수·무효화 (REQ-WF-001·005)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <h3><span class="num">4</span> States (호출 상태별 동작)</h3>
+    <table class="spec matrix">
+      <thead><tr><th>호출 시점 v(n) 상태</th><th>v+1 생성 결과</th><th>v(n) 변화</th><th>활동 이력 기록</th></tr></thead>
+      <tbody>
+        <tr><td class="row-h">draft</td><td>v+1 draft</td><td>유지</td><td>"v+1 스냅샷 생성 (draft)"</td></tr>
+        <tr><td class="row-h">검토중</td><td>v+1 draft</td><td>검토 요청 자동 회수</td><td>"v+1 생성 / v(n) 검토 요청 회수"</td></tr>
+        <tr><td class="row-h">컨펌 완료</td><td>v+1 draft</td><td>컨펌 자동 무효화 + 게이트 재잠금</td><td>"v+1 생성 / v(n) 컨펌 무효화 (REQ-WF-005)"</td></tr>
+        <tr><td class="row-h">반려</td><td>v+1 draft</td><td>유지 (이미 잠긴 상태, 추가 변화 없음)</td><td>"v+1 스냅샷 생성"</td></tr>
+      </tbody>
+    </table>
+    <div class="callout"><b>UX 보강</b>: 컨펌 완료 상태에서 호출 시 모달 안내문에 "v(n) 컨펌이 무효화됩니다. 계속하시겠습니까?" 추가 노출 (REQ-WF-005 사용자 confirmation).</div>
+  </div>
+</section>
+
+<!-- ============================== MOD-WF-001 ============================== -->
+<section class="screen" id="mod-wf-001">
+  <div class="screen-head">
+    <p class="eyebrow">화면 설계서 · 그룹 2 · 핵심 도메인</p>
+    <h2>MOD-WF-001 · 검토 요청 발송 모달</h2>
+    <p class="meta">트리거: SCR-REQ-001·SCR-DSN-001 액션 영역 [팀] 검토 요청 발송 &nbsp;·&nbsp; 권한: 프로젝트팀</p>
+    <p class="desc"><b>Description:</b> draft 버전을 고객사에 검토 요청. 발송 = <b>버전 잠금(immutable)</b> + 이메일 알림(REQ-NTF-001). 이후 변경하려면 새 버전 생성.</p>
+  </div>
+
+  <div class="section">
+    <h3><span class="num">1</span> 화면</h3>
+    <iframe class="wf-frame" src="../wireframe/index.html?screen=m1" title="MOD-WF-001 와이어프레임"></iframe>
+  </div>
+
+  <div class="section">
+    <h3><span class="num">2</span> Information</h3>
+    <table class="spec">
+      <thead><tr><th>No</th><th>설명</th><th>Type</th><th>출처</th></tr></thead>
+      <tbody>
+        <tr><td class="id info"><span class="badge">1</span></td><td>대상 슬롯명 (예: "A 프로젝트 - IA")</td><td class="type">String</td><td class="type">slot.label</td></tr>
+        <tr><td class="id info"><span class="badge">2</span></td><td>현재 버전 (예: "v1.0")</td><td class="type">String</td><td class="type">slot.version</td></tr>
+        <tr><td class="id info"><span class="badge">3</span></td><td>요청 메시지 라벨 + (선택) 표시</td><td class="type">String (정적)</td><td class="type">i18n</td></tr>
+        <tr><td class="id info"><span class="badge">4</span></td><td>발송 안내 (이메일 발송 + 검토 결과 알림 수신)</td><td class="type">String (정적)</td><td class="type">i18n</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <h3><span class="num">3</span> Controls</h3>
+    <table class="spec">
+      <thead><tr><th>No</th><th>액션</th><th>Type</th><th>Effect</th></tr></thead>
+      <tbody>
+        <tr><td class="id ctrl"><span class="badge">A</span></td><td>요청 메시지 입력 (선택)</td><td class="type">Textarea</td><td class="type">이메일 본문에 포함</td></tr>
+        <tr><td class="id ctrl"><span class="badge">B</span></td><td>[취소]</td><td class="type">Button</td><td class="type">모달 닫기</td></tr>
+        <tr><td class="id ctrl"><span class="badge">C</span></td><td>[요청 발송] <a class="vref" href="#validation">V-005</a></td><td class="type">Button (submit)</td><td class="type">POST → ① 버전 상태 'draft' → '검토중' ② 이메일 발송 ③ 활동 이력에 "검토 요청 발송" 이벤트 기록</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <h3><span class="num">4</span> States (전제·차단 조건)</h3>
+    <table class="spec matrix">
+      <thead><tr><th>조건</th><th>발송 가능 여부</th><th>실패 메시지</th></tr></thead>
+      <tbody>
+        <tr><td class="row-h">대상 버전이 draft 상태</td><td>✅ 가능</td><td>—</td></tr>
+        <tr><td class="row-h">대상 버전이 검토중·컨펌·반려</td><td>❌ 차단 (호출 자체 불가)</td><td>(액션 영역에서 K 버튼 비활성)</td></tr>
+        <tr><td class="row-h">파일 1개 이상 (V-005)</td><td>✅ 필수</td><td>"파일이 비어 있는 draft는 검토 요청할 수 없습니다"</td></tr>
+        <tr><td class="row-h">고객사 계정 참여 중</td><td>✅ 필수</td><td>"참여 고객사가 없습니다. SCR-SET-002에서 초대"</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ============================== MOD-WF-002 ============================== -->
+<section class="screen" id="mod-wf-002">
+  <div class="screen-head">
+    <p class="eyebrow">화면 설계서 · 그룹 2 · 핵심 도메인</p>
+    <h2>MOD-WF-002 · 컨펌/반려 처리 모달</h2>
+    <p class="meta">트리거: SCR-REQ-001·SCR-DSN-001 액션 영역 [고객] 컨펌 또는 반려 &nbsp;·&nbsp; 권한: 고객사</p>
+    <p class="desc"><b>Description:</b> 검토중 버전에 대한 고객사 결정. 컨펌 시 게이트 해제, 반려 시 사유 필수 입력 (영구 보존, REQ-CMT-002).</p>
+  </div>
+
+  <div class="section">
+    <h3><span class="num">1</span> 화면</h3>
+    <iframe class="wf-frame" src="../wireframe/index.html?screen=m2" title="MOD-WF-002 와이어프레임"></iframe>
+  </div>
+
+  <div class="section">
+    <h3><span class="num">2</span> Information</h3>
+    <table class="spec">
+      <thead><tr><th>No</th><th>설명</th><th>Type</th><th>출처</th></tr></thead>
+      <tbody>
+        <tr><td class="id info"><span class="badge">1</span></td><td>대상 (예: "A 프로젝트 - IA v1.0")</td><td class="type">String</td><td class="type">slot.label + version</td></tr>
+        <tr><td class="id info"><span class="badge">2</span></td><td>결과 라디오 라벨 (컨펌 / 반려)</td><td class="type">String (정적)</td><td class="type">i18n</td></tr>
+        <tr><td class="id info"><span class="badge">3</span></td><td>사유 라벨 + 반려 시 필수 표시</td><td class="type">String (정적)</td><td class="type">i18n</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <h3><span class="num">3</span> Controls</h3>
+    <table class="spec">
+      <thead><tr><th>No</th><th>액션</th><th>Type</th><th>Effect</th></tr></thead>
+      <tbody>
+        <tr><td class="id ctrl"><span class="badge">A</span></td><td>결과 = 컨펌 선택</td><td class="type">Radio</td><td class="type">사유 입력란 (C) 비활성</td></tr>
+        <tr><td class="id ctrl"><span class="badge">B</span></td><td>결과 = 반려 선택</td><td class="type">Radio</td><td class="type">사유 입력란 (C) 활성·필수</td></tr>
+        <tr><td class="id ctrl"><span class="badge">C</span></td><td>사유 입력 <a class="vref" href="#validation">V-006</a></td><td class="type">Textarea (conditional required)</td><td class="type">반려 시 1자 이상 필수, 영구 보존</td></tr>
+        <tr><td class="id ctrl"><span class="badge">D</span></td><td>[취소]</td><td class="type">Button</td><td class="type">모달 닫기</td></tr>
+        <tr><td class="id ctrl"><span class="badge">E</span></td><td>[제출]</td><td class="type">Button (submit)</td><td class="type">POST → ① 컨펌: 'draft'→'컨펌 완료'·게이트 해제 / ② 반려: 'draft'→'반려'·사유 활동 이력 기록 ③ 프로젝트팀 이메일 알림</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <h3><span class="num">4</span> States (결과 × 후속)</h3>
+    <table class="spec matrix">
+      <thead><tr><th>결과</th><th>버전 상태 전이</th><th>게이트</th><th>활동 이력</th><th>후속 액션</th></tr></thead>
+      <tbody>
+        <tr><td class="row-h">컨펌</td><td>검토중 → 컨펌 완료</td><td>해제 (9/11/13/15)</td><td>"v(n) 컨펌 완료 (Gate N 통과)"</td><td>다음 단계 진행</td></tr>
+        <tr><td class="row-h">반려 (사유 포함)</td><td>검토중 → 반려</td><td>잠금 유지</td><td>"v(n) 반려 — {사유}" (영구 보존)</td><td>팀이 v+1 새 버전 작성 → 재요청</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+
+<!-- ============================== SCR-AUT-001 ============================== -->
+<section class="screen" id="scr-aut-001">
+  <div class="screen-head">
+    <p class="eyebrow">화면 설계서 · 그룹 3 · 진입·랜딩</p>
+    <h2>SCR-AUT-001 · 로그인</h2>
+    <p class="meta">Path: 직접 URL · 보호 페이지 리다이렉트 &nbsp;·&nbsp; URL: <code>/login?redirect=...</code> &nbsp;·&nbsp; 권한: 비인증 공통</p>
+    <p class="desc"><b>Description:</b> 이메일·비밀번호 로그인. 5회 연속 실패 시 10분 잠금. 로그인 후 진입 URL에 따라 분기 (REQ-AUT-007).</p>
+  </div>
+
+  <div class="section">
+    <h3><span class="num">1</span> 화면</h3>
+    <iframe class="wf-frame" src="../wireframe/index.html?screen=s1" title="SCR-AUT-001 와이어프레임"></iframe>
+  </div>
+
+  <div class="section">
+    <h3><span class="num">2</span> Information</h3>
+    <table class="spec">
+      <thead><tr><th>No</th><th>설명</th><th>Type</th><th>출처</th></tr></thead>
+      <tbody>
+        <tr><td class="id info"><span class="badge">1</span></td><td>이메일 라벨</td><td class="type">String (정적)</td><td class="type">i18n</td></tr>
+        <tr><td class="id info"><span class="badge">2</span></td><td>비밀번호 라벨</td><td class="type">String (정적)</td><td class="type">i18n</td></tr>
+        <tr><td class="id info"><span class="badge">3</span></td><td>에러 메시지 (인증 실패/잠금/네트워크)</td><td class="type">String</td><td class="type">서버 응답</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <h3><span class="num">3</span> Controls</h3>
+    <table class="spec">
+      <thead><tr><th>No</th><th>액션</th><th>Type</th><th>Effect</th></tr></thead>
+      <tbody>
+        <tr><td class="id ctrl"><span class="badge">A</span></td><td>이메일 입력 <a class="vref" href="#validation">V-101</a></td><td class="type">Input (type=email)</td><td class="type">검증 후 (3) 에러 표시 가능</td></tr>
+        <tr><td class="id ctrl"><span class="badge">B</span></td><td>비밀번호 입력 <a class="vref" href="#validation">V-102</a></td><td class="type">Input (type=password)</td><td class="type">검증 후 (3) 에러 표시 가능</td></tr>
+        <tr><td class="id ctrl"><span class="badge">C</span></td><td>[로그인]</td><td class="type">Submit Button</td><td class="type">POST /api/auth/login → 성공: redirect / 실패: (3) 노출, 5회 실패 시 10분 잠금</td></tr>
+        <tr><td class="id ctrl"><span class="badge">D</span></td><td>비밀번호 재설정 링크</td><td class="type">Link</td><td class="type">→ SCR-AUT-002</td></tr>
+        <tr><td class="id ctrl"><span class="badge">E</span></td><td>초대 안내 링크</td><td class="type">Text + Link</td><td class="type">관리자 문의 안내</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <h3><span class="num">4</span> States</h3>
+    <table class="spec matrix">
+      <thead><tr><th>상태</th><th>이메일</th><th>비밀번호</th><th>[로그인]</th><th>(3) 메시지</th></tr></thead>
+      <tbody>
+        <tr><td class="row-h">기본</td><td>빈 값</td><td>빈 값</td><td>비활성</td><td>—</td></tr>
+        <tr><td class="row-h">입력 중</td><td>입력</td><td>입력</td><td>활성</td><td>—</td></tr>
+        <tr><td class="row-h">제출 중</td><td>잠금</td><td>잠금</td><td>로딩 스피너</td><td>—</td></tr>
+        <tr><td class="row-h">실패 (1~4회)</td><td>유지</td><td>비움</td><td>활성</td><td>"이메일 또는 비밀번호가 일치하지 않습니다 ({n}/5)"</td></tr>
+        <tr><td class="row-h">잠금 (5회 실패)</td><td>—</td><td>—</td><td>비활성 10분</td><td>"로그인 시도 한도 초과. 10분 후 다시 시도해 주세요."</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+
+<!-- ============================== 공통 검증 규칙 ============================== -->
+<hr class="divider" />
+<section class="screen" id="validation">
+  <div class="screen-head">
+    <p class="eyebrow">공통 명세</p>
+    <h2>공통 검증 규칙 (Validation rules)</h2>
+    <p class="desc"><b>Description:</b> 화면별 Controls 표에서 <code>V-XXX</code>로 참조되는 입력 검증·권한 검증 규칙 모음. 백엔드 API 명세서(No.11)와 정합.</p>
+  </div>
+
+  <div class="section">
+    <h3>파일·코멘트 (V-001 ~ V-099)</h3>
+    <table class="spec">
+      <thead><tr><th>ID</th><th>대상</th><th>규칙</th><th>실패 메시지</th><th>REQ</th></tr></thead>
+      <tbody>
+        <tr><td class="id val"><span class="badge">V-001</span></td><td>파일 업로드·교체</td><td>파일당 50MB 이하, PDF·문서 (확장자 화이트리스트). 다중 업로드 허용</td><td>"50MB 초과 / 지원하지 않는 형식"</td><td class="type">REQ-FILE-001</td></tr>
+        <tr><td class="id val"><span class="badge">V-002</span></td><td>코멘트 수정·삭제 권한</td><td>수정: 본인 작성만. 삭제: 본인 + 관리자(타인 강제 삭제 시 감사 로그 자동 기록)</td><td>"본인이 작성한 코멘트만 수정·삭제할 수 있습니다"</td><td class="type">REQ-CMT-001, REQ-AUD-001</td></tr>
+        <tr><td class="id val"><span class="badge">V-003</span></td><td>자유 코멘트 등록</td><td>본문 1자 이상, 최신 버전 선택 상태일 때만 활성</td><td>"코멘트 내용을 입력해 주세요"</td><td class="type">REQ-CMT-001</td></tr>
+        <tr><td class="id val"><span class="badge">V-004</span></td><td>새 버전 만들기 모달</td><td>변경 요약 메모 1자 이상 필수</td><td>"변경 요약을 입력해야 v+1을 생성할 수 있습니다"</td><td class="type">REQ-FILE-002</td></tr>
+        <tr><td class="id val"><span class="badge">V-005</span></td><td>검토 요청 발송</td><td>대상 버전이 draft 상태 + 파일 1개 이상</td><td>"파일이 비어 있는 draft는 검토 요청할 수 없습니다"</td><td class="type">REQ-WF-001</td></tr>
+        <tr><td class="id val"><span class="badge">V-006</span></td><td>반려 처리</td><td>사유 1자 이상 필수, 영구 보존</td><td>"반려 사유를 입력해야 처리됩니다"</td><td class="type">REQ-CMT-002</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <h3>인증·계정 (V-100 ~ V-199)</h3>
+    <table class="spec">
+      <thead><tr><th>ID</th><th>대상</th><th>규칙</th><th>실패 메시지</th><th>REQ</th></tr></thead>
+      <tbody>
+        <tr><td class="id val"><span class="badge">V-101</span></td><td>이메일 입력</td><td>RFC 5322 이메일 형식</td><td>"올바른 이메일 형식이 아닙니다"</td><td class="type">REQ-AUT-007</td></tr>
+        <tr><td class="id val"><span class="badge">V-102</span></td><td>비밀번호 입력</td><td>8자 이상, 대/소/숫자/특수문자 중 3종 이상. 로그인 시는 정책 미통과여도 시도 허용</td><td>"비밀번호 정책 미충족: 8자 이상 + 3종 이상"</td><td class="type">REQ-AUT-010</td></tr>
+        <tr><td class="id val"><span class="badge">V-103</span></td><td>로그인 시도 제한</td><td>같은 이메일 5회 연속 실패 시 10분 잠금</td><td>"로그인 시도 한도 초과. 10분 후 다시 시도해 주세요."</td><td class="type">REQ-AUT-007</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout"><b>네이밍 규칙</b>: V-001~099 파일·코멘트 / V-100~199 인증·계정 / V-200~299 프로젝트·산출물 / V-300~399 워크플로우·게이트 / V-400~ 공통. ID는 한 번 부여되면 재사용 안 함 (감사 추적).</div>
+</section>
+
+<p style="text-align:center;color:var(--muted);font-size:12px;margin:48px 0">— 그룹 1·2 완료. 그룹 3~6 후속 작성 예정. —</p>
+
+</main>
+</div>
+</body>
+</html>
