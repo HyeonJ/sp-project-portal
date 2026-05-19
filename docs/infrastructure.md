@@ -6,7 +6,7 @@
 | 작성일 | 2026-05-19 |
 | 버전 | v0.1 |
 | 관련 단계 | 10~17 (설계 전반, 시안 진입 전 작성 권장) |
-| 관련 산출물 | `deliverables.md` No.8 |
+| 관련 산출물 | `deliverables.md` No.6 |
 | 입력 문서 | `requirements.md` v1.1, `architecture.md` v0.1 |
 | 후속 문서 | `deliverables.md` No.20 배포 가이드는 본 문서를 기반으로 운영 시점에 확정 |
 
