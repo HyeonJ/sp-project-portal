@@ -137,7 +137,7 @@ body.embed-mode .ctrl-label{background:#ffd6cc;color:#9a3a25;border:2px solid #d
 
 <aside class="side">
   <h1>sp-project-portal 와이어프레임</h1>
-  <span class="ver">v0.9 · 화면 설계서 라벨 + 사이드바 7개 메뉴 통일</span>
+  <span class="ver">v1.0 · 그룹 1~6 모든 화면 완성 (S0~S25 + M1~M5)</span>
   <noscript></noscript>
   <nav>
     <div class="group">공통</div>
@@ -145,9 +145,14 @@ body.embed-mode .ctrl-label{background:#ffd6cc;color:#9a3a25;border:2px solid #d
 
     <div class="group">인증</div>
     <a href="#s1" data-screen="s1">1. 로그인<small>SCR-AUT-001</small></a>
+    <a href="#s16" data-screen="s16">16. 비밀번호 재설정 요청<small>SCR-AUT-002</small></a>
+    <a href="#s17" data-screen="s17">17. 비밀번호 재설정 입력<small>SCR-AUT-003</small></a>
+    <a href="#s18" data-screen="s18">18. 초대 수락·비밀번호 설정<small>SCR-AUT-004</small></a>
 
     <div class="group">글로벌</div>
     <a href="#s2" data-screen="s2">2. 프로젝트 목록<small>SCR-GLB-001</small></a>
+    <a href="#s24" data-screen="s24">24. 프로젝트 생성<small>SCR-PRJ-002</small></a>
+    <a href="#s19" data-screen="s19">19. 계정 설정<small>SCR-ACC-001</small></a>
 
     <div class="group">프로젝트</div>
     <a href="#s3" data-screen="s3" class="active">3. 프로젝트 대시보드<small>SCR-PRJ-001 (핵심)</small></a>
@@ -156,11 +161,19 @@ body.embed-mode .ctrl-label{background:#ffd6cc;color:#9a3a25;border:2px solid #d
     <a href="#s6" data-screen="s6">6. 산출물 단계별<small>SCR-DSN-001</small></a>
     <a href="#s7" data-screen="s7">7. 통합 검색<small>SCR-SCH-001</small></a>
     <a href="#s8" data-screen="s8">8. AI 개발 진행<small>SCR-DEV-001</small></a>
+    <a href="#s22" data-screen="s22">22. 프로젝트 설정 — 기본 정보<small>SCR-SET-001</small></a>
     <a href="#s9" data-screen="s9">9. 팀·고객사 초대<small>SCR-SET-002</small></a>
+    <a href="#s23" data-screen="s23">23. 프로젝트 설정 — Danger Zone<small>SCR-SET-003</small></a>
     <a href="#s10" data-screen="s10">10. 결함 목록<small>SCR-TST-003</small></a>
+    <a href="#s13" data-screen="s13">13. TC 목록<small>SCR-TST-001</small></a>
+    <a href="#s14" data-screen="s14">14. TC 상세<small>SCR-TST-002</small></a>
+    <a href="#s15" data-screen="s15">15. 결함 상세<small>SCR-TST-004</small></a>
 
     <div class="group">관리자</div>
+    <a href="#s20" data-screen="s20">20. 프로젝트팀 계정 관리<small>SCR-ADM-001~002</small></a>
+    <a href="#s21" data-screen="s21">21. 고객사 계정 관리<small>SCR-ADM-003~004</small></a>
     <a href="#s11" data-screen="s11">11. 감사 로그<small>SCR-ADM-005</small></a>
+    <a href="#s25" data-screen="s25">25. 시스템 오류 페이지<small>SCR-SYS-401~500</small></a>
 
     <div class="group">모달</div>
     <a href="#m1" data-screen="m1">M1. 검토 요청 발송<small>MOD-WF-001</small></a>
@@ -278,23 +291,23 @@ body.embed-mode .ctrl-label{background:#ffd6cc;color:#9a3a25;border:2px solid #d
   </div>
 
   <div class="wf">
-    <div class="wf-header"><span class="logo">sp-project-portal</span><div class="wf-input line" style="max-width:280px">프로젝트 검색</div><span class="spacer"></span><span class="wf-tag">알림</span><span class="wf-tag">계정 ▾</span></div>
+    <div class="wf-header"><span class="logo">sp-project-portal</span><div class="wf-input line" style="max-width:280px"><span class="ctrl-label">A</span>프로젝트 검색</div><span class="spacer"></span><span class="wf-tag">알림</span><span class="wf-tag">계정 ▾</span></div>
     <div class="wf-main" style="padding:24px">
       <div class="wf-bar">
-        <h3 class="wf-title">내 프로젝트</h3>
-        <button class="wf-btn primary">+ 새 프로젝트 (팀)</button>
+        <h3 class="wf-title"><span class="info-label">1</span>내 프로젝트</h3>
+        <button class="wf-btn primary"><span class="ctrl-label">B</span>+ 새 프로젝트 (팀)</button>
       </div>
 
       <div class="wf-card" style="padding:10px;margin-bottom:14px;display:flex;gap:10px;flex-wrap:wrap">
-        <span class="wf-tag">상태 ▾</span>
-        <span class="wf-tag">고객사명 검색</span>
+        <span class="wf-tag"><span class="ctrl-label">C</span>상태 ▾</span>
+        <span class="wf-tag"><span class="ctrl-label">D</span>고객사명 검색</span>
         <span class="spacer"></span>
-        <span class="wf-tag">정렬: 최근 업데이트 ▾</span>
+        <span class="wf-tag"><span class="ctrl-label">E</span>정렬: 최근 업데이트 ▾</span>
       </div>
 
       <div class="wf-grid c2">
         <div class="wf-card">
-          <div class="h">A 프로젝트<span class="meta">㈜OO</span></div>
+          <div class="h"><span class="info-label">2</span><span class="ctrl-label">F</span>A 프로젝트<span class="meta">㈜OO</span></div>
           <div class="body">단계: 12/24 시안 등록</div>
           <div class="wf-progress"><i style="width:50%"></i></div>
           <div class="u" style="margin-top:8px">미처리: 3건 · 2시간 전</div>
@@ -344,6 +357,7 @@ body.embed-mode .ctrl-label{background:#ffd6cc;color:#9a3a25;border:2px solid #d
     <div class="wf-header"><span class="logo">sp-project-portal</span><span class="wf-tag">A 프로젝트 ▾</span><div class="wf-input line" style="max-width:240px">통합 검색</div><span class="spacer"></span><span class="wf-tag">알림</span><span class="wf-tag">계정 ▾</span></div>
     <div class="wf-row">
       <div class="wf-side">
+        <span class="ctrl-label">A</span>
         <div class="switcher"><b>A 프로젝트</b><span>㈜OO · SaaS · W6</span></div>
         <div class="item active">◆ 대시보드 <span class="tag">12/24</span></div>
         <div class="item">─ 요구사항 <span class="tag">44</span></div>
@@ -358,42 +372,42 @@ body.embed-mode .ctrl-label{background:#ffd6cc;color:#9a3a25;border:2px solid #d
         <div class="wf-card" style="margin-bottom:12px">
           <div class="wf-bar">
             <div>
-              <h3 class="wf-title">A 프로젝트</h3>
-              <p class="wf-subtitle">고객사: ㈜OO · 유형: SaaS · 기간: 2026-05~2026-08</p>
-              <p class="wf-subtitle" style="margin-top:2px">현재 단계: 12. 디자인 시안 등록 (게이트 13 대기)</p>
+              <h3 class="wf-title"><span class="info-label">1</span>A 프로젝트</h3>
+              <p class="wf-subtitle"><span class="info-label">2</span>고객사: ㈜OO · 유형: SaaS · 기간: 2026-05~2026-08</p>
+              <p class="wf-subtitle" style="margin-top:2px"><span class="info-label">3</span>현재 단계: 12. 디자인 시안 등록 (게이트 13 대기)</p>
             </div>
-            <span class="wf-tag dashed">🔒 13 게이트 잠금</span>
+            <span class="wf-tag dashed"><span class="info-label">4</span>🔒 13 게이트 잠금</span>
           </div>
           <div class="wf-progress"><i style="width:50%"></i></div>
-          <div class="u" style="margin-top:4px">12/24 (50%)</div>
+          <div class="u" style="margin-top:4px"><span class="info-label">5</span>12/24 (50%)</div>
         </div>
 
         <!-- 액션 영역 -->
         <div class="wf-card" style="margin-bottom:12px">
           <div class="wf-label">액션 영역 (역할·사전조건에 따라 조건부 노출)</div>
           <div class="wf-btn-row">
-            <button class="wf-btn">[팀] 검토 요청 발송</button>
-            <button class="wf-btn ghost">[팀] AI 개발 시작 (잠금)</button>
-            <button class="wf-btn primary">[고객] 컨펌</button>
-            <button class="wf-btn">[고객] 반려</button>
-            <button class="wf-btn ghost">[공통] 산출물 Export (22 후)</button>
+            <button class="wf-btn"><span class="ctrl-label">B</span>[팀] 검토 요청 발송</button>
+            <button class="wf-btn ghost"><span class="ctrl-label">C</span>[팀] AI 개발 시작 (잠금)</button>
+            <button class="wf-btn primary"><span class="ctrl-label">D</span>[고객] 컨펌</button>
+            <button class="wf-btn"><span class="ctrl-label">E</span>[고객] 반려</button>
+            <button class="wf-btn ghost"><span class="ctrl-label">F</span>[공통] 산출물 Export (22 후)</button>
           </div>
         </div>
 
         <!-- 미처리 · 최근 활동 -->
         <div class="wf-grid c2" style="margin-bottom:12px">
           <div class="wf-card">
-            <div class="h">미처리 항목</div>
+            <div class="h"><span class="info-label">6</span>미처리 항목</div>
             <div class="wf-list">
-              <div class="it"><span>· 시안 v2 컨펌 대기</span><span class="t">고객</span></div>
+              <div class="it"><span><span class="ctrl-label">G</span>· 시안 v2 컨펌 대기</span><span class="t">고객</span></div>
               <div class="it"><span>· 요구사항 #12 코멘트 미응답</span><span class="t">팀</span></div>
               <div class="it"><span>· 반려 사유 미작성 1건</span><span class="t">팀</span></div>
             </div>
           </div>
           <div class="wf-card">
-            <div class="h">최근 활동 <span class="meta">최근 20건</span></div>
+            <div class="h"><span class="info-label">7</span>최근 활동 <span class="meta">최근 20건</span></div>
             <div class="wf-list">
-              <div class="it"><span class="t">2h</span><span>디자이너가 시안 v2 업로드</span></div>
+              <div class="it"><span class="t">2h</span><span><span class="ctrl-label">H</span>디자이너가 시안 v2 업로드</span></div>
               <div class="it"><span class="t">3h</span><span>고객사가 코멘트 작성</span></div>
               <div class="it"><span class="t">1d</span><span>게이트 11 컨펌 통과</span></div>
             </div>
@@ -402,9 +416,9 @@ body.embed-mode .ctrl-label{background:#ffd6cc;color:#9a3a25;border:2px solid #d
 
         <!-- 산출물 요약 -->
         <div class="wf-card">
-          <div class="h">산출물 요약 <span class="meta">단계별 최신 버전</span></div>
+          <div class="h"><span class="info-label">8</span>산출물 요약 <span class="meta">단계별 최신 버전</span></div>
           <div class="wf-grid c4">
-            <div class="wf-box"><div class="wf-label">IA</div><div>v1.0 컨펌</div></div>
+            <div class="wf-box"><div class="wf-label"><span class="ctrl-label">I</span>IA</div><div>v1.0 컨펌</div></div>
             <div class="wf-box"><div class="wf-label">시안</div><div>v2 검토중</div></div>
             <div class="wf-box"><div class="wf-label">프로토타입</div><div>대기</div></div>
             <div class="wf-box"><div class="wf-label">Figma</div><div>16~17 단계</div></div>
@@ -688,20 +702,20 @@ body.embed-mode .ctrl-label{background:#ffd6cc;color:#9a3a25;border:2px solid #d
       </div>
       <div class="wf-main" style="padding:24px">
         <p class="wf-subtitle" style="margin-bottom:10px;font-size:11px">※ 통합 검색은 헤더 검색바(또는 단축키)에서 진입 — 사이드바 active 없음</p>
-      <div class="wf-input" style="margin-bottom:10px">검색: 대시보드</div>
+      <div class="wf-input" style="margin-bottom:10px"><span class="info-label">1</span><span class="ctrl-label">A</span>검색: 대시보드</div>
       <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px">
-        <span class="wf-tag">구분 ▾</span>
-        <span class="wf-tag">우선순위 ▾</span>
-        <span class="wf-tag">담당자 ▾</span>
-        <span class="wf-tag">상태 ▾</span>
-        <span class="wf-tag">날짜 ▾</span>
+        <span class="wf-tag"><span class="info-label">2</span><span class="ctrl-label">B</span>구분 ▾</span>
+        <span class="wf-tag"><span class="ctrl-label">C</span>우선순위 ▾</span>
+        <span class="wf-tag"><span class="ctrl-label">D</span>담당자 ▾</span>
+        <span class="wf-tag"><span class="ctrl-label">E</span>상태 ▾</span>
+        <span class="wf-tag"><span class="ctrl-label">F</span>날짜 ▾</span>
       </div>
-      <div class="section-h">결과 (12건)</div>
+      <div class="section-h"><span class="info-label">3</span>결과 (12건)</div>
 
       <div class="wf-card" style="margin-bottom:10px">
-        <div class="h">📌 요구사항 (4)</div>
+        <div class="h"><span class="info-label">4</span>📌 요구사항 (4)</div>
         <div class="wf-list">
-          <div class="it"><span>REQ-PRJ-002 프로젝트 대시보드</span><span class="t">High · 검토</span></div>
+          <div class="it"><span><span class="ctrl-label">G</span>REQ-PRJ-002 프로젝트 대시보드</span><span class="t">High · 검토</span></div>
           <div class="it"><span>REQ-PRJ-001 프로젝트 생성</span><span class="t">High · 대기</span></div>
         </div>
       </div>
@@ -765,12 +779,12 @@ body.embed-mode .ctrl-label{background:#ffd6cc;color:#9a3a25;border:2px solid #d
         <h3 class="wf-title" style="margin-bottom:14px">AI 자동 개발</h3>
 
       <div class="wf-card" style="margin-bottom:14px">
-        <div class="wf-bar"><div class="h" style="margin:0">현재 작업</div><span class="wf-tag dark">⏳ 진행 중 (5/8)</span></div>
+        <div class="wf-bar"><div class="h" style="margin:0"><span class="info-label">1</span>현재 작업</div><span class="wf-tag dark"><span class="info-label">2</span>⏳ 진행 중 (5/8)</span></div>
         <div class="wf-progress" style="margin-top:8px"><i style="width:62%"></i></div>
-        <div class="u" style="margin-top:6px">시작: 2026-05-19 14:00 · 경과: 2시간 30분</div>
+        <div class="u" style="margin-top:6px"><span class="info-label">3</span>시작: 2026-05-19 14:00 · 경과: 2시간 30분</div>
 
         <div style="margin-top:14px">
-          <div class="wf-label">단계별 진행</div>
+          <div class="wf-label"><span class="info-label">4</span>단계별 진행</div>
           <div class="wf-list">
             <div class="it"><span>✅ 입력 검증</span><span class="t">14:00</span></div>
             <div class="it"><span>✅ 도메인 모델 생성</span><span class="t">14:15</span></div>
@@ -785,10 +799,10 @@ body.embed-mode .ctrl-label{background:#ffd6cc;color:#9a3a25;border:2px solid #d
       </div>
 
       <div class="wf-card">
-        <div class="h">과거 작업 이력 (2)</div>
+        <div class="h"><span class="info-label">5</span>과거 작업 이력 (2)</div>
         <div class="wf-list">
-          <div class="it"><span>2026-05-18 22:00 실패 — 입력 검증 (요구사항 미컨펌)</span><span class="wf-btn ghost">재시도 (잠금)</span></div>
-          <div class="it"><span>2026-05-18 18:00 성공</span><span class="wf-btn">패키지 다운로드</span></div>
+          <div class="it"><span>2026-05-18 22:00 실패 — 입력 검증 (요구사항 미컨펌)</span><span class="wf-btn ghost"><span class="ctrl-label">B</span>재시도 (잠금)</span></div>
+          <div class="it"><span>2026-05-18 18:00 성공</span><span class="wf-btn"><span class="ctrl-label">C</span>패키지 다운로드</span></div>
         </div>
       </div>
       </div>
@@ -829,24 +843,24 @@ body.embed-mode .ctrl-label{background:#ffd6cc;color:#9a3a25;border:2px solid #d
         <div class="item sub">─ Danger Zone</div>
       </div>
       <div class="wf-main">
-        <h3 class="wf-title" style="margin-bottom:14px">팀 멤버 · 고객사 초대</h3>
+        <h3 class="wf-title" style="margin-bottom:14px"><span class="info-label">1</span>팀 멤버 · 고객사 초대</h3>
 
         <div class="wf-card" style="margin-bottom:14px">
-          <div class="h">프로젝트팀 (3)</div>
+          <div class="h"><span class="info-label">2</span>프로젝트팀 (3)</div>
           <div class="wf-list">
-            <div class="it"><span>김PM (PM) · pm@agency.com</span><span class="wf-tag">활성</span></div>
+            <div class="it"><span><span class="info-label">3</span>김PM (PM) · pm@agency.com</span><span class="wf-tag">활성</span></div>
             <div class="it"><span>이기획 (기획) · planner@agency.com</span><span class="wf-tag">활성</span></div>
             <div class="it"><span>박디자이너 (디자이너) · designer@agency.com</span><span class="wf-tag">활성</span></div>
           </div>
         </div>
 
         <div class="wf-card">
-          <div class="h">고객사 (2) <button class="wf-btn">+ 고객사 초대 (팀)</button></div>
+          <div class="h"><span class="info-label">4</span>고객사 (2) <button class="wf-btn"><span class="ctrl-label">A</span>+ 고객사 초대 (팀)</button></div>
           <div class="wf-list">
             <div class="it"><span>홍고객 (㈜OO) · client@oo.com</span><span class="wf-tag">활성</span></div>
             <div class="it">
               <span>최고객 (㈜OO) · client2@oo.com</span>
-              <span style="display:flex;gap:6px;align-items:center"><span class="wf-tag dashed">초대 발송 · 만료 18h</span><button class="wf-btn ghost">재발송</button><button class="wf-btn ghost">취소</button></span>
+              <span style="display:flex;gap:6px;align-items:center"><span class="wf-tag dashed"><span class="info-label">5</span>초대 발송 · 만료 18h</span><button class="wf-btn ghost"><span class="ctrl-label">B</span>재발송</button><button class="wf-btn ghost"><span class="ctrl-label">C</span>취소</button></span>
             </div>
           </div>
         </div>
@@ -886,23 +900,23 @@ body.embed-mode .ctrl-label{background:#ffd6cc;color:#9a3a25;border:2px solid #d
         <div class="item">─ 설정 <span class="tag">팀</span></div>
       </div>
       <div class="wf-main">
-        <div class="wf-bar"><h3 class="wf-title">결함 관리</h3><button class="wf-btn primary">+ 결함 등록</button></div>
+        <div class="wf-bar"><h3 class="wf-title"><span class="info-label">1</span>결함 관리</h3><button class="wf-btn primary"><span class="ctrl-label">B</span>+ 결함 등록</button></div>
 
         <div class="wf-grid c3" style="margin-bottom:14px">
-          <div class="wf-card"><div class="wf-label">미해결</div><div class="v">4</div></div>
+          <div class="wf-card"><div class="wf-label"><span class="info-label">2</span>미해결</div><div class="v">4</div></div>
           <div class="wf-card"><div class="wf-label">진행 중</div><div class="v">2</div></div>
           <div class="wf-card"><div class="wf-label">해결 완료</div><div class="v">12</div></div>
         </div>
 
         <div class="wf-card" style="padding:10px;margin-bottom:14px;display:flex;gap:8px;flex-wrap:wrap">
-          <span class="wf-tag">상태 ▾</span><span class="wf-tag">심각도 ▾</span><span class="wf-tag">담당자 ▾</span><span class="wf-tag dashed">검색 🔍</span>
+          <span class="wf-tag"><span class="ctrl-label">C</span>상태 ▾</span><span class="wf-tag"><span class="ctrl-label">D</span>심각도 ▾</span><span class="wf-tag"><span class="ctrl-label">E</span>담당자 ▾</span><span class="wf-tag dashed"><span class="ctrl-label">F</span>검색 🔍</span>
         </div>
 
         <div class="wf-card">
           <table class="wf-table">
             <thead><tr><th>ID</th><th>제목</th><th>심각도</th><th>상태</th><th>담당</th><th>등록일</th></tr></thead>
             <tbody>
-              <tr><td>DEF-001</td><td>로그인 후 리다이렉트 미동작</td><td>High</td><td>미해결</td><td>김개발</td><td>05-19</td></tr>
+              <tr><td><span class="info-label">3</span><span class="ctrl-label">G</span>DEF-001</td><td>로그인 후 리다이렉트 미동작</td><td>High</td><td>미해결</td><td>김개발</td><td>05-19</td></tr>
               <tr><td>DEF-002</td><td>파일 업로드 50MB 초과 오류</td><td>Medium</td><td>진행중</td><td>박개발</td><td>05-19</td></tr>
               <tr><td>...</td><td>...</td><td>...</td><td>...</td><td>...</td><td>...</td></tr>
             </tbody>
@@ -922,6 +936,645 @@ body.embed-mode .ctrl-label{background:#ffd6cc;color:#9a3a25;border:2px solid #d
   </div>
 </section>
 
+<!-- ============================== S13 TC 목록 ============================== -->
+<section class="screen" id="s13">
+  <div class="screen-head">
+    <p class="eyebrow">SCR-TST-001 · 팀(QA) 전용</p>
+    <h2>13. TC 목록</h2>
+    <p>테스트 케이스 목록·관리. UAT(20단계) 전 작성, 결함과 양방향 연결.</p>
+  </div>
+
+  <div class="wf">
+    <div class="wf-header"><span class="logo">sp-project-portal</span><span class="wf-tag">A 프로젝트 ▾</span><div class="wf-input line" style="max-width:240px">통합 검색</div></div>
+    <div class="wf-row">
+      <div class="wf-side">
+        <div class="switcher"><b>A 프로젝트</b><span>㈜OO · SaaS</span></div>
+        <div class="item">─ 대시보드 <span class="tag">12/24</span></div>
+        <div class="item">─ 요구사항 <span class="tag">44</span></div>
+        <div class="item">─ 산출물 <span class="tag">4</span></div>
+        <div class="item">─ 결함 <span class="tag">6</span></div>
+        <div class="item active">◆ TC <span class="tag">팀</span></div>
+        <div class="item">─ AI 개발 <span class="tag">잠금</span></div>
+        <div class="item">─ 설정 <span class="tag">팀</span></div>
+      </div>
+      <div class="wf-main">
+        <div class="wf-bar"><h3 class="wf-title"><span class="info-label">1</span>테스트 케이스 (32)</h3><button class="wf-btn primary"><span class="ctrl-label">A</span>+ TC 등록</button></div>
+
+        <div class="wf-grid c3" style="margin-bottom:14px">
+          <div class="wf-card"><div class="wf-label"><span class="info-label">2</span>대기</div><div class="v">12</div></div>
+          <div class="wf-card"><div class="wf-label">Pass</div><div class="v">15</div></div>
+          <div class="wf-card"><div class="wf-label">Fail</div><div class="v">5</div></div>
+        </div>
+
+        <div class="wf-card" style="padding:10px;margin-bottom:14px;display:flex;gap:8px;flex-wrap:wrap">
+          <span class="wf-tag"><span class="ctrl-label">B</span>단계 ▾</span>
+          <span class="wf-tag"><span class="ctrl-label">C</span>우선순위 ▾</span>
+          <span class="wf-tag"><span class="ctrl-label">D</span>상태 ▾</span>
+          <span class="wf-tag dashed"><span class="ctrl-label">E</span>검색 🔍</span>
+        </div>
+
+        <div class="wf-card">
+          <table class="wf-table">
+            <thead><tr><th>ID</th><th>제목</th><th>단계</th><th>우선순위</th><th>상태</th><th>담당</th></tr></thead>
+            <tbody>
+              <tr><td><span class="info-label">3</span><span class="ctrl-label">F</span>TC-001</td><td>로그인 성공 케이스</td><td>인증</td><td>High</td><td>Pass</td><td>이QA</td></tr>
+              <tr><td>TC-002</td><td>로그인 5회 실패 잠금</td><td>인증</td><td>High</td><td>Pass</td><td>이QA</td></tr>
+              <tr><td>TC-003</td><td>요구사항 파일 업로드 50MB</td><td>요구사항</td><td>Medium</td><td>대기</td><td>이QA</td></tr>
+              <tr><td>TC-004</td><td>버전 스냅샷 전환</td><td>요구사항</td><td>Medium</td><td>Fail</td><td>이QA</td></tr>
+              <tr><td>...</td><td>...</td><td>...</td><td>...</td><td>...</td><td>...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="spec">
+    <table><tbody>
+      <tr><td>등록</td><td>팀(QA) 전용 (REQ-TST-001). 고객사 비노출</td></tr>
+      <tr><td>상태</td><td>대기 / Pass / Fail / 보류</td></tr>
+      <tr><td>결함 연결</td><td>Fail 시 결함(REQ-TST-002) 자동 등록 옵션. 양방향 link</td></tr>
+      <tr><td>UAT 흐름</td><td>20단계에서 고객사도 결과 확인 가능 (조회만)</td></tr>
+    </tbody></table>
+  </div>
+</section>
+
+<!-- ============================== S14 TC 상세 ============================== -->
+<section class="screen" id="s14">
+  <div class="screen-head">
+    <p class="eyebrow">SCR-TST-002 · 팀(QA) 전용</p>
+    <h2>14. TC 상세</h2>
+    <p>테스트 케이스 단일 항목. 절차·결과 입력·결함 연결.</p>
+  </div>
+
+  <div class="wf">
+    <div class="wf-header"><span class="logo">sp-project-portal</span><span class="wf-tag">A 프로젝트 ▾</span><div class="wf-input line" style="max-width:240px">통합 검색</div></div>
+    <div class="wf-row">
+      <div class="wf-side">
+        <div class="switcher"><b>A 프로젝트</b><span>㈜OO · SaaS</span></div>
+        <div class="item">─ 대시보드 <span class="tag">12/24</span></div>
+        <div class="item">─ 요구사항 <span class="tag">44</span></div>
+        <div class="item">─ 산출물 <span class="tag">4</span></div>
+        <div class="item">─ 결함 <span class="tag">6</span></div>
+        <div class="item active">◆ TC <span class="tag">팀</span></div>
+        <div class="item">─ AI 개발 <span class="tag">잠금</span></div>
+        <div class="item">─ 설정 <span class="tag">팀</span></div>
+      </div>
+      <div class="wf-main">
+        <div class="wf-bar"><div><h3 class="wf-title"><span class="info-label">1</span>TC-001 · 로그인 성공 케이스</h3><p class="wf-subtitle"><span class="info-label">2</span>인증 / High / 담당 이QA / 등록일 2026-05-19</p></div><span class="wf-tag dark"><span class="info-label">3</span>Pass</span></div>
+
+        <div class="wf-card" style="margin-bottom:12px">
+          <div class="h"><span class="info-label">4</span>전제 조건</div>
+          <p style="margin:6px 0 0;font-size:12px">유효한 계정 보유, /login URL 접근 가능</p>
+        </div>
+
+        <div class="wf-card" style="margin-bottom:12px">
+          <div class="h"><span class="info-label">5</span>테스트 절차</div>
+          <ol style="margin:6px 0 0;padding-left:20px;font-size:12px">
+            <li>이메일·비밀번호 입력</li>
+            <li>[로그인] 클릭</li>
+            <li>응답·redirect 확인</li>
+          </ol>
+        </div>
+
+        <div class="wf-grid c2" style="margin-bottom:12px">
+          <div class="wf-card">
+            <div class="h"><span class="info-label">6</span>기대 결과</div>
+            <p style="margin:6px 0 0;font-size:12px">정상 로그인 + 진입 URL로 redirect</p>
+          </div>
+          <div class="wf-card">
+            <div class="h"><span class="info-label">7</span>실제 결과</div>
+            <div class="wf-input" style="min-height:40px"><span class="ctrl-label">B</span>입력 영역</div>
+          </div>
+        </div>
+
+        <div class="wf-card" style="margin-bottom:12px">
+          <div class="h"><span class="info-label">8</span>연결 결함 (1)</div>
+          <div class="wf-list">
+            <div class="it"><span><span class="ctrl-label">C</span>DEF-007 redirect 미동작</span><span class="t">미해결</span></div>
+          </div>
+          <button class="wf-btn ghost" style="margin-top:6px"><span class="ctrl-label">D</span>+ 결함 연결</button>
+        </div>
+
+        <div class="wf-card">
+          <div class="h">결과 입력</div>
+          <div class="wf-btn-row">
+            <button class="wf-btn primary"><span class="ctrl-label">E</span>Pass</button>
+            <button class="wf-btn"><span class="ctrl-label">F</span>Fail</button>
+            <button class="wf-btn"><span class="ctrl-label">G</span>보류</button>
+            <span class="spacer"></span>
+            <button class="wf-btn ghost"><span class="ctrl-label">H</span>편집</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="spec">
+    <table><tbody>
+      <tr><td>입력 항목</td><td>전제·절차·기대 결과 (등록 시 팀 입력, REQ-TST-001)</td></tr>
+      <tr><td>결과</td><td>Pass / Fail / 보류. Fail 시 결함 자동 등록 옵션</td></tr>
+      <tr><td>결함 양방향 연결</td><td>여기서도 결함 등록·연결 가능 (REQ-TST-002)</td></tr>
+    </tbody></table>
+  </div>
+</section>
+
+<!-- ============================== S15 결함 상세 ============================== -->
+<section class="screen" id="s15">
+  <div class="screen-head">
+    <p class="eyebrow">SCR-TST-004</p>
+    <h2>15. 결함 상세</h2>
+    <p>결함 단일 항목. 상태 전이·코멘트·첨부·연결 TC.</p>
+  </div>
+
+  <div class="wf">
+    <div class="wf-header"><span class="logo">sp-project-portal</span><span class="wf-tag">A 프로젝트 ▾</span><div class="wf-input line" style="max-width:240px">통합 검색</div></div>
+    <div class="wf-row">
+      <div class="wf-side">
+        <div class="switcher"><b>A 프로젝트</b><span>㈜OO · SaaS</span></div>
+        <div class="item">─ 대시보드 <span class="tag">12/24</span></div>
+        <div class="item">─ 요구사항 <span class="tag">44</span></div>
+        <div class="item">─ 산출물 <span class="tag">4</span></div>
+        <div class="item active">◆ 결함 <span class="tag">6</span></div>
+        <div class="item">─ TC <span class="tag">팀</span></div>
+        <div class="item">─ AI 개발 <span class="tag">잠금</span></div>
+        <div class="item">─ 설정 <span class="tag">팀</span></div>
+      </div>
+      <div class="wf-main">
+        <div class="wf-bar"><div><h3 class="wf-title"><span class="info-label">1</span>DEF-001 · 로그인 후 리다이렉트 미동작</h3><p class="wf-subtitle"><span class="info-label">2</span>등록 고객사 김OO · 2026-05-19 · 담당 김개발</p></div><span class="wf-tag dark"><span class="info-label">3</span>미해결 · High</span></div>
+
+        <div class="wf-grid c2" style="margin-bottom:12px">
+          <div class="wf-card">
+            <div class="h"><span class="info-label">4</span>재현 단계</div>
+            <ol style="margin:6px 0 0;padding-left:20px;font-size:12px">
+              <li>/projects/A/requirements 직접 접근 (비로그인)</li>
+              <li>로그인 페이지로 redirect</li>
+              <li>로그인 후 / 로 이동 (원래 URL로 안 감)</li>
+            </ol>
+          </div>
+          <div class="wf-card">
+            <div class="h"><span class="info-label">5</span>환경</div>
+            <div style="font-size:12px">Chrome 124 / Windows 11 / 2026-05-19 14:00 KST</div>
+          </div>
+        </div>
+
+        <div class="wf-card" style="margin-bottom:12px">
+          <div class="h"><span class="info-label">6</span>첨부 (2)</div>
+          <div class="wf-list">
+            <div class="it"><span>📸 screenshot-1.png</span><button class="wf-btn ghost"><span class="ctrl-label">B</span>다운로드</button></div>
+            <div class="it"><span>📄 console-log.txt</span><button class="wf-btn ghost">다운로드</button></div>
+          </div>
+          <button class="wf-btn ghost" style="margin-top:6px"><span class="ctrl-label">C</span>+ 첨부 추가</button>
+        </div>
+
+        <div class="wf-card" style="margin-bottom:12px">
+          <div class="h"><span class="info-label">7</span>연결 TC (1)</div>
+          <div class="wf-list">
+            <div class="it"><span><span class="ctrl-label">D</span>TC-001 로그인 성공 케이스</span><span class="t">Fail</span></div>
+          </div>
+        </div>
+
+        <div class="wf-card" style="margin-bottom:12px">
+          <div class="h"><span class="info-label">8</span>코멘트 (3)</div>
+          <div class="wf-comment"><div class="meta">고객사 · 05-19 14:00</div><div class="body">로그인 후 원래 페이지로 안 갑니다.</div></div>
+          <div class="wf-comment"><div class="meta">김개발 · 05-19 15:00</div><div class="body">redirect 파라미터 처리 누락 확인. 수정 중.</div></div>
+          <div class="wf-input" style="min-height:40px;margin-top:8px"><span class="ctrl-label">E</span>코멘트 입력</div>
+          <div style="text-align:right;margin-top:6px"><button class="wf-btn primary"><span class="ctrl-label">F</span>등록</button></div>
+        </div>
+
+        <div class="wf-card">
+          <div class="h">상태 변경</div>
+          <div class="wf-btn-row">
+            <button class="wf-btn ghost"><span class="ctrl-label">G</span>미해결</button>
+            <button class="wf-btn"><span class="ctrl-label">H</span>진행 중</button>
+            <button class="wf-btn primary"><span class="ctrl-label">I</span>해결 완료</button>
+            <button class="wf-btn"><span class="ctrl-label">J</span>재현 불가</button>
+            <span class="spacer"></span>
+            <button class="wf-btn ghost"><span class="ctrl-label">K</span>담당자 변경</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="spec">
+    <table><tbody>
+      <tr><td>상태 전이</td><td>미해결 → 진행 중 → 해결 완료 / 재현 불가 (REQ-TST-001)</td></tr>
+      <tr><td>등록</td><td>UAT(20단계)는 고객사·팀 공통, 그 외는 팀</td></tr>
+      <tr><td>TC 연결</td><td>양방향 (TC Fail 시 자동 연결, 수동 추가도 가능)</td></tr>
+      <tr><td>22 게이트</td><td>모든 결함 해결 완료 = 22 사전조건 (REQ-TST-003)</td></tr>
+    </tbody></table>
+  </div>
+</section>
+
+
+<!-- ============================== S16 비밀번호 재설정 요청 ============================== -->
+<section class="screen" id="s16">
+  <div class="screen-head">
+    <p class="eyebrow">SCR-AUT-002</p>
+    <h2>16. 비밀번호 재설정 요청</h2>
+    <p>이메일 입력 → 재설정 링크 발송 (REQ-AUT-011).</p>
+  </div>
+  <div class="wf" style="max-width:780px">
+    <div class="wf-header"><span class="logo">sp-project-portal</span></div>
+    <div style="padding:48px 18px;display:flex;justify-content:center">
+      <div class="wf-card" style="width:380px">
+        <h3 class="wf-title" style="text-align:center">비밀번호 재설정</h3>
+        <p class="wf-subtitle" style="text-align:center;margin-bottom:18px">가입한 이메일을 입력하시면<br>재설정 링크를 보내드립니다.</p>
+        <div class="wf-form-row" style="flex-direction:column;gap:4px;margin-bottom:14px">
+          <label style="min-width:0"><span class="info-label">1</span>이메일</label>
+          <div class="wf-input"><span class="ctrl-label">A</span>[입력]</div>
+        </div>
+        <div style="min-height:18px;margin-bottom:10px;font-size:11px;color:var(--muted)"><span class="info-label">2</span>안내 메시지 (요청 후 표시)</div>
+        <button class="wf-btn primary" style="width:100%;padding:10px"><span class="ctrl-label">B</span>재설정 링크 보내기</button>
+        <div style="text-align:center;margin-top:14px;font-size:11px;color:var(--muted)"><span class="ctrl-label">C</span>· 로그인으로 돌아가기</div>
+      </div>
+    </div>
+  </div>
+  <div class="spec">
+    <table><tbody>
+      <tr><td>요청 후 안내</td><td>"이메일이 등록되어 있으면 발송됩니다" — 계정 존재 여부 노출 X (보안)</td></tr>
+      <tr><td>토큰 유효기간</td><td>30분 (REQ-AUT-011)</td></tr>
+      <tr><td>중복 요청</td><td>5분 내 재요청 시 이전 토큰 무효화 후 새 발송</td></tr>
+    </tbody></table>
+  </div>
+</section>
+
+<!-- ============================== S17 비밀번호 재설정 입력 ============================== -->
+<section class="screen" id="s17">
+  <div class="screen-head">
+    <p class="eyebrow">SCR-AUT-003</p>
+    <h2>17. 비밀번호 재설정 입력</h2>
+    <p>이메일 링크 클릭 후 진입. 새 비밀번호 입력 (REQ-AUT-010·011).</p>
+  </div>
+  <div class="wf" style="max-width:780px">
+    <div class="wf-header"><span class="logo">sp-project-portal</span></div>
+    <div style="padding:48px 18px;display:flex;justify-content:center">
+      <div class="wf-card" style="width:380px">
+        <h3 class="wf-title" style="text-align:center">새 비밀번호 설정</h3>
+        <p class="wf-subtitle" style="text-align:center;margin-bottom:18px"><span class="info-label">1</span>user@example.com 계정의 비밀번호를 재설정합니다.</p>
+        <div class="wf-form-row" style="flex-direction:column;gap:4px;margin-bottom:14px">
+          <label style="min-width:0"><span class="info-label">2</span>새 비밀번호</label>
+          <div class="wf-input"><span class="ctrl-label">A</span>[입력] 👁</div>
+          <p style="font-size:10px;color:var(--muted);margin:4px 0 0"><span class="info-label">3</span>8자 이상 + 대/소/숫자/특수문자 중 3종 이상</p>
+        </div>
+        <div class="wf-form-row" style="flex-direction:column;gap:4px;margin-bottom:18px">
+          <label style="min-width:0"><span class="info-label">4</span>비밀번호 확인</label>
+          <div class="wf-input"><span class="ctrl-label">B</span>[재입력]</div>
+        </div>
+        <button class="wf-btn primary" style="width:100%;padding:10px"><span class="ctrl-label">C</span>비밀번호 변경</button>
+      </div>
+    </div>
+  </div>
+  <div class="spec">
+    <table><tbody>
+      <tr><td>토큰 검증</td><td>진입 시 토큰 유효성 확인. 만료·무효 시 SCR-AUT-002로 안내 페이지</td></tr>
+      <tr><td>정책</td><td>8자 + 3종 이상 (V-102 / REQ-AUT-010)</td></tr>
+      <tr><td>완료 후</td><td>자동 로그인 → SCR-GLB-001 / SCR-PRJ-001 (역할별)</td></tr>
+    </tbody></table>
+  </div>
+</section>
+
+<!-- ============================== S18 초대 수락·비밀번호 설정 ============================== -->
+<section class="screen" id="s18">
+  <div class="screen-head">
+    <p class="eyebrow">SCR-AUT-004</p>
+    <h2>18. 초대 수락·비밀번호 설정</h2>
+    <p>이메일 초대 링크 클릭 후 진입. 신규 사용자 첫 비밀번호 설정 (REQ-AUT-003·010).</p>
+  </div>
+  <div class="wf" style="max-width:780px">
+    <div class="wf-header"><span class="logo">sp-project-portal</span></div>
+    <div style="padding:48px 18px;display:flex;justify-content:center">
+      <div class="wf-card" style="width:420px">
+        <h3 class="wf-title" style="text-align:center">초대 수락</h3>
+        <div class="wf-card" style="background:var(--placeholder-2);padding:12px;margin-bottom:18px;font-size:12px;text-align:center">
+          <div><span class="info-label">1</span><b>㈜OO</b>에 <b>고객사</b> 권한으로 초대되었습니다.</div>
+          <div style="color:var(--muted);margin-top:4px"><span class="info-label">2</span>참여 프로젝트: A 프로젝트</div>
+        </div>
+        <div class="wf-form-row" style="flex-direction:column;gap:4px;margin-bottom:12px">
+          <label style="min-width:0"><span class="info-label">3</span>이름</label>
+          <div class="wf-input"><span class="ctrl-label">A</span>[입력]</div>
+        </div>
+        <div class="wf-form-row" style="flex-direction:column;gap:4px;margin-bottom:12px">
+          <label style="min-width:0"><span class="info-label">4</span>비밀번호</label>
+          <div class="wf-input"><span class="ctrl-label">B</span>[입력] 👁</div>
+          <p style="font-size:10px;color:var(--muted);margin:4px 0 0">8자 + 3종 이상</p>
+        </div>
+        <div class="wf-form-row" style="flex-direction:column;gap:4px;margin-bottom:14px">
+          <label style="min-width:0"><span class="info-label">5</span>비밀번호 확인</label>
+          <div class="wf-input"><span class="ctrl-label">C</span>[재입력]</div>
+        </div>
+        <div style="margin-bottom:14px;font-size:11px">
+          <label><input type="checkbox"> <span class="ctrl-label">D</span>이용약관·개인정보처리방침 동의</label>
+        </div>
+        <button class="wf-btn primary" style="width:100%;padding:10px"><span class="ctrl-label">E</span>가입 완료 · 로그인</button>
+      </div>
+    </div>
+  </div>
+  <div class="spec">
+    <table><tbody>
+      <tr><td>이메일 사전 표시</td><td>초대받은 이메일은 자동 표기 (수정 불가)</td></tr>
+      <tr><td>완료 후</td><td>자동 로그인 → SCR-PRJ-001 (참여 프로젝트 대시보드)</td></tr>
+      <tr><td>토큰</td><td>이전 토큰은 즉시 무효화 (재발송 시 새 토큰)</td></tr>
+    </tbody></table>
+  </div>
+</section>
+
+<!-- ============================== S19 계정 설정 ============================== -->
+<section class="screen" id="s19">
+  <div class="screen-head">
+    <p class="eyebrow">SCR-ACC-001</p>
+    <h2>19. 계정 설정</h2>
+    <p>본인 계정 정보 조회·수정 (REQ-AUT-010).</p>
+  </div>
+  <div class="wf">
+    <div class="wf-header"><span class="logo">sp-project-portal</span><div class="wf-input line" style="max-width:280px">프로젝트 검색</div><span class="spacer"></span><span class="wf-tag">알림</span><span class="wf-tag">계정 ▾</span><span class="wf-tag">로그아웃</span></div>
+    <div class="wf-main" style="padding:24px;max-width:780px">
+      <h3 class="wf-title" style="margin-bottom:14px"><span class="info-label">1</span>내 계정</h3>
+
+      <div class="wf-card" style="margin-bottom:14px">
+        <div class="h"><span class="info-label">2</span>기본 정보</div>
+        <div class="wf-form-row"><label>이름</label><div class="wf-input"><span class="ctrl-label">A</span>홍길동</div></div>
+        <div class="wf-form-row"><label>이메일</label><div class="wf-input">user@example.com <span style="color:var(--muted);font-size:11px">(수정 불가)</span></div></div>
+        <div class="wf-form-row"><label>역할</label><div class="wf-input">고객사 (㈜OO)</div></div>
+        <div style="text-align:right;margin-top:8px"><button class="wf-btn primary"><span class="ctrl-label">B</span>저장</button></div>
+      </div>
+
+      <div class="wf-card" style="margin-bottom:14px">
+        <div class="h"><span class="info-label">3</span>비밀번호 변경</div>
+        <div class="wf-form-row"><label>현재 비밀번호</label><div class="wf-input"><span class="ctrl-label">C</span>[입력]</div></div>
+        <div class="wf-form-row"><label>새 비밀번호</label><div class="wf-input"><span class="ctrl-label">D</span>[입력]</div></div>
+        <div class="wf-form-row"><label>새 비밀번호 확인</label><div class="wf-input"><span class="ctrl-label">E</span>[재입력]</div></div>
+        <div style="text-align:right;margin-top:8px"><button class="wf-btn primary"><span class="ctrl-label">F</span>변경</button></div>
+      </div>
+
+      <div class="wf-card">
+        <div class="h"><span class="info-label">4</span>참여 프로젝트 (2)</div>
+        <div class="wf-list">
+          <div class="it"><span><span class="ctrl-label">G</span>A 프로젝트 — ㈜OO</span><span class="t">고객사 · 참여 중</span></div>
+          <div class="it"><span>B 프로젝트 — ㈜OO</span><span class="t">고객사 · 완료</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="spec">
+    <table><tbody>
+      <tr><td>이메일</td><td>수정 불가 (식별자). 변경 필요 시 관리자 문의</td></tr>
+      <tr><td>비밀번호 변경</td><td>현재 비밀번호 확인 필수, 새 비밀번호는 8자+3종 (V-102)</td></tr>
+      <tr><td>참여 프로젝트</td><td>조회만. 탈퇴는 관리자 처리 (계정 비활성화)</td></tr>
+    </tbody></table>
+  </div>
+</section>
+
+
+<!-- ============================== S22 프로젝트 기본 정보 ============================== -->
+<section class="screen" id="s22">
+  <div class="screen-head">
+    <p class="eyebrow">SCR-SET-001 · 팀 전용</p>
+    <h2>22. 프로젝트 설정 — 기본 정보</h2>
+    <p>프로젝트명·기간·유형·고객사 등 기본 정보 수정 (REQ-PRJ-001).</p>
+  </div>
+  <div class="wf">
+    <div class="wf-header"><span class="logo">sp-project-portal</span><span class="wf-tag">A 프로젝트 ▾</span></div>
+    <div class="wf-row">
+      <div class="wf-side">
+        <div class="switcher"><b>A 프로젝트</b><span>㈜OO · SaaS</span></div>
+        <div class="item">─ 대시보드 <span class="tag">12/24</span></div>
+        <div class="item">─ 요구사항 <span class="tag">44</span></div>
+        <div class="item">─ 산출물 <span class="tag">4</span></div>
+        <div class="item">─ 결함 <span class="tag">6</span></div>
+        <div class="item">─ TC <span class="tag">팀</span></div>
+        <div class="item">─ AI 개발 <span class="tag">잠금</span></div>
+        <div class="item active">◆ 설정 <span class="tag">팀</span></div>
+        <div class="item sub active">─ 기본 정보</div>
+        <div class="item sub">─ 멤버·초대</div>
+        <div class="item sub">─ Danger Zone</div>
+      </div>
+      <div class="wf-main">
+        <h3 class="wf-title" style="margin-bottom:14px"><span class="info-label">1</span>프로젝트 기본 정보</h3>
+        <div class="wf-card">
+          <div class="wf-form-row"><label>프로젝트명</label><div class="wf-input"><span class="ctrl-label">A</span>A 프로젝트</div></div>
+          <div class="wf-form-row"><label>고객사명</label><div class="wf-input"><span class="ctrl-label">B</span>㈜OO</div></div>
+          <div class="wf-form-row"><label>유형</label><div class="wf-input"><span class="ctrl-label">C</span>SaaS ▾</div></div>
+          <div class="wf-form-row"><label>기간</label><div class="wf-input" style="display:flex;gap:8px"><span><span class="ctrl-label">D</span>2026-05-01</span><span>~</span><span><span class="ctrl-label">E</span>2026-08-31</span></div></div>
+          <div class="wf-form-row" style="align-items:start"><label>설명</label><div class="wf-input" style="min-height:60px"><span class="ctrl-label">F</span>프로젝트 설명 입력</div></div>
+          <div style="text-align:right;margin-top:14px"><button class="wf-btn"><span class="ctrl-label">G</span>취소</button> <button class="wf-btn primary"><span class="ctrl-label">H</span>저장</button></div>
+        </div>
+        <p class="wf-subtitle" style="margin-top:10px;font-size:11px">※ 프로젝트 식별자(ID)·생성일은 수정 불가. 고객사명 변경 시 참여 고객사 계정 알림 발송.</p>
+      </div>
+    </div>
+  </div>
+  <div class="spec">
+    <table><tbody>
+      <tr><td>수정 권한</td><td>프로젝트팀(PM)만 (§3)</td></tr>
+      <tr><td>변경 이력</td><td>감사 로그(REQ-AUD-001)에 기록</td></tr>
+    </tbody></table>
+  </div>
+</section>
+
+<!-- ============================== S23 Danger Zone ============================== -->
+<section class="screen" id="s23">
+  <div class="screen-head">
+    <p class="eyebrow">SCR-SET-003 · 팀 전용</p>
+    <h2>23. 프로젝트 설정 — Danger Zone</h2>
+    <p>파괴적 액션 격리 (프로젝트 삭제, 보관 처리 등). REQ-NFR-005에 따라 소프트 삭제 + 30일 복구 가능.</p>
+  </div>
+  <div class="wf">
+    <div class="wf-header"><span class="logo">sp-project-portal</span><span class="wf-tag">A 프로젝트 ▾</span></div>
+    <div class="wf-row">
+      <div class="wf-side">
+        <div class="switcher"><b>A 프로젝트</b><span>㈜OO · SaaS</span></div>
+        <div class="item">─ 대시보드 <span class="tag">12/24</span></div>
+        <div class="item">─ 요구사항 <span class="tag">44</span></div>
+        <div class="item">─ 산출물 <span class="tag">4</span></div>
+        <div class="item">─ 결함 <span class="tag">6</span></div>
+        <div class="item">─ TC <span class="tag">팀</span></div>
+        <div class="item">─ AI 개발 <span class="tag">잠금</span></div>
+        <div class="item active">◆ 설정 <span class="tag">팀</span></div>
+        <div class="item sub">─ 기본 정보</div>
+        <div class="item sub">─ 멤버·초대</div>
+        <div class="item sub active">─ Danger Zone</div>
+      </div>
+      <div class="wf-main">
+        <h3 class="wf-title" style="margin-bottom:14px;color:#a52727"><span class="info-label">1</span>⚠ Danger Zone</h3>
+
+        <div class="wf-card" style="border-color:#f0c0c0;margin-bottom:14px">
+          <div class="wf-bar">
+            <div>
+              <div class="h" style="margin:0;color:#a52727"><span class="info-label">2</span>프로젝트 보관 처리</div>
+              <p class="wf-subtitle" style="margin:4px 0 0">진행 중지 + 읽기 전용으로 전환. 다시 활성화 가능.</p>
+            </div>
+            <button class="wf-btn"><span class="ctrl-label">A</span>보관</button>
+          </div>
+        </div>
+
+        <div class="wf-card" style="border-color:#f0c0c0">
+          <div class="wf-bar">
+            <div>
+              <div class="h" style="margin:0;color:#a52727"><span class="info-label">3</span>프로젝트 삭제</div>
+              <p class="wf-subtitle" style="margin:4px 0 0">소프트 삭제 — 30일 복구 가능 (REQ-NFR-005). 30일 후 영구 삭제 가능.</p>
+              <p class="wf-subtitle" style="margin:2px 0 0;color:#c84">⚠ 모든 요구사항·산출물·코멘트가 함께 삭제 대상이 됩니다.</p>
+            </div>
+            <button class="wf-btn" style="background:#a52727;color:#fff"><span class="ctrl-label">B</span>삭제</button>
+          </div>
+
+          <div class="wf-card" style="margin-top:10px;background:#fff5f5;border-color:#f0c0c0">
+            <p class="wf-subtitle" style="margin:0"><span class="info-label">4</span>삭제 확인 모달 (클릭 시):<br>"프로젝트명 <code>A 프로젝트</code>를 입력하여 삭제를 확인하세요."<br>입력 일치 시에만 <button class="wf-btn ghost" style="padding:2px 8px"><span class="ctrl-label">C</span>최종 삭제</button> 활성</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="spec">
+    <table><tbody>
+      <tr><td>접근 권한</td><td>프로젝트팀(PM)·관리자 (§3, REQ-NFR-005)</td></tr>
+      <tr><td>삭제 흐름</td><td>소프트 삭제 → 30일 복구 가능 → 영구 삭제. 감사 로그 기록</td></tr>
+      <tr><td>이중 확인</td><td>프로젝트명 정확 입력 시에만 [최종 삭제] 활성</td></tr>
+    </tbody></table>
+  </div>
+</section>
+
+<!-- ============================== S24 프로젝트 생성 ============================== -->
+<section class="screen" id="s24">
+  <div class="screen-head">
+    <p class="eyebrow">SCR-PRJ-002 · 팀 전용</p>
+    <h2>24. 프로젝트 생성</h2>
+    <p>신규 프로젝트 생성 폼. 완료 시 워크스페이스 자동 초기화 (REQ-PRJ-001).</p>
+  </div>
+  <div class="wf">
+    <div class="wf-header"><span class="logo">sp-project-portal</span><div class="wf-input line" style="max-width:280px">프로젝트 검색</div><span class="spacer"></span><span class="wf-tag">알림</span><span class="wf-tag">계정 ▾</span></div>
+    <div class="wf-main" style="padding:24px;max-width:780px">
+      <div class="wf-bar"><h3 class="wf-title"><span class="info-label">1</span>새 프로젝트</h3><span style="font-size:11px;color:var(--muted)">전체 단계 24</span></div>
+
+      <div class="wf-card" style="margin-top:14px">
+        <div class="wf-form-row"><label>프로젝트명</label><div class="wf-input"><span class="ctrl-label">A</span>[입력]</div></div>
+        <div class="wf-form-row"><label>고객사명</label><div class="wf-input"><span class="ctrl-label">B</span>[입력]</div></div>
+        <div class="wf-form-row"><label>유형</label><div class="wf-input"><span class="ctrl-label">C</span>SaaS / 웹사이트 / 모바일 / 기타 ▾</div></div>
+        <div class="wf-form-row"><label>기간</label><div class="wf-input" style="display:flex;gap:8px"><span><span class="ctrl-label">D</span>시작일</span><span>~</span><span><span class="ctrl-label">E</span>종료일</span></div></div>
+        <div class="wf-form-row" style="align-items:start"><label>설명</label><div class="wf-input" style="min-height:60px"><span class="ctrl-label">F</span>(선택) 프로젝트 설명</div></div>
+
+        <div style="margin-top:14px;padding:10px;background:var(--placeholder-2);border-radius:6px;font-size:11px;color:var(--muted)">
+          <span class="info-label">2</span>생성 시 자동 초기화:
+          <br>· 워크스페이스 (요구사항·산출물·결함 영역)
+          <br>· 진행 단계 1로 설정
+          <br>· 생성자(현재 사용자)가 PM으로 자동 할당
+        </div>
+
+        <div style="text-align:right;margin-top:14px"><button class="wf-btn"><span class="ctrl-label">G</span>취소</button> <button class="wf-btn primary"><span class="ctrl-label">H</span>프로젝트 생성</button></div>
+      </div>
+    </div>
+  </div>
+  <div class="spec">
+    <table><tbody>
+      <tr><td>생성 권한</td><td>프로젝트팀·관리자 (§3, REQ-PRJ-001)</td></tr>
+      <tr><td>완료 후</td><td>→ SCR-PRJ-001 (해당 프로젝트 대시보드, 단계 1)</td></tr>
+      <tr><td>고객사 초대</td><td>생성 후 SCR-SET-002에서 별도 초대</td></tr>
+    </tbody></table>
+  </div>
+</section>
+
+
+<!-- ============================== S20 프로젝트팀 계정 관리 ============================== -->
+<section class="screen" id="s20">
+  <div class="screen-head">
+    <p class="eyebrow">SCR-ADM-001~002 · 관리자 전용</p>
+    <h2>20. 프로젝트팀 계정 관리</h2>
+    <p>관리자가 PM·디자이너·개발자·QA 계정을 생성·수정·비활성화 (REQ-AUT-004).</p>
+  </div>
+  <div class="wf">
+    <div class="wf-header"><span class="logo">sp-project-portal</span><span class="spacer"></span><span class="wf-tag">관리자 메뉴 ▾</span><span class="wf-tag">계정 ▾</span></div>
+    <div class="wf-row">
+      <div class="wf-side">
+        <div class="switcher"><b>관리자 메뉴</b><span>전체 시스템 관리</span></div>
+        <div class="item active">◆ 프로젝트팀 계정</div>
+        <div class="item">─ 고객사 계정</div>
+        <div class="item">─ 감사 로그</div>
+        <div class="item">─ 전체 프로젝트</div>
+      </div>
+      <div class="wf-main">
+        <div class="wf-bar"><h3 class="wf-title"><span class="info-label">1</span>프로젝트팀 계정 (18)</h3><button class="wf-btn primary"><span class="ctrl-label">A</span>+ 계정 생성</button></div>
+
+        <div class="wf-card" style="padding:10px;margin-bottom:14px;display:flex;gap:8px;flex-wrap:wrap">
+          <span class="wf-tag"><span class="ctrl-label">B</span>역할 ▾</span>
+          <span class="wf-tag"><span class="ctrl-label">C</span>상태 ▾</span>
+          <span class="wf-tag dashed"><span class="ctrl-label">D</span>이름·이메일 검색 🔍</span>
+        </div>
+
+        <div class="wf-card">
+          <table class="wf-table">
+            <thead><tr><th>이름</th><th>이메일</th><th>역할</th><th>담당 프로젝트</th><th>상태</th><th>액션</th></tr></thead>
+            <tbody>
+              <tr><td><span class="info-label">2</span>김PM</td><td>pm@sp.co</td><td>PM</td><td>3</td><td><span class="wf-tag dark">활성</span></td><td><button class="wf-btn ghost"><span class="ctrl-label">E</span>편집</button> <button class="wf-btn ghost"><span class="ctrl-label">F</span>비활성화</button></td></tr>
+              <tr><td>박디자이너</td><td>dsg@sp.co</td><td>디자이너</td><td>2</td><td><span class="wf-tag dark">활성</span></td><td>...</td></tr>
+              <tr><td>이QA</td><td>qa@sp.co</td><td>QA</td><td>3</td><td><span class="wf-tag">비활성</span></td><td>...</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p class="wf-subtitle" style="margin-top:14px;font-size:11px">※ <b>계정 생성·편집 폼</b> (SCR-ADM-002)은 [+ 계정 생성] / [편집] 클릭 시 인라인 사이드패널 또는 별도 페이지로 진입. 입력: 이름·이메일·역할·초기 비밀번호 정책 (이메일 발송).</p>
+      </div>
+    </div>
+  </div>
+  <div class="spec">
+    <table><tbody>
+      <tr><td>계정 비활성화</td><td>진행 중 프로젝트는 다른 PM 재할당 후 처리. 담당 이력 보존 (REQ-AUT-004)</td></tr>
+      <tr><td>생성</td><td>이메일·역할 입력 후 초대 메일 발송. 초기 비밀번호는 사용자 본인 설정 (SCR-AUT-004 흐름)</td></tr>
+      <tr><td>접근 권한</td><td>관리자만 (REQ-NFR-001, 403 응답)</td></tr>
+    </tbody></table>
+  </div>
+</section>
+
+<!-- ============================== S21 고객사 계정 관리 ============================== -->
+<section class="screen" id="s21">
+  <div class="screen-head">
+    <p class="eyebrow">SCR-ADM-003~004 · 관리자 전용</p>
+    <h2>21. 고객사 계정 관리</h2>
+    <p>관리자가 고객사 계정 생성·수정·비활성화·초대 재발송 (REQ-AUT-006·012).</p>
+  </div>
+  <div class="wf">
+    <div class="wf-header"><span class="logo">sp-project-portal</span><span class="spacer"></span><span class="wf-tag">관리자 메뉴 ▾</span><span class="wf-tag">계정 ▾</span></div>
+    <div class="wf-row">
+      <div class="wf-side">
+        <div class="switcher"><b>관리자 메뉴</b><span>전체 시스템 관리</span></div>
+        <div class="item">─ 프로젝트팀 계정</div>
+        <div class="item active">◆ 고객사 계정</div>
+        <div class="item">─ 감사 로그</div>
+        <div class="item">─ 전체 프로젝트</div>
+      </div>
+      <div class="wf-main">
+        <div class="wf-bar"><h3 class="wf-title"><span class="info-label">1</span>고객사 계정 (32)</h3><button class="wf-btn primary"><span class="ctrl-label">A</span>+ 계정 생성</button></div>
+
+        <div class="wf-card" style="padding:10px;margin-bottom:14px;display:flex;gap:8px;flex-wrap:wrap">
+          <span class="wf-tag"><span class="ctrl-label">B</span>고객사 ▾</span>
+          <span class="wf-tag"><span class="ctrl-label">C</span>상태 ▾</span>
+          <span class="wf-tag dashed"><span class="ctrl-label">D</span>이름·이메일·고객사명 검색 🔍</span>
+        </div>
+
+        <div class="wf-card">
+          <table class="wf-table">
+            <thead><tr><th>이름</th><th>이메일</th><th>고객사</th><th>참여 프로젝트</th><th>상태</th><th>액션</th></tr></thead>
+            <tbody>
+              <tr><td><span class="info-label">2</span>김OO</td><td>kim@oo.co</td><td>㈜OO</td><td>2</td><td><span class="wf-tag dark">활성</span></td><td><button class="wf-btn ghost"><span class="ctrl-label">E</span>편집</button> <button class="wf-btn ghost"><span class="ctrl-label">F</span>초대 재발송</button> <button class="wf-btn ghost"><span class="ctrl-label">G</span>비활성화</button></td></tr>
+              <tr><td>박XX</td><td>park@xx.co</td><td>㈜XX</td><td>1</td><td><span class="wf-tag">초대 대기</span></td><td>...</td></tr>
+              <tr><td>이YY</td><td>lee@yy.co</td><td>㈜YY</td><td>3</td><td><span class="wf-tag dark">활성</span></td><td>...</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p class="wf-subtitle" style="margin-top:14px;font-size:11px">※ <b>고객사 계정 폼</b> (SCR-ADM-004)에서 입력: 이름·이메일·고객사명·참여 프로젝트 선택. 이메일 중복 발급은 시스템이 차단 (REQ-AUT-006).</p>
+        <p class="wf-subtitle" style="margin-top:6px;font-size:11px">※ [초대 재발송] 클릭 시 M5 모달 (MOD-AUT-001) — 이전 토큰 무효화 + 새 토큰 발급.</p>
+      </div>
+    </div>
+  </div>
+  <div class="spec">
+    <table><tbody>
+      <tr><td>이중 발급 차단</td><td>이메일·고객사 조합 unique (REQ-AUT-006)</td></tr>
+      <tr><td>병행 발급</td><td>관리자 직접 발급 + 프로젝트팀 발급(SCR-SET-002) 병행 가능</td></tr>
+      <tr><td>초대 상태</td><td>초대 대기 → (수락 시) 활성. 토큰 만료 시 [재발송]</td></tr>
+    </tbody></table>
+  </div>
+</section>
+
 <!-- ============================== S11 감사 로그 ============================== -->
 <section class="screen" id="s11">
   <div class="screen-head">
@@ -933,20 +1586,20 @@ body.embed-mode .ctrl-label{background:#ffd6cc;color:#9a3a25;border:2px solid #d
   <div class="wf">
     <div class="wf-header"><span class="logo">sp-project-portal</span><span class="wf-tag">관리자 메뉴 ▾</span></div>
     <div class="wf-main" style="padding:24px">
-      <h3 class="wf-title" style="margin-bottom:14px">감사 로그</h3>
+      <h3 class="wf-title" style="margin-bottom:14px"><span class="info-label">1</span>감사 로그</h3>
 
       <div class="wf-card" style="padding:10px;margin-bottom:14px;display:flex;gap:8px;flex-wrap:wrap">
-        <span class="wf-tag">기간 ▾</span>
-        <span class="wf-tag">사용자 ▾</span>
-        <span class="wf-tag">액션 ▾</span>
-        <span class="wf-tag dashed">대상 객체 검색 🔍</span>
+        <span class="wf-tag"><span class="ctrl-label">A</span>기간 ▾</span>
+        <span class="wf-tag"><span class="ctrl-label">B</span>사용자 ▾</span>
+        <span class="wf-tag"><span class="ctrl-label">C</span>액션 ▾</span>
+        <span class="wf-tag dashed"><span class="ctrl-label">D</span>대상 객체 검색 🔍</span>
       </div>
 
       <div class="wf-card">
         <table class="wf-table">
           <thead><tr><th>일시 (UTC)</th><th>사용자</th><th>역할</th><th>액션</th><th>대상</th><th>IP</th></tr></thead>
           <tbody>
-            <tr><td>2026-05-19 06:00</td><td>김PM</td><td>팀</td><td>요구사항 수정</td><td>REQ-PRJ-002</td><td>1.2.3.4</td></tr>
+            <tr><td><span class="info-label">2</span>2026-05-19 06:00</td><td>김PM</td><td>팀</td><td>요구사항 수정</td><td>REQ-PRJ-002</td><td>1.2.3.4</td></tr>
             <tr><td>2026-05-19 05:50</td><td>홍고객</td><td>고객</td><td>컨펌</td><td>게이트9</td><td>5.6.7.8</td></tr>
             <tr><td>2026-05-19 05:30</td><td>김PM</td><td>팀</td><td>로그인</td><td>—</td><td>1.2.3.4</td></tr>
             <tr><td>...</td><td>...</td><td>...</td><td>...</td><td>...</td><td>...</td></tr>
@@ -1018,7 +1671,7 @@ body.embed-mode .ctrl-label{background:#ffd6cc;color:#9a3a25;border:2px solid #d
   <div class="wf-modal" style="max-width:480px">
     <div class="h"><span>AI 자동 개발 시작</span><span style="cursor:pointer">✕</span></div>
     <div class="body">
-      <div class="wf-label" style="margin-bottom:8px">사전 조건 확인</div>
+      <div class="wf-label" style="margin-bottom:8px"><span class="info-label">1</span>사전 조건 확인</div>
       <div class="wf-list" style="margin-bottom:14px">
         <div class="it"><span>요구사항 컨펌 (Gate 9)</span><span class="wf-tag dark">✓</span></div>
         <div class="it"><span>IA 컨펌 (Gate 11)</span><span class="wf-tag dark">✓</span></div>
@@ -1026,15 +1679,15 @@ body.embed-mode .ctrl-label{background:#ffd6cc;color:#9a3a25;border:2px solid #d
         <div class="it"><span>프로토타입 컨펌 (Gate 15)</span><span class="wf-tag dark">✓</span></div>
       </div>
 
-      <div class="wf-label" style="margin-bottom:8px">입력 자료</div>
+      <div class="wf-label" style="margin-bottom:8px"><span class="info-label">2</span>입력 자료</div>
       <div class="wf-list" style="margin-bottom:14px">
         <div class="it"><span>요구사항</span><span class="t">44건</span></div>
         <div class="it"><span>산출물 파일 (최신)</span><span class="t">12개</span></div>
       </div>
 
-      <div class="note" style="margin:0">⚠ 작업 최대 24시간 소요 (REQ-DEV-001)</div>
+      <div class="note" style="margin:0"><span class="info-label">3</span>⚠ 작업 최대 24시간 소요 (REQ-DEV-001)</div>
     </div>
-    <div class="footer"><button class="wf-btn">취소</button><button class="wf-btn primary">개발 시작</button></div>
+    <div class="footer"><button class="wf-btn"><span class="ctrl-label">A</span>취소</button><button class="wf-btn primary"><span class="ctrl-label">B</span>개발 시작</button></div>
   </div>
 </section>
 
@@ -1091,39 +1744,96 @@ body.embed-mode .ctrl-label{background:#ffd6cc;color:#9a3a25;border:2px solid #d
   <div class="wf-modal">
     <div class="h"><span>초대 재발송</span><span style="cursor:pointer">✕</span></div>
     <div class="body">
-      <div class="wf-form-row"><label>대상</label><div class="wf-input">홍길동 (hong@client.co)</div></div>
-      <div class="wf-form-row"><label>역할</label><div class="wf-input">고객사 · A 프로젝트 참여</div></div>
-      <div class="wf-form-row"><label>이전 토큰 발급일</label><div class="wf-input">2026-04-12 (만료 또는 분실)</div></div>
-      <div class="wf-form-row" style="align-items:start"><label>안내 메시지<br><small style="color:var(--muted);font-size:10px">(선택)</small></label><div class="wf-input" style="min-height:48px">메시지 입력</div></div>
-      <div class="note" style="margin-top:12px">· <b>이전 토큰 즉시 무효화</b> 후 새 토큰 발급<br>· 새 초대 링크가 대상 이메일로 발송 (REQ-NTF-001)<br>· 감사 로그(REQ-AUD-001) 자동 기록 — 관리자 조회 가능<br>· 트리거: SCR-ADM-003(고객사 계정 관리), SCR-SET-002(팀·고객사 초대)</div>
+      <div class="wf-form-row"><label><span class="info-label">1</span>대상</label><div class="wf-input">홍길동 (hong@client.co)</div></div>
+      <div class="wf-form-row"><label><span class="info-label">2</span>역할</label><div class="wf-input">고객사 · A 프로젝트 참여</div></div>
+      <div class="wf-form-row"><label><span class="info-label">3</span>이전 토큰 발급일</label><div class="wf-input">2026-04-12 (만료 또는 분실)</div></div>
+      <div class="wf-form-row" style="align-items:start"><label>안내 메시지<br><small style="color:var(--muted);font-size:10px">(선택)</small></label><div class="wf-input" style="min-height:48px"><span class="ctrl-label">A</span>메시지 입력</div></div>
+      <div class="note" style="margin-top:12px"><span class="info-label">4</span>· <b>이전 토큰 즉시 무효화</b> 후 새 토큰 발급<br>· 새 초대 링크가 대상 이메일로 발송 (REQ-NTF-001)<br>· 감사 로그(REQ-AUD-001) 자동 기록 — 관리자 조회 가능<br>· 트리거: SCR-ADM-003(고객사 계정 관리), SCR-SET-002(팀·고객사 초대)</div>
     </div>
-    <div class="footer"><button class="wf-btn">취소</button><button class="wf-btn primary">재발송</button></div>
+    <div class="footer"><button class="wf-btn"><span class="ctrl-label">B</span>취소</button><button class="wf-btn primary"><span class="ctrl-label">C</span>재발송</button></div>
   </div>
 </section>
+
+<!-- ============================== S25 시스템 오류 페이지 ============================== -->
+<section class="screen" id="s25">
+  <div class="screen-head">
+    <p class="eyebrow">SCR-SYS-401~500</p>
+    <h2>25. 시스템 오류 페이지 (4가지)</h2>
+    <p>인증·권한·미존재·서버 오류 페이지. 단순 메시지 + 복귀 동선.</p>
+  </div>
+
+  <div class="wf-grid c2" style="gap:14px">
+    <div class="wf">
+      <div class="wf-header"><span class="logo">sp-project-portal</span></div>
+      <div style="padding:48px 18px;text-align:center">
+        <h3 style="font:700 32px/1 var(--mono);margin:0 0 12px;color:var(--muted)"><span class="info-label">1</span>401</h3>
+        <p style="margin:0 0 8px"><b>로그인이 필요합니다</b></p>
+        <p style="color:var(--muted);font-size:12px;margin:0 0 18px">접근하려는 페이지는 로그인 후 이용 가능합니다.</p>
+        <button class="wf-btn primary"><span class="ctrl-label">A</span>로그인 페이지로</button>
+      </div>
+    </div>
+
+    <div class="wf">
+      <div class="wf-header"><span class="logo">sp-project-portal</span><span class="spacer"></span><span class="wf-tag">계정 ▾</span></div>
+      <div style="padding:48px 18px;text-align:center">
+        <h3 style="font:700 32px/1 var(--mono);margin:0 0 12px;color:var(--muted)"><span class="info-label">2</span>403</h3>
+        <p style="margin:0 0 8px"><b>접근 권한이 없습니다</b></p>
+        <p style="color:var(--muted);font-size:12px;margin:0 0 18px">이 페이지에 접근할 권한이 없습니다. 관리자에게 문의하세요.</p>
+        <button class="wf-btn"><span class="ctrl-label">B</span>이전 페이지</button>
+        <button class="wf-btn"><span class="ctrl-label">C</span>홈으로</button>
+      </div>
+    </div>
+
+    <div class="wf">
+      <div class="wf-header"><span class="logo">sp-project-portal</span><span class="spacer"></span><span class="wf-tag">계정 ▾</span></div>
+      <div style="padding:48px 18px;text-align:center">
+        <h3 style="font:700 32px/1 var(--mono);margin:0 0 12px;color:var(--muted)"><span class="info-label">3</span>404</h3>
+        <p style="margin:0 0 8px"><b>페이지를 찾을 수 없습니다</b></p>
+        <p style="color:var(--muted);font-size:12px;margin:0 0 18px">요청하신 페이지가 존재하지 않거나 삭제되었습니다.</p>
+        <button class="wf-btn primary"><span class="ctrl-label">D</span>홈으로</button>
+      </div>
+    </div>
+
+    <div class="wf">
+      <div class="wf-header"><span class="logo">sp-project-portal</span><span class="spacer"></span><span class="wf-tag">계정 ▾</span></div>
+      <div style="padding:48px 18px;text-align:center">
+        <h3 style="font:700 32px/1 var(--mono);margin:0 0 12px;color:#a52727"><span class="info-label">4</span>500</h3>
+        <p style="margin:0 0 8px"><b>서버 오류가 발생했습니다</b></p>
+        <p style="color:var(--muted);font-size:12px;margin:0 0 8px">일시적인 시스템 오류입니다. 잠시 후 다시 시도해 주세요.</p>
+        <p style="color:var(--muted);font-size:10px;font-family:var(--mono);margin:0 0 18px"><span class="info-label">5</span>에러 ID: ERR-{timestamp}-{hash}</p>
+        <button class="wf-btn primary"><span class="ctrl-label">E</span>새로고침</button>
+        <button class="wf-btn"><span class="ctrl-label">F</span>홈으로</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="spec">
+    <table><tbody>
+      <tr><td>401</td><td>비로그인 상태로 보호 페이지 접근 시 자동 노출 → 로그인 후 redirect 복귀 (REQ-AUT-007)</td></tr>
+      <tr><td>403</td><td>권한 매트릭스 위반 (REQ-NFR-001). 관리자 메뉴를 일반 사용자가 접근하는 경우 등</td></tr>
+      <tr><td>404</td><td>미존재 리소스. 삭제된 프로젝트도 포함 (소프트 삭제 30일 내 + 복구 불가 상태 모두)</td></tr>
+      <tr><td>500</td><td>예측 못한 시스템 오류. 에러 ID로 관리자가 감사 로그·서버 로그 추적</td></tr>
+    </tbody></table>
+  </div>
+</section>
+
 
 <!-- ============================== S12 미작성 메모 ============================== -->
 <section class="screen" id="s12">
   <div class="screen-head">
-    <p class="eyebrow">메모</p>
-    <h2>12. 미작성 화면 메모</h2>
-    <p>단순 폼·리스트라 별도 와이어프레임 생략. 화면 설계서(No.10)에서 상세화.</p>
+    <p class="eyebrow">완료</p>
+    <h2>12. 화면 인벤토리 (모두 작성 완료)</h2>
+    <p>그룹 1~6 모든 화면이 와이어프레임에 작성되었습니다. 화면 설계서(No.10) <code>docs/screen-design/index.html</code>에서 6섹션 명세 확인.</p>
   </div>
   <div class="wf-card">
     <ul style="margin:0;padding-left:18px;line-height:2">
-      <li>SCR-AUT-002~003 비밀번호 재설정 (단순 폼)</li>
-      <li>SCR-AUT-004 초대 수락 (단순 폼 + 비밀번호 정책 안내)</li>
-      <li>SCR-ACC-001 계정 설정 (단순 폼)</li>
-      <li>SCR-ADM-001~004 관리자 계정 관리 (목록 + 생성/수정 폼)</li>
-      <li>SCR-PRJ-002 프로젝트 생성 (단순 폼)</li>
-      <li><s>SCR-REQ-002·003 요구사항 등록·상세</s> — v0.3 MVP pivot으로 폐기 (SCR-REQ-001로 통합)</li>
-      <li><s>SCR-DSN-002 파일 버전 이력</s> — v0.5에서 §4·§6 상단 버전 드롭다운으로 흡수</li>
-      <li><s>SCR-WF-001 워크플로우 이력</s> — v0.5에서 §4·§6 활동 이력(통합 타임라인)으로 흡수</li>
-      <li>SCR-TST-001~002 TC 목록·상세</li>
-      <li>SCR-TST-004 결함 상세 (코멘트·첨부)</li>
-      <li>SCR-DEV-002 산출물 Export (체크박스 + 다운로드)</li>
-      <li>SCR-SET-001 프로젝트 기본 정보 (폼)</li>
-      <li>SCR-SET-003 Danger Zone (삭제 확인 모달)</li>
-      <li>시스템 페이지 (401/403/404/500) — 단순 메시지</li>
+      <li>✅ <b>그룹 1 공통</b>: SCR-LAY (S0)</li>
+      <li>✅ <b>그룹 2 핵심 도메인</b>: SCR-REQ-001 (S4) · SCR-DSN-001 (S6) · MOD-VER-001 (M4) · MOD-WF-001 (M1) · MOD-WF-002 (M2)</li>
+      <li>✅ <b>그룹 3 진입·랜딩</b>: SCR-PRJ-001 (S3) · SCR-AUT-001 (S1) · SCR-GLB-001 (S2)</li>
+      <li>✅ <b>그룹 4 부가</b>: SCR-SCH-001 (S7) · SCR-DEV-001 (S8) · SCR-TST-001 (S13) · SCR-TST-002 (S14) · SCR-TST-003 (S10) · SCR-TST-004 (S15) · MOD-DEV-001 (M3)</li>
+      <li>✅ <b>그룹 5 계정·관리</b>: SCR-AUT-002 (S16) · SCR-AUT-003 (S17) · SCR-AUT-004 (S18) · SCR-ACC-001 (S19) · SCR-ADM-001~002 (S20) · SCR-ADM-003~004 (S21) · SCR-ADM-005 (S11) · SCR-SET-001 (S22) · SCR-SET-002 (S9) · SCR-SET-003 (S23) · SCR-PRJ-002 (S24) · MOD-AUT-001 (M5)</li>
+      <li>✅ <b>그룹 6 시스템</b>: SCR-SYS-401~500 (S25)</li>
+      <li>📦 폐기: <s>SCR-REQ-002·003</s>, <s>SCR-DSN-002</s>, <s>SCR-WF-001</s> (각 인라인 흡수 또는 MVP pivot)</li>
     </ul>
   </div>
 </section>
