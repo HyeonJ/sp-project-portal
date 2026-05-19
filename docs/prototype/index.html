@@ -1,0 +1,486 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>sp-project-portal · 프로토타입</title>
+<style>
+/* ========== Design Tokens (A. Precision grid) ========== */
+:root{
+  --bg:oklch(99% .002 240);
+  --surface:oklch(100% 0 0);
+  --surface-2:oklch(98% .003 240);
+  --fg:oklch(18% .012 250);
+  --fg-2:oklch(28% .014 250);
+  --muted:oklch(54% .012 250);
+  --muted-2:oklch(68% .010 250);
+  --border:oklch(92% .005 250);
+  --border-strong:oklch(86% .007 250);
+  --accent:oklch(58% .18 255);
+  --accent-hover:oklch(52% .19 255);
+  --accent-soft:oklch(96% .04 255);
+  --ok:oklch(48% .16 145);
+  --ok-soft:oklch(96% .07 145);
+  --warn:oklch(56% .13 75);
+  --warn-soft:oklch(96% .08 75);
+  --hot:oklch(56% .18 25);
+  --hot-soft:oklch(96% .06 25);
+  --font:-apple-system,BlinkMacSystemFont,'SF Pro Text','Noto Sans KR',system-ui,sans-serif;
+  --font-display:-apple-system,BlinkMacSystemFont,'SF Pro Display','Noto Sans KR',system-ui,sans-serif;
+  --mono:'JetBrains Mono','IBM Plex Mono',ui-monospace,Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.5 var(--font);-webkit-font-smoothing:antialiased}
+button,input,textarea,select{font:inherit;color:inherit}
+button{cursor:pointer;border:0;background:transparent}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* ========== Layout ========== */
+.app{display:grid;grid-template-columns:240px minmax(0,1fr);min-height:100vh}
+.sidebar{background:var(--surface);border-right:1px solid var(--border);padding:16px 12px;position:sticky;top:0;height:100vh;overflow-y:auto}
+.sidebar .brand{display:flex;flex-direction:column;padding:8px 10px 16px;border-bottom:1px solid var(--border);margin-bottom:14px}
+.sidebar .brand .logo{font:700 14px/1.2 var(--font-display);letter-spacing:-.01em}
+.sidebar .brand .proj{font-size:12px;color:var(--muted);margin-top:4px}
+.sidebar .brand .proj small{display:block;color:var(--muted-2);font-size:11px;margin-top:1px}
+.sidebar nav{display:flex;flex-direction:column;gap:1px}
+.sidebar .nav-item{display:flex;justify-content:space-between;align-items:center;padding:9px 10px;border-radius:8px;font-size:13px;color:var(--fg-2);cursor:pointer;text-decoration:none}
+.sidebar .nav-item:hover{background:var(--surface-2);text-decoration:none}
+.sidebar .nav-item.active{background:var(--accent-soft);color:var(--accent);font-weight:600}
+.sidebar .nav-item .tag{font:500 10px/1 var(--mono);color:var(--muted);background:var(--surface-2);padding:3px 7px;border-radius:99px;border:1px solid var(--border)}
+.sidebar .nav-item.active .tag{color:var(--accent);background:#fff;border-color:var(--accent)}
+.sidebar .nav-item.locked{color:var(--muted-2)}
+.sidebar .nav-item.locked .tag{color:var(--muted-2)}
+
+.topbar{position:sticky;top:0;background:rgba(255,255,255,.9);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);padding:12px 32px;display:flex;align-items:center;gap:14px;z-index:5}
+.topbar .breadcrumb{font-size:13px;color:var(--muted)}
+.topbar .breadcrumb b{color:var(--fg);font-weight:600}
+.topbar .spacer{flex:1}
+.topbar .search{border:1px solid var(--border);background:var(--surface);border-radius:8px;padding:7px 12px;font-size:13px;color:var(--muted);min-width:240px;cursor:pointer}
+.topbar .search:hover{border-color:var(--border-strong)}
+.topbar .icon-btn{width:36px;height:36px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;font-size:16px;color:var(--muted)}
+.topbar .icon-btn:hover{background:var(--surface-2);color:var(--fg)}
+.topbar .icon-btn .dot{position:absolute;width:6px;height:6px;background:var(--hot);border-radius:50%;transform:translate(8px,-8px)}
+
+.main{padding:24px 32px 64px;max-width:1320px}
+
+/* ========== Project Header Card ========== */
+.proj-header{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px 22px;margin-bottom:16px;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+.proj-header .row{display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
+.proj-header h1{margin:0;font:700 24px/1.2 var(--font-display);letter-spacing:-.015em}
+.proj-header .meta{margin:6px 0 0;color:var(--muted);font-size:13px}
+.proj-header .stage{margin:10px 0 0;font-size:13px;color:var(--fg-2)}
+.proj-header .stage b{color:var(--fg)}
+.gate-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:99px;font:600 12px/1 var(--font);background:var(--warn-soft);color:var(--warn);border:1px solid color-mix(in oklch,var(--warn) 24%,white)}
+.progress{margin-top:14px}
+.progress .bar{height:6px;background:var(--surface-2);border-radius:99px;overflow:hidden;border:1px solid var(--border)}
+.progress .bar i{display:block;height:100%;background:var(--accent);transition:width .4s ease}
+.progress .label{margin-top:6px;font:500 12px/1 var(--mono);color:var(--muted);display:flex;justify-content:space-between}
+
+/* ========== Action Bar ========== */
+.action-bar{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px 18px;margin-bottom:16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+.action-bar .label{font:600 12px/1 var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-right:8px}
+.btn{display:inline-flex;align-items:center;gap:7px;padding:9px 14px;border-radius:8px;font:600 13px/1 var(--font);border:1px solid var(--border);background:var(--surface);color:var(--fg);transition:all .12s ease;white-space:nowrap}
+.btn:hover{border-color:var(--border-strong);background:var(--surface-2)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.primary:hover{background:var(--accent-hover);border-color:var(--accent-hover)}
+.btn.danger{color:var(--hot);border-color:color-mix(in oklch,var(--hot) 30%,white)}
+.btn.danger:hover{background:var(--hot-soft)}
+.btn:disabled,.btn.locked{opacity:.5;cursor:not-allowed;background:var(--surface-2)}
+.btn .role-tag{font:500 10px/1 var(--mono);color:var(--muted);padding:2px 5px;background:var(--surface-2);border-radius:4px;margin-right:2px}
+.btn.primary .role-tag{color:#fff;background:rgba(255,255,255,.18)}
+
+/* ========== Cards Grid ========== */
+.grid{display:grid;gap:14px}
+.grid.cols-2{grid-template-columns:1fr 1fr}
+.grid.cols-4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+.card-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.card-head h3{margin:0;font:700 15px/1.2 var(--font);letter-spacing:-.005em}
+.card-head .meta{font:500 11px/1 var(--mono);color:var(--muted)}
+.card-list{display:flex;flex-direction:column;gap:1px}
+.card-list .item{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:11px 4px;border-bottom:1px solid var(--border);cursor:pointer;border-radius:4px}
+.card-list .item:hover{background:var(--surface-2);padding-left:8px;padding-right:8px}
+.card-list .item:last-child{border-bottom:0}
+.card-list .item .body{font-size:13px;color:var(--fg-2)}
+.card-list .item .body b{color:var(--fg);font-weight:600}
+.card-list .item .t{font:500 11px/1 var(--mono);color:var(--muted);white-space:nowrap}
+.pill{display:inline-flex;align-items:center;font:600 11px/1 var(--font);padding:4px 8px;border-radius:99px;border:1px solid var(--border)}
+.pill.ok{background:var(--ok-soft);color:var(--ok);border-color:color-mix(in oklch,var(--ok) 25%,white)}
+.pill.warn{background:var(--warn-soft);color:var(--warn);border-color:color-mix(in oklch,var(--warn) 25%,white)}
+.pill.hot{background:var(--hot-soft);color:var(--hot);border-color:color-mix(in oklch,var(--hot) 25%,white)}
+.pill.muted{color:var(--muted)}
+
+/* ========== Deliverables Summary ========== */
+.deliverable{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 14px 12px;cursor:pointer;transition:all .12s ease}
+.deliverable:hover{border-color:var(--accent);background:var(--accent-soft)}
+.deliverable .stage-num{font:600 10px/1 var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.deliverable .name{margin:6px 0 6px;font:700 14px/1.2 var(--font);letter-spacing:-.005em}
+.deliverable .status{font-size:12px;color:var(--fg-2)}
+
+/* ========== Modal ========== */
+.modal-backdrop{position:fixed;inset:0;background:rgba(20,30,50,.42);display:none;align-items:center;justify-content:center;z-index:50;backdrop-filter:blur(2px)}
+.modal-backdrop.open{display:flex}
+.modal{background:var(--surface);border-radius:14px;width:min(520px,92vw);box-shadow:0 20px 60px rgba(0,0,0,.18);overflow:hidden;animation:popin .14s ease}
+@keyframes popin{from{transform:scale(.95);opacity:0}to{transform:scale(1);opacity:1}}
+.modal-head{padding:16px 22px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.modal-head h2{margin:0;font:700 16px/1.2 var(--font);letter-spacing:-.005em}
+.modal-head .close{font-size:18px;color:var(--muted);width:28px;height:28px;border-radius:6px;display:inline-flex;align-items:center;justify-content:center}
+.modal-head .close:hover{background:var(--surface-2);color:var(--fg)}
+.modal-body{padding:20px 22px;display:flex;flex-direction:column;gap:14px}
+.modal-body .row{display:flex;gap:12px;align-items:flex-start}
+.modal-body .row label{flex:0 0 96px;color:var(--muted);font:500 12px/1.6 var(--font);padding-top:8px}
+.modal-body .row label small{display:block;color:var(--muted-2);font-size:10px;margin-top:2px}
+.modal-body .row .value{flex:1;font-size:13px}
+.modal-body .row .value.input,.modal-body .row .value textarea{border:1px solid var(--border);background:var(--surface-2);border-radius:7px;padding:9px 11px;color:var(--fg)}
+.modal-body .row .value textarea{width:100%;min-height:64px;resize:vertical;font:inherit;outline:none}
+.modal-body .row .value textarea:focus{border-color:var(--accent);background:var(--surface)}
+.modal-body .row .value .static{background:var(--surface-2);border:1px solid var(--border);border-radius:7px;padding:9px 11px;color:var(--fg-2)}
+.modal-body .radio-group{display:flex;gap:18px;font-size:13px}
+.modal-body .radio-group label{flex:none;color:var(--fg);padding:0;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.modal-body .note{padding:11px 13px;background:var(--accent-soft);border-radius:8px;font-size:12px;line-height:1.7;color:var(--accent);border-left:3px solid var(--accent)}
+.modal-body .gate-check{display:flex;flex-direction:column;gap:7px;background:var(--surface-2);padding:12px 14px;border-radius:8px}
+.modal-body .gate-check .gate-row{display:flex;justify-content:space-between;align-items:center;font-size:13px}
+.modal-body .gate-check .gate-row.ok{color:var(--ok)}
+.modal-body .gate-check .gate-row .checkmark{font-weight:700}
+.modal-body .input-list{display:flex;flex-direction:column;gap:6px}
+.modal-body .input-list .item{display:flex;justify-content:space-between;padding:7px 11px;background:var(--surface-2);border-radius:6px;font-size:13px}
+.modal-body .input-list .item .t{font:500 11px/1 var(--mono);color:var(--muted)}
+.modal-foot{padding:14px 22px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px;background:var(--surface-2)}
+
+/* ========== Toast ========== */
+.toast-area{position:fixed;bottom:24px;right:24px;z-index:60;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+.toast{background:var(--fg);color:#fff;padding:11px 16px;border-radius:8px;font-size:13px;animation:slidein .2s ease;box-shadow:0 8px 24px rgba(0,0,0,.16);pointer-events:auto}
+.toast.success{background:var(--ok)}
+.toast.danger{background:var(--hot)}
+@keyframes slidein{from{transform:translateX(20px);opacity:0}to{transform:translateX(0);opacity:1}}
+
+/* ========== Role switcher (prototype only) ========== */
+.role-switcher{position:fixed;bottom:24px;left:24px;background:var(--surface);border:1px solid var(--border-strong);border-radius:99px;padding:6px 8px;box-shadow:0 8px 24px rgba(0,0,0,.1);display:flex;gap:4px;z-index:40;align-items:center}
+.role-switcher .label{font:500 11px/1 var(--mono);color:var(--muted);padding-left:8px;padding-right:4px}
+.role-switcher button{padding:7px 12px;border-radius:99px;font:600 11px/1 var(--font);color:var(--muted)}
+.role-switcher button.active{background:var(--accent);color:#fff}
+
+@media (max-width:1100px){
+  .grid.cols-4{grid-template-columns:1fr 1fr}
+  .grid.cols-2{grid-template-columns:1fr}
+}
+@media (max-width:780px){
+  .app{grid-template-columns:1fr}
+  .sidebar{display:none}
+  .grid.cols-4{grid-template-columns:1fr}
+  .main{padding:16px}
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+
+<!-- ========== Sidebar ========== -->
+<aside class="sidebar">
+  <div class="brand">
+    <span class="logo">sp-project-portal</span>
+    <span class="proj">A 프로젝트<small>㈜OO · SaaS · W6</small></span>
+  </div>
+  <nav>
+    <a class="nav-item active" data-route="dashboard"><span>대시보드</span><span class="tag">12/24</span></a>
+    <a class="nav-item" data-route="requirements"><span>요구사항</span><span class="tag">44</span></a>
+    <a class="nav-item" data-route="deliverables"><span>산출물</span><span class="tag">4</span></a>
+    <a class="nav-item" data-route="defects"><span>결함</span><span class="tag">6</span></a>
+    <a class="nav-item" data-route="tests"><span>TC</span><span class="tag">팀</span></a>
+    <a class="nav-item locked" data-route="ai-build"><span>AI 개발</span><span class="tag">잠금</span></a>
+    <a class="nav-item" data-route="settings"><span>설정</span><span class="tag">팀</span></a>
+  </nav>
+</aside>
+
+<!-- ========== Main ========== -->
+<div>
+  <div class="topbar">
+    <div class="breadcrumb">A 프로젝트 / <b>대시보드</b></div>
+    <div class="spacer"></div>
+    <div class="search" data-action="search">⌕ 통합 검색</div>
+    <button class="icon-btn" data-action="notify" title="알림">🔔<span class="dot"></span></button>
+    <button class="icon-btn" data-action="account" title="계정">👤</button>
+  </div>
+
+  <main class="main">
+
+    <!-- Project header -->
+    <section class="proj-header">
+      <div class="row">
+        <div>
+          <h1>A 프로젝트</h1>
+          <p class="meta">고객사: <b>㈜OO</b> · 유형: SaaS · 기간: 2026-05 ~ 2026-08</p>
+          <p class="stage">현재 단계: <b>12. 디자인 시안 등록</b> — <span style="color:var(--warn)">Gate 13 컨펌 대기</span></p>
+        </div>
+        <span class="gate-badge">🔒 Gate 13 잠금</span>
+      </div>
+      <div class="progress">
+        <div class="bar"><i style="width:50%"></i></div>
+        <div class="label"><span>진행률 <b style="color:var(--fg)">12 / 24</b></span><span>50%</span></div>
+      </div>
+    </section>
+
+    <!-- Action bar (role-dependent) -->
+    <section class="action-bar" id="actionBar">
+      <span class="label">액션</span>
+      <!-- 액션 버튼은 role 따라 JS에서 동적으로 -->
+    </section>
+
+    <!-- Pending + Activity -->
+    <section class="grid cols-2" style="margin-bottom:14px">
+      <div class="card">
+        <div class="card-head"><h3>미처리 항목</h3><span class="meta">우선순위 순</span></div>
+        <div class="card-list">
+          <div class="item" data-action="goto-design">
+            <div class="body">시안 v2 컨펌 대기 — <b>디자인 시안</b></div>
+            <span class="pill warn">고객</span>
+          </div>
+          <div class="item" data-action="goto-requirements">
+            <div class="body">요구사항 #12 코멘트 미응답</div>
+            <span class="pill muted">팀</span>
+          </div>
+          <div class="item" data-action="goto-requirements">
+            <div class="body">반려 사유 미작성 1건</div>
+            <span class="pill hot">팀</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h3>최근 활동</h3><span class="meta">최근 20건</span></div>
+        <div class="card-list">
+          <div class="item">
+            <div class="body"><b>디자이너</b>가 시안 v2 업로드</div>
+            <span class="t">2h</span>
+          </div>
+          <div class="item">
+            <div class="body"><b>고객사</b>가 코멘트 작성</div>
+            <span class="t">3h</span>
+          </div>
+          <div class="item">
+            <div class="body">Gate 11 IA 컨펌 통과</div>
+            <span class="t">1d</span>
+          </div>
+          <div class="item">
+            <div class="body">요구사항 정의서 v1.3 컨펌</div>
+            <span class="t">2d</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Deliverables summary -->
+    <section class="card">
+      <div class="card-head"><h3>산출물 요약</h3><span class="meta">단계별 최신 버전</span></div>
+      <div class="grid cols-4">
+        <div class="deliverable" data-action="goto-deliv" data-slug="ia">
+          <div class="stage-num">단계 10~11</div>
+          <div class="name">IA</div>
+          <span class="pill ok">✓ v1.0 컨펌</span>
+        </div>
+        <div class="deliverable" data-action="goto-deliv" data-slug="design">
+          <div class="stage-num">단계 12~13</div>
+          <div class="name">디자인 시안</div>
+          <span class="pill warn">v2 검토중</span>
+        </div>
+        <div class="deliverable" data-action="goto-deliv" data-slug="prototype">
+          <div class="stage-num">단계 14~15</div>
+          <div class="name">프로토타입</div>
+          <span class="pill muted">대기</span>
+        </div>
+        <div class="deliverable" data-action="goto-deliv" data-slug="figma">
+          <div class="stage-num">단계 16~17</div>
+          <div class="name">Figma</div>
+          <span class="pill muted">대기</span>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+</div>
+
+<!-- ========== M1 검토 요청 모달 ========== -->
+<div class="modal-backdrop" id="modalReview">
+  <div class="modal">
+    <div class="modal-head"><h2>검토 요청 발송</h2><button class="close" data-action="close-modal">✕</button></div>
+    <div class="modal-body">
+      <div class="row"><label>대상</label><div class="value static">A 프로젝트 — 디자인 시안 v2</div></div>
+      <div class="row"><label>현재 버전</label><div class="value static">v2</div></div>
+      <div class="row"><label>요청 메시지<small>(선택)</small></label><div class="value"><textarea placeholder="고객사에 전달할 안내 메시지"></textarea></div></div>
+      <div class="note">발송 시 <b>현재 버전이 잠금</b>되고 고객사에 이메일 알림이 발송됩니다. 이후 변경하려면 새 버전 생성 필요.</div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" data-action="close-modal">취소</button>
+      <button class="btn primary" data-action="submit-review">요청 발송</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== M2 컨펌/반려 모달 ========== -->
+<div class="modal-backdrop" id="modalApprove">
+  <div class="modal">
+    <div class="modal-head"><h2>검토 결과</h2><button class="close" data-action="close-modal">✕</button></div>
+    <div class="modal-body">
+      <div class="row"><label>대상</label><div class="value static">A 프로젝트 — 디자인 시안 v2</div></div>
+      <div class="row"><label>결과</label>
+        <div class="value">
+          <div class="radio-group">
+            <label><input type="radio" name="result" value="approve" checked> 컨펌</label>
+            <label><input type="radio" name="result" value="reject"> 반려</label>
+          </div>
+        </div>
+      </div>
+      <div class="row"><label>사유<small>(반려 시 필수)</small></label><div class="value"><textarea id="rejectReason" placeholder="반려 시 사유를 입력하세요. 영구 보존됩니다."></textarea></div></div>
+      <div class="note">반려 사유는 워크플로우 활동 이력에 <b>영구 보존</b>됩니다 (REQ-CMT-002).</div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" data-action="close-modal">취소</button>
+      <button class="btn primary" data-action="submit-approve">제출</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== M3 AI 개발 시작 모달 ========== -->
+<div class="modal-backdrop" id="modalAiBuild">
+  <div class="modal">
+    <div class="modal-head"><h2>AI 자동 개발 시작</h2><button class="close" data-action="close-modal">✕</button></div>
+    <div class="modal-body">
+      <div class="row"><label>사전 조건</label>
+        <div class="value">
+          <div class="gate-check">
+            <div class="gate-row ok"><span>요구사항 컨펌 (Gate 9)</span><span class="checkmark">✓</span></div>
+            <div class="gate-row ok"><span>IA 컨펌 (Gate 11)</span><span class="checkmark">✓</span></div>
+            <div class="gate-row" style="color:var(--warn)"><span>시안 컨펌 (Gate 13)</span><span class="checkmark">⏳ 대기</span></div>
+            <div class="gate-row" style="color:var(--muted)"><span>프로토타입 컨펌 (Gate 15)</span><span class="checkmark">🔒 잠금</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="row"><label>입력 자료</label>
+        <div class="value">
+          <div class="input-list">
+            <div class="item"><span>요구사항</span><span class="t">44건</span></div>
+            <div class="item"><span>산출물 파일 (최신)</span><span class="t">12개</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="note" style="background:var(--warn-soft);color:var(--warn);border-left-color:var(--warn)">⚠ 작업 최대 24시간 소요. 사전 조건이 모두 충족되어야 시작 가능합니다 (REQ-DEV-001).</div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" data-action="close-modal">취소</button>
+      <button class="btn primary" disabled>개발 시작 (사전조건 미충족)</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== Toast area ========== -->
+<div class="toast-area" id="toastArea"></div>
+
+<!-- ========== Role switcher (prototype only) ========== -->
+<div class="role-switcher">
+  <span class="label">역할 (시연용)</span>
+  <button data-role="pm" class="active">팀(PM)</button>
+  <button data-role="client">고객사</button>
+  <button data-role="admin">관리자</button>
+</div>
+
+<script>
+/* ========== Role-aware action bar ========== */
+const actionBar = document.getElementById('actionBar');
+const roleButtons = document.querySelectorAll('.role-switcher button[data-role]');
+let currentRole = 'pm';
+
+function renderActions(role){
+  actionBar.innerHTML = '<span class="label">액션</span>';
+  const actions = {
+    pm: [
+      {label:'검토 요청 발송', cls:'', tag:'팀', click:()=>openModal('modalReview')},
+      {label:'AI 개발 시작', cls:'locked', tag:'팀', click:()=>openModal('modalAiBuild')},
+      {label:'산출물 Export', cls:'locked', tag:'공통', click:()=>toast('Gate 22 통과 후 가능합니다', 'danger')}
+    ],
+    client: [
+      {label:'컨펌', cls:'primary', tag:'고객', click:()=>{document.getElementById('modalApprove').querySelector('input[value="approve"]').checked=true; openModal('modalApprove')}},
+      {label:'반려', cls:'danger', tag:'고객', click:()=>{document.getElementById('modalApprove').querySelector('input[value="reject"]').checked=true; openModal('modalApprove')}}
+    ],
+    admin: [
+      {label:'전체 프로젝트', cls:'', click:()=>toast('관리자 메뉴 — 화면 미구현 (stub)','danger')},
+      {label:'감사 로그', cls:'', click:()=>toast('SCR-ADM-005 — 화면 미구현 (stub)','danger')}
+    ]
+  };
+  actions[role].forEach(a=>{
+    const btn = document.createElement('button');
+    btn.className = 'btn ' + (a.cls||'');
+    if(a.tag){
+      const rt = document.createElement('span'); rt.className='role-tag'; rt.textContent='['+a.tag+']';
+      btn.appendChild(rt);
+    }
+    btn.appendChild(document.createTextNode(a.label));
+    btn.addEventListener('click', a.click);
+    actionBar.appendChild(btn);
+  });
+}
+roleButtons.forEach(b=>b.addEventListener('click',()=>{
+  roleButtons.forEach(x=>x.classList.remove('active'));
+  b.classList.add('active');
+  currentRole = b.dataset.role;
+  renderActions(currentRole);
+  toast('역할 전환: '+b.textContent);
+}));
+renderActions('pm');
+
+/* ========== Modal open/close ========== */
+function openModal(id){ document.getElementById(id).classList.add('open') }
+function closeModals(){ document.querySelectorAll('.modal-backdrop').forEach(m=>m.classList.remove('open')) }
+document.addEventListener('click', e=>{
+  const t = e.target.closest('[data-action]');
+  if(!t) return;
+  const a = t.dataset.action;
+  if(a==='close-modal' || (e.target.classList.contains('modal-backdrop'))){ closeModals(); }
+  if(a==='submit-review'){ closeModals(); toast('검토 요청 발송 완료 — 고객사에 이메일 전송','success'); }
+  if(a==='submit-approve'){
+    const result = document.querySelector('input[name="result"]:checked').value;
+    if(result==='reject' && !document.getElementById('rejectReason').value.trim()){
+      toast('반려 사유를 입력해 주세요','danger'); return;
+    }
+    closeModals();
+    toast(result==='approve' ? 'Gate 13 컨펌 통과' : '반려 처리됨 — 팀에 알림 발송', result==='approve' ? 'success' : 'danger');
+  }
+  if(a==='goto-design'){ toast('SCR-DSN-001 / 디자인 시안 — 화면 미구현 (stub)','danger'); }
+  if(a==='goto-requirements'){ toast('SCR-REQ-001 / 요구사항 — 화면 미구현 (stub)','danger'); }
+  if(a==='goto-deliv'){ toast('SCR-DSN-001 / '+t.dataset.slug+' — 화면 미구현 (stub)','danger'); }
+  if(a==='search'){ toast('SCR-SCH-001 / 통합 검색 — 화면 미구현 (stub)','danger'); }
+  if(a==='notify'){ toast('알림 popover — 미구현','danger'); }
+  if(a==='account'){ toast('계정 드롭다운 — 미구현','danger'); }
+});
+// Click backdrop to close
+document.querySelectorAll('.modal-backdrop').forEach(m=>{
+  m.addEventListener('click', e=>{ if(e.target===m) closeModals(); });
+});
+
+/* ========== Sidebar nav stub ========== */
+document.querySelectorAll('.sidebar .nav-item').forEach(n=>{
+  n.addEventListener('click', e=>{
+    e.preventDefault();
+    const r = n.dataset.route;
+    if(r==='dashboard') return; // already here
+    toast('「' + n.querySelector('span').textContent + '」 화면 — 미구현 (stub)','danger');
+  });
+});
+
+/* ========== Toast ========== */
+function toast(msg, type){
+  const el = document.createElement('div');
+  el.className = 'toast' + (type ? ' '+type : '');
+  el.textContent = msg;
+  document.getElementById('toastArea').appendChild(el);
+  setTimeout(()=>{ el.style.opacity='0'; el.style.transition='opacity .2s'; setTimeout(()=>el.remove(), 220); }, 2200);
+}
+
+/* ========== ESC to close modals ========== */
+document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeModals(); });
+</script>
+</body>
+</html>
