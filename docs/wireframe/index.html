@@ -125,7 +125,7 @@ button{cursor:pointer;font:inherit}
 
 <aside class="side">
   <h1>sp-project-portal 와이어프레임</h1>
-  <span class="ver">v0.2 · 회색조 구조 전용</span>
+  <span class="ver">v0.3 · MVP pivot (파일 업로드)</span>
   <nav>
     <div class="group">공통</div>
     <a href="#s0" data-screen="s0">0. 공통 레이아웃<small>인증 전 / 글로벌 / 프로젝트</small></a>
@@ -138,8 +138,8 @@ button{cursor:pointer;font:inherit}
 
     <div class="group">프로젝트</div>
     <a href="#s3" data-screen="s3" class="active">3. 프로젝트 대시보드<small>SCR-PRJ-001 (핵심)</small></a>
-    <a href="#s4" data-screen="s4">4. 요구사항 목록<small>SCR-REQ-001</small></a>
-    <a href="#s5" data-screen="s5">5. 요구사항 상세·수정<small>SCR-REQ-003</small></a>
+    <a href="#s4" data-screen="s4">4. 요구사항 파일<small>SCR-REQ-001</small></a>
+    <a href="#s5" data-screen="s5" style="opacity:.5">5. (제거됨)<small>구 SCR-REQ-003</small></a>
     <a href="#s6" data-screen="s6">6. 산출물 단계별<small>SCR-DSN-001</small></a>
     <a href="#s7" data-screen="s7">7. 통합 검색<small>SCR-SCH-001</small></a>
     <a href="#s8" data-screen="s8">8. AI 개발 진행<small>SCR-DEV-001</small></a>
@@ -417,12 +417,12 @@ button{cursor:pointer;font:inherit}
   <div class="note">팀 멤버 목록·[프로젝트 삭제]·[감사 로그]는 이 화면에 없음 (v1.1 슬림화 결정).</div>
 </section>
 
-<!-- ============================== S4 요구사항 목록 ============================== -->
+<!-- ============================== S4 요구사항 파일 페이지 ============================== -->
 <section class="screen" id="s4">
   <div class="screen-head">
-    <p class="eyebrow">SCR-REQ-001</p>
-    <h2>4. 요구사항 목록</h2>
-    <p>필터·검색·페이지네이션. 행 클릭 시 상세(SCR-REQ-003) 이동.</p>
+    <p class="eyebrow">SCR-REQ-001 · MVP pivot (v0.3)</p>
+    <h2>4. 요구사항 파일 페이지</h2>
+    <p>요구사항을 항목별로 등록·수정하지 않고 <strong>파일 단위</strong>로 관리. 산출물 단계별 페이지(SCR-DSN-001)와 동일 패턴 — 업로드 + 버전 + 컨펌·반려.</p>
   </div>
 
   <div class="wf">
@@ -437,105 +437,43 @@ button{cursor:pointer;font:inherit}
       </div>
       <div class="wf-main">
         <div class="wf-bar">
-          <h3 class="wf-title">요구사항</h3>
-          <button class="wf-btn primary">+ 요구사항 등록 (팀)</button>
-        </div>
-        <div class="wf-card" style="padding:10px;margin-bottom:14px;display:flex;gap:8px;flex-wrap:wrap">
-          <span class="wf-tag">구분 ▾</span>
-          <span class="wf-tag">우선순위 ▾</span>
-          <span class="wf-tag">담당자 ▾</span>
-          <span class="wf-tag">상태 ▾</span>
-          <span class="wf-tag dashed">검색 🔍</span>
-        </div>
-        <div class="wf-card">
-          <table class="wf-table">
-            <thead><tr><th>ID</th><th>구분</th><th>요구사항명</th><th>우선순위</th><th>담당</th><th>상태</th><th>수정일</th></tr></thead>
-            <tbody>
-              <tr><td>REQ-PRJ-001</td><td>프로젝트</td><td>프로젝트 생성</td><td>High</td><td>PM</td><td>대기</td><td>05-18</td></tr>
-              <tr><td>REQ-PRJ-002</td><td>대시보드</td><td>프로젝트 대시보드</td><td>High</td><td>PM</td><td>검토</td><td>05-19</td></tr>
-              <tr><td>REQ-AUT-007</td><td>로그인</td><td>ID/PW 로그인</td><td>High</td><td>시스템</td><td>대기</td><td>05-18</td></tr>
-              <tr><td>...</td><td>...</td><td>...</td><td>...</td><td>...</td><td>...</td><td>...</td></tr>
-            </tbody>
-          </table>
-        </div>
-        <div style="text-align:center;margin-top:14px;color:var(--muted);font-size:12px">◀ 1 2 3 ... ▶</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="spec">
-    <table><tbody>
-      <tr><td>등록 버튼</td><td>프로젝트팀만 노출 (REQ-REQ-001)</td></tr>
-      <tr><td>필터</td><td>구분(대/중)·우선순위·담당자·상태 (REQ-SCH-001)</td></tr>
-      <tr><td>컬럼</td><td>ID, 구분, 명, 우선순위, 담당, 상태, 수정일</td></tr>
-      <tr><td>행 클릭</td><td>상세 페이지(SCR-REQ-003) 이동</td></tr>
-      <tr><td>일괄 컨펌</td><td>MVP 제외, 단일 컨펌만</td></tr>
-    </tbody></table>
-  </div>
-</section>
-
-<!-- ============================== S5 요구사항 상세·수정 ============================== -->
-<section class="screen" id="s5">
-  <div class="screen-head">
-    <p class="eyebrow">SCR-REQ-003</p>
-    <h2>5. 요구사항 상세·수정</h2>
-    <p>고객사·팀 모두 수정 가능, 코멘트, 변경 이력. 검토 요청 수신 시 컨펌/반려 액션 노출.</p>
-  </div>
-
-  <div class="wf">
-    <div class="wf-header"><span class="logo">sp-project-portal</span><span class="wf-tag">A 프로젝트 ▾</span></div>
-    <div class="wf-row">
-      <div class="wf-side">
-        <div class="switcher"><b>A 프로젝트</b></div>
-        <div class="item">─ 대시보드</div>
-        <div class="item active">◆ 요구사항</div>
-      </div>
-      <div class="wf-main">
-        <div style="margin-bottom:12px;font-size:12px;color:var(--muted)">◀ 목록으로</div>
-        <div class="wf-bar">
           <div>
-            <h3 class="wf-title">REQ-PRJ-002 · 대시보드</h3>
+            <h3 class="wf-title">요구사항 정의서</h3>
+            <p class="wf-subtitle">현재 버전: v2 (검토 중 — 2026-05-19 14:00)</p>
           </div>
           <span class="wf-tag">상태: 검토중 ▾</span>
         </div>
 
         <div class="wf-card" style="margin-bottom:14px">
-          <div class="wf-bar"><div class="wf-label">요구사항 정보</div><button class="wf-btn">수정</button></div>
-          <div class="wf-form-row"><label>요구사항명</label><div class="wf-input">프로젝트 대시보드</div></div>
-          <div class="wf-form-row"><label>구분(중)</label><div class="wf-input">대시보드</div></div>
-          <div class="wf-form-row"><label>우선순위</label><div class="wf-input">High</div></div>
-          <div class="wf-form-row"><label>관련 단계</label><div class="wf-input">1~2, 5</div></div>
-          <div class="wf-form-row"><label>담당</label><div class="wf-input">PM</div></div>
-          <div class="wf-form-row" style="align-items:start"><label>상세 설명</label><div class="wf-input" style="min-height:60px">단일 프로젝트의 현재 상태를 한 화면에서 확인한다 ...</div></div>
-        </div>
-
-        <div class="wf-card" style="margin-bottom:14px">
-          <div class="h">변경 이력 (3) <span class="meta">모두 보기 ▾</span></div>
-          <div class="wf-list">
-            <div class="it"><span class="t">05-19 14:00</span><span>고객사 · 상세설명 일부 추가</span></div>
-            <div class="it"><span class="t">05-18 18:30</span><span>PM · 우선순위 Medium → High</span></div>
-            <div class="it"><span class="t">05-18 12:00</span><span>PM · 신규 등록</span></div>
+          <div class="wf-bar"><div class="wf-label">파일</div><button class="wf-btn ghost">버전 이력 ▾</button></div>
+          <div class="wf-card" style="margin-top:6px">
+            <div class="wf-bar"><span style="font-size:12px">📄 SRS-v2.pdf  ·  1.8MB  ·  2026-05-19 14:00</span><button class="wf-btn">다운로드</button></div>
           </div>
+          <div style="margin-top:8px"><button class="wf-btn primary">+ 파일 업로드 (팀)</button></div>
         </div>
 
         <div class="wf-card" style="margin-bottom:14px">
-          <div class="h">코멘트 (5)</div>
+          <div class="h">코멘트 (4)</div>
           <div class="wf-comment">
-            <div class="meta">고객사 · 05-19 14:10</div>
-            <div class="body">대시보드 미처리 카드 영역 더 자세히 알려주세요.</div>
+            <div class="meta">고객사 · 05-19 13:50 · 반려 사유</div>
+            <div class="body">§3 권한 매트릭스 보강 부탁드립니다.</div>
+          </div>
+          <div class="wf-comment">
+            <div class="meta">PM · 05-19 14:00</div>
+            <div class="body">반영 완료, v2 업로드했습니다.</div>
             <div class="wf-btn-row" style="margin-top:6px"><button class="wf-btn ghost">수정 (본인만)</button><button class="wf-btn ghost">삭제</button></div>
-          </div>
-          <div class="wf-comment">
-            <div class="meta">PM · 05-19 14:30</div>
-            <div class="body">역할별 14개 영역 추가했습니다. §1-1 참조 부탁드립니다.</div>
           </div>
           <div class="wf-input" style="min-height:48px;margin-top:8px">코멘트 작성 입력 영역</div>
           <div style="text-align:right;margin-top:6px"><button class="wf-btn primary">등록</button></div>
         </div>
 
         <div class="wf-card">
-          <div class="wf-label">고객사 액션 (검토 요청 수신 시)</div>
-          <div class="wf-btn-row"><button class="wf-btn primary">컨펌</button><button class="wf-btn">반려</button></div>
+          <div class="wf-label">액션 영역</div>
+          <div class="wf-btn-row">
+            <button class="wf-btn">[팀] 검토 요청 발송</button>
+            <button class="wf-btn primary">[고객] 컨펌</button>
+            <button class="wf-btn">[고객] 반려</button>
+          </div>
         </div>
       </div>
     </div>
@@ -543,11 +481,25 @@ button{cursor:pointer;font:inherit}
 
   <div class="spec">
     <table><tbody>
-      <tr><td>메타</td><td>수정 가능 (고객사·팀 공통, REQ-REQ-002)</td></tr>
-      <tr><td>변경 이력</td><td>누가·언제·무엇 (REQ-REQ-002, REQ-AUD-001)</td></tr>
-      <tr><td>코멘트</td><td>본인 작성만 수정·삭제 (REQ-CMT-001)</td></tr>
-      <tr><td>액션</td><td>고객사: 컨펌/반려 (반려 시 사유 모달)</td></tr>
+      <tr><td>파일 영역</td><td>다중 업로드, 50MB/파일 (REQ-FILE-001). PDF·문서 등.</td></tr>
+      <tr><td>버전 이력</td><td>이전 버전 조회·다운로드 (REQ-FILE-002)</td></tr>
+      <tr><td>코멘트</td><td>파일 단위 코멘트 (REQ-CMT-001). 반려 사유는 워크플로우 이력 영구 보존 (REQ-CMT-002).</td></tr>
+      <tr><td>액션</td><td>[팀] 업로드·검토 요청 / [고객] 컨펌·반려 (반려 시 사유 모달)</td></tr>
+      <tr><td>항목별 화면</td><td><strong>없음</strong> — 요구사항은 파일 안에 통합</td></tr>
     </tbody></table>
+  </div>
+</section>
+
+<!-- ============================== S5 (제거됨) ============================== -->
+<section class="screen" id="s5">
+  <div class="screen-head">
+    <p class="eyebrow">구 SCR-REQ-003 · v0.3에서 제거</p>
+    <h2>5. (제거됨) 요구사항 상세·수정</h2>
+    <p>MVP pivot으로 화면 삭제. 요구사항은 항목별 화면 없이 파일 단위로만 관리합니다.</p>
+  </div>
+  <div class="wf-card">
+    <p style="margin:0">요구사항 파일 페이지(<a href="#s4">§4 SCR-REQ-001</a>)에서 모든 요구사항 협의·컨펌이 이뤄집니다.</p>
+    <p style="margin-top:6px;color:var(--muted);font-size:12px">이전 버전의 화면은 <code>archive/v1.4-individual-req-entry</code> 브랜치에 보존되어 있습니다.</p>
   </div>
 </section>
 

@@ -4,7 +4,7 @@
 |------|------|
 | 프로젝트명 | sp-project-portal |
 | 작성일 | 2026-05-19 |
-| 버전 | v0.2 |
+| 버전 | v0.3 (MVP pivot — 요구사항 파일 업로드 방식) |
 | 관련 단계 | 10 (등록) ~ 11 (컨펌) |
 | 관련 산출물 | `deliverables.md` No.4 |
 | 입력 문서 | `requirements.md` v1.1 (44개 요구사항) |
@@ -39,10 +39,7 @@ sp-project-portal
 │
 └─ 프로젝트 영역 (URL: /projects/{id}/...)
     ├─ 대시보드 [공통, 영역별 가시성 §1-1 참조]       (SCR-PRJ-001)
-    ├─ 요구사항
-    │   ├─ 목록 [공통]                              (SCR-REQ-001)
-    │   ├─ 등록 [팀]                                (SCR-REQ-002)
-    │   └─ 상세·수정·코멘트 [공통]                   (SCR-REQ-003)
+    ├─ 요구사항 [공통, 파일 페이지 — IA·시안 등과 동일 패턴]   (SCR-REQ-001)
     ├─ 산출물
     │   ├─ 단계별 산출물 [공통, slug: ia/design/prototype/figma]  (SCR-DSN-001)
     │   ├─ 파일 버전 이력 [공통]                     (SCR-DSN-002)
@@ -66,9 +63,9 @@ sp-project-portal
 | ID | 액션명 | 트리거 화면 | 주 사용자 | 관련 REQ |
 |----|--------|------------|----------|----------|
 | MOD-WF-001 | 검토 요청 발송 | 대시보드, 산출물 | 팀 | REQ-WF-001 |
-| MOD-WF-002 | 컨펌/반려 처리 (요구사항·산출물 공통) | 대시보드, 산출물, 요구사항 목록·상세 | 고객 | REQ-WF-002, REQ-CMT-002, REQ-REQ-003 |
+| MOD-WF-002 | 컨펌/반려 처리 (요구사항·산출물 공통) | 대시보드, 산출물, 요구사항 | 고객 | REQ-WF-002, REQ-CMT-002, REQ-REQ-003 |
 | MOD-DEV-001 | AI 개발 시작 | 대시보드 | 팀 | REQ-DEV-001 |
-| MOD-FILE-001 | 파일 업로드 | 산출물 단계별 | 팀(주) / 공통 | REQ-FILE-001 |
+| MOD-FILE-001 | 파일 업로드 | 산출물 단계별, 요구사항 | 팀 | REQ-FILE-001 |
 | MOD-AUT-001 | 초대 재발송 | 고객사 계정 관리, 팀 멤버·초대 화면 | 관리·팀 | REQ-AUT-012 |
 | MOD-ACC-001 | 로그아웃 | 헤더 | 공통 | REQ-AUT-008 |
 
@@ -100,9 +97,7 @@ sp-project-portal
 | SCR-ADM-005 | 감사 로그 | `/admin/audit` | 관리자 | 관리자 메뉴 | REQ-AUD-001 |
 | SCR-PRJ-001 | 프로젝트 대시보드 | `/projects/{id}` | 공통 | 프로젝트별 URL · 목록 클릭 | REQ-PRJ-002 (§1-1 참조) |
 | SCR-PRJ-002 | 프로젝트 생성 | `/projects/new` | 프로젝트팀 | 글로벌 액션 | REQ-PRJ-001 |
-| SCR-REQ-001 | 요구사항 목록 | `/projects/{id}/requirements` | 공통 | 프로젝트 메뉴 | REQ-REQ-001~003 |
-| SCR-REQ-002 | 요구사항 등록 | `/projects/{id}/requirements/new` | 프로젝트팀 | SCR-REQ-001 | REQ-REQ-001 |
-| SCR-REQ-003 | 요구사항 상세·수정 | `/projects/{id}/requirements/{reqId}` | 공통 | SCR-REQ-001 | REQ-REQ-002, REQ-CMT-001 |
+| SCR-REQ-001 | 요구사항 파일 페이지 | `/projects/{id}/requirements` | 공통 | 프로젝트 메뉴 / 대시보드 | REQ-REQ-001~003, REQ-FILE-001~002 |
 | SCR-DSN-001 | 산출물 단계별 페이지 | `/projects/{id}/deliverables/{slug}` (slug: `ia` / `design` / `prototype` / `figma`) | 공통 | 프로젝트 메뉴 / 대시보드 | REQ-DSN-001~004, REQ-FILE-001 |
 | SCR-DSN-002 | 파일 버전 이력 | `/projects/{id}/deliverables/{slug}/files/{fileId}/versions` | 공통 | SCR-DSN-001 | REQ-FILE-002 |
 | SCR-WF-001 | 워크플로우 이력 | `/projects/{id}/workflow` | 공통 | 프로젝트 메뉴 / 대시보드 | REQ-WF-004 |
@@ -138,9 +133,7 @@ sp-project-portal
 | SCR-ADM-005 | 감사 로그 | ✅ | ❌ | ❌ |
 | SCR-PRJ-001 | 프로젝트 대시보드 | ✅ | 🔵 | 🔵 |
 | SCR-PRJ-002 | 프로젝트 생성 | ✅ | ✅ | ❌ |
-| SCR-REQ-001 | 요구사항 목록 | 🔵 | 🔵 | 🔵 |
-| SCR-REQ-002 | 요구사항 등록 | ❌ | 🔵 | ❌ |
-| SCR-REQ-003 | 요구사항 상세·수정 | 🔵 | 🔵 | 🔵 |
+| SCR-REQ-001 | 요구사항 파일 페이지 | 🔵 | 🔵 (업로드 액션) | 🔵 (조회·컨펌·반려) |
 | SCR-DSN-001 | 산출물 단계별 | 🔵 | 🔵 | 🔵 |
 | SCR-DSN-002 | 파일 버전 이력 | 🔵 | 🔵 | 🔵 |
 | SCR-WF-001 | 워크플로우 이력 | 🔵 | 🔵 | 🔵 |
@@ -210,7 +203,7 @@ sp-project-portal
 ```
 로그인 ──▶ 담당 프로젝트 목록 ──▶ 대시보드
                                      │
-                                     ├─▶ 요구사항 등록·수정
+                                     ├─▶ 요구사항 파일 업로드/재업로드 (MOD-FILE-001)
                                      ├─▶ 산출물 업로드 (단계별)
                                      ├─▶ [검토 요청] 발송 (MOD-WF-001)
                                      ├─▶ [AI 개발 시작] (MOD-DEV-001, 사전조건 충족 시)
@@ -224,9 +217,10 @@ sp-project-portal
 프로젝트별 URL 접근 ──▶ 로그인 ──▶ 대시보드 (직진)
                                        │
                                        ├─▶ 미처리 항목 카드 확인
-                                       ├─▶ 요구사항 검토·수정·코멘트
+                                       ├─▶ 요구사항 파일 검토·코멘트
                                        │       └─▶ 컨펌/반려 (MOD-WF-002)
-                                       ├─▶ 산출물 검토 ──▶ 컨펌/반려 (MOD-WF-002)
+                                       ├─▶ 산출물 파일 검토·코멘트
+                                       │       └─▶ 컨펌/반려 (MOD-WF-002)
                                        └─▶ UAT 결함 등록 (20~21단계)
 ```
 
@@ -248,6 +242,7 @@ sp-project-portal
 | 팀 멤버는 설정 하위 | 대시보드 1차 영역에서 제외, 프로젝트 설정 메뉴로 이동 | §1-1 슬림화 결정 (v1.1) |
 | 감사 로그는 글로벌 관리자 메뉴 | 프로젝트 단위 아닌 시스템 단위 기능 | §1-1 슬림화 결정 (v1.1) |
 | 프로젝트 삭제는 Danger Zone | 파괴적 액션 격리 (SCR-SET-003) | §1-1 슬림화 결정 (v1.1) |
+| 요구사항 화면 단일화 | SCR-REQ-001 하나로 통합 (목록·등록·상세·수정 화면 제거) | MVP pivot (v0.3) — 요구사항은 파일 업로드 방식으로 전환, IA·시안 등 다른 산출물과 동일 패턴 |
 
 ---
 
@@ -257,3 +252,4 @@ sp-project-portal
 |------|------|------|
 | v0.1 | 2026-05-19 | 초안 작성 (사이트맵·인벤토리·접근 매트릭스·동선·결정 사항) |
 | v0.2 | 2026-05-19 | 자체 검토 9건 반영: URL 풀폼 통일(`/projects/{id}`), 단일 `/login` + redirect, `/invitations/` 복수화, 산출물 slug 명시(`ia`/`design`/`prototype`/`figma`), SCR-SET-002 확장(팀 멤버·고객사 초대 통합), MOD-AUT-001(초대 재발송) 신설, MOD-REQ-001 → MOD-WF-002 통합, 대시보드 매트릭스 표기 ✅로 정정, 신규 사용자 동선 §4-2 추가 |
+| v0.3 | 2026-05-19 | **MVP pivot** — 요구사항 항목별 등록 → 파일 업로드 방식 전환. SCR-REQ-002(등록 폼), SCR-REQ-003(상세·수정) 제거. SCR-REQ-001을 "요구사항 파일 페이지"로 단일화(IA·시안 등과 동일 패턴). MOD-FILE-001 트리거에 요구사항 추가. 결정 사항·동선 정리. |

@@ -4,7 +4,7 @@
 |------|------|
 | 프로젝트명 | sp-project-portal |
 | 작성일 | 2026-05-19 |
-| 버전 | v0.1 |
+| 버전 | v0.2 (MVP pivot 반영) |
 | 관련 단계 | 10~17 (설계 전반, 시안 진입 전 작성 권장) |
 | 관련 산출물 | `deliverables.md` No.5 |
 | 입력 문서 | `requirements.md` v1.1, `ia.md` v0.2 |
@@ -66,7 +66,7 @@
 | **auth** | 인증·세션·비밀번호·초대 토큰·계정 잠금 | REQ-AUT-001~012 |
 | **account** | 관리자/프로젝트팀/고객사 계정 CRUD, 비활성화·익명화 | REQ-AUT-004, REQ-AUT-006, REQ-NFR-005 |
 | **project** | 프로젝트 생성·조회·삭제(소프트), 멤버십 | REQ-PRJ-001~003 |
-| **requirement** | 요구사항 등록·수정·삭제·컨펌, 코멘트 통합 | REQ-REQ-001~003, REQ-CMT-001 |
+| **requirement** | 요구사항 파일 메타 관리(업로드·버전·컨펌). MVP pivot(v2.0)으로 항목별 CRUD 폐기. 파일 본체는 `deliverable` 컴포넌트와 공유. | REQ-REQ-001~003, REQ-FILE-001~002 |
 | **deliverable** | 산출물 슬롯·버전 관리, 파일 업/다운로드 | REQ-DSN-001~004, REQ-FILE-001~002 |
 | **workflow** | 검토 요청·컨펌·반려·게이트 잠금, 이력 | REQ-WF-001~004, REQ-CMT-002 |
 | **notification** | 이메일 발송 어댑터 | REQ-NTF-001 |
@@ -291,3 +291,4 @@ flowchart LR
 | 버전 | 날짜 | 내용 |
 |------|------|------|
 | v0.1 | 2026-05-19 | 초안 작성 (논리 아키텍처·배포 구조·보안 설계·횡단 관심사·NFR 매핑·결정 사항) |
+| v0.2 | 2026-05-19 | MVP pivot 반영: `requirement` 컴포넌트 책임 축소 — 항목별 CRUD 폐기, 파일 메타 관리만 유지 (`deliverable`과 파일 본체 공유) |
