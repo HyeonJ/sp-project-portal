@@ -3,28 +3,15 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>sp-project-portal · 프로토타입</title>
+<title>sp-project-portal · 프로토타입 v1</title>
 <style>
 /* ========== Design Tokens (A. Precision grid) ========== */
 :root{
-  --bg:oklch(99% .002 240);
-  --surface:oklch(100% 0 0);
-  --surface-2:oklch(98% .003 240);
-  --fg:oklch(18% .012 250);
-  --fg-2:oklch(28% .014 250);
-  --muted:oklch(54% .012 250);
-  --muted-2:oklch(68% .010 250);
-  --border:oklch(92% .005 250);
-  --border-strong:oklch(86% .007 250);
-  --accent:oklch(58% .18 255);
-  --accent-hover:oklch(52% .19 255);
-  --accent-soft:oklch(96% .04 255);
-  --ok:oklch(48% .16 145);
-  --ok-soft:oklch(96% .07 145);
-  --warn:oklch(56% .13 75);
-  --warn-soft:oklch(96% .08 75);
-  --hot:oklch(56% .18 25);
-  --hot-soft:oklch(96% .06 25);
+  --bg:oklch(99% .002 240);--surface:oklch(100% 0 0);--surface-2:oklch(98% .003 240);--surface-3:oklch(96% .004 240);
+  --fg:oklch(18% .012 250);--fg-2:oklch(28% .014 250);--muted:oklch(54% .012 250);--muted-2:oklch(68% .010 250);
+  --border:oklch(92% .005 250);--border-strong:oklch(86% .007 250);--divider:oklch(94% .004 250);
+  --accent:oklch(58% .18 255);--accent-hover:oklch(52% .19 255);--accent-soft:oklch(96% .04 255);--accent-deep:oklch(38% .18 255);
+  --ok:oklch(48% .16 145);--ok-soft:oklch(96% .07 145);--warn:oklch(56% .13 75);--warn-soft:oklch(96% .08 75);--hot:oklch(56% .18 25);--hot-soft:oklch(96% .06 25);
   --font:-apple-system,BlinkMacSystemFont,'SF Pro Text','Noto Sans KR',system-ui,sans-serif;
   --font-display:-apple-system,BlinkMacSystemFont,'SF Pro Display','Noto Sans KR',system-ui,sans-serif;
   --mono:'JetBrains Mono','IBM Plex Mono',ui-monospace,Menlo,Consolas,monospace;
@@ -33,112 +20,163 @@
 html,body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.5 var(--font);-webkit-font-smoothing:antialiased}
 button,input,textarea,select{font:inherit;color:inherit}
 button{cursor:pointer;border:0;background:transparent}
-a{color:var(--accent);text-decoration:none}
+a{color:var(--accent);text-decoration:none;cursor:pointer}
 a:hover{text-decoration:underline}
+h1,h2,h3,h4{margin:0}
+code{font-family:var(--mono);font-size:.92em;background:var(--surface-2);padding:1px 5px;border-radius:4px;color:var(--fg-2)}
 
-/* ========== Layout ========== */
+/* ========== Layout - project ========== */
 .app{display:grid;grid-template-columns:240px minmax(0,1fr);min-height:100vh}
-.sidebar{background:var(--surface);border-right:1px solid var(--border);padding:16px 12px;position:sticky;top:0;height:100vh;overflow-y:auto}
-.sidebar .brand{display:flex;flex-direction:column;padding:8px 10px 16px;border-bottom:1px solid var(--border);margin-bottom:14px}
+.app.no-sidebar{grid-template-columns:1fr}
+.sidebar{background:var(--surface);border-right:1px solid var(--border);padding:14px 12px;position:sticky;top:0;height:100vh;overflow-y:auto;display:flex;flex-direction:column}
+.sidebar .brand{display:flex;flex-direction:column;padding:8px 10px 14px;border-bottom:1px solid var(--border);margin-bottom:12px;cursor:pointer}
+.sidebar .brand:hover{background:var(--surface-2);border-radius:8px}
 .sidebar .brand .logo{font:700 14px/1.2 var(--font-display);letter-spacing:-.01em}
 .sidebar .brand .proj{font-size:12px;color:var(--muted);margin-top:4px}
 .sidebar .brand .proj small{display:block;color:var(--muted-2);font-size:11px;margin-top:1px}
 .sidebar nav{display:flex;flex-direction:column;gap:1px}
-.sidebar .nav-item{display:flex;justify-content:space-between;align-items:center;padding:9px 10px;border-radius:8px;font-size:13px;color:var(--fg-2);cursor:pointer;text-decoration:none}
+.sidebar .nav-item{display:flex;justify-content:space-between;align-items:center;padding:9px 10px;border-radius:8px;font-size:13px;color:var(--fg-2);cursor:pointer}
 .sidebar .nav-item:hover{background:var(--surface-2);text-decoration:none}
 .sidebar .nav-item.active{background:var(--accent-soft);color:var(--accent);font-weight:600}
+.sidebar .nav-item.locked{color:var(--muted-2)}
 .sidebar .nav-item .tag{font:500 10px/1 var(--mono);color:var(--muted);background:var(--surface-2);padding:3px 7px;border-radius:99px;border:1px solid var(--border)}
 .sidebar .nav-item.active .tag{color:var(--accent);background:#fff;border-color:var(--accent)}
-.sidebar .nav-item.locked{color:var(--muted-2)}
 .sidebar .nav-item.locked .tag{color:var(--muted-2)}
+.sidebar .sub{padding-left:18px;font-size:12px;color:var(--muted)}
+.sidebar .sub.active{color:var(--accent);font-weight:600}
+.sidebar .group{font:600 10px/1 var(--mono);color:var(--muted-2);text-transform:uppercase;letter-spacing:.06em;padding:14px 10px 6px;border-top:1px solid var(--divider);margin-top:10px}
+.sidebar .group:first-of-type{border-top:0;margin-top:4px}
 
-.topbar{position:sticky;top:0;background:rgba(255,255,255,.9);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);padding:12px 32px;display:flex;align-items:center;gap:14px;z-index:5}
-.topbar .breadcrumb{font-size:13px;color:var(--muted)}
+/* ========== Topbar ========== */
+.topbar{position:sticky;top:0;background:rgba(255,255,255,.9);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);padding:11px 28px;display:flex;align-items:center;gap:14px;z-index:10}
+.topbar.no-sidebar{padding:12px 32px}
+.topbar .breadcrumb{font-size:13px;color:var(--muted);display:flex;align-items:center;gap:6px}
+.topbar .breadcrumb a{color:var(--muted)}.topbar .breadcrumb a:hover{color:var(--fg)}
 .topbar .breadcrumb b{color:var(--fg);font-weight:600}
+.topbar .breadcrumb .sep{color:var(--muted-2)}
+.topbar .proj-switcher{display:flex;align-items:center;gap:6px;padding:5px 10px;border:1px solid var(--border);border-radius:8px;background:var(--surface);font-size:13px;cursor:pointer;font-weight:500}
+.topbar .proj-switcher:hover{border-color:var(--border-strong);background:var(--surface-2)}
+.topbar .proj-switcher .arrow{color:var(--muted);font-size:10px}
 .topbar .spacer{flex:1}
-.topbar .search{border:1px solid var(--border);background:var(--surface);border-radius:8px;padding:7px 12px;font-size:13px;color:var(--muted);min-width:240px;cursor:pointer}
+.topbar .search{border:1px solid var(--border);background:var(--surface);border-radius:8px;padding:7px 12px;font-size:13px;color:var(--muted);min-width:240px;cursor:pointer;display:flex;align-items:center;gap:8px}
 .topbar .search:hover{border-color:var(--border-strong)}
-.topbar .icon-btn{width:36px;height:36px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;font-size:16px;color:var(--muted)}
+.topbar .search .kbd{margin-left:auto;font:500 10px/1 var(--mono);background:var(--surface-2);border:1px solid var(--border);padding:2px 6px;border-radius:4px;color:var(--muted-2)}
+.topbar .icon-btn{width:36px;height:36px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;font-size:16px;color:var(--muted);position:relative}
 .topbar .icon-btn:hover{background:var(--surface-2);color:var(--fg)}
-.topbar .icon-btn .dot{position:absolute;width:6px;height:6px;background:var(--hot);border-radius:50%;transform:translate(8px,-8px)}
+.topbar .icon-btn .dot{position:absolute;width:7px;height:7px;background:var(--hot);border-radius:50%;top:8px;right:8px;border:2px solid var(--surface)}
+.topbar .acct{display:flex;align-items:center;gap:8px;padding:5px 10px 5px 6px;border:1px solid var(--border);border-radius:99px;cursor:pointer}
+.topbar .acct:hover{background:var(--surface-2)}
+.topbar .acct .avatar{width:24px;height:24px;border-radius:50%;background:var(--accent);color:#fff;display:inline-flex;align-items:center;justify-content:center;font:600 11px/1 var(--font)}
+.topbar .acct .name{font-size:13px;color:var(--fg-2)}
+.topbar .acct .arrow{color:var(--muted);font-size:10px}
 
-.main{padding:24px 32px 64px;max-width:1320px}
+/* ========== Content ========== */
+.main{padding:24px 32px 80px;max-width:1320px}
+.page-title{font:700 24px/1.2 var(--font-display);letter-spacing:-.015em;margin:0 0 6px}
+.page-sub{color:var(--muted);font-size:13px;margin:0 0 18px}
+.page-bar{display:flex;justify-content:space-between;align-items:flex-end;gap:14px;margin-bottom:16px}
 
-/* ========== Project Header Card ========== */
-.proj-header{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px 22px;margin-bottom:16px;box-shadow:0 1px 2px rgba(0,0,0,.03)}
-.proj-header .row{display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
-.proj-header h1{margin:0;font:700 24px/1.2 var(--font-display);letter-spacing:-.015em}
+/* ========== Card ========== */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+.card.flat{box-shadow:none}
+.card-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:10px}
+.card-head h3{font:700 15px/1.2 var(--font);letter-spacing:-.005em}
+.card-head .meta{font:500 11px/1 var(--mono);color:var(--muted)}
+.card-list{display:flex;flex-direction:column;gap:1px}
+.card-list .item{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:11px 4px;border-bottom:1px solid var(--divider);cursor:pointer;border-radius:4px}
+.card-list .item:hover{background:var(--surface-2);padding-left:8px;padding-right:8px}
+.card-list .item:last-child{border-bottom:0}
+.card-list .item .body{font-size:13px;color:var(--fg-2);flex:1}
+.card-list .item .body b{color:var(--fg);font-weight:600}
+.card-list .item .t{font:500 11px/1 var(--mono);color:var(--muted);white-space:nowrap}
+
+/* ========== Grid ========== */
+.grid{display:grid;gap:14px}
+.grid.cols-2{grid-template-columns:1fr 1fr}
+.grid.cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.grid.cols-4{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media (max-width:1100px){.grid.cols-4{grid-template-columns:1fr 1fr}}
+@media (max-width:780px){.app{grid-template-columns:1fr}.sidebar{display:none}.grid.cols-2,.grid.cols-3,.grid.cols-4{grid-template-columns:1fr}.main{padding:16px}}
+
+/* ========== Buttons ========== */
+.btn{display:inline-flex;align-items:center;gap:7px;padding:9px 14px;border-radius:8px;font:600 13px/1 var(--font);border:1px solid var(--border);background:var(--surface);color:var(--fg);transition:all .12s ease;white-space:nowrap}
+.btn:hover{border-color:var(--border-strong);background:var(--surface-2)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.primary:hover{background:var(--accent-hover);border-color:var(--accent-hover)}
+.btn.danger{background:var(--surface);color:var(--hot);border-color:color-mix(in oklch,var(--hot) 30%,white)}
+.btn.danger:hover{background:var(--hot-soft)}
+.btn.danger-solid{background:var(--hot);color:#fff;border-color:var(--hot)}
+.btn.danger-solid:hover{background:color-mix(in oklch,var(--hot) 90%,black);border-color:color-mix(in oklch,var(--hot) 90%,black)}
+.btn.ghost{background:transparent;border-color:transparent;color:var(--muted)}
+.btn.ghost:hover{background:var(--surface-2);color:var(--fg)}
+.btn.sm{padding:5px 10px;font-size:12px}
+.btn:disabled,.btn.locked{opacity:.5;cursor:not-allowed;background:var(--surface-2)}
+.btn:disabled:hover,.btn.locked:hover{background:var(--surface-2);border-color:var(--border)}
+.btn .role-tag{font:500 10px/1 var(--mono);color:var(--muted);padding:2px 5px;background:var(--surface-2);border-radius:4px;margin-right:2px}
+.btn.primary .role-tag{color:#fff;background:rgba(255,255,255,.18)}
+.btn.danger .role-tag{color:var(--hot);background:var(--hot-soft)}
+
+/* ========== Pill ========== */
+.pill{display:inline-flex;align-items:center;font:600 11px/1 var(--font);padding:4px 9px;border-radius:99px;border:1px solid var(--border);white-space:nowrap}
+.pill.ok{background:var(--ok-soft);color:var(--ok);border-color:color-mix(in oklch,var(--ok) 25%,white)}
+.pill.warn{background:var(--warn-soft);color:var(--warn);border-color:color-mix(in oklch,var(--warn) 25%,white)}
+.pill.hot{background:var(--hot-soft);color:var(--hot);border-color:color-mix(in oklch,var(--hot) 25%,white)}
+.pill.muted{color:var(--muted)}
+.pill.accent{background:var(--accent-soft);color:var(--accent);border-color:color-mix(in oklch,var(--accent) 25%,white)}
+.pill.lg{padding:6px 12px;font-size:12px}
+
+/* ========== Project header (dashboard) ========== */
+.proj-header{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px 22px;margin-bottom:16px}
+.proj-header h1{font:700 24px/1.2 var(--font-display);letter-spacing:-.015em}
 .proj-header .meta{margin:6px 0 0;color:var(--muted);font-size:13px}
 .proj-header .stage{margin:10px 0 0;font-size:13px;color:var(--fg-2)}
 .proj-header .stage b{color:var(--fg)}
 .gate-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:99px;font:600 12px/1 var(--font);background:var(--warn-soft);color:var(--warn);border:1px solid color-mix(in oklch,var(--warn) 24%,white)}
+.gate-badge.ok{background:var(--ok-soft);color:var(--ok);border-color:color-mix(in oklch,var(--ok) 24%,white)}
 .progress{margin-top:14px}
 .progress .bar{height:6px;background:var(--surface-2);border-radius:99px;overflow:hidden;border:1px solid var(--border)}
 .progress .bar i{display:block;height:100%;background:var(--accent);transition:width .4s ease}
 .progress .label{margin-top:6px;font:500 12px/1 var(--mono);color:var(--muted);display:flex;justify-content:space-between}
 
-/* ========== Action Bar ========== */
-.action-bar{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px 18px;margin-bottom:16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+/* ========== Action bar (dashboard) ========== */
+.action-bar{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px 18px;margin-bottom:16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .action-bar .label{font:600 12px/1 var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-right:8px}
-.btn{display:inline-flex;align-items:center;gap:7px;padding:9px 14px;border-radius:8px;font:600 13px/1 var(--font);border:1px solid var(--border);background:var(--surface);color:var(--fg);transition:all .12s ease;white-space:nowrap}
-.btn:hover{border-color:var(--border-strong);background:var(--surface-2)}
-.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
-.btn.primary:hover{background:var(--accent-hover);border-color:var(--accent-hover)}
-.btn.danger{color:var(--hot);border-color:color-mix(in oklch,var(--hot) 30%,white)}
-.btn.danger:hover{background:var(--hot-soft)}
-.btn:disabled,.btn.locked{opacity:.5;cursor:not-allowed;background:var(--surface-2)}
-.btn .role-tag{font:500 10px/1 var(--mono);color:var(--muted);padding:2px 5px;background:var(--surface-2);border-radius:4px;margin-right:2px}
-.btn.primary .role-tag{color:#fff;background:rgba(255,255,255,.18)}
 
-/* ========== Cards Grid ========== */
-.grid{display:grid;gap:14px}
-.grid.cols-2{grid-template-columns:1fr 1fr}
-.grid.cols-4{grid-template-columns:repeat(4,minmax(0,1fr))}
-.card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px;box-shadow:0 1px 2px rgba(0,0,0,.03)}
-.card-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
-.card-head h3{margin:0;font:700 15px/1.2 var(--font);letter-spacing:-.005em}
-.card-head .meta{font:500 11px/1 var(--mono);color:var(--muted)}
-.card-list{display:flex;flex-direction:column;gap:1px}
-.card-list .item{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:11px 4px;border-bottom:1px solid var(--border);cursor:pointer;border-radius:4px}
-.card-list .item:hover{background:var(--surface-2);padding-left:8px;padding-right:8px}
-.card-list .item:last-child{border-bottom:0}
-.card-list .item .body{font-size:13px;color:var(--fg-2)}
-.card-list .item .body b{color:var(--fg);font-weight:600}
-.card-list .item .t{font:500 11px/1 var(--mono);color:var(--muted);white-space:nowrap}
-.pill{display:inline-flex;align-items:center;font:600 11px/1 var(--font);padding:4px 8px;border-radius:99px;border:1px solid var(--border)}
-.pill.ok{background:var(--ok-soft);color:var(--ok);border-color:color-mix(in oklch,var(--ok) 25%,white)}
-.pill.warn{background:var(--warn-soft);color:var(--warn);border-color:color-mix(in oklch,var(--warn) 25%,white)}
-.pill.hot{background:var(--hot-soft);color:var(--hot);border-color:color-mix(in oklch,var(--hot) 25%,white)}
-.pill.muted{color:var(--muted)}
-
-/* ========== Deliverables Summary ========== */
-.deliverable{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 14px 12px;cursor:pointer;transition:all .12s ease}
+/* ========== Deliverable box ========== */
+.deliverable{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;cursor:pointer;transition:all .12s ease}
 .deliverable:hover{border-color:var(--accent);background:var(--accent-soft)}
 .deliverable .stage-num{font:600 10px/1 var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
-.deliverable .name{margin:6px 0 6px;font:700 14px/1.2 var(--font);letter-spacing:-.005em}
-.deliverable .status{font-size:12px;color:var(--fg-2)}
+.deliverable .name{margin:6px 0;font:700 14px/1.2 var(--font);letter-spacing:-.005em}
 
 /* ========== Modal ========== */
 .modal-backdrop{position:fixed;inset:0;background:rgba(20,30,50,.42);display:none;align-items:center;justify-content:center;z-index:50;backdrop-filter:blur(2px)}
 .modal-backdrop.open{display:flex}
-.modal{background:var(--surface);border-radius:14px;width:min(520px,92vw);box-shadow:0 20px 60px rgba(0,0,0,.18);overflow:hidden;animation:popin .14s ease}
+.modal{background:var(--surface);border-radius:14px;width:min(560px,92vw);max-height:90vh;box-shadow:0 20px 60px rgba(0,0,0,.18);overflow:hidden;animation:popin .14s ease;display:flex;flex-direction:column}
+.modal.lg{width:min(720px,92vw)}
 @keyframes popin{from{transform:scale(.95);opacity:0}to{transform:scale(1);opacity:1}}
 .modal-head{padding:16px 22px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
-.modal-head h2{margin:0;font:700 16px/1.2 var(--font);letter-spacing:-.005em}
+.modal-head h2{font:700 16px/1.2 var(--font);letter-spacing:-.005em}
 .modal-head .close{font-size:18px;color:var(--muted);width:28px;height:28px;border-radius:6px;display:inline-flex;align-items:center;justify-content:center}
 .modal-head .close:hover{background:var(--surface-2);color:var(--fg)}
-.modal-body{padding:20px 22px;display:flex;flex-direction:column;gap:14px}
+.modal-body{padding:20px 22px;display:flex;flex-direction:column;gap:14px;overflow-y:auto;flex:1}
 .modal-body .row{display:flex;gap:12px;align-items:flex-start}
-.modal-body .row label{flex:0 0 96px;color:var(--muted);font:500 12px/1.6 var(--font);padding-top:8px}
+.modal-body .row label{flex:0 0 110px;color:var(--muted);font:500 12px/1.6 var(--font);padding-top:8px}
 .modal-body .row label small{display:block;color:var(--muted-2);font-size:10px;margin-top:2px}
-.modal-body .row .value{flex:1;font-size:13px}
-.modal-body .row .value.input,.modal-body .row .value textarea{border:1px solid var(--border);background:var(--surface-2);border-radius:7px;padding:9px 11px;color:var(--fg)}
-.modal-body .row .value textarea{width:100%;min-height:64px;resize:vertical;font:inherit;outline:none}
-.modal-body .row .value textarea:focus{border-color:var(--accent);background:var(--surface)}
-.modal-body .row .value .static{background:var(--surface-2);border:1px solid var(--border);border-radius:7px;padding:9px 11px;color:var(--fg-2)}
-.modal-body .radio-group{display:flex;gap:18px;font-size:13px}
+.modal-body .row .value{flex:1;font-size:13px;min-width:0}
+.modal-body .row .value.static{background:var(--surface-2);border:1px solid var(--border);border-radius:7px;padding:9px 11px;color:var(--fg-2)}
+.modal-body input[type=text],.modal-body input[type=email],.modal-body input[type=password],.modal-body input[type=date],.modal-body textarea,.modal-body select{width:100%;border:1px solid var(--border);background:var(--surface-2);border-radius:7px;padding:9px 11px;color:var(--fg);outline:none}
+.modal-body input:focus,.modal-body textarea:focus,.modal-body select:focus{border-color:var(--accent);background:var(--surface);box-shadow:0 0 0 3px var(--accent-soft)}
+.modal-body textarea{min-height:64px;resize:vertical;font:inherit}
+.modal-body .radio-group{display:flex;gap:18px;font-size:13px;padding-top:6px}
 .modal-body .radio-group label{flex:none;color:var(--fg);padding:0;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
-.modal-body .note{padding:11px 13px;background:var(--accent-soft);border-radius:8px;font-size:12px;line-height:1.7;color:var(--accent);border-left:3px solid var(--accent)}
+.modal-body .note{padding:11px 13px;background:var(--accent-soft);border-radius:8px;font-size:12px;line-height:1.7;color:var(--accent-deep);border-left:3px solid var(--accent)}
+.modal-body .note.warn{background:var(--warn-soft);color:var(--warn);border-left-color:var(--warn)}
+.modal-body .note.danger{background:var(--hot-soft);color:var(--hot);border-left-color:var(--hot)}
+.modal-body .file-list{display:flex;flex-direction:column;gap:6px}
+.modal-body .file-row{display:flex;align-items:center;gap:8px;padding:8px 11px;border:1px solid var(--border);border-radius:7px;font-size:12px}
+.modal-body .file-row .name{flex:1;color:var(--fg-2)}
+.modal-body .file-row .name b{color:var(--fg)}
+.modal-body .file-row .actions{display:flex;gap:4px}
 .modal-body .gate-check{display:flex;flex-direction:column;gap:7px;background:var(--surface-2);padding:12px 14px;border-radius:8px}
 .modal-body .gate-check .gate-row{display:flex;justify-content:space-between;align-items:center;font-size:13px}
 .modal-body .gate-check .gate-row.ok{color:var(--ok)}
@@ -147,168 +185,1398 @@ a:hover{text-decoration:underline}
 .modal-body .input-list .item{display:flex;justify-content:space-between;padding:7px 11px;background:var(--surface-2);border-radius:6px;font-size:13px}
 .modal-body .input-list .item .t{font:500 11px/1 var(--mono);color:var(--muted)}
 .modal-foot{padding:14px 22px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px;background:var(--surface-2)}
+.modal-body .err{color:var(--hot);font-size:12px;margin-top:4px}
+
+/* ========== Dropdown ========== */
+.dropdown{position:absolute;background:var(--surface);border:1px solid var(--border-strong);border-radius:10px;box-shadow:0 12px 32px rgba(0,0,0,.12);padding:6px;z-index:60;min-width:220px;animation:popin .12s ease}
+.dropdown .item{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:9px 12px;border-radius:6px;font-size:13px;color:var(--fg-2);cursor:pointer}
+.dropdown .item:hover{background:var(--surface-2);color:var(--fg)}
+.dropdown .item .meta{font:500 10px/1 var(--mono);color:var(--muted)}
+.dropdown .item.active{background:var(--accent-soft);color:var(--accent)}
+.dropdown .divider{height:1px;background:var(--divider);margin:5px 4px}
 
 /* ========== Toast ========== */
-.toast-area{position:fixed;bottom:24px;right:24px;z-index:60;display:flex;flex-direction:column;gap:8px;pointer-events:none}
-.toast{background:var(--fg);color:#fff;padding:11px 16px;border-radius:8px;font-size:13px;animation:slidein .2s ease;box-shadow:0 8px 24px rgba(0,0,0,.16);pointer-events:auto}
+.toast-area{position:fixed;bottom:24px;right:24px;z-index:80;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+.toast{background:var(--fg);color:#fff;padding:11px 16px;border-radius:8px;font-size:13px;animation:slidein .2s ease;box-shadow:0 8px 24px rgba(0,0,0,.16);pointer-events:auto;max-width:380px}
 .toast.success{background:var(--ok)}
 .toast.danger{background:var(--hot)}
+.toast.info{background:var(--accent)}
 @keyframes slidein{from{transform:translateX(20px);opacity:0}to{transform:translateX(0);opacity:1}}
 
-/* ========== Role switcher (prototype only) ========== */
+/* ========== Role switcher ========== */
 .role-switcher{position:fixed;bottom:24px;left:24px;background:var(--surface);border:1px solid var(--border-strong);border-radius:99px;padding:6px 8px;box-shadow:0 8px 24px rgba(0,0,0,.1);display:flex;gap:4px;z-index:40;align-items:center}
-.role-switcher .label{font:500 11px/1 var(--mono);color:var(--muted);padding-left:8px;padding-right:4px}
+.role-switcher .label{font:500 11px/1 var(--mono);color:var(--muted);padding:0 4px 0 8px}
 .role-switcher button{padding:7px 12px;border-radius:99px;font:600 11px/1 var(--font);color:var(--muted)}
 .role-switcher button.active{background:var(--accent);color:#fff}
 
-@media (max-width:1100px){
-  .grid.cols-4{grid-template-columns:1fr 1fr}
-  .grid.cols-2{grid-template-columns:1fr}
-}
-@media (max-width:780px){
-  .app{grid-template-columns:1fr}
-  .sidebar{display:none}
-  .grid.cols-4{grid-template-columns:1fr}
-  .main{padding:16px}
-}
+/* ========== Table ========== */
+.tbl{width:100%;border-collapse:collapse;font-size:13px}
+.tbl th,.tbl td{padding:11px 12px;text-align:left;border-bottom:1px solid var(--divider)}
+.tbl th{font:600 11px/1 var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.04em;background:var(--surface-2);border-bottom:1px solid var(--border)}
+.tbl tbody tr{cursor:pointer}
+.tbl tbody tr:hover{background:var(--surface-2)}
+.tbl td.id-cell{font:600 12px/1 var(--mono);color:var(--accent)}
+.tbl td.actions{text-align:right;white-space:nowrap}
+
+/* ========== Filter bar ========== */
+.filter-bar{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px;margin-bottom:14px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.filter{padding:6px 11px;border:1px solid var(--border);border-radius:99px;font-size:12px;color:var(--fg-2);background:var(--surface);cursor:pointer;display:inline-flex;align-items:center;gap:5px}
+.filter:hover{border-color:var(--border-strong);background:var(--surface-2)}
+.filter .arrow{font-size:9px;color:var(--muted)}
+.filter.search-input{padding:5px 11px;flex:1;min-width:180px;background:var(--surface-2)}
+.filter.search-input input{border:0;background:transparent;outline:none;width:100%;font-size:12px}
+
+/* ========== Stat cards ========== */
+.stat{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:4px}
+.stat .label{font:500 11px/1 var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.stat .value{font:700 24px/1 var(--font-display);letter-spacing:-.01em}
+.stat .delta{font-size:12px;color:var(--muted)}
+
+/* ========== Form rows ========== */
+.form{display:flex;flex-direction:column;gap:14px}
+.form .row{display:flex;gap:12px;align-items:flex-start}
+.form .row label{flex:0 0 140px;color:var(--muted);font:500 13px/1.6 var(--font);padding-top:8px}
+.form .row label small{display:block;color:var(--muted-2);font-size:10px;margin-top:2px}
+.form .row .value{flex:1;font-size:13px;min-width:0}
+.form input[type=text],.form input[type=email],.form input[type=password],.form input[type=date],.form textarea,.form select{width:100%;border:1px solid var(--border);background:var(--surface);border-radius:7px;padding:9px 11px;color:var(--fg);outline:none}
+.form input:focus,.form textarea:focus,.form select:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.form textarea{min-height:64px;resize:vertical;font:inherit}
+.form .static{background:var(--surface-2);border:1px solid var(--border);border-radius:7px;padding:9px 11px;color:var(--fg-2)}
+
+/* ========== Tabs (deliverables) ========== */
+.tabs{display:flex;border-bottom:1px solid var(--border);margin-bottom:18px;gap:2px}
+.tab{padding:10px 16px;font:600 13px/1 var(--font);color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px}
+.tab:hover{color:var(--fg)}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+
+/* ========== Activity timeline ========== */
+.activity{display:flex;flex-direction:column;gap:1px}
+.activity .item{display:flex;gap:12px;padding:14px 4px;border-bottom:1px solid var(--divider)}
+.activity .item:last-child{border-bottom:0}
+.activity .icon{width:32px;height:32px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px;background:var(--surface-2);border:1px solid var(--border)}
+.activity .icon.upload{background:var(--accent-soft);color:var(--accent);border-color:color-mix(in oklch,var(--accent) 25%,white)}
+.activity .icon.review{background:var(--warn-soft);color:var(--warn);border-color:color-mix(in oklch,var(--warn) 25%,white)}
+.activity .icon.reject{background:var(--hot-soft);color:var(--hot);border-color:color-mix(in oklch,var(--hot) 25%,white)}
+.activity .icon.approve{background:var(--ok-soft);color:var(--ok);border-color:color-mix(in oklch,var(--ok) 25%,white)}
+.activity .icon.comment{background:var(--surface-2);color:var(--muted)}
+.activity .body{flex:1;min-width:0}
+.activity .meta{font-size:12px;color:var(--muted);margin-bottom:4px}
+.activity .meta b{color:var(--fg-2);font-weight:600}
+.activity .desc{font-size:13px;color:var(--fg-2);line-height:1.55}
+.activity .desc b{color:var(--fg);font-weight:600}
+.activity .actions{margin-top:6px;display:flex;gap:6px}
+
+/* ========== File card ========== */
+.file{display:flex;align-items:center;gap:12px;padding:12px 14px;border:1px solid var(--border);border-radius:10px;background:var(--surface)}
+.file .icn{width:36px;height:36px;border-radius:8px;background:var(--surface-2);display:inline-flex;align-items:center;justify-content:center;font-size:16px;border:1px solid var(--border)}
+.file .name{flex:1;min-width:0}
+.file .name b{display:block;font-weight:600;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.file .name .sub{color:var(--muted);font-size:11px;margin-top:2px}
+.file .badge{font:600 10px/1 var(--mono);padding:3px 7px;border-radius:4px;background:var(--accent-soft);color:var(--accent);text-transform:uppercase}
+.file .actions{display:flex;gap:4px}
+
+/* ========== Auth pages ========== */
+.auth-page{min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:48px 18px;background:linear-gradient(180deg,var(--bg) 0%,var(--surface-3) 100%)}
+.auth-page .logo{font:700 16px/1 var(--font-display);letter-spacing:-.01em;margin-bottom:40px}
+.auth-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:34px 36px;width:min(420px,92vw);box-shadow:0 8px 32px rgba(0,0,0,.06)}
+.auth-card.lg{width:min(480px,92vw)}
+.auth-card h1{font:700 22px/1.2 var(--font-display);letter-spacing:-.01em;margin-bottom:6px;text-align:center}
+.auth-card .sub{color:var(--muted);font-size:13px;text-align:center;margin-bottom:24px}
+.auth-card .footer{margin-top:18px;text-align:center;font-size:12px;color:var(--muted)}
+.auth-card .footer a{margin:0 6px}
+.auth-card .invite-info{background:var(--accent-soft);border:1px solid color-mix(in oklch,var(--accent) 22%,white);border-radius:8px;padding:14px;margin-bottom:18px;text-align:center;font-size:13px}
+.auth-card .invite-info b{display:block;color:var(--accent-deep);margin-bottom:4px;font-size:14px}
+.auth-card .err{color:var(--hot);font-size:12px;margin-top:8px;text-align:center}
+.auth-page input[type=text],.auth-page input[type=email],.auth-page input[type=password]{width:100%;border:1px solid var(--border);background:var(--surface);border-radius:7px;padding:11px 13px;font-size:14px;outline:none;margin-bottom:12px}
+.auth-page input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.auth-page .label{display:block;font:500 12px/1 var(--font);color:var(--muted);margin-bottom:6px}
+.auth-page .policy{font-size:11px;color:var(--muted-2);margin:-6px 0 12px;line-height:1.6}
+.auth-page .btn-full{width:100%;justify-content:center;padding:12px}
+.auth-page .check{display:flex;align-items:flex-start;gap:8px;font-size:12px;color:var(--fg-2);margin-bottom:14px;cursor:pointer}
+
+/* ========== Error page ========== */
+.error-page{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:48px 18px;background:var(--surface)}
+.error-page .code{font:700 96px/1 var(--mono);color:var(--muted-2);letter-spacing:-.04em;margin-bottom:14px}
+.error-page h1{font:700 22px/1.2 var(--font-display);letter-spacing:-.01em;margin-bottom:8px}
+.error-page p{color:var(--muted);margin-bottom:22px;max-width:420px}
+.error-page .errid{font:500 11px/1 var(--mono);color:var(--muted-2);margin-bottom:22px}
+.error-page .actions{display:flex;gap:10px}
+
+/* ========== Search ========== */
+.search-page .search-input-big{border:1px solid var(--border);background:var(--surface);border-radius:10px;padding:12px 16px;font-size:15px;width:100%;margin-bottom:14px;outline:none}
+.search-page .search-input-big:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.search-page .result-group{margin-bottom:14px}
+.search-page .result-group h4{font:600 13px/1 var(--font);color:var(--muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:.04em;font-size:11px;font-family:var(--mono)}
+
+/* ========== AI build progress ========== */
+.ai-progress{display:flex;flex-direction:column;gap:1px}
+.ai-progress .step{display:flex;align-items:center;gap:12px;padding:11px 4px;border-bottom:1px solid var(--divider);font-size:13px}
+.ai-progress .step:last-child{border-bottom:0}
+.ai-progress .step .ico{width:22px;display:inline-flex;justify-content:center}
+.ai-progress .step.done{color:var(--ok)}
+.ai-progress .step.now{color:var(--accent);font-weight:600}
+.ai-progress .step.pending{color:var(--muted-2)}
+.ai-progress .step .t{margin-left:auto;font:500 11px/1 var(--mono);color:var(--muted)}
+
+/* ========== Project list (GLB) ========== */
+.proj-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px;cursor:pointer;transition:all .12s ease;display:flex;flex-direction:column;gap:8px}
+.proj-card:hover{border-color:var(--accent);box-shadow:0 4px 16px rgba(0,0,0,.06);transform:translateY(-1px)}
+.proj-card .top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.proj-card h3{font:700 16px/1.2 var(--font-display);letter-spacing:-.01em}
+.proj-card .client{font-size:12px;color:var(--muted);margin-top:2px}
+.proj-card .stage{font-size:13px;color:var(--fg-2)}
+.proj-card .stage b{color:var(--fg)}
+.proj-card .footer{display:flex;justify-content:space-between;margin-top:4px;font-size:12px;color:var(--muted)}
+
+/* ========== State variants and inline editing helpers ========== */
+.state-info{background:var(--surface-2);border:1px dashed var(--border-strong);border-radius:8px;padding:10px 12px;font-size:12px;color:var(--muted);line-height:1.6}
+.state-info b{color:var(--fg-2)}
+.empty{text-align:center;padding:48px 24px;color:var(--muted);font-size:13px}
+.empty .ico{font-size:32px;display:block;margin-bottom:8px;opacity:.4}
+
+/* ========== Danger zone ========== */
+.danger-zone{background:#fff;border:1px solid color-mix(in oklch,var(--hot) 30%,white);border-radius:10px;padding:18px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;gap:16px}
+.danger-zone .info{flex:1}
+.danger-zone .info h4{font:700 14px/1.2 var(--font);color:var(--hot);margin-bottom:4px}
+.danger-zone .info p{font-size:12px;color:var(--muted);line-height:1.6}
 </style>
 </head>
 <body>
 
-<div class="app">
+<div id="app"></div>
+<div id="modalRoot"></div>
+<div id="dropdownRoot"></div>
+<div class="toast-area" id="toastArea"></div>
 
-<!-- ========== Sidebar ========== -->
-<aside class="sidebar">
-  <div class="brand">
-    <span class="logo">sp-project-portal</span>
-    <span class="proj">A 프로젝트<small>㈜OO · SaaS · W6</small></span>
-  </div>
-  <nav>
-    <a class="nav-item active" data-route="dashboard"><span>대시보드</span><span class="tag">12/24</span></a>
-    <a class="nav-item" data-route="requirements"><span>요구사항</span><span class="tag">44</span></a>
-    <a class="nav-item" data-route="deliverables"><span>산출물</span><span class="tag">4</span></a>
-    <a class="nav-item" data-route="defects"><span>결함</span><span class="tag">6</span></a>
-    <a class="nav-item" data-route="tests"><span>TC</span><span class="tag">팀</span></a>
-    <a class="nav-item locked" data-route="ai-build"><span>AI 개발</span><span class="tag">잠금</span></a>
-    <a class="nav-item" data-route="settings"><span>설정</span><span class="tag">팀</span></a>
-  </nav>
-</aside>
+<!-- Role switcher (시연용) -->
+<div class="role-switcher">
+  <span class="label">역할 (시연)</span>
+  <button data-role="pm" class="active">팀(PM)</button>
+  <button data-role="client">고객사</button>
+  <button data-role="admin">관리자</button>
+</div>
 
-<!-- ========== Main ========== -->
-<div>
-  <div class="topbar">
-    <div class="breadcrumb">A 프로젝트 / <b>대시보드</b></div>
-    <div class="spacer"></div>
-    <div class="search" data-action="search">⌕ 통합 검색</div>
-    <button class="icon-btn" data-action="notify" title="알림">🔔<span class="dot"></span></button>
-    <button class="icon-btn" data-action="account" title="계정">👤</button>
-  </div>
+<script>
+/* ============================================================
+ * MOCK DATA
+ * ============================================================ */
+const DATA = {
+  user: {pm: {name:'김PM', email:'pm@agency.com', role:'프로젝트팀'}, client:{name:'홍OO', email:'hong@oo.co', role:'고객사'}, admin:{name:'관리자', email:'admin@sp.co', role:'관리자'}},
+  projects: [
+    {id:'A', name:'A 프로젝트', client:'㈜OO', type:'SaaS', stage:12, total:24, week:6, pending:3, updated:'2시간 전', progress:50},
+    {id:'B', name:'B 프로젝트', client:'㈜XX', type:'웹사이트', stage:9, total:24, week:3, pending:0, updated:'어제', progress:37},
+    {id:'C', name:'C 프로젝트', client:'㈜ZZ', type:'모바일', stage:22, total:24, week:11, pending:1, updated:'1일 전', progress:91},
+    {id:'D', name:'D 프로젝트', client:'㈜YY', type:'SaaS', stage:24, total:24, week:14, pending:0, updated:'3주 전', progress:100},
+  ],
+  gates: {9:'pass', 11:'pass', 13:'wait', 15:'lock', 22:'lock'},
+  slot: {
+    requirements: {label:'요구사항 정의서', version:'v3', status:'draft', updated:'2026-05-19 16:20', files:[
+      {name:'main-srs.pdf', size:'1.9MB', desc:'메인 사이트 요구사항', badge:'v2에서 교체'},
+      {name:'admin-srs.pdf', size:'0.6MB', desc:'어드민 요구사항', badge:'v2 동일'},
+      {name:'api-spec.pdf', size:'0.4MB', desc:'부속 API 명세', badge:'v2 동일'},
+      {name:'glossary.pdf', size:'0.2MB', desc:'용어집', badge:'NEW'},
+    ], activities:[
+      {type:'upload', who:'PM', time:'05-19 11:20', body:'<b>v1 스냅샷 생성</b> — 초안 등록 (파일 1개)'},
+      {type:'review', who:'PM', time:'05-19 11:25', body:'고객사에 v1 검토 요청 발송'},
+      {type:'reject', who:'고객사', time:'05-19 13:50', body:'§3 권한 매트릭스 보강 부탁드립니다.', tag:'반려 사유'},
+      {type:'upload', who:'PM', time:'05-19 14:00', body:'<b>v2 스냅샷 생성</b> — §3 권한 매트릭스 보강 + admin-srs 신규, api-spec 부속 추가'},
+      {type:'review', who:'PM', time:'05-19 14:15', body:'고객사에 v2 검토 요청 발송'},
+      {type:'reject', who:'고객사', time:'05-19 15:40', body:'§7 NFR 보안 요구사항 추가 부탁드립니다.', tag:'반려 사유'},
+      {type:'upload', who:'PM', time:'05-19 16:10', body:'<b>v3 스냅샷 생성 (draft)</b> — §7 NFR 추가 + glossary 신규'},
+      {type:'comment', who:'PM', time:'05-19 16:20', body:'§7 보안 NFR 초안 추가했습니다. 내부 검토 후 v3 검토 요청 발송 예정.', own:true},
+    ]},
+    ia: {label:'IA (정보구조도)', version:'v1.0', status:'confirmed', updated:'2026-05-19', files:[
+      {name:'ia-v1.0.pdf', size:'2.4MB', desc:'메인 사이트맵'}
+    ], activities:[
+      {type:'upload', who:'PM', time:'05-19 09:00', body:'<b>v1.0 스냅샷 생성</b> — IA 초안 (파일 1개)'},
+      {type:'review', who:'PM', time:'05-19 09:05', body:'고객사에 v1.0 검토 요청 발송'},
+      {type:'comment', who:'PM', time:'05-19 09:10', body:'메뉴 항목 누락 없는지 확인 부탁드립니다.', own:true},
+      {type:'approve', who:'고객사', time:'05-19 11:30', body:'<b>v1.0 컨펌 완료</b> (Gate 11 통과)'},
+    ]},
+    design: {label:'디자인 시안', version:'v2', status:'pending-review', updated:'2026-05-19 13:42', files:[
+      {name:'design-v2-A.png', size:'4.2MB', desc:'Precision grid'},
+      {name:'design-v2-B.png', size:'3.8MB', desc:'Signal room'},
+    ], activities:[
+      {type:'upload', who:'디자이너', time:'05-18 18:00', body:'<b>v1 스냅샷 생성</b> — 시안 6안'},
+      {type:'review', who:'PM', time:'05-18 18:30', body:'고객사에 v1 검토 요청 발송'},
+      {type:'reject', who:'고객사', time:'05-19 10:00', body:'A·D 두 후보 한 번에 비교 가능한 단일 HTML로 합쳐 주세요.', tag:'반려 사유'},
+      {type:'upload', who:'디자이너', time:'05-19 13:42', body:'<b>v2 스냅샷 생성</b> — 단일 HTML 6안 통합'},
+      {type:'review', who:'PM', time:'05-19 13:45', body:'고객사에 v2 검토 요청 발송 (현재 검토중)'},
+    ]},
+    prototype: {label:'프로토타입', version:'-', status:'empty', updated:'-', files:[], activities:[]},
+    figma: {label:'Figma 핸드오프', version:'-', status:'empty', updated:'-', files:[], activities:[]},
+  },
+  defects: [
+    {id:'DEF-001', title:'로그인 후 리다이렉트 미동작', severity:'High', status:'미해결', assignee:'김개발', created:'05-19'},
+    {id:'DEF-002', title:'파일 업로드 50MB 초과 오류', severity:'Medium', status:'진행중', assignee:'박개발', created:'05-19'},
+    {id:'DEF-003', title:'다크 모드에서 텍스트 가독성 저하', severity:'Low', status:'미해결', assignee:'박디자이너', created:'05-18'},
+    {id:'DEF-004', title:'산출물 페이지 새 버전 만들기 모달 stylesheet 깨짐', severity:'Medium', status:'해결완료', assignee:'박개발', created:'05-17'},
+    {id:'DEF-005', title:'활동 이력 정렬 버그', severity:'Low', status:'해결완료', assignee:'김개발', created:'05-16'},
+    {id:'DEF-006', title:'검토 요청 후 알림 미수신', severity:'High', status:'미해결', assignee:'김개발', created:'05-19'},
+  ],
+  tests: [
+    {id:'TC-001', title:'로그인 성공 케이스', phase:'인증', priority:'High', status:'Pass', assignee:'이QA'},
+    {id:'TC-002', title:'로그인 5회 실패 잠금', phase:'인증', priority:'High', status:'Pass', assignee:'이QA'},
+    {id:'TC-003', title:'요구사항 파일 업로드 50MB', phase:'요구사항', priority:'Medium', status:'대기', assignee:'이QA'},
+    {id:'TC-004', title:'버전 스냅샷 전환', phase:'요구사항', priority:'Medium', status:'Fail', assignee:'이QA'},
+    {id:'TC-005', title:'검토 요청 잠금 동작', phase:'워크플로우', priority:'High', status:'Pass', assignee:'이QA'},
+    {id:'TC-006', title:'반려 사유 영구 보존', phase:'워크플로우', priority:'High', status:'Pass', assignee:'이QA'},
+    {id:'TC-007', title:'관리자 코멘트 강제 삭제', phase:'코멘트', priority:'Low', status:'대기', assignee:'이QA'},
+    {id:'TC-008', title:'AI 개발 사전조건 차단', phase:'AI 개발', priority:'High', status:'대기', assignee:'이QA'},
+  ],
+  members: {team:[
+    {name:'김PM', role:'PM', email:'pm@agency.com'},
+    {name:'이기획', role:'기획', email:'planner@agency.com'},
+    {name:'박디자이너', role:'디자이너', email:'designer@agency.com'},
+  ], clients:[
+    {name:'홍OO', email:'hong@oo.co', status:'active'},
+    {name:'최OO', email:'choi@oo.co', status:'pending', expires:'18h'},
+  ]},
+  adminTeams: [
+    {name:'김PM', email:'pm@agency.com', role:'PM', projects:3, active:true},
+    {name:'박디자이너', email:'designer@agency.com', role:'디자이너', projects:2, active:true},
+    {name:'이QA', email:'qa@agency.com', role:'QA', projects:3, active:false},
+    {name:'김개발', email:'dev@agency.com', role:'개발자', projects:4, active:true},
+  ],
+  adminClients: [
+    {name:'홍OO', email:'hong@oo.co', client:'㈜OO', projects:2, status:'active'},
+    {name:'최OO', email:'choi@oo.co', client:'㈜OO', projects:1, status:'pending'},
+    {name:'박XX', email:'park@xx.co', client:'㈜XX', projects:1, status:'active'},
+    {name:'이YY', email:'lee@yy.co', client:'㈜YY', projects:3, status:'active'},
+  ],
+  audit: [
+    {time:'2026-05-19 06:00', user:'김PM', role:'팀', action:'요구사항 수정', target:'REQ-PRJ-002', ip:'1.2.3.4'},
+    {time:'2026-05-19 05:50', user:'홍OO', role:'고객', action:'컨펌', target:'Gate 11 IA', ip:'5.6.7.8'},
+    {time:'2026-05-19 05:30', user:'김PM', role:'팀', action:'로그인', target:'-', ip:'1.2.3.4'},
+    {time:'2026-05-19 04:15', user:'박디자이너', role:'팀', action:'파일 업로드', target:'design-v2-A.png', ip:'1.2.3.5'},
+    {time:'2026-05-19 03:42', user:'관리자', role:'관리자', action:'고객 계정 초대 재발송', target:'choi@oo.co', ip:'10.0.0.1'},
+  ],
+  ai: {
+    status:'locked',
+    history:[
+      {time:'2026-05-18 22:00', result:'fail', reason:'입력 검증 (요구사항 미컨펌)'},
+      {time:'2026-05-18 18:00', result:'success'},
+    ]
+  },
+  loginAttempts: 0,
+};
 
-  <main class="main">
+/* ============================================================
+ * STATE
+ * ============================================================ */
+const state = {
+  role: 'pm', // pm | client | admin
+  currentRoute: '#/projects/A',
+};
 
-    <!-- Project header -->
-    <section class="proj-header">
-      <div class="row">
+/* ============================================================
+ * HELPERS
+ * ============================================================ */
+const $ = (sel, root=document) => root.querySelector(sel);
+const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+const html = (strings, ...values) => strings.reduce((acc, s, i) => acc + s + (values[i] ?? ''), '');
+const esc = (s) => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
+function toast(msg, type='info'){
+  const el = document.createElement('div');
+  el.className = 'toast ' + type;
+  el.textContent = msg;
+  $('#toastArea').appendChild(el);
+  setTimeout(()=>{ el.style.opacity='0'; el.style.transition='opacity .2s'; setTimeout(()=>el.remove(), 220); }, 2400);
+}
+function navigate(path){ location.hash = '#' + path; }
+function closeModals(){ $('#modalRoot').innerHTML = ''; }
+function openModal(content, lg=false){
+  $('#modalRoot').innerHTML = `<div class="modal-backdrop open"><div class="modal ${lg?'lg':''}">${content}</div></div>`;
+}
+function closeDropdowns(){ $('#dropdownRoot').innerHTML = ''; }
+function openDropdown(content, x, y){
+  $('#dropdownRoot').innerHTML = `<div class="dropdown" style="left:${x}px;top:${y}px">${content}</div>`;
+}
+
+/* ============================================================
+ * ROUTER
+ * ============================================================ */
+const routes = [
+  // path pattern, layout, render, sidebar active key
+  ['/login', 'auth', renderLogin],
+  ['/password/reset', 'auth', renderPasswordReset],
+  ['/password/reset/:token', 'auth', renderPasswordResetInput],
+  ['/invitations/:token', 'auth', renderInvitation],
+  ['/error/:code', 'system', renderError],
+  ['/', 'global', renderProjectList],
+  ['/account', 'global', renderAccount],
+  ['/projects/new', 'global', renderProjectNew],
+  ['/admin/teams', 'admin', renderAdminTeams],
+  ['/admin/clients', 'admin', renderAdminClients],
+  ['/admin/audit', 'admin', renderAdminAudit],
+  ['/admin', 'admin', renderAdminTeams],
+  ['/projects/:id/requirements', 'project', renderRequirements, 'requirements'],
+  ['/projects/:id/deliverables/:slug', 'project', renderDeliverables, 'deliverables'],
+  ['/projects/:id/deliverables', 'project', () => renderDeliverables({slug:'ia'}), 'deliverables'],
+  ['/projects/:id/defects/:defectId', 'project', renderDefectDetail, 'defects'],
+  ['/projects/:id/defects', 'project', renderDefects, 'defects'],
+  ['/projects/:id/tests/:tcId', 'project', renderTestDetail, 'tests'],
+  ['/projects/:id/tests', 'project', renderTests, 'tests'],
+  ['/projects/:id/search', 'project', renderSearch],
+  ['/projects/:id/ai-build', 'project', renderAiBuild, 'ai-build'],
+  ['/projects/:id/settings/members', 'project', renderMembers, 'settings'],
+  ['/projects/:id/settings/danger', 'project', renderDanger, 'settings'],
+  ['/projects/:id/settings', 'project', renderSettings, 'settings'],
+  ['/projects/:id', 'project', renderDashboard, 'dashboard'],
+];
+
+function match(path){
+  for(const [pat, layout, render, active] of routes){
+    const keys = [];
+    const re = '^' + pat.replace(/:([^/]+)/g, (_,k)=>{ keys.push(k); return '([^/]+)'; }) + '$';
+    const m = path.match(new RegExp(re));
+    if(m){
+      const params = {};
+      keys.forEach((k,i)=>params[k] = m[i+1]);
+      return { layout, render, params, active };
+    }
+  }
+  return null;
+}
+
+function navigateRender(){
+  closeDropdowns();
+  closeModals();
+  const path = location.hash.slice(1) || '/projects/A';
+  state.currentRoute = '#' + path;
+  const route = match(path);
+  if(!route){ renderLayoutWith('system', renderError({code:'404'})); return; }
+  const content = route.render(route.params);
+  renderLayoutWith(route.layout, content, route.params, route.active);
+  window.scrollTo(0,0);
+}
+
+window.addEventListener('hashchange', navigateRender);
+
+/* ============================================================
+ * LAYOUT
+ * ============================================================ */
+function renderLayoutWith(layout, content, params={}, activeKey=null){
+  const app = $('#app');
+  if(layout === 'auth' || layout === 'system'){
+    app.innerHTML = content;
+    return;
+  }
+  if(layout === 'global'){
+    app.innerHTML = `
+      <div class="app no-sidebar">
         <div>
-          <h1>A 프로젝트</h1>
-          <p class="meta">고객사: <b>㈜OO</b> · 유형: SaaS · 기간: 2026-05 ~ 2026-08</p>
+          ${renderTopbar('global', params)}
+          <main class="main">${content}</main>
+        </div>
+      </div>`;
+    return;
+  }
+  if(layout === 'admin'){
+    app.innerHTML = `
+      <div class="app">
+        ${renderAdminSidebar(activeKey || (location.hash.includes('teams') ? 'teams' : location.hash.includes('clients') ? 'clients' : 'audit'))}
+        <div>
+          ${renderTopbar('admin', params)}
+          <main class="main">${content}</main>
+        </div>
+      </div>`;
+    return;
+  }
+  // project
+  const projId = params.id || 'A';
+  const proj = DATA.projects.find(p=>p.id===projId) || DATA.projects[0];
+  app.innerHTML = `
+    <div class="app">
+      ${renderProjectSidebar(proj, activeKey, params)}
+      <div>
+        ${renderTopbar('project', {proj, ...params})}
+        <main class="main">${content}</main>
+      </div>
+    </div>`;
+}
+
+function renderProjectSidebar(proj, active, params){
+  const items = [
+    {key:'dashboard', href:`/projects/${proj.id}`, label:'대시보드', tag:`${proj.stage}/${proj.total}`},
+    {key:'requirements', href:`/projects/${proj.id}/requirements`, label:'요구사항', tag:'44'},
+    {key:'deliverables', href:`/projects/${proj.id}/deliverables/ia`, label:'산출물', tag:'4'},
+    {key:'defects', href:`/projects/${proj.id}/defects`, label:'결함', tag:'6'},
+    {key:'tests', href:`/projects/${proj.id}/tests`, label:'TC', tag:'팀'},
+    {key:'ai-build', href:`/projects/${proj.id}/ai-build`, label:'AI 개발', tag:'잠금', locked:true},
+    {key:'settings', href:`/projects/${proj.id}/settings`, label:'설정', tag:'팀'},
+  ];
+  return `
+    <aside class="sidebar">
+      <a class="brand" data-route="/">
+        <span class="logo">sp-project-portal</span>
+        <span class="proj">${esc(proj.name)}<small>${esc(proj.client)} · ${esc(proj.type)} · W${proj.week}</small></span>
+      </a>
+      <nav>
+        ${items.map(i => `
+          <a class="nav-item ${i.locked?'locked':''} ${active===i.key?'active':''}" data-route="${i.href}">
+            <span>${i.label}</span>
+            <span class="tag">${i.tag}</span>
+          </a>
+        `).join('')}
+        ${active==='settings' ? `
+          <a class="sub ${!params.path?'active':''}" data-route="/projects/${proj.id}/settings">기본 정보</a>
+          <a class="sub" data-route="/projects/${proj.id}/settings/members">멤버·초대</a>
+          <a class="sub" data-route="/projects/${proj.id}/settings/danger">Danger Zone</a>
+        ` : ''}
+      </nav>
+    </aside>`;
+}
+
+function renderAdminSidebar(active){
+  const items = [
+    {key:'teams', href:'/admin/teams', label:'프로젝트팀 계정', tag:'18'},
+    {key:'clients', href:'/admin/clients', label:'고객사 계정', tag:'32'},
+    {key:'audit', href:'/admin/audit', label:'감사 로그', tag:'1y'},
+  ];
+  return `
+    <aside class="sidebar">
+      <a class="brand" data-route="/">
+        <span class="logo">sp-project-portal</span>
+        <span class="proj">관리자 메뉴<small>전체 시스템 관리</small></span>
+      </a>
+      <nav>
+        ${items.map(i => `<a class="nav-item ${active===i.key?'active':''}" data-route="${i.href}"><span>${i.label}</span><span class="tag">${i.tag}</span></a>`).join('')}
+      </nav>
+    </aside>`;
+}
+
+function renderTopbar(layout, ctx={}){
+  const u = DATA.user[state.role];
+  const initial = u.name[0];
+  let crumb = '';
+  if(layout === 'project'){
+    const proj = ctx.proj;
+    const pathKey = location.hash;
+    let pageName = '대시보드';
+    if(pathKey.includes('/requirements')) pageName = '요구사항';
+    else if(pathKey.includes('/deliverables')) pageName = '산출물';
+    else if(pathKey.includes('/defects/')) pageName = '결함 상세';
+    else if(pathKey.includes('/defects')) pageName = '결함';
+    else if(pathKey.includes('/tests/')) pageName = 'TC 상세';
+    else if(pathKey.includes('/tests')) pageName = 'TC';
+    else if(pathKey.includes('/search')) pageName = '검색';
+    else if(pathKey.includes('/ai-build')) pageName = 'AI 개발';
+    else if(pathKey.includes('/settings/members')) pageName = '설정 / 멤버·초대';
+    else if(pathKey.includes('/settings/danger')) pageName = '설정 / Danger Zone';
+    else if(pathKey.includes('/settings')) pageName = '설정 / 기본 정보';
+    crumb = `<div class="breadcrumb"><a data-route="/">프로젝트</a> <span class="sep">/</span></div>
+      <div class="proj-switcher" data-action="proj-switch">${esc(proj.name)} <span class="arrow">▾</span></div>
+      <span class="sep" style="color:var(--muted-2)">/</span><b>${pageName}</b>`;
+  } else if(layout === 'admin'){
+    crumb = `<div class="breadcrumb"><a data-route="/">프로젝트</a> <span class="sep">/</span> <b>관리자 메뉴</b></div>`;
+  } else if(layout === 'global'){
+    const ph = location.hash;
+    let pageName = '프로젝트 목록';
+    if(ph.includes('/account')) pageName = '계정 설정';
+    else if(ph.includes('/projects/new')) pageName = '새 프로젝트';
+    crumb = `<div class="breadcrumb"><a data-route="/">홈</a> <span class="sep">/</span> <b>${pageName}</b></div>`;
+  }
+  return `
+    <header class="topbar ${layout==='global'?'no-sidebar':''}">
+      ${crumb}
+      <div class="spacer"></div>
+      ${layout==='project' ? `<div class="search" data-action="open-search">⌕ 통합 검색<span class="kbd">/</span></div>` : ''}
+      <button class="icon-btn" data-action="notify" title="알림">🔔<span class="dot"></span></button>
+      <div class="acct" data-action="acct">
+        <span class="avatar">${initial}</span>
+        <span class="name">${esc(u.name)}</span>
+        <span class="arrow">▾</span>
+      </div>
+    </header>`;
+}
+
+/* ============================================================
+ * RENDER — Dashboard (SCR-PRJ-001)
+ * ============================================================ */
+function renderDashboard(params){
+  const proj = DATA.projects.find(p=>p.id===params.id) || DATA.projects[0];
+  const role = state.role;
+  let actions = '';
+  if(role === 'pm'){
+    actions = `
+      <button class="btn" data-action="open-review"><span class="role-tag">팀</span>검토 요청 발송</button>
+      <button class="btn locked" data-action="open-ai-build"><span class="role-tag">팀</span>AI 개발 시작</button>
+      <button class="btn locked" data-action="export-locked"><span class="role-tag">공통</span>산출물 Export</button>`;
+  } else if(role === 'client'){
+    actions = `
+      <button class="btn primary" data-action="open-approve" data-mode="approve"><span class="role-tag">고객</span>컨펌</button>
+      <button class="btn danger" data-action="open-approve" data-mode="reject"><span class="role-tag">고객</span>반려</button>`;
+  } else {
+    actions = `
+      <button class="btn" data-route="/admin/teams">전체 프로젝트팀</button>
+      <button class="btn" data-route="/admin/audit">감사 로그</button>`;
+  }
+  return html`
+    <section class="proj-header">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px">
+        <div>
+          <h1>${esc(proj.name)}</h1>
+          <p class="meta">고객사: <b>${esc(proj.client)}</b> · 유형: ${esc(proj.type)} · 기간: 2026-05 ~ 2026-08</p>
           <p class="stage">현재 단계: <b>12. 디자인 시안 등록</b> — <span style="color:var(--warn)">Gate 13 컨펌 대기</span></p>
         </div>
         <span class="gate-badge">🔒 Gate 13 잠금</span>
       </div>
       <div class="progress">
-        <div class="bar"><i style="width:50%"></i></div>
-        <div class="label"><span>진행률 <b style="color:var(--fg)">12 / 24</b></span><span>50%</span></div>
+        <div class="bar"><i style="width:${proj.progress}%"></i></div>
+        <div class="label"><span>진행률 <b style="color:var(--fg)">${proj.stage} / ${proj.total}</b></span><span>${proj.progress}%</span></div>
       </div>
     </section>
 
-    <!-- Action bar (role-dependent) -->
-    <section class="action-bar" id="actionBar">
+    <section class="action-bar">
       <span class="label">액션</span>
-      <!-- 액션 버튼은 role 따라 JS에서 동적으로 -->
+      ${actions}
     </section>
 
-    <!-- Pending + Activity -->
     <section class="grid cols-2" style="margin-bottom:14px">
       <div class="card">
         <div class="card-head"><h3>미처리 항목</h3><span class="meta">우선순위 순</span></div>
         <div class="card-list">
-          <div class="item" data-action="goto-design">
-            <div class="body">시안 v2 컨펌 대기 — <b>디자인 시안</b></div>
-            <span class="pill warn">고객</span>
-          </div>
-          <div class="item" data-action="goto-requirements">
-            <div class="body">요구사항 #12 코멘트 미응답</div>
-            <span class="pill muted">팀</span>
-          </div>
-          <div class="item" data-action="goto-requirements">
-            <div class="body">반려 사유 미작성 1건</div>
-            <span class="pill hot">팀</span>
-          </div>
+          <div class="item" data-route="/projects/A/deliverables/design"><div class="body">시안 v2 컨펌 대기 — <b>디자인 시안</b></div><span class="pill warn">고객</span></div>
+          <div class="item" data-route="/projects/A/requirements"><div class="body">요구사항 #12 코멘트 미응답</div><span class="pill muted">팀</span></div>
+          <div class="item" data-route="/projects/A/defects"><div class="body">결함 DEF-001 미해결 (High)</div><span class="pill hot">팀</span></div>
         </div>
       </div>
-
       <div class="card">
         <div class="card-head"><h3>최근 활동</h3><span class="meta">최근 20건</span></div>
         <div class="card-list">
-          <div class="item">
-            <div class="body"><b>디자이너</b>가 시안 v2 업로드</div>
-            <span class="t">2h</span>
-          </div>
-          <div class="item">
-            <div class="body"><b>고객사</b>가 코멘트 작성</div>
-            <span class="t">3h</span>
-          </div>
-          <div class="item">
-            <div class="body">Gate 11 IA 컨펌 통과</div>
-            <span class="t">1d</span>
-          </div>
-          <div class="item">
-            <div class="body">요구사항 정의서 v1.3 컨펌</div>
-            <span class="t">2d</span>
-          </div>
+          <div class="item"><div class="body"><b>디자이너</b>가 시안 v2 업로드</div><span class="t">2h</span></div>
+          <div class="item"><div class="body"><b>고객사</b>가 코멘트 작성</div><span class="t">3h</span></div>
+          <div class="item"><div class="body">Gate 11 IA 컨펌 통과</div><span class="t">1d</span></div>
+          <div class="item"><div class="body">요구사항 정의서 v1.3 컨펌</div><span class="t">2d</span></div>
         </div>
       </div>
     </section>
 
-    <!-- Deliverables summary -->
     <section class="card">
       <div class="card-head"><h3>산출물 요약</h3><span class="meta">단계별 최신 버전</span></div>
       <div class="grid cols-4">
-        <div class="deliverable" data-action="goto-deliv" data-slug="ia">
-          <div class="stage-num">단계 10~11</div>
-          <div class="name">IA</div>
-          <span class="pill ok">✓ v1.0 컨펌</span>
+        <div class="deliverable" data-route="/projects/A/deliverables/ia"><div class="stage-num">단계 10~11</div><div class="name">IA</div><span class="pill ok">✓ v1.0 컨펌</span></div>
+        <div class="deliverable" data-route="/projects/A/deliverables/design"><div class="stage-num">단계 12~13</div><div class="name">디자인 시안</div><span class="pill warn">v2 검토중</span></div>
+        <div class="deliverable" data-route="/projects/A/deliverables/prototype"><div class="stage-num">단계 14~15</div><div class="name">프로토타입</div><span class="pill muted">대기</span></div>
+        <div class="deliverable" data-route="/projects/A/deliverables/figma"><div class="stage-num">단계 16~17</div><div class="name">Figma</div><span class="pill muted">대기</span></div>
+      </div>
+    </section>`;
+}
+
+/* ============================================================
+ * RENDER — Requirements (SCR-REQ-001) — draft 상태 케이스
+ * ============================================================ */
+function renderRequirements(params){
+  const slot = DATA.slot.requirements;
+  return renderSlotPage({slot, slug:'requirements', title:'요구사항 정의서', subtitle:'슬롯 스냅샷 단위 파일 묶음 관리'});
+}
+
+/* ============================================================
+ * RENDER — Deliverables (SCR-DSN-001)
+ * ============================================================ */
+function renderDeliverables(params){
+  const slug = params.slug || 'ia';
+  const slotMap = {ia: DATA.slot.ia, design: DATA.slot.design, prototype: DATA.slot.prototype, figma: DATA.slot.figma};
+  const slot = slotMap[slug] || DATA.slot.ia;
+  const tabs = ['ia','design','prototype','figma'].map(s => {
+    const label = {ia:'IA', design:'디자인 시안', prototype:'프로토타입', figma:'Figma'}[s];
+    return `<a class="tab ${slug===s?'active':''}" data-route="/projects/A/deliverables/${s}">${label}</a>`;
+  }).join('');
+  return html`
+    <h1 class="page-title">산출물</h1>
+    <p class="page-sub">단계별 산출물(IA·디자인·프로토타입·Figma)을 슬롯 스냅샷 단위로 관리</p>
+    <div class="tabs">${tabs}</div>
+    ${slot.status === 'empty' ? renderEmptySlot(slug, slot) : renderSlotPage({slot, slug, title:slot.label, subtitle:'슬롯 스냅샷 단위 파일 묶음', isDeliverable:true})}`;
+}
+
+function renderEmptySlot(slug, slot){
+  return html`
+    <div class="empty">
+      <span class="ico">📁</span>
+      <p><b>${esc(slot.label)} — 아직 등록 없음</b></p>
+      <p>해당 단계 진입 후 [+ 새 버전 만들기]로 첫 스냅샷 등록</p>
+      ${state.role==='pm' ? `<button class="btn primary" style="margin-top:14px" data-action="open-new-version" data-slot="${slug}">+ 새 버전 만들기</button>` : ''}
+    </div>`;
+}
+
+/* 슬롯 페이지 공통 (요구사항 + 산출물) */
+function renderSlotPage({slot, slug, title, subtitle, isDeliverable=false}){
+  const role = state.role;
+  const isDraft = slot.status === 'draft';
+  const isLocked = !isDraft;
+  const statusBadge = {
+    draft: '<span class="pill warn">draft (작성 중)</span>',
+    'pending-review': '<span class="pill warn">검토중 (잠김)</span>',
+    confirmed: '<span class="pill ok">✓ 컨펌 완료</span>',
+    rejected: '<span class="pill hot">반려</span>',
+  }[slot.status];
+
+  // file list
+  const filesHtml = slot.files.length ? slot.files.map((f,i) => html`
+    <div class="file">
+      <span class="icn">📄</span>
+      <div class="name">
+        <b>${esc(f.name)}</b>
+        <span class="sub">${esc(f.size)} · ${esc(f.desc)}</span>
+      </div>
+      ${f.badge ? `<span class="badge" style="background:${f.badge==='NEW'?'#cfe2ff':'var(--surface-2)'};color:${f.badge==='NEW'?'#0a4b8a':'var(--muted)'}">${esc(f.badge)}</span>` : ''}
+      <div class="actions">
+        <button class="btn sm ghost" data-action="download" data-file="${esc(f.name)}">다운로드</button>
+        ${(isDraft && role==='pm') ? `
+          <button class="btn sm ghost" data-action="replace-file" data-idx="${i}">교체</button>
+          <button class="btn sm ghost" data-action="delete-file" data-idx="${i}">삭제</button>` : ''}
+      </div>
+    </div>`).join('') : '<div class="empty"><span class="ico">📁</span><p>파일 없음 — [+ 파일 업로드]로 시작</p></div>';
+
+  // activities
+  const actHtml = slot.activities.map(a => html`
+    <div class="activity-item activity"><div class="item">
+      <span class="icon ${a.type}">${({upload:'📦', review:'📨', reject:'⛔', approve:'✅', comment:'💬'})[a.type]}</span>
+      <div class="body">
+        <div class="meta"><b>${esc(a.who)}</b> · ${esc(a.time)} · ${({upload:'새 버전 생성', review:'검토 요청', reject:'반려', approve:'컨펌', comment:'코멘트'})[a.type]}${a.tag?` <span style="color:var(--hot)">(${esc(a.tag)})</span>`:''}</div>
+        <div class="desc">${a.body}</div>
+        ${a.own ? `<div class="actions"><button class="btn sm ghost" data-action="edit-comment">수정</button><button class="btn sm ghost" data-action="delete-comment">삭제</button></div>` : ''}
+      </div>
+    </div></div>`).join('');
+
+  // version dropdown
+  const versionLabel = `${slot.version}${isDraft ? ' · draft (최신, 미발송)' : isLocked && slot.status==='confirmed' ? ' (최신, 컨펌)' : ' (최신)'}`;
+
+  // actions
+  let actions = '';
+  if(role === 'pm'){
+    actions = html`
+      <button class="btn" data-action="open-new-version" data-slot="${slug}">+ 새 버전 만들기</button>
+      ${isDraft ? `<button class="btn primary" data-action="open-review" data-slot="${slug}">검토 요청 발송</button>` :
+        `<button class="btn locked" title="draft에서만 활성">검토 요청 발송</button>`}
+      <button class="btn locked">[고객] 컨펌</button>
+      <button class="btn locked">[고객] 반려</button>`;
+  } else if(role === 'client'){
+    if(slot.status === 'pending-review'){
+      actions = html`
+        <button class="btn locked">+ 새 버전 만들기</button>
+        <button class="btn locked">검토 요청 발송</button>
+        <button class="btn primary" data-action="open-approve" data-mode="approve" data-slot="${slug}">컨펌</button>
+        <button class="btn danger" data-action="open-approve" data-mode="reject" data-slot="${slug}">반려</button>`;
+    } else {
+      actions = `<button class="btn locked">컨펌 (검토 요청 수신 시 활성)</button>`;
+    }
+  } else {
+    actions = `<span style="color:var(--muted);font-size:12px">관리자: 조회만 가능. 편집·컨펌 권한 없음.</span>`;
+  }
+
+  return html`
+    <div class="page-bar">
+      <div>
+        <h1 class="page-title">${esc(title)}</h1>
+        <p class="page-sub">${esc(subtitle)} · 마지막 편집 ${esc(slot.updated)}</p>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        ${statusBadge}
+        <button class="btn sm" data-action="version-dropdown" data-slot="${slug}">${esc(versionLabel)} ▾</button>
+      </div>
+    </div>
+
+    <section class="card" style="margin-bottom:14px">
+      <div class="card-head">
+        <h3>파일 묶음 (${slot.version} 스냅샷 — ${slot.files.length}개)</h3>
+        <span class="meta">${isDraft ? '편집 가능 · 검토 요청 시 잠금' : '읽기 전용 · 다운로드만'}</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px">${filesHtml}</div>
+      <div style="margin-top:14px;display:flex;align-items:center;gap:10px">
+        <button class="btn ${isDraft && role==='pm' ? 'primary':'locked'}" ${isDraft && role==='pm' ? 'data-action="upload-file" data-slot="'+slug+'"':''}>+ 파일 업로드</button>
+        <span style="font-size:11px;color:var(--muted)">${isDraft ? '현재 버전에 파일 추가 — OS 다이얼로그 (모달 없음, 인-페이지)' : 'draft 상태에서만 활성. 변경하려면 [+ 새 버전 만들기].'}</span>
+      </div>
+      ${slot.status==='confirmed' && role==='pm' ? `<div class="state-info" style="margin-top:12px;border-color:color-mix(in oklch,var(--warn) 30%,white);color:var(--warn)">⚠ 컨펌 완료 상태에서 새 버전 생성 시 <b>이전 컨펌 자동 무효화 → 상태 '검토중' 복귀</b> (REQ-WF-005)</div>`:''}
+    </section>
+
+    <section class="card" style="margin-bottom:14px">
+      <div class="card-head">
+        <h3>활동 이력 (${slot.activities.length})</h3>
+        <span class="meta">전체 버전 통합 · 시간순 · 영구 보존</span>
+      </div>
+      <div class="activity">${actHtml}</div>
+      ${slot.status !== 'empty' ? html`
+        <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--divider)">
+          <textarea id="newComment" placeholder="자유 코멘트 작성 (최신 버전에서만)" style="width:100%;border:1px solid var(--border);background:var(--surface-2);border-radius:7px;padding:10px 12px;min-height:48px;outline:none;font:inherit"></textarea>
+          <div style="text-align:right;margin-top:6px"><button class="btn primary sm" data-action="post-comment">등록</button></div>
+          <p style="font-size:11px;color:var(--muted);margin-top:8px">※ 시스템 이벤트 자동 기록. 자유 코멘트 수정: 본인만 / 삭제: 본인 + 관리자(감사 로그). draft 안 파일 추가·교체·삭제는 활동 이력 미기록(Git commit 패턴).</p>
+        </div>` : ''}
+    </section>
+
+    <section class="action-bar" style="margin-bottom:0">
+      <span class="label">액션</span>
+      ${actions}
+    </section>`;
+}
+
+/* ============================================================
+ * RENDER — Project list (SCR-GLB-001)
+ * ============================================================ */
+function renderProjectList(){
+  const role = state.role;
+  let projs = DATA.projects;
+  if(role === 'client'){ projs = projs.filter(p=>p.id==='A' || p.id==='C'); }
+  return html`
+    <h1 class="page-title">내 프로젝트</h1>
+    <p class="page-sub">${role==='admin'?'전체 프로젝트':'담당·참여 프로젝트'} · ${projs.length}개</p>
+
+    <div class="filter-bar">
+      <div class="filter">상태 ▾</div>
+      <div class="filter">고객사 ▾</div>
+      <div class="filter">정렬: 최근 업데이트 ▾</div>
+      <div class="filter search-input"><span style="color:var(--muted)">⌕</span><input type="text" placeholder="프로젝트명·고객사 검색" /></div>
+      ${role!=='client' ? `<button class="btn primary sm" data-route="/projects/new" style="margin-left:auto">+ 새 프로젝트</button>` : ''}
+    </div>
+
+    <div class="grid cols-2">
+      ${projs.map(p => html`
+        <div class="proj-card" data-route="/projects/${p.id}">
+          <div class="top">
+            <div>
+              <h3>${esc(p.name)}</h3>
+              <div class="client">${esc(p.client)} · ${esc(p.type)}</div>
+            </div>
+            ${p.progress===100 ? '<span class="pill ok">완료</span>' : p.progress>=80 ? '<span class="pill warn">검수 단계</span>' : '<span class="pill accent">진행 중</span>'}
+          </div>
+          <div class="stage">단계 <b>${p.stage}/${p.total}</b> · ${p.stage===12?'시안 등록':p.stage===9?'요구사항 컨펌':p.stage===22?'최종 검수':'완료'}</div>
+          <div class="progress"><div class="bar"><i style="width:${p.progress}%"></i></div></div>
+          <div class="footer">
+            <span>미처리 ${p.pending}건</span>
+            <span>${esc(p.updated)}</span>
+          </div>
         </div>
-        <div class="deliverable" data-action="goto-deliv" data-slug="design">
-          <div class="stage-num">단계 12~13</div>
-          <div class="name">디자인 시안</div>
-          <span class="pill warn">v2 검토중</span>
+      `).join('')}
+    </div>`;
+}
+
+/* ============================================================
+ * RENDER — Account (SCR-ACC-001)
+ * ============================================================ */
+function renderAccount(){
+  const u = DATA.user[state.role];
+  return html`
+    <h1 class="page-title">내 계정</h1>
+    <p class="page-sub">기본 정보·비밀번호·참여 프로젝트</p>
+
+    <section class="card" style="margin-bottom:14px">
+      <div class="card-head"><h3>기본 정보</h3></div>
+      <div class="form">
+        <div class="row"><label>이름</label><div class="value"><input type="text" value="${esc(u.name)}" /></div></div>
+        <div class="row"><label>이메일 <small>수정 불가</small></label><div class="value"><div class="static">${esc(u.email)}</div></div></div>
+        <div class="row"><label>역할</label><div class="value"><div class="static">${esc(u.role)}</div></div></div>
+      </div>
+      <div style="text-align:right;margin-top:14px"><button class="btn primary" data-action="save-account">저장</button></div>
+    </section>
+
+    <section class="card" style="margin-bottom:14px">
+      <div class="card-head"><h3>비밀번호 변경</h3></div>
+      <div class="form">
+        <div class="row"><label>현재 비밀번호</label><div class="value"><input type="password" /></div></div>
+        <div class="row"><label>새 비밀번호 <small>8자 + 3종</small></label><div class="value"><input type="password" /></div></div>
+        <div class="row"><label>새 비밀번호 확인</label><div class="value"><input type="password" /></div></div>
+      </div>
+      <div style="text-align:right;margin-top:14px"><button class="btn primary" data-action="save-password">변경</button></div>
+    </section>
+
+    <section class="card">
+      <div class="card-head"><h3>참여 프로젝트 (2)</h3></div>
+      <div class="card-list">
+        <div class="item" data-route="/projects/A"><div class="body"><b>A 프로젝트</b> — ㈜OO</div><span class="t">참여 중</span></div>
+        <div class="item" data-route="/projects/B"><div class="body"><b>B 프로젝트</b> — ㈜OO</div><span class="t">완료</span></div>
+      </div>
+    </section>`;
+}
+
+/* ============================================================
+ * RENDER — Project new (SCR-PRJ-002)
+ * ============================================================ */
+function renderProjectNew(){
+  return html`
+    <h1 class="page-title">새 프로젝트</h1>
+    <p class="page-sub">전체 단계 24. 생성 시 워크스페이스 자동 초기화 · PM 자동 할당.</p>
+
+    <section class="card">
+      <div class="form">
+        <div class="row"><label>프로젝트명 <small>필수</small></label><div class="value"><input type="text" placeholder="예: A 프로젝트" /></div></div>
+        <div class="row"><label>고객사명 <small>필수</small></label><div class="value"><input type="text" placeholder="예: ㈜OO" /></div></div>
+        <div class="row"><label>유형</label><div class="value"><select><option>SaaS</option><option>웹사이트</option><option>모바일</option><option>기타</option></select></div></div>
+        <div class="row"><label>기간</label><div class="value" style="display:flex;gap:8px;align-items:center"><input type="date" /><span>~</span><input type="date" /></div></div>
+        <div class="row"><label>설명 <small>선택</small></label><div class="value"><textarea placeholder="프로젝트 설명"></textarea></div></div>
+      </div>
+      <div class="state-info" style="margin-top:18px">
+        생성 시 자동 초기화:<br>· 워크스페이스 (요구사항·산출물·결함)<br>· 진행 단계 1로 설정<br>· 생성자(현재 사용자)가 PM으로 자동 할당
+      </div>
+      <div style="text-align:right;margin-top:14px;display:flex;justify-content:flex-end;gap:8px">
+        <button class="btn" data-route="/">취소</button>
+        <button class="btn primary" data-action="create-project">프로젝트 생성</button>
+      </div>
+    </section>`;
+}
+
+/* ============================================================
+ * RENDER — Search (SCR-SCH-001)
+ * ============================================================ */
+function renderSearch(){
+  return html`
+    <h1 class="page-title">통합 검색</h1>
+    <p class="page-sub">요구사항·코멘트·산출물 파일명·워크플로우 이력을 한 번에 (REQ-SCH-001)</p>
+
+    <div class="search-page">
+      <input class="search-input-big" type="text" placeholder="검색어 입력 (예: 대시보드)" value="대시보드" id="searchQ" />
+      <div class="filter-bar" style="margin-top:0">
+        <div class="filter">구분 ▾</div>
+        <div class="filter">우선순위 ▾</div>
+        <div class="filter">담당자 ▾</div>
+        <div class="filter">상태 ▾</div>
+        <div class="filter">날짜 ▾</div>
+      </div>
+
+      <p style="color:var(--muted);font-size:13px;margin:0 0 14px"><b>12건</b> 결과</p>
+
+      <section class="card result-group" style="margin-bottom:10px">
+        <h4>📌 요구사항 (4)</h4>
+        <div class="card-list">
+          <div class="item" data-route="/projects/A/requirements"><div class="body"><b>REQ-PRJ-002</b> 프로젝트 대시보드</div><span class="t">High · 검토</span></div>
+          <div class="item" data-route="/projects/A/requirements"><div class="body"><b>REQ-PRJ-001</b> 프로젝트 생성</div><span class="t">High · 대기</span></div>
+          <div class="item"><div class="body"><b>REQ-AUT-007</b> ID/PW 로그인</div><span class="t">High · 확정</span></div>
+          <div class="item"><div class="body"><b>REQ-DEV-001</b> AI 자동 개발</div><span class="t">High · 확정</span></div>
         </div>
-        <div class="deliverable" data-action="goto-deliv" data-slug="prototype">
-          <div class="stage-num">단계 14~15</div>
-          <div class="name">프로토타입</div>
-          <span class="pill muted">대기</span>
+      </section>
+
+      <section class="card result-group" style="margin-bottom:10px">
+        <h4>💬 코멘트 (5)</h4>
+        <div class="card-list">
+          <div class="item"><div class="body">"대시보드 미처리 카드 영역 보강 부탁" — REQ-PRJ-002</div><span class="t">고객 · 05-19</span></div>
+          <div class="item"><div class="body">"대시보드 단계 표시 위치 조정" — REQ-PRJ-002</div><span class="t">팀 · 05-18</span></div>
         </div>
-        <div class="deliverable" data-action="goto-deliv" data-slug="figma">
-          <div class="stage-num">단계 16~17</div>
-          <div class="name">Figma</div>
-          <span class="pill muted">대기</span>
+      </section>
+
+      <section class="card result-group" style="margin-bottom:10px">
+        <h4>📁 산출물 파일 (2)</h4>
+        <div class="card-list">
+          <div class="item" data-route="/projects/A/deliverables/ia"><div class="body"><b>ia-v1.0.pdf</b> — IA 사이트맵 (대시보드 영역 포함)</div><span class="t">05-19</span></div>
+          <div class="item"><div class="body"><b>design-v2-A.png</b> — Precision grid 대시보드</div><span class="t">05-19</span></div>
+        </div>
+      </section>
+
+      <section class="card result-group">
+        <h4>📋 워크플로우 이력 (1)</h4>
+        <div class="card-list">
+          <div class="item"><div class="body">Gate 9 컨펌 통과 — "대시보드 영역 매트릭스 보강 후 컨펌"</div><span class="t">05-19</span></div>
+        </div>
+      </section>
+    </div>`;
+}
+
+/* ============================================================
+ * RENDER — AI Build (SCR-DEV-001)
+ * ============================================================ */
+function renderAiBuild(){
+  return html`
+    <h1 class="page-title">AI 자동 개발</h1>
+    <p class="page-sub">비동기 백그라운드 작업 · 5초 폴링 갱신 · 24h당 3회 재시도</p>
+
+    <div class="state-info" style="margin-bottom:14px;color:var(--warn);border-color:color-mix(in oklch,var(--warn) 30%,white);background:var(--warn-soft)">
+      🔒 <b>현재 상태: 잠금</b> — Gate 13 (디자인 시안 컨펌) 대기 중. 9·11·13·15 모든 게이트 통과 + 내부 산출물 등록 완료 후 시작 가능.
+    </div>
+
+    <section class="card" style="margin-bottom:14px">
+      <div class="card-head"><h3>최근 작업 이력</h3><span class="meta">최근 5건</span></div>
+      <div class="card-list">
+        <div class="item">
+          <div class="body">2026-05-18 22:00 <span class="pill hot" style="margin-left:8px">실패</span><br><span style="color:var(--muted);font-size:12px">입력 검증 (요구사항 미컨펌)</span></div>
+          <button class="btn sm locked">재시도 (잠금)</button>
+        </div>
+        <div class="item">
+          <div class="body">2026-05-18 18:00 <span class="pill ok" style="margin-left:8px">성공</span><br><span style="color:var(--muted);font-size:12px">8단계 / 1h 42m / 패키지 12MB</span></div>
+          <button class="btn sm">패키지 다운로드</button>
         </div>
       </div>
     </section>
 
-  </main>
-</div>
+    <section class="card">
+      <div class="card-head"><h3>마지막 시도 — 단계별 진행</h3><span class="meta">2026-05-18 22:00</span></div>
+      <div class="ai-progress">
+        <div class="step done"><span class="ico">✅</span><span>입력 검증</span><span class="t">실패 (재시도)</span></div>
+        <div class="step pending"><span class="ico">⬜</span><span>도메인 모델 생성</span><span class="t">대기</span></div>
+        <div class="step pending"><span class="ico">⬜</span><span>엔티티/Mapper 생성</span><span class="t">대기</span></div>
+        <div class="step pending"><span class="ico">⬜</span><span>Service 레이어 생성</span><span class="t">대기</span></div>
+        <div class="step pending"><span class="ico">⬜</span><span>Controller·뷰 생성</span><span class="t">대기</span></div>
+        <div class="step pending"><span class="ico">⬜</span><span>단위 테스트 생성</span><span class="t">대기</span></div>
+        <div class="step pending"><span class="ico">⬜</span><span>빌드 검증</span><span class="t">대기</span></div>
+        <div class="step pending"><span class="ico">⬜</span><span>패키징</span><span class="t">대기</span></div>
+      </div>
+    </section>`;
+}
 
-</div>
+/* ============================================================
+ * RENDER — Tests (SCR-TST-001)
+ * ============================================================ */
+function renderTests(){
+  return html`
+    <div class="page-bar">
+      <div><h1 class="page-title">테스트 케이스</h1><p class="page-sub">총 ${DATA.tests.length}건 · UAT(20단계) 전 작성</p></div>
+      ${state.role==='pm' ? `<button class="btn primary" data-action="new-tc">+ TC 등록</button>` : ''}
+    </div>
 
-<!-- ========== M1 검토 요청 모달 ========== -->
-<div class="modal-backdrop" id="modalReview">
-  <div class="modal">
+    <div class="grid cols-3" style="margin-bottom:14px">
+      <div class="stat"><span class="label">대기</span><span class="value" style="color:var(--muted)">${DATA.tests.filter(t=>t.status==='대기').length}</span></div>
+      <div class="stat"><span class="label">Pass</span><span class="value" style="color:var(--ok)">${DATA.tests.filter(t=>t.status==='Pass').length}</span></div>
+      <div class="stat"><span class="label">Fail</span><span class="value" style="color:var(--hot)">${DATA.tests.filter(t=>t.status==='Fail').length}</span></div>
+    </div>
+
+    <div class="filter-bar">
+      <div class="filter">단계 ▾</div>
+      <div class="filter">우선순위 ▾</div>
+      <div class="filter">상태 ▾</div>
+      <div class="filter search-input"><span style="color:var(--muted)">⌕</span><input type="text" placeholder="TC ID·제목 검색" /></div>
+    </div>
+
+    <section class="card flat" style="padding:0;overflow:hidden">
+      <table class="tbl">
+        <thead><tr><th>ID</th><th>제목</th><th>단계</th><th>우선순위</th><th>상태</th><th>담당</th></tr></thead>
+        <tbody>
+          ${DATA.tests.map(t => html`
+            <tr data-route="/projects/A/tests/${t.id}">
+              <td class="id-cell">${t.id}</td>
+              <td>${esc(t.title)}</td>
+              <td>${esc(t.phase)}</td>
+              <td>${esc(t.priority)}</td>
+              <td>${t.status==='Pass'?'<span class="pill ok">Pass</span>':t.status==='Fail'?'<span class="pill hot">Fail</span>':'<span class="pill muted">대기</span>'}</td>
+              <td>${esc(t.assignee)}</td>
+            </tr>`).join('')}
+        </tbody>
+      </table>
+    </section>`;
+}
+
+/* ============================================================
+ * RENDER — Test detail (SCR-TST-002)
+ * ============================================================ */
+function renderTestDetail(params){
+  const tc = DATA.tests.find(t=>t.id===params.tcId) || DATA.tests[0];
+  return html`
+    <div class="page-bar">
+      <div>
+        <p class="page-sub" style="margin-bottom:4px"><a data-route="/projects/A/tests">← TC 목록</a></p>
+        <h1 class="page-title">${tc.id} · ${esc(tc.title)}</h1>
+        <p class="page-sub">${esc(tc.phase)} · ${esc(tc.priority)} · 담당 ${esc(tc.assignee)}</p>
+      </div>
+      ${tc.status==='Pass'?'<span class="pill ok lg">Pass</span>':tc.status==='Fail'?'<span class="pill hot lg">Fail</span>':'<span class="pill muted lg">대기</span>'}
+    </div>
+
+    <section class="card" style="margin-bottom:14px">
+      <div class="card-head"><h3>전제 조건</h3></div>
+      <p style="font-size:13px;line-height:1.7">유효한 계정 보유, /login URL 접근 가능</p>
+    </section>
+
+    <section class="card" style="margin-bottom:14px">
+      <div class="card-head"><h3>테스트 절차</h3></div>
+      <ol style="margin:0;padding-left:20px;line-height:2;font-size:13px">
+        <li>이메일·비밀번호 입력</li>
+        <li>[로그인] 클릭</li>
+        <li>응답·redirect 확인</li>
+      </ol>
+    </section>
+
+    <div class="grid cols-2" style="margin-bottom:14px">
+      <section class="card">
+        <div class="card-head"><h3>기대 결과</h3></div>
+        <p style="font-size:13px;line-height:1.7">정상 로그인 + 진입 URL로 redirect</p>
+      </section>
+      <section class="card">
+        <div class="card-head"><h3>실제 결과</h3></div>
+        <textarea style="width:100%;border:1px solid var(--border);background:var(--surface-2);border-radius:7px;padding:10px;min-height:80px;outline:none;font:inherit" placeholder="실제 결과 입력">${tc.status==='Fail'?'redirect 파라미터 보존 안 됨':''}</textarea>
+      </section>
+    </div>
+
+    ${tc.status==='Fail' ? `
+      <section class="card" style="margin-bottom:14px">
+        <div class="card-head"><h3>연결 결함 (1)</h3>${state.role==='pm'?`<button class="btn sm">+ 결함 연결</button>`:''}</div>
+        <div class="card-list">
+          <div class="item" data-route="/projects/A/defects/DEF-001"><div class="body"><b>DEF-001</b> 로그인 후 리다이렉트 미동작</div><span class="pill hot">미해결</span></div>
+        </div>
+      </section>` : ''}
+
+    <section class="action-bar">
+      <span class="label">결과 입력</span>
+      <button class="btn primary" data-action="tc-result" data-r="Pass">Pass</button>
+      <button class="btn danger" data-action="tc-result" data-r="Fail">Fail</button>
+      <button class="btn" data-action="tc-result" data-r="보류">보류</button>
+    </section>`;
+}
+
+/* ============================================================
+ * RENDER — Defects (SCR-TST-003)
+ * ============================================================ */
+function renderDefects(){
+  return html`
+    <div class="page-bar">
+      <div><h1 class="page-title">결함 관리</h1><p class="page-sub">총 ${DATA.defects.length}건 · Gate 22 사전조건 = 모든 결함 해결</p></div>
+      <button class="btn primary" data-action="new-defect">+ 결함 등록</button>
+    </div>
+
+    <div class="grid cols-3" style="margin-bottom:14px">
+      <div class="stat"><span class="label">미해결</span><span class="value" style="color:var(--hot)">${DATA.defects.filter(d=>d.status==='미해결').length}</span></div>
+      <div class="stat"><span class="label">진행 중</span><span class="value" style="color:var(--warn)">${DATA.defects.filter(d=>d.status==='진행중').length}</span></div>
+      <div class="stat"><span class="label">해결 완료</span><span class="value" style="color:var(--ok)">${DATA.defects.filter(d=>d.status==='해결완료').length}</span></div>
+    </div>
+
+    <div class="filter-bar">
+      <div class="filter">상태 ▾</div>
+      <div class="filter">심각도 ▾</div>
+      <div class="filter">담당자 ▾</div>
+      <div class="filter search-input"><span style="color:var(--muted)">⌕</span><input type="text" placeholder="ID·제목 검색" /></div>
+    </div>
+
+    <section class="card flat" style="padding:0;overflow:hidden">
+      <table class="tbl">
+        <thead><tr><th>ID</th><th>제목</th><th>심각도</th><th>상태</th><th>담당</th><th>등록일</th></tr></thead>
+        <tbody>
+          ${DATA.defects.map(d => html`
+            <tr data-route="/projects/A/defects/${d.id}">
+              <td class="id-cell">${d.id}</td>
+              <td>${esc(d.title)}</td>
+              <td>${d.severity==='High'?'<span class="pill hot">High</span>':d.severity==='Medium'?'<span class="pill warn">Medium</span>':'<span class="pill muted">Low</span>'}</td>
+              <td>${d.status==='해결완료'?'<span class="pill ok">해결 완료</span>':d.status==='진행중'?'<span class="pill warn">진행 중</span>':'<span class="pill hot">미해결</span>'}</td>
+              <td>${esc(d.assignee)}</td>
+              <td style="color:var(--muted);font-family:var(--mono);font-size:12px">${esc(d.created)}</td>
+            </tr>`).join('')}
+        </tbody>
+      </table>
+    </section>`;
+}
+
+/* ============================================================
+ * RENDER — Defect detail (SCR-TST-004)
+ * ============================================================ */
+function renderDefectDetail(params){
+  const d = DATA.defects.find(x=>x.id===params.defectId) || DATA.defects[0];
+  return html`
+    <div class="page-bar">
+      <div>
+        <p class="page-sub" style="margin-bottom:4px"><a data-route="/projects/A/defects">← 결함 목록</a></p>
+        <h1 class="page-title">${d.id} · ${esc(d.title)}</h1>
+        <p class="page-sub">등록 ${state.role==='client'?'고객사':'팀'} · 2026-${d.created} · 담당 ${esc(d.assignee)}</p>
+      </div>
+      <div style="display:flex;gap:6px">
+        ${d.severity==='High'?'<span class="pill hot lg">High</span>':d.severity==='Medium'?'<span class="pill warn lg">Medium</span>':'<span class="pill muted lg">Low</span>'}
+        ${d.status==='해결완료'?'<span class="pill ok lg">해결 완료</span>':d.status==='진행중'?'<span class="pill warn lg">진행 중</span>':'<span class="pill hot lg">미해결</span>'}
+      </div>
+    </div>
+
+    <div class="grid cols-2" style="margin-bottom:14px">
+      <section class="card">
+        <div class="card-head"><h3>재현 단계</h3></div>
+        <ol style="margin:0;padding-left:20px;line-height:2;font-size:13px">
+          <li>/projects/A/requirements 직접 접근 (비로그인)</li>
+          <li>로그인 페이지로 redirect</li>
+          <li>로그인 후 / 로 이동 (원래 URL로 안 감)</li>
+        </ol>
+      </section>
+      <section class="card">
+        <div class="card-head"><h3>환경</h3></div>
+        <p style="font-size:13px;line-height:1.8">Chrome 124 / Windows 11 / 2026-05-19 14:00 KST</p>
+      </section>
+    </div>
+
+    <section class="card" style="margin-bottom:14px">
+      <div class="card-head"><h3>첨부 (2)</h3><button class="btn sm" data-action="add-attachment">+ 첨부 추가</button></div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div class="file"><span class="icn">📸</span><div class="name"><b>screenshot-1.png</b><span class="sub">312KB · 재현 화면</span></div><div class="actions"><button class="btn sm ghost">다운로드</button></div></div>
+        <div class="file"><span class="icn">📄</span><div class="name"><b>console-log.txt</b><span class="sub">8KB · 브라우저 콘솔 로그</span></div><div class="actions"><button class="btn sm ghost">다운로드</button></div></div>
+      </div>
+    </section>
+
+    <section class="card" style="margin-bottom:14px">
+      <div class="card-head"><h3>연결 TC (1)</h3></div>
+      <div class="card-list">
+        <div class="item" data-route="/projects/A/tests/TC-001"><div class="body"><b>TC-001</b> 로그인 성공 케이스</div><span class="pill hot">Fail</span></div>
+      </div>
+    </section>
+
+    <section class="card" style="margin-bottom:14px">
+      <div class="card-head"><h3>코멘트 (3)</h3></div>
+      <div class="activity">
+        <div class="activity-item activity"><div class="item">
+          <span class="icon comment">💬</span>
+          <div class="body"><div class="meta"><b>고객사</b> · 05-19 14:00</div><div class="desc">로그인 후 원래 페이지로 안 갑니다.</div></div>
+        </div></div>
+        <div class="activity-item activity"><div class="item">
+          <span class="icon comment">💬</span>
+          <div class="body"><div class="meta"><b>김개발</b> · 05-19 15:00</div><div class="desc">redirect 파라미터 처리 누락 확인. 수정 중.</div></div>
+        </div></div>
+      </div>
+      <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--divider)">
+        <textarea style="width:100%;border:1px solid var(--border);background:var(--surface-2);border-radius:7px;padding:10px;min-height:48px;outline:none;font:inherit" placeholder="코멘트 입력"></textarea>
+        <div style="text-align:right;margin-top:6px"><button class="btn primary sm" data-action="post-comment">등록</button></div>
+      </div>
+    </section>
+
+    <section class="action-bar">
+      <span class="label">상태 변경</span>
+      <button class="btn ghost" data-action="defect-status" data-s="미해결">미해결</button>
+      <button class="btn" data-action="defect-status" data-s="진행중">진행 중</button>
+      <button class="btn primary" data-action="defect-status" data-s="해결완료">해결 완료</button>
+      <button class="btn" data-action="defect-status" data-s="재현불가">재현 불가</button>
+      <span style="margin-left:auto"></span>
+      <button class="btn ghost" data-action="change-assignee">담당자 변경</button>
+    </section>`;
+}
+
+/* ============================================================
+ * RENDER — Settings (SCR-SET-001/002/003)
+ * ============================================================ */
+function renderSettings(){
+  return html`
+    <h1 class="page-title">프로젝트 설정</h1>
+    <p class="page-sub">기본 정보 · REQ-PRJ-001</p>
+
+    <section class="card">
+      <div class="form">
+        <div class="row"><label>프로젝트명</label><div class="value"><input type="text" value="A 프로젝트" /></div></div>
+        <div class="row"><label>고객사명</label><div class="value"><input type="text" value="㈜OO" /></div></div>
+        <div class="row"><label>유형</label><div class="value"><select><option selected>SaaS</option><option>웹사이트</option><option>모바일</option></select></div></div>
+        <div class="row"><label>기간</label><div class="value" style="display:flex;gap:8px;align-items:center"><input type="date" value="2026-05-01" /><span>~</span><input type="date" value="2026-08-31" /></div></div>
+        <div class="row"><label>설명</label><div class="value"><textarea>운영 관제형 SaaS 포털 — 협의 워크플로우 중심</textarea></div></div>
+      </div>
+      <div style="text-align:right;margin-top:14px;display:flex;justify-content:flex-end;gap:8px">
+        <button class="btn">취소</button>
+        <button class="btn primary" data-action="save-settings">저장</button>
+      </div>
+    </section>
+    <p style="color:var(--muted);font-size:12px;margin-top:10px">※ 프로젝트 ID·생성일은 수정 불가. 변경 시 감사 로그(REQ-AUD-001)에 기록.</p>`;
+}
+
+function renderMembers(){
+  return html`
+    <h1 class="page-title">팀 멤버 · 고객사 초대</h1>
+    <p class="page-sub">REQ-AUT-002 · REQ-AUT-012</p>
+
+    <section class="card" style="margin-bottom:14px">
+      <div class="card-head"><h3>프로젝트팀 (${DATA.members.team.length})</h3><span class="meta">관리자가 SCR-ADM-002에서 할당</span></div>
+      <div class="card-list">
+        ${DATA.members.team.map(m => html`<div class="item"><div class="body"><b>${esc(m.name)}</b> (${esc(m.role)}) · ${esc(m.email)}</div><span class="pill ok">활성</span></div>`).join('')}
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card-head"><h3>고객사 (${DATA.members.clients.length})</h3>${state.role==='pm'?`<button class="btn sm primary" data-action="invite-client">+ 고객사 초대</button>`:''}</div>
+      <div class="card-list">
+        ${DATA.members.clients.map(c => html`
+          <div class="item">
+            <div class="body"><b>${esc(c.name)}</b> · ${esc(c.email)}</div>
+            <div style="display:flex;align-items:center;gap:6px">
+              ${c.status==='active'?'<span class="pill ok">활성</span>':`<span class="pill warn">초대 발송 · 만료 ${esc(c.expires)}</span>`}
+              ${c.status==='pending' && state.role==='pm' ? `<button class="btn sm ghost" data-action="resend-invite" data-email="${esc(c.email)}">재발송</button><button class="btn sm ghost">취소</button>` : ''}
+            </div>
+          </div>`).join('')}
+      </div>
+    </section>`;
+}
+
+function renderDanger(){
+  return html`
+    <h1 class="page-title" style="color:var(--hot)">⚠ Danger Zone</h1>
+    <p class="page-sub">파괴적 액션 격리 · REQ-NFR-005 (소프트 삭제 30일 복구)</p>
+
+    <div class="danger-zone">
+      <div class="info">
+        <h4>프로젝트 보관 처리</h4>
+        <p>진행 중지 + 읽기 전용 전환. 다시 활성화 가능.</p>
+      </div>
+      <button class="btn" data-action="archive-project">보관</button>
+    </div>
+
+    <div class="danger-zone">
+      <div class="info">
+        <h4>프로젝트 삭제</h4>
+        <p>소프트 삭제 — 30일 복구 가능 (REQ-NFR-005). 30일 후 영구 삭제 가능.<br>⚠ 모든 요구사항·산출물·코멘트가 함께 삭제 대상이 됩니다.</p>
+      </div>
+      <button class="btn danger-solid" data-action="delete-project">삭제</button>
+    </div>`;
+}
+
+/* ============================================================
+ * RENDER — Auth pages
+ * ============================================================ */
+function renderLogin(){
+  return html`
+    <div class="auth-page">
+      <div class="logo">sp-project-portal</div>
+      <div class="auth-card">
+        <h1>로그인</h1>
+        <p class="sub">계정으로 로그인하세요</p>
+        <label class="label">이메일</label>
+        <input type="email" id="loginEmail" placeholder="user@example.com" autocomplete="email" />
+        <label class="label">비밀번호</label>
+        <input type="password" id="loginPw" placeholder="••••••••" autocomplete="current-password" />
+        <div id="loginErr" class="err" style="display:none"></div>
+        <button class="btn primary btn-full" data-action="login-submit" style="margin-top:8px">로그인</button>
+        <div class="footer">
+          <a data-route="/password/reset">비밀번호 재설정</a>·
+          <a data-action="invite-help">초대 받기?</a>
+        </div>
+      </div>
+      <p style="color:var(--muted-2);font-size:11px;margin-top:24px;text-align:center">💡 데모: 아무 이메일/비밀번호 입력 후 [로그인] · 5회 실패 시 잠금</p>
+    </div>`;
+}
+
+function renderPasswordReset(){
+  return html`
+    <div class="auth-page">
+      <div class="logo">sp-project-portal</div>
+      <div class="auth-card">
+        <h1>비밀번호 재설정</h1>
+        <p class="sub">가입한 이메일을 입력하시면 재설정 링크를 보내드립니다.</p>
+        <label class="label">이메일</label>
+        <input type="email" id="resetEmail" placeholder="user@example.com" />
+        <button class="btn primary btn-full" data-action="reset-submit">재설정 링크 보내기</button>
+        <div class="footer"><a data-route="/login">로그인으로 돌아가기</a></div>
+      </div>
+    </div>`;
+}
+
+function renderPasswordResetInput(){
+  return html`
+    <div class="auth-page">
+      <div class="logo">sp-project-portal</div>
+      <div class="auth-card">
+        <h1>새 비밀번호 설정</h1>
+        <p class="sub">user@example.com 계정의 비밀번호를 재설정합니다.</p>
+        <label class="label">새 비밀번호</label>
+        <input type="password" id="newPw" placeholder="••••••••" />
+        <p class="policy">8자 이상 + 대/소/숫자/특수문자 중 3종 이상</p>
+        <label class="label">비밀번호 확인</label>
+        <input type="password" id="newPwConfirm" placeholder="••••••••" />
+        <button class="btn primary btn-full" data-action="reset-confirm">비밀번호 변경</button>
+      </div>
+    </div>`;
+}
+
+function renderInvitation(){
+  return html`
+    <div class="auth-page">
+      <div class="logo">sp-project-portal</div>
+      <div class="auth-card lg">
+        <h1>초대 수락</h1>
+        <div class="invite-info">
+          <b>㈜OO</b>에 <b>고객사</b> 권한으로 초대되었습니다.
+          <div style="color:var(--muted);font-size:12px;margin-top:4px">참여 프로젝트: A 프로젝트</div>
+        </div>
+        <label class="label">이름</label>
+        <input type="text" placeholder="홍길동" />
+        <label class="label">비밀번호</label>
+        <input type="password" placeholder="••••••••" />
+        <p class="policy">8자 이상 + 대/소/숫자/특수문자 중 3종 이상</p>
+        <label class="label">비밀번호 확인</label>
+        <input type="password" placeholder="••••••••" />
+        <label class="check"><input type="checkbox" /> 이용약관·개인정보처리방침 동의</label>
+        <button class="btn primary btn-full" data-action="invite-accept">가입 완료 · 로그인</button>
+      </div>
+    </div>`;
+}
+
+/* ============================================================
+ * RENDER — Admin (SCR-ADM-001~005)
+ * ============================================================ */
+function renderAdminTeams(){
+  return html`
+    <div class="page-bar">
+      <div><h1 class="page-title">프로젝트팀 계정</h1><p class="page-sub">총 ${DATA.adminTeams.length}명 · REQ-AUT-004</p></div>
+      <button class="btn primary" data-action="new-admin-team">+ 계정 생성</button>
+    </div>
+    <div class="filter-bar">
+      <div class="filter">역할 ▾</div>
+      <div class="filter">상태 ▾</div>
+      <div class="filter search-input"><span style="color:var(--muted)">⌕</span><input type="text" placeholder="이름·이메일 검색" /></div>
+    </div>
+    <section class="card flat" style="padding:0;overflow:hidden">
+      <table class="tbl">
+        <thead><tr><th>이름</th><th>이메일</th><th>역할</th><th>담당 PJT</th><th>상태</th><th></th></tr></thead>
+        <tbody>${DATA.adminTeams.map(m => html`
+          <tr><td><b>${esc(m.name)}</b></td><td>${esc(m.email)}</td><td>${esc(m.role)}</td><td>${m.projects}</td><td>${m.active?'<span class="pill ok">활성</span>':'<span class="pill muted">비활성</span>'}</td><td class="actions"><button class="btn sm ghost">편집</button><button class="btn sm ghost">${m.active?'비활성화':'활성화'}</button></td></tr>`).join('')}
+        </tbody>
+      </table>
+    </section>`;
+}
+
+function renderAdminClients(){
+  return html`
+    <div class="page-bar">
+      <div><h1 class="page-title">고객사 계정</h1><p class="page-sub">총 ${DATA.adminClients.length}명 · REQ-AUT-006·012</p></div>
+      <button class="btn primary" data-action="new-admin-client">+ 계정 생성</button>
+    </div>
+    <div class="filter-bar">
+      <div class="filter">고객사 ▾</div>
+      <div class="filter">상태 ▾</div>
+      <div class="filter search-input"><span style="color:var(--muted)">⌕</span><input type="text" placeholder="이름·이메일·고객사 검색" /></div>
+    </div>
+    <section class="card flat" style="padding:0;overflow:hidden">
+      <table class="tbl">
+        <thead><tr><th>이름</th><th>이메일</th><th>고객사</th><th>참여 PJT</th><th>상태</th><th></th></tr></thead>
+        <tbody>${DATA.adminClients.map(c => html`
+          <tr><td><b>${esc(c.name)}</b></td><td>${esc(c.email)}</td><td>${esc(c.client)}</td><td>${c.projects}</td><td>${c.status==='active'?'<span class="pill ok">활성</span>':'<span class="pill warn">초대 대기</span>'}</td><td class="actions"><button class="btn sm ghost">편집</button>${c.status==='pending'?`<button class="btn sm ghost" data-action="resend-invite" data-email="${esc(c.email)}">초대 재발송</button>`:''}<button class="btn sm ghost">${c.status==='active'?'비활성화':'활성화'}</button></td></tr>`).join('')}
+        </tbody>
+      </table>
+    </section>`;
+}
+
+function renderAdminAudit(){
+  return html`
+    <div class="page-bar">
+      <div><h1 class="page-title">감사 로그</h1><p class="page-sub">변조 불가 append-only · 1년 보존 · REQ-AUD-001</p></div>
+    </div>
+    <div class="filter-bar">
+      <div class="filter">기간 ▾</div>
+      <div class="filter">사용자 ▾</div>
+      <div class="filter">액션 ▾</div>
+      <div class="filter search-input"><span style="color:var(--muted)">⌕</span><input type="text" placeholder="대상 객체 검색" /></div>
+    </div>
+    <section class="card flat" style="padding:0;overflow:hidden">
+      <table class="tbl">
+        <thead><tr><th>일시 (UTC)</th><th>사용자</th><th>역할</th><th>액션</th><th>대상</th><th>IP</th></tr></thead>
+        <tbody>${DATA.audit.map(a => html`
+          <tr><td style="font-family:var(--mono);font-size:12px">${esc(a.time)}</td><td>${esc(a.user)}</td><td>${esc(a.role)}</td><td>${esc(a.action)}</td><td><code>${esc(a.target)}</code></td><td style="font-family:var(--mono);font-size:12px;color:var(--muted)">${esc(a.ip)}</td></tr>`).join('')}
+        </tbody>
+      </table>
+    </section>
+    <p style="text-align:center;color:var(--muted);font-size:12px;margin-top:14px">◀ 1 2 3 ... ▶</p>`;
+}
+
+/* ============================================================
+ * RENDER — Error pages
+ * ============================================================ */
+function renderError(params){
+  const code = params?.code || '404';
+  const map = {
+    '401':{title:'로그인이 필요합니다', desc:'접근하려는 페이지는 로그인 후 이용 가능합니다.', actions:`<button class="btn primary" data-route="/login">로그인 페이지로</button>`},
+    '403':{title:'접근 권한이 없습니다', desc:'이 페이지에 접근할 권한이 없습니다. 관리자에게 문의하세요.', actions:`<button class="btn" data-action="back">이전 페이지</button><button class="btn primary" data-route="/">홈으로</button>`},
+    '404':{title:'페이지를 찾을 수 없습니다', desc:'요청하신 페이지가 존재하지 않거나 삭제되었습니다.', actions:`<button class="btn primary" data-route="/">홈으로</button>`},
+    '500':{title:'서버 오류가 발생했습니다', desc:'일시적인 시스템 오류입니다. 잠시 후 다시 시도해 주세요.', actions:`<button class="btn" data-action="reload">새로고침</button><button class="btn primary" data-route="/">홈으로</button>`, errid:'ERR-1716192000-A7F2'},
+  };
+  const e = map[code] || map['404'];
+  return html`
+    <div class="error-page">
+      <div class="code">${code}</div>
+      <h1>${e.title}</h1>
+      <p>${e.desc}</p>
+      ${e.errid ? `<div class="errid">에러 ID: ${e.errid}</div>` : ''}
+      <div class="actions">${e.actions}</div>
+    </div>`;
+}
+
+/* ============================================================
+ * MODALS
+ * ============================================================ */
+function modalReview(slot){
+  const slotName = slot ? {requirements:'요구사항 정의서', ia:'IA', design:'디자인 시안', prototype:'프로토타입', figma:'Figma'}[slot] || '디자인 시안' : '디자인 시안';
+  return `
     <div class="modal-head"><h2>검토 요청 발송</h2><button class="close" data-action="close-modal">✕</button></div>
     <div class="modal-body">
-      <div class="row"><label>대상</label><div class="value static">A 프로젝트 — 디자인 시안 v2</div></div>
+      <div class="row"><label>대상</label><div class="value static">A 프로젝트 — ${slotName}</div></div>
       <div class="row"><label>현재 버전</label><div class="value static">v2</div></div>
       <div class="row"><label>요청 메시지<small>(선택)</small></label><div class="value"><textarea placeholder="고객사에 전달할 안내 메시지"></textarea></div></div>
       <div class="note">발송 시 <b>현재 버전이 잠금</b>되고 고객사에 이메일 알림이 발송됩니다. 이후 변경하려면 새 버전 생성 필요.</div>
@@ -316,171 +1584,312 @@ a:hover{text-decoration:underline}
     <div class="modal-foot">
       <button class="btn" data-action="close-modal">취소</button>
       <button class="btn primary" data-action="submit-review">요청 발송</button>
-    </div>
-  </div>
-</div>
+    </div>`;
+}
 
-<!-- ========== M2 컨펌/반려 모달 ========== -->
-<div class="modal-backdrop" id="modalApprove">
-  <div class="modal">
+function modalApprove(mode='approve'){
+  return `
     <div class="modal-head"><h2>검토 결과</h2><button class="close" data-action="close-modal">✕</button></div>
     <div class="modal-body">
       <div class="row"><label>대상</label><div class="value static">A 프로젝트 — 디자인 시안 v2</div></div>
-      <div class="row"><label>결과</label>
-        <div class="value">
-          <div class="radio-group">
-            <label><input type="radio" name="result" value="approve" checked> 컨펌</label>
-            <label><input type="radio" name="result" value="reject"> 반려</label>
-          </div>
+      <div class="row"><label>결과</label><div class="value">
+        <div class="radio-group">
+          <label><input type="radio" name="result" value="approve" ${mode==='approve'?'checked':''}> 컨펌</label>
+          <label><input type="radio" name="result" value="reject" ${mode==='reject'?'checked':''}> 반려</label>
         </div>
-      </div>
-      <div class="row"><label>사유<small>(반려 시 필수)</small></label><div class="value"><textarea id="rejectReason" placeholder="반려 시 사유를 입력하세요. 영구 보존됩니다."></textarea></div></div>
+      </div></div>
+      <div class="row"><label>사유<small>(반려 시 필수)</small></label><div class="value"><textarea id="rejectReason" placeholder="반려 시 사유를 입력하세요. 영구 보존됩니다."></textarea><div id="rejectErr" class="err" style="display:none">반려 사유를 입력해 주세요</div></div></div>
       <div class="note">반려 사유는 워크플로우 활동 이력에 <b>영구 보존</b>됩니다 (REQ-CMT-002).</div>
     </div>
     <div class="modal-foot">
       <button class="btn" data-action="close-modal">취소</button>
       <button class="btn primary" data-action="submit-approve">제출</button>
-    </div>
-  </div>
-</div>
+    </div>`;
+}
 
-<!-- ========== M3 AI 개발 시작 모달 ========== -->
-<div class="modal-backdrop" id="modalAiBuild">
-  <div class="modal">
+function modalAiBuild(){
+  return `
     <div class="modal-head"><h2>AI 자동 개발 시작</h2><button class="close" data-action="close-modal">✕</button></div>
     <div class="modal-body">
-      <div class="row"><label>사전 조건</label>
-        <div class="value">
-          <div class="gate-check">
-            <div class="gate-row ok"><span>요구사항 컨펌 (Gate 9)</span><span class="checkmark">✓</span></div>
-            <div class="gate-row ok"><span>IA 컨펌 (Gate 11)</span><span class="checkmark">✓</span></div>
-            <div class="gate-row" style="color:var(--warn)"><span>시안 컨펌 (Gate 13)</span><span class="checkmark">⏳ 대기</span></div>
-            <div class="gate-row" style="color:var(--muted)"><span>프로토타입 컨펌 (Gate 15)</span><span class="checkmark">🔒 잠금</span></div>
-          </div>
+      <div class="row"><label>사전 조건</label><div class="value">
+        <div class="gate-check">
+          <div class="gate-row ok"><span>요구사항 컨펌 (Gate 9)</span><span class="checkmark">✓</span></div>
+          <div class="gate-row ok"><span>IA 컨펌 (Gate 11)</span><span class="checkmark">✓</span></div>
+          <div class="gate-row" style="color:var(--warn)"><span>시안 컨펌 (Gate 13)</span><span class="checkmark">⏳ 대기</span></div>
+          <div class="gate-row" style="color:var(--muted)"><span>프로토타입 컨펌 (Gate 15)</span><span class="checkmark">🔒 잠금</span></div>
         </div>
-      </div>
-      <div class="row"><label>입력 자료</label>
-        <div class="value">
-          <div class="input-list">
-            <div class="item"><span>요구사항</span><span class="t">44건</span></div>
-            <div class="item"><span>산출물 파일 (최신)</span><span class="t">12개</span></div>
-          </div>
+      </div></div>
+      <div class="row"><label>입력 자료</label><div class="value">
+        <div class="input-list">
+          <div class="item"><span>요구사항</span><span class="t">44건</span></div>
+          <div class="item"><span>산출물 파일 (최신)</span><span class="t">12개</span></div>
         </div>
-      </div>
-      <div class="note" style="background:var(--warn-soft);color:var(--warn);border-left-color:var(--warn)">⚠ 작업 최대 24시간 소요. 사전 조건이 모두 충족되어야 시작 가능합니다 (REQ-DEV-001).</div>
+      </div></div>
+      <div class="note warn">⚠ 작업 최대 24시간 소요. 사전 조건이 모두 충족되어야 시작 가능합니다 (REQ-DEV-001).</div>
     </div>
     <div class="modal-foot">
       <button class="btn" data-action="close-modal">취소</button>
       <button class="btn primary" disabled>개발 시작 (사전조건 미충족)</button>
-    </div>
-  </div>
-</div>
-
-<!-- ========== Toast area ========== -->
-<div class="toast-area" id="toastArea"></div>
-
-<!-- ========== Role switcher (prototype only) ========== -->
-<div class="role-switcher">
-  <span class="label">역할 (시연용)</span>
-  <button data-role="pm" class="active">팀(PM)</button>
-  <button data-role="client">고객사</button>
-  <button data-role="admin">관리자</button>
-</div>
-
-<script>
-/* ========== Role-aware action bar ========== */
-const actionBar = document.getElementById('actionBar');
-const roleButtons = document.querySelectorAll('.role-switcher button[data-role]');
-let currentRole = 'pm';
-
-function renderActions(role){
-  actionBar.innerHTML = '<span class="label">액션</span>';
-  const actions = {
-    pm: [
-      {label:'검토 요청 발송', cls:'', tag:'팀', click:()=>openModal('modalReview')},
-      {label:'AI 개발 시작', cls:'locked', tag:'팀', click:()=>openModal('modalAiBuild')},
-      {label:'산출물 Export', cls:'locked', tag:'공통', click:()=>toast('Gate 22 통과 후 가능합니다', 'danger')}
-    ],
-    client: [
-      {label:'컨펌', cls:'primary', tag:'고객', click:()=>{document.getElementById('modalApprove').querySelector('input[value="approve"]').checked=true; openModal('modalApprove')}},
-      {label:'반려', cls:'danger', tag:'고객', click:()=>{document.getElementById('modalApprove').querySelector('input[value="reject"]').checked=true; openModal('modalApprove')}}
-    ],
-    admin: [
-      {label:'전체 프로젝트', cls:'', click:()=>toast('관리자 메뉴 — 화면 미구현 (stub)','danger')},
-      {label:'감사 로그', cls:'', click:()=>toast('SCR-ADM-005 — 화면 미구현 (stub)','danger')}
-    ]
-  };
-  actions[role].forEach(a=>{
-    const btn = document.createElement('button');
-    btn.className = 'btn ' + (a.cls||'');
-    if(a.tag){
-      const rt = document.createElement('span'); rt.className='role-tag'; rt.textContent='['+a.tag+']';
-      btn.appendChild(rt);
-    }
-    btn.appendChild(document.createTextNode(a.label));
-    btn.addEventListener('click', a.click);
-    actionBar.appendChild(btn);
-  });
+    </div>`;
 }
-roleButtons.forEach(b=>b.addEventListener('click',()=>{
-  roleButtons.forEach(x=>x.classList.remove('active'));
-  b.classList.add('active');
-  currentRole = b.dataset.role;
-  renderActions(currentRole);
-  toast('역할 전환: '+b.textContent);
-}));
-renderActions('pm');
 
-/* ========== Modal open/close ========== */
-function openModal(id){ document.getElementById(id).classList.add('open') }
-function closeModals(){ document.querySelectorAll('.modal-backdrop').forEach(m=>m.classList.remove('open')) }
-document.addEventListener('click', e=>{
+function modalNewVersion(slot){
+  const slotName = {requirements:'요구사항 정의서', ia:'IA', design:'디자인 시안', prototype:'프로토타입', figma:'Figma'}[slot] || '요구사항 정의서';
+  const files = DATA.slot[slot]?.files || DATA.slot.requirements.files;
+  const curVer = DATA.slot[slot]?.version || 'v2';
+  const nextVer = curVer === '-' ? 'v1' : (curVer.startsWith('v') ? 'v'+(parseInt(curVer.slice(1))+1) : curVer+'.+1');
+  return `
+    <div class="modal-head"><h2>새 버전 만들기 (${nextVer} 생성)</h2><button class="close" data-action="close-modal">✕</button></div>
+    <div class="modal-body">
+      <div class="row"><label>대상</label><div class="value static">A 프로젝트 — ${slotName}</div></div>
+      <div class="row"><label>베이스 → 신규</label><div class="value static">${curVer} (파일 ${files.length}개) → <b>${nextVer}</b> (자동 증가)</div></div>
+      <div class="row"><label>파일 묶음<small>(${curVer} 사본 자동 로드)</small></label><div class="value">
+        <div class="file-list">
+          ${files.map(f => `<div class="file-row"><span>📄</span><span class="name"><b>${esc(f.name)}</b> <span style="color:var(--muted);font-size:11px">— ${esc(curVer)} 베이스</span></span><div class="actions"><button class="btn sm ghost">교체</button><button class="btn sm ghost">삭제</button></div></div>`).join('')}
+          <button class="btn sm" style="margin-top:4px">+ 파일 추가</button>
+          <p style="font-size:10px;color:var(--muted);margin:6px 0 0">PDF · 문서 등 (50MB/파일). 다중 파일 자유.</p>
+        </div>
+      </div></div>
+      <div class="row"><label>변경 요약<small>(필수)</small></label><div class="value"><textarea id="changeNote" placeholder="예: §5 NFR 보안 요구사항 추가, 오타 수정"></textarea><div id="noteErr" class="err" style="display:none">변경 요약을 입력해 주세요</div></div></div>
+      <div class="note">· 생성 시 <b>${nextVer} 스냅샷이 draft 상태로 생성</b>, 활동 이력에 생성 이벤트 + 변경 요약 자동 기록<br>· draft 동안 파일 카드에서 직접 추가·교체·삭제 자유. [검토 요청 발송] 시 잠금<br>· 검토중·컨펌 상태에서 생성 시 자동 회수·무효화 (REQ-WF-001·005)</div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" data-action="close-modal">취소</button>
+      <button class="btn primary" data-action="submit-new-version" data-slot="${slot}" data-next="${nextVer}">${nextVer} 생성 (draft)</button>
+    </div>`;
+}
+
+function modalResendInvite(email){
+  return `
+    <div class="modal-head"><h2>초대 재발송</h2><button class="close" data-action="close-modal">✕</button></div>
+    <div class="modal-body">
+      <div class="row"><label>대상</label><div class="value static">${esc(email||'choi@oo.co')}</div></div>
+      <div class="row"><label>역할</label><div class="value static">고객사 · A 프로젝트 참여</div></div>
+      <div class="row"><label>이전 토큰</label><div class="value static">2026-04-12 발급 (만료 또는 분실)</div></div>
+      <div class="row"><label>안내 메시지<small>(선택)</small></label><div class="value"><textarea placeholder="추가 안내가 있으면 입력"></textarea></div></div>
+      <div class="note">· <b>이전 토큰 즉시 무효화</b> 후 새 토큰 발급 (30분 유효)<br>· 새 초대 링크가 대상 이메일로 발송 (REQ-NTF-001)<br>· 감사 로그 자동 기록 (REQ-AUD-001)</div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" data-action="close-modal">취소</button>
+      <button class="btn primary" data-action="submit-resend">재발송</button>
+    </div>`;
+}
+
+function modalDeleteProject(){
+  return `
+    <div class="modal-head"><h2 style="color:var(--hot)">⚠ 프로젝트 삭제</h2><button class="close" data-action="close-modal">✕</button></div>
+    <div class="modal-body">
+      <div class="note danger"><b>이 작업은 되돌릴 수 없습니다.</b> (단, 30일 동안 복구 가능)<br>모든 요구사항·산출물·코멘트·결함이 함께 삭제 대상이 됩니다.</div>
+      <div class="row"><label>확인</label><div class="value">
+        <p style="font-size:13px;margin-bottom:8px">삭제하려면 프로젝트명 <code>A 프로젝트</code>를 정확히 입력하세요.</p>
+        <input type="text" id="confirmDelete" placeholder="A 프로젝트" oninput="document.querySelector('[data-action=submit-delete]').disabled = this.value !== 'A 프로젝트'" />
+      </div></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" data-action="close-modal">취소</button>
+      <button class="btn danger-solid" data-action="submit-delete" disabled>최종 삭제</button>
+    </div>`;
+}
+
+function modalInviteClient(){
+  return `
+    <div class="modal-head"><h2>고객사 초대</h2><button class="close" data-action="close-modal">✕</button></div>
+    <div class="modal-body">
+      <div class="row"><label>이름</label><div class="value"><input type="text" placeholder="홍길동" /></div></div>
+      <div class="row"><label>이메일</label><div class="value"><input type="email" placeholder="hong@client.co" /></div></div>
+      <div class="row"><label>고객사명</label><div class="value"><input type="text" value="㈜OO" /></div></div>
+      <div class="row"><label>참여 프로젝트</label><div class="value static">A 프로젝트</div></div>
+      <div class="note">초대 메일을 전송합니다 (REQ-AUT-002). 30분 유효 토큰 · 수락 시 자동 활성.</div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" data-action="close-modal">취소</button>
+      <button class="btn primary" data-action="submit-invite-client">초대 메일 보내기</button>
+    </div>`;
+}
+
+/* ============================================================
+ * EVENT DELEGATION
+ * ============================================================ */
+document.addEventListener('click', e => {
+  // route
+  const r = e.target.closest('[data-route]');
+  if(r){ e.preventDefault(); navigate(r.dataset.route); closeDropdowns(); return; }
+
+  // action
   const t = e.target.closest('[data-action]');
-  if(!t) return;
+  if(!t){ closeDropdowns(); return; }
   const a = t.dataset.action;
-  if(a==='close-modal' || (e.target.classList.contains('modal-backdrop'))){ closeModals(); }
-  if(a==='submit-review'){ closeModals(); toast('검토 요청 발송 완료 — 고객사에 이메일 전송','success'); }
+
+  if(a==='close-modal'){ closeModals(); return; }
+
+  // Review
+  if(a==='open-review'){ openModal(modalReview(t.dataset.slot)); return; }
+  if(a==='submit-review'){ closeModals(); toast('검토 요청 발송 완료 — 고객사에 이메일 전송','success'); return; }
+
+  // Approve/Reject
+  if(a==='open-approve'){ openModal(modalApprove(t.dataset.mode||'approve')); return; }
   if(a==='submit-approve'){
     const result = document.querySelector('input[name="result"]:checked').value;
     if(result==='reject' && !document.getElementById('rejectReason').value.trim()){
-      toast('반려 사유를 입력해 주세요','danger'); return;
+      document.getElementById('rejectErr').style.display='block';
+      return;
     }
     closeModals();
-    toast(result==='approve' ? 'Gate 13 컨펌 통과' : '반려 처리됨 — 팀에 알림 발송', result==='approve' ? 'success' : 'danger');
+    toast(result==='approve' ? '✓ Gate 13 컨펌 통과 — 다음 단계 진행' : '반려 처리됨 — 팀에 알림 발송', result==='approve' ? 'success' : 'danger');
+    return;
   }
-  if(a==='goto-design'){ toast('SCR-DSN-001 / 디자인 시안 — 화면 미구현 (stub)','danger'); }
-  if(a==='goto-requirements'){ toast('SCR-REQ-001 / 요구사항 — 화면 미구현 (stub)','danger'); }
-  if(a==='goto-deliv'){ toast('SCR-DSN-001 / '+t.dataset.slug+' — 화면 미구현 (stub)','danger'); }
-  if(a==='search'){ toast('SCR-SCH-001 / 통합 검색 — 화면 미구현 (stub)','danger'); }
-  if(a==='notify'){ toast('알림 popover — 미구현','danger'); }
-  if(a==='account'){ toast('계정 드롭다운 — 미구현','danger'); }
-});
-// Click backdrop to close
-document.querySelectorAll('.modal-backdrop').forEach(m=>{
-  m.addEventListener('click', e=>{ if(e.target===m) closeModals(); });
+
+  // AI Build
+  if(a==='open-ai-build'){ openModal(modalAiBuild()); return; }
+  if(a==='export-locked'){ toast('Gate 22 통과 후 가능합니다','danger'); return; }
+
+  // New version
+  if(a==='open-new-version'){ openModal(modalNewVersion(t.dataset.slot||'requirements'),true); return; }
+  if(a==='submit-new-version'){
+    const note = document.getElementById('changeNote');
+    if(!note.value.trim()){ document.getElementById('noteErr').style.display='block'; return; }
+    const next = t.dataset.next; closeModals();
+    toast(`${next} draft 스냅샷 생성 완료 — 활동 이력에 기록`, 'success');
+    return;
+  }
+
+  // File ops
+  if(a==='upload-file'){ toast('파일 추가됨 (mock) — draft 안 변경은 활동 이력 미기록','info'); return; }
+  if(a==='replace-file'){ toast('파일 교체됨 (mock)','info'); return; }
+  if(a==='delete-file'){ toast('파일 삭제됨 (mock)','info'); return; }
+  if(a==='download'){ toast(`${t.dataset.file} 다운로드 (mock)`,'info'); return; }
+
+  // Comment
+  if(a==='post-comment'){
+    const ta = document.getElementById('newComment');
+    if(ta && !ta.value.trim()){ toast('코멘트 내용을 입력해 주세요','danger'); return; }
+    if(ta) ta.value = '';
+    toast('코멘트 등록됨','success');
+    return;
+  }
+  if(a==='edit-comment'){ toast('코멘트 수정 모드 (mock)','info'); return; }
+  if(a==='delete-comment'){ toast('코멘트 삭제됨' + (state.role==='admin'?' (관리자 강제 삭제 — 감사 로그 기록)':''),state.role==='admin'?'danger':'info'); return; }
+
+  // Project switcher
+  if(a==='proj-switch'){
+    const rect = t.getBoundingClientRect();
+    const items = DATA.projects.map(p => `<a class="item" data-route="/projects/${p.id}"><span>${esc(p.name)}</span><span class="meta">${p.progress}%</span></a>`).join('');
+    openDropdown(items + `<div class="divider"></div><a class="item" data-route="/"><span>전체 프로젝트 목록</span><span class="meta">→</span></a>`, rect.left, rect.bottom+4);
+    e.stopPropagation();
+    return;
+  }
+
+  if(a==='open-search'){ navigate('/projects/A/search'); return; }
+  if(a==='notify'){ toast('알림 — 새 알림 3건 (mock)','info'); return; }
+  if(a==='acct'){
+    const rect = t.getBoundingClientRect();
+    openDropdown(`
+      <a class="item" data-route="/account"><span>계정 설정</span></a>
+      ${state.role==='admin'?'<a class="item" data-route="/admin/teams"><span>관리자 메뉴</span></a>':''}
+      <div class="divider"></div>
+      <a class="item" data-action="logout"><span>로그아웃</span></a>
+    `, rect.right - 200, rect.bottom + 4);
+    e.stopPropagation();
+    return;
+  }
+  if(a==='logout'){ closeDropdowns(); navigate('/login'); toast('로그아웃되었습니다','info'); return; }
+
+  // Auth
+  if(a==='login-submit'){
+    const em = $('#loginEmail').value.trim(), pw = $('#loginPw').value;
+    if(!em || !pw){ const err=$('#loginErr'); err.style.display='block'; err.textContent='이메일과 비밀번호를 입력해 주세요'; return; }
+    DATA.loginAttempts++;
+    if(DATA.loginAttempts >= 5){ const err=$('#loginErr'); err.style.display='block'; err.textContent='로그인 시도 한도 초과. 10분 후 다시 시도해 주세요.'; return; }
+    // Demo: 항상 성공
+    navigate('/'); toast('환영합니다, ' + DATA.user[state.role].name + '님','success'); DATA.loginAttempts=0;
+    return;
+  }
+  if(a==='reset-submit'){ closeModals(); toast('이메일이 등록되어 있으면 발송됩니다','info'); return; }
+  if(a==='reset-confirm'){
+    const pw = $('#newPw').value, c = $('#newPwConfirm').value;
+    if(!pw || pw.length<8){ toast('비밀번호는 8자 이상이어야 합니다','danger'); return; }
+    if(pw!==c){ toast('비밀번호 확인이 일치하지 않습니다','danger'); return; }
+    navigate('/'); toast('비밀번호가 변경되었습니다','success');
+    return;
+  }
+  if(a==='invite-accept'){ navigate('/projects/A'); toast('가입 완료 — A 프로젝트 대시보드','success'); return; }
+  if(a==='invite-help'){ toast('관리자 또는 PM에게 문의하세요. 계정이 있는 경우 비밀번호 재설정 사용','info'); return; }
+
+  // Account
+  if(a==='save-account'){ toast('계정 정보 저장됨','success'); return; }
+  if(a==='save-password'){ toast('비밀번호 변경됨','success'); return; }
+
+  // Project new
+  if(a==='create-project'){ navigate('/projects/A'); toast('프로젝트 생성 완료 — 워크스페이스 초기화됨','success'); return; }
+
+  // Settings
+  if(a==='save-settings'){ toast('설정 저장됨 (감사 로그 기록)','success'); return; }
+
+  // Members
+  if(a==='invite-client'){ openModal(modalInviteClient()); return; }
+  if(a==='submit-invite-client'){ closeModals(); toast('초대 메일 발송됨 (30분 유효)','success'); return; }
+  if(a==='resend-invite'){ openModal(modalResendInvite(t.dataset.email)); return; }
+  if(a==='submit-resend'){ closeModals(); toast('이전 토큰 무효화 + 새 초대 메일 발송 (감사 로그 기록)','success'); return; }
+
+  // Danger
+  if(a==='archive-project'){ toast('프로젝트가 보관 처리되었습니다','info'); return; }
+  if(a==='delete-project'){ openModal(modalDeleteProject()); return; }
+  if(a==='submit-delete'){ closeModals(); navigate('/'); toast('프로젝트가 삭제되었습니다 (30일 내 복구 가능)','danger'); return; }
+
+  // Tests / Defects
+  if(a==='new-tc'){ toast('TC 등록 (mock)','info'); return; }
+  if(a==='new-defect'){ toast('결함 등록 (mock)','info'); return; }
+  if(a==='tc-result'){ toast(`TC 결과: ${t.dataset.r}`,t.dataset.r==='Fail'?'danger':'success'); return; }
+  if(a==='defect-status'){ toast(`상태 변경: ${t.dataset.s}`,'success'); return; }
+  if(a==='add-attachment'){ toast('첨부 추가 (mock)','info'); return; }
+  if(a==='change-assignee'){ toast('담당자 변경 (mock)','info'); return; }
+
+  // Admin
+  if(a==='new-admin-team' || a==='new-admin-client'){ toast('계정 생성 폼 (mock)','info'); return; }
+
+  // Version dropdown
+  if(a==='version-dropdown'){
+    const rect = t.getBoundingClientRect();
+    openDropdown(`
+      <a class="item active"><span>현재 버전 (최신)</span><span class="meta">▾</span></a>
+      <a class="item"><span>v2</span><span class="meta">잠김</span></a>
+      <a class="item"><span>v1</span><span class="meta">반려됨</span></a>
+    `, rect.right-220, rect.bottom+4);
+    e.stopPropagation();
+    return;
+  }
+
+  // System
+  if(a==='back'){ history.back(); return; }
+  if(a==='reload'){ location.reload(); return; }
+
+  // Fallback
+  closeDropdowns();
 });
 
-/* ========== Sidebar nav stub ========== */
-document.querySelectorAll('.sidebar .nav-item').forEach(n=>{
-  n.addEventListener('click', e=>{
-    e.preventDefault();
-    const r = n.dataset.route;
-    if(r==='dashboard') return; // already here
-    toast('「' + n.querySelector('span').textContent + '」 화면 — 미구현 (stub)','danger');
+// Click outside to close dropdowns
+document.addEventListener('click', e => {
+  if(!e.target.closest('.dropdown') && !e.target.closest('[data-action]')){ closeDropdowns(); }
+});
+// ESC to close modal/dropdown
+document.addEventListener('keydown', e => { if(e.key==='Escape'){ closeModals(); closeDropdowns(); } });
+// Click backdrop
+document.addEventListener('click', e => { if(e.target.classList.contains('modal-backdrop')){ closeModals(); }});
+
+/* Role switcher */
+document.querySelectorAll('.role-switcher button[data-role]').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('.role-switcher button[data-role]').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    state.role = b.dataset.role;
+    toast('역할 전환: ' + b.textContent,'info');
+    navigateRender();
   });
 });
 
-/* ========== Toast ========== */
-function toast(msg, type){
-  const el = document.createElement('div');
-  el.className = 'toast' + (type ? ' '+type : '');
-  el.textContent = msg;
-  document.getElementById('toastArea').appendChild(el);
-  setTimeout(()=>{ el.style.opacity='0'; el.style.transition='opacity .2s'; setTimeout(()=>el.remove(), 220); }, 2200);
-}
-
-/* ========== ESC to close modals ========== */
-document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeModals(); });
+/* Initial render */
+if(!location.hash){ location.hash = '#/projects/A'; }
+navigateRender();
 </script>
 </body>
 </html>
