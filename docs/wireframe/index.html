@@ -137,7 +137,7 @@ body.embed-mode .ctrl-label{background:#ffd6cc;color:#9a3a25;border:2px solid #d
 
 <aside class="side">
   <h1>sp-project-portal 와이어프레임</h1>
-  <span class="ver">v1.0 · 그룹 1~6 모든 화면 완성 (S0~S25 + M1~M5)</span>
+  <span class="ver">v1.2 · 진행 현황(SCR-RDM-001) 추가</span>
   <noscript></noscript>
   <nav>
     <div class="group">공통</div>
@@ -156,6 +156,7 @@ body.embed-mode .ctrl-label{background:#ffd6cc;color:#9a3a25;border:2px solid #d
 
     <div class="group">프로젝트</div>
     <a href="#s3" data-screen="s3" class="active">3. 프로젝트 대시보드<small>SCR-PRJ-001 (핵심)</small></a>
+    <a href="#s31" data-screen="s31">3-1. 진행 현황<small>SCR-RDM-001 (24단계)</small></a>
     <a href="#s4" data-screen="s4">4. 요구사항 파일<small>SCR-REQ-001</small></a>
     <a href="#s5" data-screen="s5" style="opacity:.5">5. (제거됨)<small>구 SCR-REQ-003</small></a>
     <a href="#s6" data-screen="s6">6. 산출물 단계별<small>SCR-DSN-001</small></a>
@@ -207,14 +208,26 @@ body.embed-mode .ctrl-label{background:#ffd6cc;color:#9a3a25;border:2px solid #d
   <div class="wf">
     <div class="wf-header">
       <span class="info-label">1</span><span class="ctrl-label">A</span><span class="logo">sp-project-portal</span>
-      <div class="wf-input line" style="max-width:280px"><span class="info-label">2</span><span class="ctrl-label">B</span>프로젝트 검색</div>
+      <span class="wf-tag" style="color:var(--muted)">프로젝트 목록</span>
       <span class="spacer"></span>
       <span class="wf-tag"><span class="info-label">3</span><span class="ctrl-label">C</span>알림</span>
       <span class="wf-tag"><span class="info-label">4</span><span class="ctrl-label">D</span>계정 ▾</span>
       <span class="wf-tag"><span class="ctrl-label">E</span>로그아웃</span>
     </div>
-    <div style="padding:40px 18px;text-align:center;color:var(--muted);font-size:12px">메인 콘텐츠 (프로젝트 목록 / 관리자 메뉴 / 계정 설정)</div>
+    <div class="wf-row">
+      <div class="wf-side">
+        <span class="info-label">2</span><span class="ctrl-label">B</span>
+        <div class="item" style="font-weight:600">sp-project-portal</div>
+        <div class="item" style="color:var(--muted);font-size:11px">프로젝트 워크스페이스 · {scope} N개</div>
+        <div class="item active">◆ 프로젝트 목록 <span class="tag">N</span></div>
+        <div class="item">─ 새 프로젝트 <span class="tag">+</span></div>
+        <div class="item">─ 계정 설정</div>
+        <div class="item">─ 관리자 메뉴 → <span class="tag">관리자</span></div>
+      </div>
+      <div class="wf-main" style="padding:30px 18px;text-align:center;color:var(--muted);font-size:12px">메인 콘텐츠 (프로젝트 목록 / 새 프로젝트 / 계정 설정)</div>
+    </div>
   </div>
+  <div class="note">글로벌 영역도 사이드바 보유 (옵션 A — AppShell 통일). 폭 240px, brand에 워크스페이스 정보. <code>{scope}</code>=역할별(관리자=전체 / 팀=담당 / 고객사=참여). "관리자 메뉴" 항목은 관리자 역할에만 노출. "새 프로젝트"는 고객사 미노출. 헤더 "프로젝트 검색"은 사이드바 진입으로 대체.</div>
 
   <h3 class="section-h">0-3. 인증 후 (프로젝트 컨텍스트)</h3>
   <div class="wf">
@@ -291,10 +304,18 @@ body.embed-mode .ctrl-label{background:#ffd6cc;color:#9a3a25;border:2px solid #d
   </div>
 
   <div class="wf">
-    <div class="wf-header"><span class="logo">sp-project-portal</span><div class="wf-input line" style="max-width:280px"><span class="ctrl-label">A</span>프로젝트 검색</div><span class="spacer"></span><span class="wf-tag">알림</span><span class="wf-tag">계정 ▾</span></div>
-    <div class="wf-main" style="padding:24px">
+    <div class="wf-header"><span class="logo">sp-project-portal</span><span class="wf-tag" style="color:var(--muted)">프로젝트 목록</span><span class="spacer"></span><span class="wf-tag">알림</span><span class="wf-tag">계정 ▾</span></div>
+    <div class="wf-row">
+      <div class="wf-side">
+        <div class="item" style="font-weight:600">sp-project-portal</div>
+        <div class="item" style="color:var(--muted);font-size:11px">프로젝트 워크스페이스 · {scope} N개</div>
+        <div class="item active"><span class="ctrl-label">A</span>◆ 프로젝트 목록 <span class="tag">N</span></div>
+        <div class="item">─ 새 프로젝트 <span class="tag">+</span></div>
+        <div class="item">─ 계정 설정</div>
+      </div>
+      <div class="wf-main" style="padding:24px">
       <div class="wf-bar">
-        <h3 class="wf-title"><span class="info-label">1</span>내 프로젝트</h3>
+        <h3 class="wf-title"><span class="info-label">1</span>프로젝트 목록</h3>
         <button class="wf-btn primary"><span class="ctrl-label">B</span>+ 새 프로젝트 (팀)</button>
       </div>
 
@@ -331,6 +352,7 @@ body.embed-mode .ctrl-label{background:#ffd6cc;color:#9a3a25;border:2px solid #d
           <div class="u" style="margin-top:8px">미처리: 0건 · 3주 전</div>
         </div>
       </div>
+    </div>
     </div>
   </div>
 
@@ -444,6 +466,131 @@ body.embed-mode .ctrl-label{background:#ffd6cc;color:#9a3a25;border:2px solid #d
     </table>
   </div>
   <div class="note">팀 멤버 목록·[프로젝트 삭제]·[감사 로그]는 이 화면에 없음 (v1.1 슬림화 결정).</div>
+</section>
+
+<!-- ============================== S31 진행 현황 (SCR-RDM-001) ============================== -->
+<section class="screen" id="s31">
+  <div class="screen-head">
+    <p class="eyebrow">SCR-RDM-001 · v1.2 (24단계 전체 여정)</p>
+    <h2>3-1. 진행 현황</h2>
+    <p>대시보드(§3, 현재)와 책임 분리. 24단계·5게이트·7마일스톤 시각화. 액션 없음 (읽기 전용). 모든 역할 동일 접근.</p>
+  </div>
+
+  <div class="wf">
+    <div class="wf-header"><span class="logo">sp-project-portal</span><span class="wf-tag">A 프로젝트 ▾</span><div class="wf-input line" style="max-width:240px">통합 검색</div></div>
+    <div class="wf-row">
+      <div class="wf-side">
+        <div class="switcher"><b>A 프로젝트</b><span>㈜OO · SaaS · W6</span></div>
+        <div class="item">─ 대시보드 <span class="tag">12/24</span></div>
+        <div class="item active">◆ 진행 현황 <span class="tag">24단계</span></div>
+        <div class="item">─ 요구사항 <span class="tag">44</span></div>
+        <div class="item">─ 산출물 <span class="tag">4</span></div>
+        <div class="item">─ 결함 <span class="tag">6</span></div>
+        <div class="item">─ TC <span class="tag">팀</span></div>
+        <div class="item">─ AI 개발 <span class="tag">잠금</span></div>
+        <div class="item">─ 설정 <span class="tag">팀</span></div>
+      </div>
+      <div class="wf-main">
+        <h3 class="wf-title" style="margin-bottom:4px">진행 현황</h3>
+        <p class="wf-subtitle">A 프로젝트 · 24단계 전체 여정과 게이트·마일스톤을 한눈에 봅니다.</p>
+
+        <div class="wf-label">KPI 4종</div>
+        <div class="wf-grid c4" style="margin-bottom:14px">
+          <div class="wf-card"><div class="wf-label">전체 진행률</div><div class="v">12 / 24</div><div class="u">50% · W6</div></div>
+          <div class="wf-card"><div class="wf-label">통과 게이트</div><div class="v">2 / 5</div><div class="u">Major 1/2</div></div>
+          <div class="wf-card"><div class="wf-label">현재 단계</div><div class="v" style="font-size:16px">12 · 시안 등록</div><div class="u">Gate 13 대기</div></div>
+          <div class="wf-card"><div class="wf-label">다음 메이저</div><div class="v" style="font-size:16px">M6 · UAT</div><div class="u">W12 예정</div></div>
+        </div>
+
+        <div class="wf-label">마일스톤 (M1 ~ M7)</div>
+        <div class="wf-card" style="margin-bottom:14px;padding:8px;display:flex;gap:6px;overflow-x:auto">
+          <div class="wf-box" style="min-width:108px;background:var(--surface);border-style:solid"><div class="wf-label">M1 ✓ Gate 9</div><strong style="font-size:12px">요구사항 확정</strong></div>
+          <div class="wf-box" style="min-width:108px;background:var(--surface);border-style:solid"><div class="wf-label">M2 ✓ Gate 11</div><strong style="font-size:12px">IA 확정</strong></div>
+          <div class="wf-box" style="min-width:108px;background:var(--placeholder-2);border:1px solid var(--border-strong)"><div class="wf-label">M3 ◐ Gate 13</div><strong style="font-size:12px">시안 확정</strong></div>
+          <div class="wf-box" style="min-width:108px"><div class="wf-label">M4 ○ Gate 15</div><strong style="font-size:12px">프로토타입</strong></div>
+          <div class="wf-box" style="min-width:108px"><div class="wf-label">M5 ○ Stage 18</div><strong style="font-size:12px">개발 완료</strong></div>
+          <div class="wf-box" style="min-width:108px"><div class="wf-label">M6 ○ Gate 22</div><strong style="font-size:12px">UAT 통과</strong></div>
+          <div class="wf-box" style="min-width:108px"><div class="wf-label">M7 ○ Stage 24</div><strong style="font-size:12px">서비스 오픈</strong></div>
+        </div>
+
+        <div class="wf-label">단계별 상세</div>
+        <div class="wf-card" style="margin-bottom:8px">
+          <div class="h">🏁 프로젝트 착수</div>
+          <div class="wf-list">
+            <div class="it"><span>●─ 1~2 · 프로젝트 생성·워크스페이스 초기화</span><span class="wf-tag dark">✓ W1·05-18</span></div>
+          </div>
+        </div>
+
+        <div class="wf-card" style="margin-bottom:8px;opacity:.7">
+          <div class="h">👥 계정·접근 <span class="meta">시스템 미개발 — 스킵</span></div>
+          <div class="wf-list">
+            <div class="it"><span>○─ 3 · 2-tier 접근 구분 설정</span><span class="wf-tag dashed">⏭ 스킵</span></div>
+            <div class="it"><span>○─ 4 · 고객사 계정 발급·초대</span><span class="wf-tag dashed">⏭ 스킵</span></div>
+            <div class="it"><span>○─ 5 · 고객사 최초 로그인</span><span class="wf-tag dashed">⏭ 스킵</span></div>
+          </div>
+        </div>
+
+        <div class="wf-card" style="margin-bottom:8px">
+          <div class="h">📝 요구사항 협의</div>
+          <div class="wf-list">
+            <div class="it"><span>●─ 6 · 요구사항 등록 (팀 대행 입력)</span><span class="wf-tag dark">✓ W1~2 → SRS v1.3</span></div>
+            <div class="it"><span>●─ 7~8 · 검토·수정 왕복 ↻ (26회차)</span><span class="wf-tag dark">✓ W2~3</span></div>
+            <div class="it"><span>◆─ 9 · <b>[Major Gate]</b> 최종 컨펌</span><span class="wf-tag dark">🔓 W3·05-19</span></div>
+          </div>
+        </div>
+
+        <div class="wf-card" style="margin-bottom:8px">
+          <div class="h">🎨 설계 협의</div>
+          <div class="wf-list">
+            <div class="it"><span>●─ 10 · IA 등록</span><span class="wf-tag dark">✓ W4 → IA v0.2</span></div>
+            <div class="it"><span>◆─ 11 · [Gate] IA 컨펌</span><span class="wf-tag dark">🔓 W5·05-19</span></div>
+            <div class="it"><span>●─ 12 · 디자인 시안 등록 (6안→A 선택)</span><span class="wf-tag">🔵 진행 중 → 시안 v2</span></div>
+            <div class="it"><span>◆─ 13 · [Gate] 시안 컨펌</span><span class="wf-tag">⏳ 고객사 검토 중</span></div>
+            <div class="it"><span>○─ 14 · 프로토타입(HTML) 등록</span><span class="wf-tag dashed">🔒 Gate 13 이후</span></div>
+            <div class="it"><span>◆─ 15 · [Gate] 프로토타입 컨펌</span><span class="wf-tag dashed">🔒 잠금</span></div>
+            <div class="it"><span>○─ 16~17 · Figma 정제·핸드오프</span><span class="wf-tag dashed">🔒 Gate 15 이후</span></div>
+          </div>
+        </div>
+
+        <div class="wf-card" style="margin-bottom:8px">
+          <div class="h">💻 개발</div>
+          <div class="wf-list">
+            <div class="it"><span>○─ 18 · AI 자동 개발</span><span class="wf-tag dashed">🔒 Gates 9·11·13·15 필요</span></div>
+          </div>
+        </div>
+
+        <div class="wf-card" style="margin-bottom:8px">
+          <div class="h">✓ 테스트</div>
+          <div class="wf-list">
+            <div class="it"><span>○─ 19 · TC 목록·결함 추적</span><span class="wf-tag dashed">🔒</span></div>
+            <div class="it"><span>○─ 20~21 · UAT · 수정 반복 ↻</span><span class="wf-tag dashed">🔒</span></div>
+            <div class="it"><span>◆─ 22 · <b>[Major Gate]</b> 최종 검수 컨펌</span><span class="wf-tag dashed">🔒</span></div>
+          </div>
+        </div>
+
+        <div class="wf-card">
+          <div class="h">🚀 이행·운영</div>
+          <div class="wf-list">
+            <div class="it"><span>○─ 23 · 산출물 Export</span><span class="wf-tag dashed">🔒</span></div>
+            <div class="it"><span>○─ 24 · 서비스 오픈·운영 전환</span><span class="wf-tag dashed">🔒</span></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="spec">
+    <table><tbody>
+      <tr><td>KPI 4종</td><td>전체 진행률 / 통과 게이트 / 현재 단계 / 다음 메이저 마일스톤 (REQ-PRJ-004 §1-2)</td></tr>
+      <tr><td>마일스톤 스트립</td><td>M1~M7 가로 스크롤. 완료/진행/잠금 색 구분</td></tr>
+      <tr><td>단계별 상세</td><td>7개 phase 그룹. 노드(원/마름모) + 번호 + 명+세부 + 상태/링크</td></tr>
+      <tr><td>게이트 마름모</td><td>원=일반 단계, 마름모(◆)=게이트. Major(9·22) 별도 강조</td></tr>
+      <tr><td>산출물 링크</td><td>SRS·IA·시안 등 클릭 시 해당 페이지 이동</td></tr>
+      <tr><td>액션</td><td><b>없음</b> — 읽기 전용. 액션은 대시보드·산출물 페이지에서</td></tr>
+      <tr><td>역할별 차이</td><td>없음 — 모든 역할 동일 접근 (자신이 볼 수 있는 프로젝트의 로드맵)</td></tr>
+    </tbody></table>
+  </div>
 </section>
 
 <!-- ============================== S4 요구사항 파일 페이지 ============================== -->
@@ -1288,8 +1435,16 @@ body.embed-mode .ctrl-label{background:#ffd6cc;color:#9a3a25;border:2px solid #d
     <p>본인 계정 정보 조회·수정 (REQ-AUT-010).</p>
   </div>
   <div class="wf">
-    <div class="wf-header"><span class="logo">sp-project-portal</span><div class="wf-input line" style="max-width:280px">프로젝트 검색</div><span class="spacer"></span><span class="wf-tag">알림</span><span class="wf-tag">계정 ▾</span><span class="wf-tag">로그아웃</span></div>
-    <div class="wf-main" style="padding:24px;max-width:780px">
+    <div class="wf-header"><span class="logo">sp-project-portal</span><span class="wf-tag" style="color:var(--muted)">프로젝트 목록 / 계정 설정</span><span class="spacer"></span><span class="wf-tag">알림</span><span class="wf-tag">계정 ▾</span><span class="wf-tag">로그아웃</span></div>
+    <div class="wf-row">
+      <div class="wf-side">
+        <div class="item" style="font-weight:600">sp-project-portal</div>
+        <div class="item" style="color:var(--muted);font-size:11px">프로젝트 워크스페이스</div>
+        <div class="item">─ 프로젝트 목록</div>
+        <div class="item">─ 새 프로젝트 <span class="tag">+</span></div>
+        <div class="item active">◆ 계정 설정</div>
+      </div>
+      <div class="wf-main" style="padding:24px;max-width:780px">
       <h3 class="wf-title" style="margin-bottom:14px"><span class="info-label">1</span>내 계정</h3>
 
       <div class="wf-card" style="margin-bottom:14px">
@@ -1314,6 +1469,7 @@ body.embed-mode .ctrl-label{background:#ffd6cc;color:#9a3a25;border:2px solid #d
           <div class="it"><span><span class="ctrl-label">G</span>A 프로젝트 — ㈜OO</span><span class="t">고객사 · 참여 중</span></div>
           <div class="it"><span>B 프로젝트 — ㈜OO</span><span class="t">고객사 · 완료</span></div>
         </div>
+      </div>
       </div>
     </div>
   </div>
@@ -1442,8 +1598,16 @@ body.embed-mode .ctrl-label{background:#ffd6cc;color:#9a3a25;border:2px solid #d
     <p>신규 프로젝트 생성 폼. 완료 시 워크스페이스 자동 초기화 (REQ-PRJ-001).</p>
   </div>
   <div class="wf">
-    <div class="wf-header"><span class="logo">sp-project-portal</span><div class="wf-input line" style="max-width:280px">프로젝트 검색</div><span class="spacer"></span><span class="wf-tag">알림</span><span class="wf-tag">계정 ▾</span></div>
-    <div class="wf-main" style="padding:24px;max-width:780px">
+    <div class="wf-header"><span class="logo">sp-project-portal</span><span class="wf-tag" style="color:var(--muted)">프로젝트 목록 / 새 프로젝트</span><span class="spacer"></span><span class="wf-tag">알림</span><span class="wf-tag">계정 ▾</span></div>
+    <div class="wf-row">
+      <div class="wf-side">
+        <div class="item" style="font-weight:600">sp-project-portal</div>
+        <div class="item" style="color:var(--muted);font-size:11px">프로젝트 워크스페이스</div>
+        <div class="item">─ 프로젝트 목록</div>
+        <div class="item active">◆ 새 프로젝트</div>
+        <div class="item">─ 계정 설정</div>
+      </div>
+      <div class="wf-main" style="padding:24px;max-width:780px">
       <div class="wf-bar"><h3 class="wf-title"><span class="info-label">1</span>새 프로젝트</h3><span style="font-size:11px;color:var(--muted)">전체 단계 24</span></div>
 
       <div class="wf-card" style="margin-top:14px">
@@ -1461,6 +1625,7 @@ body.embed-mode .ctrl-label{background:#ffd6cc;color:#9a3a25;border:2px solid #d
         </div>
 
         <div style="text-align:right;margin-top:14px"><button class="wf-btn"><span class="ctrl-label">G</span>취소</button> <button class="wf-btn primary"><span class="ctrl-label">H</span>프로젝트 생성</button></div>
+      </div>
       </div>
     </div>
   </div>
@@ -1780,7 +1945,7 @@ body.embed-mode .ctrl-label{background:#ffd6cc;color:#9a3a25;border:2px solid #d
         <p style="margin:0 0 8px"><b>접근 권한이 없습니다</b></p>
         <p style="color:var(--muted);font-size:12px;margin:0 0 18px">이 페이지에 접근할 권한이 없습니다. 관리자에게 문의하세요.</p>
         <button class="wf-btn"><span class="ctrl-label">B</span>이전 페이지</button>
-        <button class="wf-btn"><span class="ctrl-label">C</span>홈으로</button>
+        <button class="wf-btn"><span class="ctrl-label">C</span>프로젝트 목록으로</button>
       </div>
     </div>
 
@@ -1790,7 +1955,7 @@ body.embed-mode .ctrl-label{background:#ffd6cc;color:#9a3a25;border:2px solid #d
         <h3 style="font:700 32px/1 var(--mono);margin:0 0 12px;color:var(--muted)"><span class="info-label">3</span>404</h3>
         <p style="margin:0 0 8px"><b>페이지를 찾을 수 없습니다</b></p>
         <p style="color:var(--muted);font-size:12px;margin:0 0 18px">요청하신 페이지가 존재하지 않거나 삭제되었습니다.</p>
-        <button class="wf-btn primary"><span class="ctrl-label">D</span>홈으로</button>
+        <button class="wf-btn primary"><span class="ctrl-label">D</span>프로젝트 목록으로</button>
       </div>
     </div>
 
@@ -1802,7 +1967,7 @@ body.embed-mode .ctrl-label{background:#ffd6cc;color:#9a3a25;border:2px solid #d
         <p style="color:var(--muted);font-size:12px;margin:0 0 8px">일시적인 시스템 오류입니다. 잠시 후 다시 시도해 주세요.</p>
         <p style="color:var(--muted);font-size:10px;font-family:var(--mono);margin:0 0 18px"><span class="info-label">5</span>에러 ID: ERR-{timestamp}-{hash}</p>
         <button class="wf-btn primary"><span class="ctrl-label">E</span>새로고침</button>
-        <button class="wf-btn"><span class="ctrl-label">F</span>홈으로</button>
+        <button class="wf-btn"><span class="ctrl-label">F</span>프로젝트 목록으로</button>
       </div>
     </div>
   </div>

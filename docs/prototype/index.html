@@ -339,6 +339,74 @@ code{font-family:var(--mono);font-size:.92em;background:var(--surface-2);padding
 .danger-zone .info{flex:1}
 .danger-zone .info h4{font:700 14px/1.2 var(--font);color:var(--hot);margin-bottom:4px}
 .danger-zone .info p{font-size:12px;color:var(--muted);line-height:1.6}
+
+/* ========== Roadmap (진행 현황) ========== */
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
+.kpi{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 16px}
+.kpi .label{font:500 11px/1 var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+.kpi .value{font:700 24px/1.1 var(--font-display);letter-spacing:-.01em;color:var(--fg)}
+.kpi .value .unit{font-size:14px;color:var(--muted);font-weight:500;margin-left:2px}
+.kpi .sub{font-size:11px;color:var(--muted);margin-top:6px;font-family:var(--mono)}
+.kpi.accent{background:var(--accent-soft);border-color:color-mix(in oklch,var(--accent) 18%,var(--surface))}
+.kpi.accent .value{color:var(--accent-deep)}
+
+.milestone-strip{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:24px;scrollbar-width:thin}
+.milestone-strip .ms{flex:0 0 auto;min-width:160px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:11px 14px;display:flex;flex-direction:column;gap:4px;position:relative}
+.milestone-strip .ms .code{font:600 10px/1 var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.milestone-strip .ms .ttl{font:600 13px/1.2 var(--font);color:var(--fg)}
+.milestone-strip .ms .meta{font-size:11px;color:var(--muted)}
+.milestone-strip .ms.done{background:var(--ok-soft);border-color:color-mix(in oklch,var(--ok) 22%,var(--surface))}
+.milestone-strip .ms.done .code{color:var(--ok)}
+.milestone-strip .ms.current{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset;background:var(--accent-soft)}
+.milestone-strip .ms.current .code{color:var(--accent)}
+.milestone-strip .ms+.ms::before{content:'›';position:absolute;left:-9px;top:50%;transform:translateY(-50%);color:var(--muted-2);font-size:14px}
+
+.phase{margin-bottom:24px}
+.phase-head{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.phase-head .ico{width:30px;height:30px;border-radius:8px;background:var(--surface-2);border:1px solid var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:14px}
+.phase-head .name{font:700 14px/1.2 var(--font);color:var(--fg)}
+.phase-head .count{font:500 11px/1 var(--mono);color:var(--muted);background:var(--surface-2);padding:3px 8px;border-radius:99px;border:1px solid var(--border)}
+.phase.muted .phase-head .name{color:var(--muted)}
+.phase.muted .stage-row{opacity:.6}
+
+.stage-list{display:flex;flex-direction:column;gap:0;border-left:2px solid var(--divider);margin-left:14px;padding-left:0}
+.stage-row{display:grid;grid-template-columns:28px 60px 1fr auto auto;gap:12px;align-items:center;padding:11px 14px 11px 18px;position:relative;border-radius:8px;margin-left:-1px}
+.stage-row+.stage-row{border-top:1px solid var(--divider)}
+.stage-row:hover{background:var(--surface-2)}
+.stage-row .node{position:absolute;left:-9px;top:50%;transform:translateY(-50%);width:16px;height:16px;border-radius:50%;background:var(--surface);border:2px solid var(--border-strong);display:inline-flex;align-items:center;justify-content:center;font-size:9px}
+.stage-row.gate .node{border-radius:3px;transform:translateY(-50%) rotate(45deg);width:14px;height:14px}
+.stage-row.done .node{background:var(--ok);border-color:var(--ok);color:#fff}
+.stage-row.pass .node{background:var(--ok);border-color:var(--ok)}
+.stage-row.current .node{background:var(--accent);border-color:var(--accent);box-shadow:0 0 0 4px var(--accent-soft)}
+.stage-row.pending .node{background:var(--warn);border-color:var(--warn)}
+.stage-row.lock .node{background:var(--surface);border-color:var(--border)}
+.stage-row.skip .node{background:var(--surface-2);border-color:var(--border);border-style:dashed}
+
+.stage-row .num{font:600 13px/1 var(--mono);color:var(--muted);text-align:right}
+.stage-row.current .num{color:var(--accent);font-weight:700}
+.stage-row.pass .num,.stage-row.done .num{color:var(--fg-2)}
+.stage-row .name{font:500 13px/1.4 var(--font);color:var(--fg-2)}
+.stage-row.current .name{font-weight:700;color:var(--fg)}
+.stage-row.lock .name{color:var(--muted)}
+.stage-row.skip .name{color:var(--muted);text-decoration:line-through;text-decoration-color:var(--border-strong)}
+.stage-row .name .detail{display:block;font-weight:400;font-size:11px;color:var(--muted);margin-top:2px}
+.stage-row .badge{display:inline-flex;align-items:center;gap:4px;font:500 11px/1 var(--mono);padding:4px 9px;border-radius:99px;border:1px solid var(--border);background:var(--surface);color:var(--muted);white-space:nowrap}
+.stage-row.done .badge,.stage-row.pass .badge{background:var(--ok-soft);border-color:color-mix(in oklch,var(--ok) 24%,var(--surface));color:var(--ok)}
+.stage-row.current .badge{background:var(--accent-soft);border-color:color-mix(in oklch,var(--accent) 28%,var(--surface));color:var(--accent-deep)}
+.stage-row.pending .badge{background:var(--warn-soft);border-color:color-mix(in oklch,var(--warn) 26%,var(--surface));color:#7a5500}
+.stage-row.lock .badge{color:var(--muted-2)}
+.stage-row.skip .badge{font-style:italic}
+.stage-row .gate-flag{font:600 10px/1 var(--mono);text-transform:uppercase;letter-spacing:.06em;color:var(--muted);background:var(--surface-2);padding:3px 7px;border-radius:4px;border:1px solid var(--border)}
+.stage-row.gate.major .gate-flag{color:var(--accent);background:var(--accent-soft);border-color:color-mix(in oklch,var(--accent) 25%,var(--surface))}
+.stage-row .deliv{font:500 12px/1 var(--mono);color:var(--accent);padding:5px 10px;border:1px solid color-mix(in oklch,var(--accent) 20%,var(--surface));border-radius:6px;background:var(--surface);cursor:pointer}
+.stage-row .deliv:hover{background:var(--accent-soft)}
+
+@media (max-width:900px){
+  .kpi-row{grid-template-columns:1fr 1fr}
+  .milestone-strip .ms{min-width:140px}
+  .stage-row{grid-template-columns:24px 50px 1fr;row-gap:6px}
+  .stage-row .badge,.stage-row .gate-flag,.stage-row .deliv{grid-column:3;justify-self:start}
+}
 </style>
 </head>
 <body>
@@ -510,6 +578,7 @@ const routes = [
   ['/admin/clients', 'admin', renderAdminClients],
   ['/admin/audit', 'admin', renderAdminAudit],
   ['/admin', 'admin', renderAdminTeams],
+  ['/projects/:id/roadmap', 'project', renderRoadmap, 'roadmap'],
   ['/projects/:id/requirements', 'project', renderRequirements, 'requirements'],
   ['/projects/:id/deliverables/:slug', 'project', renderDeliverables, 'deliverables'],
   ['/projects/:id/deliverables', 'project', () => renderDeliverables({slug:'ia'}), 'deliverables'],
@@ -564,7 +633,8 @@ function renderLayoutWith(layout, content, params={}, activeKey=null){
   }
   if(layout === 'global'){
     app.innerHTML = `
-      <div class="app no-sidebar">
+      <div class="app">
+        ${renderGlobalSidebar()}
         <div>
           ${renderTopbar('global', params)}
           <main class="main">${content}</main>
@@ -599,6 +669,7 @@ function renderLayoutWith(layout, content, params={}, activeKey=null){
 function renderProjectSidebar(proj, active, params){
   const items = [
     {key:'dashboard', href:`/projects/${proj.id}`, label:'대시보드', tag:`${proj.stage}/${proj.total}`},
+    {key:'roadmap', href:`/projects/${proj.id}/roadmap`, label:'진행 현황', tag:'24단계'},
     {key:'requirements', href:`/projects/${proj.id}/requirements`, label:'요구사항', tag:'44'},
     {key:'deliverables', href:`/projects/${proj.id}/deliverables/ia`, label:'산출물', tag:'4'},
     {key:'defects', href:`/projects/${proj.id}/defects`, label:'결함', tag:'6'},
@@ -646,6 +717,42 @@ function renderAdminSidebar(active){
     </aside>`;
 }
 
+function renderGlobalSidebar(){
+  const role = state.role;
+  const ph = location.hash;
+  const active = ph.includes('/projects/new') ? 'new'
+               : ph.includes('/account') ? 'account'
+               : 'projects';
+  const visibleProjs = role === 'client'
+    ? DATA.projects.filter(p=>p.id==='A' || p.id==='C')
+    : DATA.projects;
+  const scopeLabel = role==='admin' ? '전체' : role==='client' ? '참여' : '담당';
+  const items = [
+    {key:'projects', href:'/', label:'프로젝트 목록', tag:String(visibleProjs.length)},
+    ...(role!=='client' ? [{key:'new', href:'/projects/new', label:'새 프로젝트', tag:'+'}] : []),
+    {key:'account', href:'/account', label:'계정 설정', tag:''},
+  ];
+  return `
+    <aside class="sidebar">
+      <a class="brand" data-route="/">
+        <span class="logo">sp-project-portal</span>
+        <span class="proj">프로젝트 워크스페이스<small>${scopeLabel} 프로젝트 ${visibleProjs.length}개</small></span>
+      </a>
+      <nav>
+        ${items.map(i => `
+          <a class="nav-item ${active===i.key?'active':''}" data-route="${i.href}">
+            <span>${i.label}</span>
+            ${i.tag ? `<span class="tag">${i.tag}</span>` : ''}
+          </a>
+        `).join('')}
+        ${role==='admin' ? `
+          <div class="group">관리자</div>
+          <a class="nav-item" data-route="/admin/teams"><span>관리자 메뉴</span><span class="tag">→</span></a>
+        ` : ''}
+      </nav>
+    </aside>`;
+}
+
 function renderTopbar(layout, ctx={}){
   const u = DATA.user[state.role];
   const initial = u.name[0];
@@ -654,7 +761,8 @@ function renderTopbar(layout, ctx={}){
     const proj = ctx.proj;
     const pathKey = location.hash;
     let pageName = '대시보드';
-    if(pathKey.includes('/requirements')) pageName = '요구사항';
+    if(pathKey.includes('/roadmap')) pageName = '진행 현황';
+    else if(pathKey.includes('/requirements')) pageName = '요구사항';
     else if(pathKey.includes('/deliverables')) pageName = '산출물';
     else if(pathKey.includes('/defects/')) pageName = '결함 상세';
     else if(pathKey.includes('/defects')) pageName = '결함';
@@ -665,20 +773,23 @@ function renderTopbar(layout, ctx={}){
     else if(pathKey.includes('/settings/members')) pageName = '설정 / 멤버·초대';
     else if(pathKey.includes('/settings/danger')) pageName = '설정 / Danger Zone';
     else if(pathKey.includes('/settings')) pageName = '설정 / 기본 정보';
-    crumb = `<div class="breadcrumb"><a data-route="/">프로젝트</a> <span class="sep">/</span></div>
+    crumb = `<div class="breadcrumb"><a data-route="/">프로젝트 목록</a> <span class="sep">/</span></div>
       <div class="proj-switcher" data-action="proj-switch">${esc(proj.name)} <span class="arrow">▾</span></div>
       <span class="sep" style="color:var(--muted-2)">/</span><b>${pageName}</b>`;
   } else if(layout === 'admin'){
-    crumb = `<div class="breadcrumb"><a data-route="/">프로젝트</a> <span class="sep">/</span> <b>관리자 메뉴</b></div>`;
+    crumb = `<div class="breadcrumb"><a data-route="/">프로젝트 목록</a> <span class="sep">/</span> <b>관리자 메뉴</b></div>`;
   } else if(layout === 'global'){
     const ph = location.hash;
-    let pageName = '프로젝트 목록';
-    if(ph.includes('/account')) pageName = '계정 설정';
-    else if(ph.includes('/projects/new')) pageName = '새 프로젝트';
-    crumb = `<div class="breadcrumb"><a data-route="/">홈</a> <span class="sep">/</span> <b>${pageName}</b></div>`;
+    if(ph.includes('/account')){
+      crumb = `<div class="breadcrumb"><a data-route="/">프로젝트 목록</a> <span class="sep">/</span> <b>계정 설정</b></div>`;
+    } else if(ph.includes('/projects/new')){
+      crumb = `<div class="breadcrumb"><a data-route="/">프로젝트 목록</a> <span class="sep">/</span> <b>새 프로젝트</b></div>`;
+    } else {
+      crumb = `<div class="breadcrumb"><b>프로젝트 목록</b></div>`;
+    }
   }
   return `
-    <header class="topbar ${layout==='global'?'no-sidebar':''}">
+    <header class="topbar">
       ${crumb}
       <div class="spacer"></div>
       ${layout==='project' ? `<div class="search" data-action="open-search">⌕ 통합 검색<span class="kbd">/</span></div>` : ''}
@@ -762,6 +873,173 @@ function renderDashboard(params){
         <div class="deliverable" data-route="/projects/A/deliverables/figma"><div class="stage-num">단계 16~17</div><div class="name">Figma</div><span class="pill muted">대기</span></div>
       </div>
     </section>`;
+}
+
+/* ============================================================
+ * RENDER — Roadmap (SCR-RDM-001) — 진행 현황
+ * 24단계 + 5게이트 + 7마일스톤 시각화
+ * ============================================================ */
+const ROADMAP = {
+  // 시뮬레이션: 프로젝트 A — 12단계 진행 중, Gates 9·11 통과, Gate 13 검토 중
+  milestones:[
+    {code:'M1', label:'요구사항 확정', gate:9, status:'done', when:'W3 · 05-19'},
+    {code:'M2', label:'IA 확정', gate:11, status:'done', when:'W5 · 05-19'},
+    {code:'M3', label:'시안 확정', gate:13, status:'current', when:'고객사 검토 중'},
+    {code:'M4', label:'프로토타입 확정', gate:15, status:'lock', when:'W9 예정'},
+    {code:'M5', label:'개발 완료', gate:18, status:'lock', when:'W10 예정'},
+    {code:'M6', label:'UAT 통과', gate:22, status:'lock', when:'W12 예정', major:true},
+    {code:'M7', label:'서비스 오픈', gate:24, status:'lock', when:'W13 예정'},
+  ],
+  phases:[
+    {
+      icon:'🏁', label:'프로젝트 착수',
+      stages:[
+        {n:'1~2', name:'프로젝트 생성·워크스페이스 초기화', status:'done', badge:'W1 · 05-18'},
+      ]
+    },
+    {
+      icon:'👥', label:'계정·접근', muted:true, note:'시스템 미개발 — 스킵',
+      stages:[
+        {n:'3', name:'2-tier 접근 구분 설정', status:'skip', badge:'스킵'},
+        {n:'4', name:'고객사 계정 발급·초대', status:'skip', badge:'스킵'},
+        {n:'5', name:'고객사 최초 로그인', status:'skip', badge:'스킵'},
+      ]
+    },
+    {
+      icon:'📝', label:'요구사항 협의',
+      stages:[
+        {n:'6', name:'요구사항 등록 (팀 대행 입력)', status:'done', badge:'W1~2', deliverable:{label:'SRS v1.3 →', route:'/projects/A/requirements'}},
+        {n:'7~8', name:'검토·수정 왕복 ↻', detail:'협의 26회차 완료', status:'done', badge:'W2~3'},
+        {n:'9', name:'최종 컨펌', detail:'SRS v1.3 컨펌', status:'pass', gate:true, major:true, badge:'W3 · 05-19'},
+      ]
+    },
+    {
+      icon:'🎨', label:'설계 협의',
+      stages:[
+        {n:'10', name:'IA 등록', status:'done', badge:'W4', deliverable:{label:'IA v0.2 →', route:'/projects/A/deliverables/ia'}},
+        {n:'11', name:'IA 컨펌', status:'pass', gate:true, badge:'W5 · 05-19'},
+        {n:'12', name:'디자인 시안 등록', detail:'6안 → A. Precision grid 선택', status:'current', badge:'W6 · 진행 중', deliverable:{label:'시안 v2 →', route:'/projects/A/deliverables/design'}},
+        {n:'13', name:'시안 컨펌', detail:'고객사 검토 중', status:'pending', gate:true, badge:'검토 중'},
+        {n:'14', name:'프로토타입(HTML) 등록', detail:'Gate 13 통과 후 진입', status:'lock', badge:'잠금'},
+        {n:'15', name:'프로토타입 컨펌', status:'lock', gate:true, badge:'잠금'},
+        {n:'16~17', name:'Figma 정제·핸드오프', detail:'Gate 15 통과 후', status:'lock', badge:'잠금'},
+      ]
+    },
+    {
+      icon:'💻', label:'개발',
+      stages:[
+        {n:'18', name:'AI 자동 개발', detail:'Gates 9·11·13·15 모두 통과 시 트리거 가능', status:'lock', badge:'조건부'},
+      ]
+    },
+    {
+      icon:'✓', label:'테스트',
+      stages:[
+        {n:'19', name:'TC 목록 관리 + 결함 추적', status:'lock', badge:'잠금'},
+        {n:'20~21', name:'UAT · 수정 반복 ↻', status:'lock', badge:'잠금'},
+        {n:'22', name:'최종 검수 컨펌', detail:'산출물 확정', status:'lock', gate:true, major:true, badge:'잠금'},
+      ]
+    },
+    {
+      icon:'🚀', label:'이행·운영',
+      stages:[
+        {n:'23', name:'산출물 Export', status:'lock', badge:'잠금'},
+        {n:'24', name:'서비스 오픈·운영 전환', status:'lock', badge:'잠금'},
+      ]
+    },
+  ]
+};
+
+function renderRoadmap(params){
+  const proj = DATA.projects.find(p=>p.id===params.id) || DATA.projects[0];
+
+  // KPI 계산
+  let totalStages = 0, doneStages = 0, gates = 0, passedGates = 0;
+  ROADMAP.phases.forEach(ph => ph.stages.forEach(s => {
+    totalStages++;
+    if(s.status === 'done' || s.status === 'pass' || s.status === 'skip') doneStages++;
+    if(s.gate){ gates++; if(s.status === 'pass') passedGates++; }
+  }));
+  const nextMajor = ROADMAP.milestones.find(m => m.major && m.status !== 'done');
+
+  const milestoneHtml = ROADMAP.milestones.map(m => `
+    <div class="ms ${m.status}">
+      <span class="code">${m.code} · Gate ${m.gate}</span>
+      <span class="ttl">${esc(m.label)}</span>
+      <span class="meta">${esc(m.when)}</span>
+    </div>
+  `).join('');
+
+  const phasesHtml = ROADMAP.phases.map(ph => {
+    const stagesHtml = ph.stages.map(s => {
+      const nodeChar = s.status==='done'?'✓' : s.status==='pass'?'✓' : s.status==='current'?'●' : s.status==='pending'?'⋯' : s.status==='skip'?'/' : '';
+      const deliv = s.deliverable ? `<button class="deliv" data-route="${s.deliverable.route}">${esc(s.deliverable.label)}</button>` : '';
+      const gateFlag = s.gate ? `<span class="gate-flag">${s.major?'Major ':''}Gate ${s.n}</span>` : '';
+      const detail = s.detail ? `<span class="detail">${esc(s.detail)}</span>` : '';
+      return `
+        <div class="stage-row ${s.status} ${s.gate?'gate':''} ${s.major?'major':''}">
+          <span class="node">${nodeChar}</span>
+          <span class="num">${esc(s.n)}</span>
+          <div class="name">${esc(s.name)}${detail}</div>
+          ${gateFlag}
+          ${deliv || `<span class="badge">${esc(s.badge||'')}</span>`}
+        </div>
+      `;
+    }).join('');
+    return `
+      <div class="phase ${ph.muted?'muted':''}">
+        <div class="phase-head">
+          <span class="ico">${ph.icon}</span>
+          <span class="name">${esc(ph.label)}</span>
+          <span class="count">${ph.stages.length}단계</span>
+          ${ph.note?`<span class="meta" style="color:var(--muted);font-size:11px;font-family:var(--mono)">· ${esc(ph.note)}</span>`:''}
+        </div>
+        <div class="stage-list">${stagesHtml}</div>
+      </div>
+    `;
+  }).join('');
+
+  return html`
+    <div class="page-bar">
+      <div>
+        <h1 class="page-title">진행 현황</h1>
+        <p class="page-sub">${esc(proj.name)} · 24단계 전체 여정과 게이트·마일스톤을 한눈에 봅니다.</p>
+      </div>
+    </div>
+
+    <section class="kpi-row">
+      <div class="kpi accent">
+        <div class="label">전체 진행률</div>
+        <div class="value">${proj.stage}<span class="unit">/ ${proj.total}</span></div>
+        <div class="sub">${proj.progress}% · W${proj.week}</div>
+      </div>
+      <div class="kpi">
+        <div class="label">통과한 게이트</div>
+        <div class="value">${passedGates}<span class="unit">/ ${gates}</span></div>
+        <div class="sub">Major 게이트: 1/2 통과</div>
+      </div>
+      <div class="kpi">
+        <div class="label">현재 단계</div>
+        <div class="value">${proj.stage}<span class="unit"> · 시안 등록</span></div>
+        <div class="sub">Gate 13 컨펌 대기</div>
+      </div>
+      <div class="kpi">
+        <div class="label">다음 메이저 마일스톤</div>
+        <div class="value" style="font-size:18px">${esc(nextMajor?nextMajor.code:'—')}<span class="unit"> ${esc(nextMajor?nextMajor.label:'')}</span></div>
+        <div class="sub">${esc(nextMajor?nextMajor.when:'—')}</div>
+      </div>
+    </section>
+
+    <h3 style="font:600 12px/1 var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">마일스톤 (M1 ~ M7)</h3>
+    <div class="milestone-strip">${milestoneHtml}</div>
+
+    <h3 style="font:600 12px/1 var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">단계별 상세</h3>
+    ${phasesHtml}
+
+    <div class="state-info" style="margin-top:18px">
+      <b>범례</b> · <span style="color:var(--ok)">●</span> 완료/통과 · <span style="color:var(--accent)">●</span> 진행 중 · <span style="color:var(--warn)">●</span> 검토 중 (게이트 대기) · <span style="color:var(--muted)">○</span> 잠금 · <span style="color:var(--muted)">/</span> 스킵<br>
+      <b>게이트</b> · 마름모 노드(◆)는 게이트 단계 — 컨펌 전 다음 단계 진행 불가. <b>Major</b>(9·22)는 프로젝트 진행 전체 차단.
+    </div>
+  `;
 }
 
 /* ============================================================
@@ -919,7 +1197,7 @@ function renderProjectList(){
   let projs = DATA.projects;
   if(role === 'client'){ projs = projs.filter(p=>p.id==='A' || p.id==='C'); }
   return html`
-    <h1 class="page-title">내 프로젝트</h1>
+    <h1 class="page-title">프로젝트 목록</h1>
     <p class="page-sub">${role==='admin'?'전체 프로젝트':'담당·참여 프로젝트'} · ${projs.length}개</p>
 
     <div class="filter-bar">
@@ -1553,9 +1831,9 @@ function renderError(params){
   const code = params?.code || '404';
   const map = {
     '401':{title:'로그인이 필요합니다', desc:'접근하려는 페이지는 로그인 후 이용 가능합니다.', actions:`<button class="btn primary" data-route="/login">로그인 페이지로</button>`},
-    '403':{title:'접근 권한이 없습니다', desc:'이 페이지에 접근할 권한이 없습니다. 관리자에게 문의하세요.', actions:`<button class="btn" data-action="back">이전 페이지</button><button class="btn primary" data-route="/">홈으로</button>`},
-    '404':{title:'페이지를 찾을 수 없습니다', desc:'요청하신 페이지가 존재하지 않거나 삭제되었습니다.', actions:`<button class="btn primary" data-route="/">홈으로</button>`},
-    '500':{title:'서버 오류가 발생했습니다', desc:'일시적인 시스템 오류입니다. 잠시 후 다시 시도해 주세요.', actions:`<button class="btn" data-action="reload">새로고침</button><button class="btn primary" data-route="/">홈으로</button>`, errid:'ERR-1716192000-A7F2'},
+    '403':{title:'접근 권한이 없습니다', desc:'이 페이지에 접근할 권한이 없습니다. 관리자에게 문의하세요.', actions:`<button class="btn" data-action="back">이전 페이지</button><button class="btn primary" data-route="/">프로젝트 목록으로</button>`},
+    '404':{title:'페이지를 찾을 수 없습니다', desc:'요청하신 페이지가 존재하지 않거나 삭제되었습니다.', actions:`<button class="btn primary" data-route="/">프로젝트 목록으로</button>`},
+    '500':{title:'서버 오류가 발생했습니다', desc:'일시적인 시스템 오류입니다. 잠시 후 다시 시도해 주세요.', actions:`<button class="btn" data-action="reload">새로고침</button><button class="btn primary" data-route="/">프로젝트 목록으로</button>`, errid:'ERR-1716192000-A7F2'},
   };
   const e = map[code] || map['404'];
   return html`
@@ -1774,7 +2052,7 @@ document.addEventListener('click', e => {
   if(a==='proj-switch'){
     const rect = t.getBoundingClientRect();
     const items = DATA.projects.map(p => `<a class="item" data-route="/projects/${p.id}"><span>${esc(p.name)}</span><span class="meta">${p.progress}%</span></a>`).join('');
-    openDropdown(items + `<div class="divider"></div><a class="item" data-route="/"><span>전체 프로젝트 목록</span><span class="meta">→</span></a>`, rect.left, rect.bottom+4);
+    openDropdown(items + `<div class="divider"></div><a class="item" data-route="/"><span>프로젝트 목록</span><span class="meta">→</span></a>`, rect.left, rect.bottom+4);
     e.stopPropagation();
     return;
   }

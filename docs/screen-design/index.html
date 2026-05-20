@@ -71,7 +71,7 @@ table.spec td .vref{display:inline-block;padding:1px 6px;border-radius:4px;font-
 <div class="layout">
 <aside class="side">
   <h1>화면 설계서</h1>
-  <span class="ver">v1.0 · 그룹 1~6 완료 (29 화면)</span>
+  <span class="ver">v1.1 · 진행 현황(SCR-RDM-001) 추가 (30 화면)</span>
 
   <div class="group">공통 (그룹 1)</div>
   <a href="#design-tokens">디자인 토큰 <small>색·타이포·간격</small></a>
@@ -86,6 +86,7 @@ table.spec td .vref{display:inline-block;padding:1px 6px;border-radius:4px;font-
 
   <div class="group">진입·랜딩 (그룹 3)</div>
   <a href="#scr-prj-001">SCR-PRJ-001 <small>대시보드</small></a>
+  <a href="#scr-rdm-001">SCR-RDM-001 <small>진행 현황</small></a>
   <a href="#scr-aut-001">SCR-AUT-001 <small>로그인</small></a>
   <a href="#scr-glb-001">SCR-GLB-001 <small>프로젝트 목록</small></a>
 
@@ -206,7 +207,7 @@ table.spec td .vref{display:inline-block;padding:1px 6px;border-radius:4px;font-
       <thead><tr><th>No</th><th>설명</th><th>Type</th><th>출처</th></tr></thead>
       <tbody>
         <tr><td class="id info"><span class="badge">1</span></td><td>제품 로고</td><td class="type">Image</td><td class="type">static asset</td></tr>
-        <tr><td class="id info"><span class="badge">2</span></td><td>프로젝트 검색 입력 (글로벌 컨텍스트)</td><td class="type">Search bar</td><td class="type">REQ-PRJ-003</td></tr>
+        <tr><td class="id info"><span class="badge">2</span></td><td>글로벌 사이드바 (워크스페이스 브랜드 + 메뉴) — 옵션 A AppShell</td><td class="type">List&lt;NavItem&gt;</td><td class="type">role 분기, REQ-PRJ-003</td></tr>
         <tr><td class="id info"><span class="badge">3</span></td><td>알림 (미확인 카운트)</td><td class="type">Badge</td><td class="type">REQ-NTF-001</td></tr>
         <tr><td class="id info"><span class="badge">4</span></td><td>로그인 사용자 이름·역할</td><td class="type">String</td><td class="type">session.user</td></tr>
         <tr><td class="id info"><span class="badge">5</span></td><td>현재 프로젝트명 (프로젝트 컨텍스트)</td><td class="type">String</td><td class="type">project.name</td></tr>
@@ -221,7 +222,7 @@ table.spec td .vref{display:inline-block;padding:1px 6px;border-radius:4px;font-
       <thead><tr><th>No</th><th>액션</th><th>Type</th><th>Effect</th></tr></thead>
       <tbody>
         <tr><td class="id ctrl"><span class="badge">A</span></td><td>로고 클릭</td><td class="type">Link</td><td class="type">→ 글로벌 컨텍스트면 SCR-GLB-001, 프로젝트 컨텍스트면 SCR-PRJ-001</td></tr>
-        <tr><td class="id ctrl"><span class="badge">B</span></td><td>프로젝트 검색 (글로벌)</td><td class="type">Input + 결과 dropdown</td><td class="type">실시간 검색, 클릭 시 프로젝트 진입</td></tr>
+        <tr><td class="id ctrl"><span class="badge">B</span></td><td>글로벌 사이드바 메뉴 클릭</td><td class="type">Nav Link</td><td class="type">프로젝트 목록(/) · 새 프로젝트(/projects/new) · 계정 설정(/account) · (관리자) 관리자 메뉴(/admin/teams)</td></tr>
         <tr><td class="id ctrl"><span class="badge">C</span></td><td>알림 클릭</td><td class="type">Popover</td><td class="type">최근 알림 10건 + 전체 보기 링크</td></tr>
         <tr><td class="id ctrl"><span class="badge">D</span></td><td>계정 드롭다운</td><td class="type">Dropdown</td><td class="type">[계정 설정 → SCR-ACC-001] / [로그아웃]</td></tr>
         <tr><td class="id ctrl"><span class="badge">E</span></td><td>로그아웃</td><td class="type">Button (MOD-ACC-001)</td><td class="type">세션 종료 → SCR-AUT-001</td></tr>
@@ -238,11 +239,12 @@ table.spec td .vref{display:inline-block;padding:1px 6px;border-radius:4px;font-
       <thead><tr><th>레이아웃</th><th>로고</th><th>검색</th><th>알림·계정</th><th>사이드바</th></tr></thead>
       <tbody>
         <tr><td class="row-h">인증 전 (Public)</td><td>✅</td><td>❌</td><td>❌</td><td>❌</td></tr>
-        <tr><td class="row-h">인증 후 (글로벌)</td><td>✅</td><td>✅ 프로젝트 검색</td><td>✅</td><td>❌</td></tr>
+        <tr><td class="row-h">인증 후 (글로벌)</td><td>✅</td><td>❌ (사이드바 메뉴로 대체)</td><td>✅</td><td>✅ 워크스페이스 메뉴 (프로젝트 목록·새 프로젝트·계정 설정·[관리자] 관리자 메뉴)</td></tr>
         <tr><td class="row-h">인증 후 (프로젝트)</td><td>✅</td><td>✅ 통합 검색</td><td>✅</td><td>✅ 7개 메뉴 (대시보드·요구사항·산출물·결함·TC·AI 개발·설정)</td></tr>
       </tbody>
     </table>
     <div class="callout"><b>사이드바 메뉴 권한 매트릭스</b>는 <code>requirements.md</code> §3 권한 매트릭스 단일 진실 원천 참조. TC·AI 개발·설정은 [팀] 전용이라 고객사에게는 미노출.</div>
+    <div class="callout"><b>옵션 A · AppShell 통일 (협의 27회차, 2026-05-20)</b> — 글로벌 영역도 사이드바 보유. 모든 레이아웃의 헤더·콘텐츠 좌측 정렬이 일치(좌측 240px 사이드바 + 32px main padding). 글로벌·프로젝트·관리자 사이드바 간 전환 시 폭은 그대로, 메뉴 항목만 교체. <b>breadcrumb 1단</b>은 모든 레이아웃에서 <code>프로젝트 목록</code> 링크로 통일 (글로벌 `/`는 자기참조 회피 위해 굵게 단독 표시).</div>
   </div>
 </section>
 
@@ -627,6 +629,68 @@ table.spec td .vref{display:inline-block;padding:1px 6px;border-radius:4px;font-
   </div>
 </section>
 
+<!-- ============================== SCR-RDM-001 ============================== -->
+<section class="screen" id="scr-rdm-001">
+  <div class="screen-head">
+    <p class="eyebrow">화면 설계서 · 그룹 3 · 진입·랜딩</p>
+    <h2>SCR-RDM-001 · 진행 현황</h2>
+    <p class="meta">Path: 프로젝트 사이드바 메뉴 &nbsp;·&nbsp; URL: <code>/projects/{id}/roadmap</code> &nbsp;·&nbsp; 권한: 공통 (읽기 전용)</p>
+    <p class="desc"><b>Description:</b> 단일 프로젝트의 24단계 전체 여정·5게이트·7마일스톤을 시각화. 대시보드(SCR-PRJ-001, 현재 중심)와 책임 분리. 액션 없음 — 산출물 링크만 클릭 가능. 모든 역할이 동일하게 접근 (자신이 볼 수 있는 프로젝트의 로드맵만).</p>
+  </div>
+
+  <div class="section">
+    <h3><span class="num">1</span> 화면</h3>
+    <iframe class="wf-frame" src="../wireframe/index.html?screen=s31" title="SCR-RDM-001 와이어프레임"></iframe>
+  </div>
+
+  <div class="section">
+    <h3><span class="num">2</span> Information</h3>
+    <table class="spec">
+      <thead><tr><th>No</th><th>설명</th><th>Type</th><th>출처</th></tr></thead>
+      <tbody>
+        <tr><td class="id info"><span class="badge">1</span></td><td>페이지 제목·서브 ("진행 현황 / {프로젝트명} · 24단계 전체 여정...")</td><td class="type">String</td><td class="type">project.name (정적 카피)</td></tr>
+        <tr><td class="id info"><span class="badge">2</span></td><td>KPI 카드 4종 (전체 진행률 stage/24 · 통과 게이트 N/5 · 현재 단계 라벨 · 다음 메이저 마일스톤)</td><td class="type">Card×4</td><td class="type">project.current_step, gates[].status, milestones[]</td></tr>
+        <tr><td class="id info"><span class="badge">3</span></td><td>마일스톤 스트립 M1~M7 (코드, 라벨, Gate 번호, 상태, 예상/완료 일자)</td><td class="type">List&lt;Milestone&gt;</td><td class="type">milestones[] (7개 고정)</td></tr>
+        <tr><td class="id info"><span class="badge">4</span></td><td>Phase 7개 그룹 (착수·계정·요구사항·설계·개발·테스트·이행운영)</td><td class="type">List&lt;Phase&gt;</td><td class="type">roadmap.phases[]</td></tr>
+        <tr><td class="id info"><span class="badge">5</span></td><td>각 단계 행 — 노드(원/마름모) + 번호 + 단계명 + 세부설명(옵션) + 상태 뱃지</td><td class="type">List&lt;Stage&gt;</td><td class="type">phase.stages[]</td></tr>
+        <tr><td class="id info"><span class="badge">6</span></td><td>Major Gate 플래그 (9·22 단계 전용 표식)</td><td class="type">Badge (조건부)</td><td class="type">stage.gate === 'major'</td></tr>
+        <tr><td class="id info"><span class="badge">7</span></td><td>산출물 링크 (예: "SRS v1.3 →", "IA v0.2 →", "시안 v2 →")</td><td class="type">Link (조건부)</td><td class="type">stage.deliverable {label, route}</td></tr>
+        <tr><td class="id info"><span class="badge">8</span></td><td>범례 (상태 색상·게이트 표시 설명)</td><td class="type">String (정적)</td><td class="type">i18n</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <h3><span class="num">3</span> Controls</h3>
+    <table class="spec">
+      <thead><tr><th>No</th><th>액션</th><th>Type</th><th>Effect</th></tr></thead>
+      <tbody>
+        <tr><td class="id ctrl"><span class="badge">A</span></td><td>사이드바 메뉴 (다른 화면 진입)</td><td class="type">Nav Link</td><td class="type">→ SCR-LAY 참조 (7개 메뉴)</td></tr>
+        <tr><td class="id ctrl"><span class="badge">B</span></td><td>산출물 링크 클릭 (예: "SRS v1.3 →")</td><td class="type">Link</td><td class="type">→ 해당 산출물 페이지 (SCR-REQ-001 · SCR-DSN-001/{slug})</td></tr>
+        <tr><td class="id ctrl"><span class="badge">C</span></td><td>잠금 단계 마우스 오버</td><td class="type">Tooltip (Hover)</td><td class="type">잠금 사유 표시 (예: "Gate 13 통과 후 진입")</td></tr>
+      </tbody>
+    </table>
+    <div class="callout"><b>액션 버튼 없음</b>: 검토 요청·컨펌·반려·AI 개발 시작 등은 모두 대시보드(SCR-PRJ-001)·산출물 페이지(SCR-DSN-001·SCR-REQ-001)에 있음. 진행 현황은 정보 제공·탐색 전용.</div>
+  </div>
+
+  <div class="section">
+    <h3><span class="num">4</span> States (단계·게이트 상태 매트릭스)</h3>
+    <p class="hint">각 단계는 다음 상태 중 하나. 노드 모양·뱃지·색상으로 시각 구분.</p>
+    <table class="spec matrix">
+      <thead><tr><th>상태</th><th>노드</th><th>뱃지 색</th><th>의미</th></tr></thead>
+      <tbody>
+        <tr><td class="row-h">done</td><td>● 채운 원 (초록)</td><td>초록</td><td>일반 단계 완료</td></tr>
+        <tr><td class="row-h">pass</td><td>◆ 채운 마름모 (초록)</td><td>초록</td><td>게이트 통과</td></tr>
+        <tr><td class="row-h">current</td><td>● 코발트 + glow</td><td>코발트</td><td>현재 진행 중 단계</td></tr>
+        <tr><td class="row-h">pending</td><td>◆ 노란 마름모</td><td>노란</td><td>게이트 검토 중 (고객사 응답 대기)</td></tr>
+        <tr><td class="row-h">lock</td><td>○ 빈 원 / 빈 마름모</td><td>회색</td><td>이전 게이트 미통과로 잠금</td></tr>
+        <tr><td class="row-h">skip</td><td>○ 점선 원</td><td>회색 (취소선)</td><td>해당 프로젝트에 적용 없음 (예: 3~5 시스템 미개발)</td></tr>
+      </tbody>
+    </table>
+    <div class="callout"><b>역할별 차이 없음</b>: SCR-PRJ-001(대시보드)과 달리 본 화면은 모든 역할에 동일한 정보를 보여줌. 권한은 페이지 접근 자체(자신이 볼 수 있는 프로젝트의 로드맵)에만 적용.</div>
+  </div>
+</section>
+
 <!-- ============================== SCR-AUT-001 ============================== -->
 <section class="screen" id="scr-aut-001">
   <div class="screen-head">
@@ -702,7 +766,7 @@ table.spec td .vref{display:inline-block;padding:1px 6px;border-radius:4px;font-
     <table class="spec">
       <thead><tr><th>No</th><th>설명</th><th>Type</th><th>출처</th></tr></thead>
       <tbody>
-        <tr><td class="id info"><span class="badge">1</span></td><td>화면 제목 ("내 프로젝트")</td><td class="type">String (정적)</td><td class="type">i18n</td></tr>
+        <tr><td class="id info"><span class="badge">1</span></td><td>화면 제목 ("프로젝트 목록")</td><td class="type">String (정적)</td><td class="type">i18n</td></tr>
         <tr><td class="id info"><span class="badge">2</span></td><td>프로젝트 카드 (각각): 프로젝트명·고객사·현재 단계·진행률·미처리 카운트·최근 활동 시각</td><td class="type">List&lt;ProjectSummary&gt;</td><td class="type">projects[] (role-filtered)</td></tr>
       </tbody>
     </table>
@@ -713,7 +777,7 @@ table.spec td .vref{display:inline-block;padding:1px 6px;border-radius:4px;font-
     <table class="spec">
       <thead><tr><th>No</th><th>액션</th><th>Type</th><th>Effect</th></tr></thead>
       <tbody>
-        <tr><td class="id ctrl"><span class="badge">A</span></td><td>프로젝트 검색 (헤더)</td><td class="type">Input</td><td class="type">실시간 부분 일치, 목록 즉시 필터</td></tr>
+        <tr><td class="id ctrl"><span class="badge">A</span></td><td>글로벌 사이드바 메뉴</td><td class="type">Nav</td><td class="type">→ SCR-LAY Control B (워크스페이스 메뉴, 프로젝트 목록 active)</td></tr>
         <tr><td class="id ctrl"><span class="badge">B</span></td><td>[+ 새 프로젝트 (팀)]</td><td class="type">Button → SCR-PRJ-002</td><td class="type">프로젝트팀·관리자에게만 노출 (REQ-PRJ-001)</td></tr>
         <tr><td class="id ctrl"><span class="badge">C</span></td><td>상태 필터 (드롭다운)</td><td class="type">Dropdown</td><td class="type">진행 중 / 완료 / 보류 / 전체</td></tr>
         <tr><td class="id ctrl"><span class="badge">D</span></td><td>고객사명 검색</td><td class="type">Input</td><td class="type">부분 일치 필터</td></tr>
@@ -1268,18 +1332,18 @@ table.spec td .vref{display:inline-block;padding:1px 6px;border-radius:4px;font-
     <h3><span class="num">2</span> 4가지 페이지 명세</h3>
     <table class="spec"><thead><tr><th>코드</th><th>제목</th><th>메시지</th><th>복귀 액션</th><th>트리거</th></tr></thead><tbody>
       <tr><td class="id info"><span class="badge">401</span></td><td>로그인이 필요합니다</td><td>접근하려는 페이지는 로그인 후 이용 가능합니다.</td><td>[로그인 페이지로] → SCR-AUT-001 (redirect 파라미터로 원래 URL 보존)</td><td>비로그인 상태 보호 페이지 접근 (REQ-AUT-007)</td></tr>
-      <tr><td class="id info"><span class="badge">403</span></td><td>접근 권한이 없습니다</td><td>이 페이지에 접근할 권한이 없습니다. 관리자에게 문의하세요.</td><td>[이전 페이지] / [홈으로]</td><td>권한 매트릭스 위반 (REQ-NFR-001)</td></tr>
-      <tr><td class="id info"><span class="badge">404</span></td><td>페이지를 찾을 수 없습니다</td><td>요청하신 페이지가 존재하지 않거나 삭제되었습니다.</td><td>[홈으로]</td><td>미존재 리소스 / 삭제된 프로젝트</td></tr>
-      <tr><td class="id info"><span class="badge">500</span></td><td>서버 오류가 발생했습니다</td><td>일시적인 시스템 오류입니다. 에러 ID 표시.</td><td>[새로고침] / [홈으로]</td><td>예측 못한 시스템 오류 (서버 로그 + 감사 로그)</td></tr>
+      <tr><td class="id info"><span class="badge">403</span></td><td>접근 권한이 없습니다</td><td>이 페이지에 접근할 권한이 없습니다. 관리자에게 문의하세요.</td><td>[이전 페이지] / [프로젝트 목록으로]</td><td>권한 매트릭스 위반 (REQ-NFR-001)</td></tr>
+      <tr><td class="id info"><span class="badge">404</span></td><td>페이지를 찾을 수 없습니다</td><td>요청하신 페이지가 존재하지 않거나 삭제되었습니다.</td><td>[프로젝트 목록으로]</td><td>미존재 리소스 / 삭제된 프로젝트</td></tr>
+      <tr><td class="id info"><span class="badge">500</span></td><td>서버 오류가 발생했습니다</td><td>일시적인 시스템 오류입니다. 에러 ID 표시.</td><td>[새로고침] / [프로젝트 목록으로]</td><td>예측 못한 시스템 오류 (서버 로그 + 감사 로그)</td></tr>
     </tbody></table>
   </div>
   <div class="section">
     <h3><span class="num">3</span> Controls</h3>
     <table class="spec"><tbody>
       <tr><td class="id ctrl"><span class="badge">A</span></td><td>401 [로그인 페이지로] — <code>/login?redirect={current_url}</code></td></tr>
-      <tr><td class="id ctrl"><span class="badge">B·C</span></td><td>403 [이전 페이지] (history.back) / [홈으로] (역할별 랜딩)</td></tr>
-      <tr><td class="id ctrl"><span class="badge">D</span></td><td>404 [홈으로]</td></tr>
-      <tr><td class="id ctrl"><span class="badge">E·F</span></td><td>500 [새로고침] (window.reload) / [홈으로]</td></tr>
+      <tr><td class="id ctrl"><span class="badge">B·C</span></td><td>403 [이전 페이지] (history.back) / [프로젝트 목록으로] (역할별 랜딩)</td></tr>
+      <tr><td class="id ctrl"><span class="badge">D</span></td><td>404 [프로젝트 목록으로]</td></tr>
+      <tr><td class="id ctrl"><span class="badge">E·F</span></td><td>500 [새로고침] (window.reload) / [프로젝트 목록으로]</td></tr>
     </tbody></table>
     <div class="callout"><b>홈 라우팅</b>: 인증 시 SCR-GLB-001(프로젝트 목록), 프로젝트 컨텍스트에서는 SCR-PRJ-001 유지. <b>에러 ID</b> (500): timestamp + hash. 감사 로그·서버 로그 추적 키.</div>
   </div>
