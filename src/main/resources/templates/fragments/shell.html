@@ -23,6 +23,38 @@
     </nav>
 </aside>
 
+<!-- 프로젝트 사이드바 -->
+<aside class="sidebar" th:fragment="projectSidebar(active)">
+    <div class="brand">
+        <a class="logo" th:href="@{/}">SoftPuzzle PM</a>
+        <span class="proj" th:text="${projName}">프로젝트<small
+                th:text="${projClient} + (${projType} != null ? ' · ' + ${projType} : '')">고객사</small></span>
+    </div>
+    <nav>
+        <a class="nav-item" th:classappend="${active == 'deliverables'} ? 'active'"
+           th:href="@{/projects/{id}(id=${projId})}">
+            <span>산출물</span>
+        </a>
+    </nav>
+</aside>
+
+<!-- 프로젝트 상단바 -->
+<header class="topbar" th:fragment="projectTopbar(pageName)">
+    <div class="breadcrumb">
+        <a th:href="@{/}">프로젝트 목록</a> <span class="sep">/</span>
+        <b th:text="${projName}">프로젝트</b> <span class="sep">/</span>
+        <span th:text="${pageName}">산출물</span>
+    </div>
+    <div class="spacer"></div>
+    <div class="acct">
+        <span class="avatar" th:text="${navUserInitial}">U</span>
+        <span class="name" th:text="${navUserName}">사용자</span>
+    </div>
+    <form method="post" th:action="@{/logout}" style="margin:0">
+        <button class="btn ghost sm" type="submit">로그아웃</button>
+    </form>
+</header>
+
 <!-- 상단바 -->
 <header class="topbar" th:fragment="topbar(pageName)">
     <div class="breadcrumb"><b th:text="${pageName}">페이지</b></div>

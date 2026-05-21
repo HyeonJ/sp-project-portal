@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.softpuzzle.pm.deliverable.FileAssetMapper">
+
+    <sql id="cols">
+        f.id, f.slot_version_id, f.asset_kind, f.logical_key, f.position, f.original_name,
+        f.description, f.content_type, f.size_bytes, f.storage_key, f.external_url,
+        f.uploaded_by, f.uploaded_at, a.name AS uploaded_by_name
+    </sql>
+
+    <select id="findByVersion" resultType="FileAsset">
+        SELECT <include refid="cols"/>
+        FROM file_asset f
+        JOIN account a ON a.id = f.uploaded_by
+        WHERE f.slot_version_id = #{versionId}
+        ORDER BY f.position, f.id
+    </select>
+
+    <select id="findById" resultType="FileAsset">
+        SELECT <include refid="cols"/>
+        FROM file_asset f
+        JOIN account a ON a.id = f.uploaded_by
+        WHERE f.id = #{id}
+    </select>
+
+    <select id="existsLogicalKey" resultType="boolean">
+        SELECT EXISTS (
+            SELECT 1 FROM file_asset
+            WHERE slot_version_id = #{versionId} AND logical_key = #{logicalKey}
+        )
+    </select>
+
+    <select id="maxPosition" resultType="int">
+        SELECT COALESCE(MAX(position), -1) FROM file_asset WHERE slot_version_id = #{versionId}
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO file_asset (slot_version_id, asset_kind, logical_key, position, original_name,
+                                description, content_type, size_bytes, storage_key, external_url,
+                                uploaded_by)
+        VALUES (#{slotVersionId}, #{assetKind}, #{logicalKey}, #{position}, #{originalName},
+                #{description}, #{contentType}, #{sizeBytes}, #{storageKey}, #{externalUrl},
+                #{uploadedBy})
+    </insert>
+
+    <delete id="delete">
+        DELETE FROM file_asset WHERE id = #{id}
+    </delete>
+
+</mapper>

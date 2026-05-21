@@ -4,6 +4,8 @@ import com.softpuzzle.pm.account.Account;
 import com.softpuzzle.pm.account.ClientOrg;
 import com.softpuzzle.pm.account.ClientOrgMapper;
 import com.softpuzzle.pm.common.ApiException;
+import com.softpuzzle.pm.deliverable.DeliverableSlot;
+import com.softpuzzle.pm.deliverable.DeliverableSlotMapper;
 import com.softpuzzle.pm.project.dto.CreateProjectRequest;
 import java.util.List;
 import org.slf4j.Logger;
@@ -16,20 +18,23 @@ public class ProjectService {
 
     private static final Logger log = LoggerFactory.getLogger(ProjectService.class);
     private static final short[] GATE_STAGES = {9, 11, 13, 15, 22};
+    private static final String[] SLOT_TYPES = {"requirements", "ia", "design", "prototype", "figma"};
 
     private final ProjectMapper projectMapper;
     private final ProjectMemberMapper memberMapper;
     private final ProjectGateMapper gateMapper;
     private final ClientOrgMapper clientOrgMapper;
+    private final DeliverableSlotMapper slotMapper;
     private final MembershipGuard guard;
 
     public ProjectService(ProjectMapper projectMapper, ProjectMemberMapper memberMapper,
                           ProjectGateMapper gateMapper, ClientOrgMapper clientOrgMapper,
-                          MembershipGuard guard) {
+                          DeliverableSlotMapper slotMapper, MembershipGuard guard) {
         this.projectMapper = projectMapper;
         this.memberMapper = memberMapper;
         this.gateMapper = gateMapper;
         this.clientOrgMapper = clientOrgMapper;
+        this.slotMapper = slotMapper;
         this.guard = guard;
     }
 
@@ -52,9 +57,20 @@ public class ProjectService {
         projectMapper.insert(project);
 
         seedGates(project.getId());
+        seedSlots(project.getId());
         addMember(project.getId(), creator.getId(), creator.getId());
 
         return projectMapper.findById(project.getId());
+    }
+
+    private void seedSlots(Long projectId) {
+        for (String slotType : SLOT_TYPES) {
+            DeliverableSlot slot = new DeliverableSlot();
+            slot.setProjectId(projectId);
+            slot.setSlotType(slotType);
+            slot.setStatus("empty");
+            slotMapper.insert(slot);
+        }
     }
 
     private Long findOrCreateClientOrg(String name) {

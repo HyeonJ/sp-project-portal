@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.softpuzzle.pm.deliverable.SlotVersionMapper">
+
+    <sql id="cols">
+        v.id, v.slot_id, v.version_no, v.status, v.change_summary, v.created_by, v.created_at,
+        v.review_requested_by, v.review_requested_at, v.reviewed_by, v.reviewed_at,
+        v.confirmed_upstream_version_id, a.name AS created_by_name
+    </sql>
+
+    <select id="findById" resultType="SlotVersion">
+        SELECT <include refid="cols"/>
+        FROM slot_version v
+        JOIN account a ON a.id = v.created_by
+        WHERE v.id = #{id}
+    </select>
+
+    <select id="findByIdForUpdate" resultType="SlotVersion">
+        SELECT id, slot_id, version_no, status, change_summary, created_by, created_at,
+               review_requested_by, review_requested_at, reviewed_by, reviewed_at,
+               confirmed_upstream_version_id
+        FROM slot_version
+        WHERE id = #{id}
+        FOR UPDATE
+    </select>
+
+    <select id="findBySlot" resultType="SlotVersion">
+        SELECT <include refid="cols"/>
+        FROM slot_version v
+        JOIN account a ON a.id = v.created_by
+        WHERE v.slot_id = #{slotId}
+        ORDER BY v.version_no DESC
+    </select>
+
+    <select id="nextVersionNo" resultType="short">
+        SELECT COALESCE(MAX(version_no), 0) + 1 FROM slot_version WHERE slot_id = #{slotId}
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO slot_version (slot_id, version_no, status, change_summary, created_by)
+        VALUES (#{slotId}, #{versionNo}, #{status}, #{changeSummary}, #{createdBy})
+    </insert>
+
+    <update id="updateStatus">
+        UPDATE slot_version SET status = #{status} WHERE id = #{id}
+    </update>
+
+</mapper>

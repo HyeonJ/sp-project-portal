@@ -50,8 +50,8 @@
 
     function renderProject(p) {
         const type = p.type ? ` · ${esc(p.type)}` : '';
-        return $(`
-            <div class="card" data-id="${esc(p.id)}">
+        const $card = $(`
+            <div class="card" data-id="${esc(p.id)}" style="cursor:pointer">
                 <div class="card-head" style="border:0;padding:0;margin-bottom:10px">
                     <h3>${esc(p.name)}</h3>
                     ${statusPill(p.status)}
@@ -60,6 +60,8 @@
                 <p style="margin:8px 0 0;font:500 12px/1 var(--mono);color:var(--muted)">단계 ${esc(p.currentStage)} / 24</p>
             </div>
         `);
+        $card.on('click', function () { window.location.href = `/projects/${p.id}`; });
+        return $card;
     }
 
     function wireCreate() {
