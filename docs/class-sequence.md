@@ -3,7 +3,7 @@
 | 항목 | 내용 |
 |------|------|
 | 프로젝트명 | SoftPuzzle PM |
-| 버전 | v0.1 (초안 — 계층 구조 + 핵심 워크플로우 흐름) |
+| 버전 | v0.2 (코덱스 리뷰 반영 — after-commit 알림, 슬롯 status 동기화, 무효화 의미 명확화, S3 락 분리, 선행 배지 파생·1-hop, 게이트 락, refresh 행락, review-recall) |
 | 작성일 | 2026-05-21 |
 | 기준 | ERD(`erd.md` v1.2) · API 명세서(`api-spec.md` v0.3) · 화면 설계서 |
 | 스택 | Spring Boot · MyBatis · PostgreSQL · JWT · S3 |
@@ -76,7 +76,13 @@ classDiagram
         +SlotType slotType
         +SlotStatus status
         +Long currentVersionId
-        +boolean upstreamChanged
+        +isUpstreamChanged() boolean
+    }
+    class SlotMapper {
+        <<MyBatis>>
+        +lockForUpdate(slotId) DeliverableSlot
+        +updateCurrentVersionAndStatus(slotId, versionId, status)
+        +findDownstream(slotType) DeliverableSlot
     }
     class SlotVersion {
         +Long id
@@ -97,6 +103,7 @@ classDiagram
     }
 
     DeliverableController ..> DeliverableService
+    DeliverableService ..> SlotMapper
     DeliverableService ..> SlotVersionMapper
     DeliverableService ..> FileAssetMapper
     DeliverableService ..> GateService
@@ -107,7 +114,13 @@ classDiagram
     SlotVersion "1" --> "*" FileAsset
 ```
 
-> 공통: 모든 Controller는 `@RestController` + `ApiResponse<T>` 봉투, 예외는 `@RestControllerAdvice`가 `{success:false, code, message}`로 변환. Service는 `@Transactional`(읽기는 `readOnly=true`). 인증은 `JwtAuthFilter` → `SecurityContext`. 동시성 민감 동작은 `SlotVersionMapper.lockForUpdate`(SELECT … FOR UPDATE, api-spec §14).
+> 공통: 모든 Controller는 `@RestController` + `ApiResponse<T>` 봉투, 예외는 `@RestControllerAdvice`가 `{success:false, code, message}`로 변환. Service는 `@Transactional`(읽기는 `readOnly=true`). 인증은 `JwtAuthFilter` → `SecurityContext`. 동시성 민감 동작은 `lockForUpdate`(SELECT … FOR UPDATE, api-spec §14).
+>
+> **트랜잭션 자세** (코덱스 리뷰): `GateService`·`ActivityRecorder`는 **호출자 트랜잭션에 참여**(독립 tx 아님). `NotificationService`는 **DB 알림 row 기록(tx 내) + 외부 발송(메일·푸시)은 커밋 후**(`@TransactionalEventListener(AFTER_COMMIT)` 또는 outbox)로 분리 — tx 안에서 외부 발송 금지. `FileStorageService`는 인프라 경계로 워크플로우 규칙을 갖지 않음.
+>
+> **파생 필드**: `DeliverableSlot.isUpstreamChanged()`는 **저장 컬럼이 아니라 파생** — 하류 슬롯의 현재 컨펌 버전 `confirmed_upstream_version_id` ≠ 직속 선행 슬롯의 최신 컨펌 버전이면 true(읽기 시 계산). 중복 저장 금지(ERD에 컬럼 없음). *프로토타입은 데모 편의상 flag로 표현*.
+>
+> **인가**: Controller/Security 레이어가 Service 호출 **전에** 프로젝트 멤버십(`project_member`, `left_at IS NULL`)·tier(admin=읽기 전용)를 검증(api-spec §1-5). Service는 인가 통과를 전제.
 
 ---
 
@@ -134,12 +147,12 @@ sequenceDiagram
     Note over U,R: 이후 access 만료 시
     U->>C: POST /auth/refresh (refresh 쿠키)
     C->>S: refresh(token)
-    S->>R: findByHash(hash)
-    alt 이미 폐기된 토큰 재사용
-        S->>R: revokeAll(accountId) — 탈취 의심
+    S->>R: findByHashForUpdate(hash) — 행 락(동시 회전 방지)
+    alt 이미 폐기된 토큰 재사용 (revoked_at != null)
+        S->>R: revokeAll(accountId, reason=reuse_detected) — 탈취 의심
         S-->>C: 401 reuse_detected
     else 정상
-        S->>R: revoke(old) + insert(new)
+        S->>R: revoke(old, reason=rotated) + last_used_at + insert(new)
         S-->>C: new accessToken + Set-Cookie(new refresh)
     end
 ```
@@ -153,29 +166,39 @@ sequenceDiagram
     actor CL as 고객사
     participant C as DeliverableController
     participant S as DeliverableService
+    participant SM as SlotMapper
     participant VM as SlotVersionMapper
-    participant N as NotificationService
-    participant A as ActivityRecorder
     participant G as GateService
+    participant A as ActivityRecorder
+    participant N as NotificationService
+    Note over T,N: 검토 요청 (draft → 검토중)
     T->>C: POST .../versions/{vno}/review-request
     C->>S: requestReview(...)
     S->>VM: lockForUpdate(versionId)
-    S->>S: assert status==draft
-    S->>VM: updateStatus(pending-review) + review_requested_*
+    S->>S: assert version.status == draft
+    S->>VM: updateStatus(pending-review) + review_requested_by/at
+    S->>SM: updateCurrentVersionAndStatus(slot, pending-review)
     S->>A: record(review_requested)
-    S->>N: notifyReviewRequested → 고객사
+    Note over S,N: ── COMMIT ──
+    S--)N: notifyReviewRequested → 고객사 (after-commit)
     S-->>T: 200
+    Note over T,N: 컨펌 (검토중 → 컨펌, 게이트 해제)
     CL->>C: POST .../versions/{vno}/confirm
     C->>S: confirm(...)
+    S->>G: lock project_gate rows (결정적 순서)
     S->>VM: lockForUpdate(versionId)
-    S->>S: assert status==pending-review
-    S->>G: assertConfirmableInOrder(stage) — 게이트 순서
-    S->>VM: updateStatus(confirmed) + reviewed_* + confirmedUpstreamVersionId 스탬프
+    S->>S: assert status == pending-review
+    S->>G: assertConfirmableInOrder(stage)
+    S->>S: 직속 선행 슬롯 최신 컨펌 버전 → confirmedUpstreamVersionId (요구사항=NULL)
+    S->>VM: updateStatus(confirmed) + reviewed_by/at + confirmedUpstreamVersionId
+    S->>SM: updateCurrentVersionAndStatus(slot, confirmed)
     S->>G: openGate(stage)
     S->>A: record(confirmed)
-    S->>N: notifyConfirmed → 팀
+    Note over S,N: ── COMMIT ──
+    S--)N: notifyConfirmed → 팀 (after-commit)
     S-->>CL: 200
-    Note over CL,S: 반려 시 — status=rejected + reason은 activity_event(rejected).body(영구)
+    Note over T,N: 반려 — status=rejected + SM 동기화 + activity(rejected).body=사유(영구) + 알림(after-commit)
+    Note over T,N: 검토 회수(review-recall) — assert 검토중 → version·slot draft 복귀 + activity(review_recalled)
 ```
 
 ### 2-3. 새 버전 만들기 (컨펌 무효화 + 선행 배지 전파, REQ-WF-005)
@@ -186,25 +209,22 @@ sequenceDiagram
     actor T as 프로젝트팀
     participant C as DeliverableController
     participant S as DeliverableService
-    participant VM as SlotVersionMapper
     participant SM as SlotMapper
+    participant VM as SlotVersionMapper
     participant A as ActivityRecorder
     T->>C: POST .../slots/{slot}/versions {changeSummary}
     C->>S: createVersion(slot, changeSummary)
     S->>SM: lockForUpdate(slotId)
     S->>VM: findLatest(slotId)
-    S->>S: 현재 파일 묶음 사본 → v+1 draft 생성(logicalKey 유지)
+    S->>S: 현재 파일 묶음 사본 → v+1 draft (logicalKey 유지, 배지 초기화)
     S->>VM: insert(newVersion, draft)
-    alt 이전 상태 == confirmed
-        S->>A: record(invalidate) — 컨펌 자동 무효화
+    S->>SM: updateCurrentVersionAndStatus(slot, newVersionId, draft)
+    alt 직전 current 버전이 confirmed
+        S->>A: record(invalidate) — 과거 버전 status는 confirmed 유지, 슬롯 포인터·status만 새 draft로
     end
     S->>A: record(version_created, changeSummary)
-    S->>SM: 하류 슬롯 조회(UPSTREAM 체인)
-    loop 직속 하류가 confirmed면
-        S->>SM: setUpstreamChanged(downstreamSlot, true)
-    end
     S-->>T: 201 {versionNo, status:draft}
-    Note over T,S: 하류 슬롯 진입 시 '선행 산출물 변경·검토 권장' 배지 → ackUpstream 또는 새 버전으로 해소
+    Note over T,A: 선행 배지는 저장 안 함(파생). 하류 컨펌 슬롯이 자기 confirmed_upstream_version_id ≠ 선행 최신 컨펌 버전이면 읽기 시 표시. **새 draft 생성만으론 트리거 안 됨** — 이 슬롯이 재컨펌될 때 비로소 하류에서 보임(1-hop, 재컨펌마다 체인 전파). 해소 = ackUpstream(재-스탬프) 또는 하류 재컨펌.
 ```
 
 ### 2-4. 멤버 초대 (스마트 분기 — 신규 / 기존)
@@ -244,16 +264,18 @@ sequenceDiagram
     participant C as DeliverableController
     participant S as DeliverableService
     participant F as FileStorageService
+    participant VM as SlotVersionMapper
     participant FM as FileAssetMapper
     participant S3 as S3
     T->>C: POST .../assets/files (multipart)
     C->>S: addFile(versionId, file)
-    S->>S: assert version==draft
-    S->>F: upload(randomKey, stream)
+    S->>F: upload(randomKey, stream) — 락 없이 먼저(I/O)
     F->>S3: putObject
-    S->>FM: insert(fileAsset)
-    alt DB insert 실패
-        S->>F: deleteQuietly(key) — orphan 보상
+    Note over S,FM: ── 짧은 트랜잭션 (S3 putObject 중 row lock 점유 금지) ──
+    S->>VM: lockForUpdate(versionId) + assert draft
+    S->>FM: insert(fileAsset, position)
+    alt 트랜잭션 실패(락·검증·insert)
+        S->>F: deleteQuietly(key) — S3 orphan 보상 삭제
     end
     S-->>T: 201 {assetId}
     Note over T,S3: 다운로드 — 권한 확인 후 presigned URL 발급
@@ -269,7 +291,9 @@ sequenceDiagram
 ## 3. 노트
 
 - **계층 일관성**: TC·결함·프로젝트·계정 등 다른 도메인도 `Controller → Service(@Transactional) → Mapper` 동일 패턴. 본 문서는 가장 복잡한 산출물 워크플로우만 대표로 명세.
-- **트랜잭션·동시성**: 상태 전이(검토 요청/회수/컨펌/반려/새 버전)는 `SELECT … FOR UPDATE`로 직렬화 (api-spec §14, ERD 부분 유니크 보완).
+- **트랜잭션·동시성**: 상태 전이(검토 요청/회수/컨펌/반려/새 버전)는 `SELECT … FOR UPDATE`로 직렬화 (api-spec §14, ERD 부분 유니크 보완). **컨펌은 버전 락만으론 부족** — `project_gate`/`project` 행을 결정적 순서로 락해 게이트 순서 동시성 보장. **외부 알림은 커밋 후** 발송.
+- **용어 매핑**: API `POST /upstream-review` ↔ 클래스 `DeliverableService.ackUpstream(slot)` — 하류 슬롯의 `confirmed_upstream_version_id`를 현재 선행 최신 컨펌 버전으로 **재-스탬프**(배지 파생 해소) + `activity_event.upstream_reviewed`.
+- **자산 삭제 보상**: `FileAssetMapper.delete`는 **draft 한정**, `kind=file`이면 DB row 삭제 + S3 object 삭제(또는 GC 큐), `kind=url`이면 row만.
 - **반려 사유**·**활동 이력**: `activity_event`(append-only)에 기록, 코멘트와 분리(REQ-WF-004/CMT-002).
 - **보안**: refresh 회전·재사용 탐지, 초대/토큰 해시 저장, presigned 단명 URL — ERD·api-spec과 동일.
 - **미작성(후속 필요 시)**: 개발 트리거(dev_run) 사전조건 검증 시퀀스, 검색 인덱싱, 알림 fan-out 상세.
