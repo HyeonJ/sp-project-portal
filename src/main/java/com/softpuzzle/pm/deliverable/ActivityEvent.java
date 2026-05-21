@@ -15,6 +15,7 @@ public class ActivityEvent {
     // 조인 조회용
     private String actorName;
     private Short versionNo;
+    private String slotType;
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -42,4 +43,7 @@ public class ActivityEvent {
 
     public Short getVersionNo() { return versionNo; }
     public void setVersionNo(Short versionNo) { this.versionNo = versionNo; }
+
+    public String getSlotType() { return slotType; }
+    public void setSlotType(String slotType) { this.slotType = slotType; }
 }

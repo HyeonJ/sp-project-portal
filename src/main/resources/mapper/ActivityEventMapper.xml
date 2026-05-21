@@ -18,4 +18,16 @@
         ORDER BY e.created_at DESC, e.id DESC
     </select>
 
+    <select id="findByProject" resultType="ActivityEvent">
+        SELECT e.id, e.slot_id, e.event_type, e.slot_version_id, e.actor_id, e.body, e.created_at,
+               a.name AS actor_name, v.version_no, s.slot_type
+        FROM activity_event e
+        JOIN account a ON a.id = e.actor_id
+        JOIN deliverable_slot s ON s.id = e.slot_id
+        LEFT JOIN slot_version v ON v.id = e.slot_version_id
+        WHERE s.project_id = #{projectId}
+        ORDER BY e.created_at DESC, e.id DESC
+        LIMIT #{limit}
+    </select>
+
 </mapper>

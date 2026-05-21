@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head th:replace="~{fragments/head :: head('대시보드 · SoftPuzzle PM')}"></head>
+<body>
+<div class="app">
+    <div th:replace="~{fragments/shell :: projectSidebar('pdash')}"></div>
+    <div>
+        <div th:replace="~{fragments/shell :: projectTopbar('대시보드')}"></div>
+        <main class="main" id="projDash" th:attr="data-project-id=${projId}">
+            <section class="proj-header">
+                <div class="proj-header-top">
+                    <div>
+                        <p class="dashboard-overline">프로젝트</p>
+                        <h1 th:text="${projName}">프로젝트</h1>
+                        <p class="meta" id="dashMeta">불러오는 중…</p>
+                        <p class="stage" id="dashStage"></p>
+                    </div>
+                </div>
+            </section>
+
+            <div class="grid cols-4" id="kpiRow" style="margin-bottom:16px"></div>
+
+            <div class="grid cols-2">
+                <section class="card">
+                    <div class="card-head"><h3>산출물</h3></div>
+                    <div id="dashDeliverables" class="card-list"></div>
+                </section>
+                <section class="card">
+                    <div class="card-head"><h3>최근 활동</h3></div>
+                    <div id="dashActivity" class="card-list"></div>
+                </section>
+            </div>
+        </main>
+    </div>
+</div>
+<script th:src="@{/js/project-dashboard.js}" defer></script>
+</body>
+</html>

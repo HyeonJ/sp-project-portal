@@ -11,4 +11,7 @@ public interface ActivityEventMapper {
 
     /** 슬롯 활동 타임라인 (최신순). */
     List<ActivityEvent> findBySlot(@Param("slotId") Long slotId);
+
+    /** 프로젝트 전체 최근 활동 (대시보드). */
+    List<ActivityEvent> findByProject(@Param("projectId") Long projectId, @Param("limit") int limit);
 }

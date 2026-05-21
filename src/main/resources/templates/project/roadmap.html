@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head th:replace="~{fragments/head :: head('진행 현황 · SoftPuzzle PM')}"></head>
+<body>
+<div class="app">
+    <div th:replace="~{fragments/shell :: projectSidebar('roadmap')}"></div>
+    <div>
+        <div th:replace="~{fragments/shell :: projectTopbar('진행 현황')}"></div>
+        <main class="main" id="roadmapPage" th:attr="data-project-id=${projId}">
+            <div class="page-bar"><h1 class="page-title">진행 현황</h1></div>
+            <p class="page-sub" id="roadmapMeta"></p>
+            <section class="card"><div id="roadmapList" class="card-list"></div></section>
+        </main>
+    </div>
+</div>
+<script th:src="@{/js/roadmap.js}" defer></script>
+</body>
+</html>

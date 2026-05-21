@@ -54,6 +54,22 @@ public class ProjectPageController {
         return "project/defects";
     }
 
+    @GetMapping("/projects/{id}/dashboard")
+    public String projectDashboard(@PathVariable Long id, Model model) {
+        Account me = currentUser.require();
+        Project project = projectService.view(id, me);
+        addProjectModel(model, me, project);
+        return "project/dashboard";
+    }
+
+    @GetMapping("/projects/{id}/roadmap")
+    public String roadmap(@PathVariable Long id, Model model) {
+        Account me = currentUser.require();
+        Project project = projectService.view(id, me);
+        addProjectModel(model, me, project);
+        return "project/roadmap";
+    }
+
     @GetMapping("/projects/{id}/settings")
     public String settings(@PathVariable Long id, Model model) {
         Account me = currentUser.require();

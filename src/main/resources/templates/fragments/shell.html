@@ -32,6 +32,14 @@
                 th:text="${projClient} + (${projType} != null ? ' · ' + ${projType} : '')">고객사</small></span>
     </div>
     <nav>
+        <a class="nav-item" th:classappend="${active == 'pdash'} ? 'active'"
+           th:href="@{/projects/{id}/dashboard(id=${projId})}">
+            <span>대시보드</span>
+        </a>
+        <a class="nav-item" th:classappend="${active == 'roadmap'} ? 'active'"
+           th:href="@{/projects/{id}/roadmap(id=${projId})}">
+            <span>진행 현황</span>
+        </a>
         <a class="nav-item" th:classappend="${active == 'deliverables'} ? 'active'"
            th:href="@{/projects/{id}(id=${projId})}">
             <span>산출물</span>
