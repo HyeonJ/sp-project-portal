@@ -23,6 +23,7 @@
         JOIN project_member m ON m.project_id = p.id
         WHERE m.account_id = #{accountId}
           AND m.left_at IS NULL
+          AND p.status &lt;&gt; 'deleted'
         ORDER BY p.created_at DESC
     </select>
 
@@ -30,6 +31,7 @@
         SELECT <include refid="cols"/>
         FROM project p
         JOIN client_org o ON o.id = p.client_org_id
+        WHERE p.status &lt;&gt; 'deleted'
         ORDER BY p.created_at DESC
     </select>
 

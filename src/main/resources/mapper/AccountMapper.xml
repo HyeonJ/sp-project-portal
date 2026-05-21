@@ -38,4 +38,8 @@
         UPDATE account SET status = #{status} WHERE id = #{id}
     </update>
 
+    <update id="updatePasswordAndActivate">
+        UPDATE account SET password_hash = #{passwordHash}, status = 'active' WHERE id = #{id}
+    </update>
+
 </mapper>

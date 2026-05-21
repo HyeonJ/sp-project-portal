@@ -9,6 +9,7 @@ import com.softpuzzle.pm.deliverable.DeliverableSlot;
 import com.softpuzzle.pm.deliverable.DeliverableSlotMapper;
 import com.softpuzzle.pm.notify.NotificationService;
 import com.softpuzzle.pm.project.dto.CreateProjectRequest;
+import com.softpuzzle.pm.project.dto.EditProjectRequest;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,6 +44,42 @@ public class ProjectService {
         this.auditService = auditService;
         this.notificationService = notificationService;
         this.guard = guard;
+    }
+
+    @Transactional
+    public void editInfo(Long projectId, EditProjectRequest req, Account actor) {
+        Project project = requireExisting(projectId);
+        guard.assertTeamMember(projectId, actor);
+        projectMapper.updateInfo(projectId, req.name().trim(), req.type(),
+                req.description(), req.startDate(), req.endDate());
+        auditService.log(actor, "EDIT_PROJECT", "project=" + project.getId());
+    }
+
+    @Transactional
+    public void archive(Long projectId, Account actor) {
+        requireExisting(projectId);
+        guard.assertTeamMember(projectId, actor);
+        projectMapper.updateStatus(projectId, "archived");
+        auditService.log(actor, "ARCHIVE_PROJECT", "project=" + projectId);
+    }
+
+    @Transactional
+    public void softDelete(Long projectId, String confirmName, Account actor) {
+        Project project = requireExisting(projectId);
+        guard.assertTeamMember(projectId, actor);
+        if (!project.getName().equals(confirmName)) {
+            throw ApiException.conflict("NAME_MISMATCH", "프로젝트명이 일치하지 않습니다.");
+        }
+        projectMapper.updateStatus(projectId, "deleted"); // 30일 후 영구 삭제(향후 배치)
+        auditService.log(actor, "DELETE_PROJECT", "project=" + projectId);
+    }
+
+    private Project requireExisting(Long projectId) {
+        Project p = projectMapper.findById(projectId);
+        if (p == null) {
+            throw ApiException.notFound("프로젝트를 찾을 수 없습니다.");
+        }
+        return p;
     }
 
     /** UAT 최종 승인(고객사) → 게이트 22 통과 + 프로젝트 완료. 개발(dev_run) 후에만 가능. */

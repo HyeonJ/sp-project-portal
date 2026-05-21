@@ -54,6 +54,17 @@ public class ProjectPageController {
         return "project/defects";
     }
 
+    @GetMapping("/projects/{id}/settings")
+    public String settings(@PathVariable Long id, Model model) {
+        Account me = currentUser.require();
+        Project project = projectService.view(id, me);
+        addProjectModel(model, me, project);
+        model.addAttribute("projDescription", project.getDescription());
+        model.addAttribute("projStartDate", project.getStartDate());
+        model.addAttribute("projEndDate", project.getEndDate());
+        return "project/settings";
+    }
+
     private void addProjectModel(Model model, Account me, Project project) {
         addNav(model, me);
         model.addAttribute("projId", project.getId());

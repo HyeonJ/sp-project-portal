@@ -4,9 +4,13 @@ import com.softpuzzle.pm.account.Account;
 import com.softpuzzle.pm.common.ApiResponse;
 import com.softpuzzle.pm.common.CurrentUser;
 import com.softpuzzle.pm.project.dto.CreateProjectRequest;
+import com.softpuzzle.pm.project.dto.DeleteProjectRequest;
+import com.softpuzzle.pm.project.dto.EditProjectRequest;
 import jakarta.validation.Valid;
 import java.util.List;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -58,6 +62,24 @@ public class ProjectController {
     @PostMapping("/{id}/uat-approve")
     public ApiResponse<Void> uatApprove(@PathVariable Long id) {
         projectService.uatApprove(id, currentUser.require());
+        return ApiResponse.ok(null);
+    }
+
+    @PatchMapping("/{id}")
+    public ApiResponse<Void> editInfo(@PathVariable Long id, @Valid @RequestBody EditProjectRequest req) {
+        projectService.editInfo(id, req, currentUser.require());
+        return ApiResponse.ok(null);
+    }
+
+    @PostMapping("/{id}/archive")
+    public ApiResponse<Void> archive(@PathVariable Long id) {
+        projectService.archive(id, currentUser.require());
+        return ApiResponse.ok(null);
+    }
+
+    @DeleteMapping("/{id}")
+    public ApiResponse<Void> delete(@PathVariable Long id, @Valid @RequestBody DeleteProjectRequest req) {
+        projectService.softDelete(id, req.confirmName(), currentUser.require());
         return ApiResponse.ok(null);
     }
 }

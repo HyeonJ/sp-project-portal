@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.softpuzzle.pm.member.InvitationMapper">
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO invitation (email, project_id, invite_type, token_hash, status, invited_by, expires_at)
+        VALUES (#{email}, #{projectId}, #{inviteType}, #{tokenHash}, 'pending', #{invitedBy}, #{expiresAt})
+    </insert>
+
+    <select id="findByTokenHash" resultType="Invitation">
+        SELECT id, email, project_id, invite_type, token_hash, status, invited_by,
+               expires_at, accepted_at, created_at
+        FROM invitation WHERE token_hash = #{tokenHash}
+    </select>
+
+    <update id="markAccepted">
+        UPDATE invitation SET status = 'accepted', accepted_at = now() WHERE id = #{id}
+    </update>
+
+    <update id="expirePending">
+        UPDATE invitation SET status = 'expired'
+        WHERE project_id = #{projectId} AND lower(email) = lower(#{email})
+          AND invite_type = #{inviteType} AND status = 'pending'
+    </update>
+
+</mapper>

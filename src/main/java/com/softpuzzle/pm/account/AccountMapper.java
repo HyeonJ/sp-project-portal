@@ -17,4 +17,7 @@ public interface AccountMapper {
     List<Account> findByTier(@Param("tier") String tier);
 
     int updateStatus(@Param("id") Long id, @Param("status") String status);
+
+    /** 비밀번호 설정 + active 활성화 (초대 수락·재설정). */
+    int updatePasswordAndActivate(@Param("id") Long id, @Param("passwordHash") String passwordHash);
 }

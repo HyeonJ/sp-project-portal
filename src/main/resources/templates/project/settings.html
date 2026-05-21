@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head th:replace="~{fragments/head :: head('설정 · SoftPuzzle PM')}"></head>
+<body>
+<div class="app">
+    <div th:replace="~{fragments/shell :: projectSidebar('settings')}"></div>
+    <div>
+        <div th:replace="~{fragments/shell :: projectTopbar('설정')}"></div>
+        <main class="main" id="settingsPage"
+              th:attr="data-project-id=${projId}, data-tier=${navTier}, data-uid=${navUserId},
+                       data-name=${projName}, data-type=${projType},
+                       data-desc=${projDescription}, data-start=${projStartDate}, data-end=${projEndDate}">
+            <div class="page-bar"><h1 class="page-title">설정</h1></div>
+
+            <section class="card" style="margin-bottom:16px">
+                <div class="card-head"><h3>기본 정보</h3></div>
+                <form id="infoForm" class="form">
+                    <div class="row"><label>프로젝트명</label><div class="value"><input type="text" name="name" maxlength="100"></div></div>
+                    <div class="row"><label>유형</label><div class="value"><select name="type"><option value="">선택</option><option>SaaS</option><option>웹사이트</option><option>모바일</option></select></div></div>
+                    <div class="row"><label>기간</label><div class="value" style="display:flex;gap:8px;align-items:center"><input type="date" name="startDate"> <span style="color:var(--muted-2)">~</span> <input type="date" name="endDate"></div></div>
+                    <div class="row"><label>설명</label><div class="value"><textarea name="description" maxlength="5000"></textarea></div></div>
+                    <div id="infoMsg" class="page-sub" style="margin:0"></div>
+                    <div style="display:flex;justify-content:flex-end"><button type="submit" class="btn primary" id="infoSave">저장</button></div>
+                </form>
+            </section>
+
+            <section class="card" style="margin-bottom:16px">
+                <div class="card-head">
+                    <h3>멤버 · 초대</h3>
+                    <button id="inviteBtn" class="btn primary sm" type="button" hidden>+ 초대</button>
+                </div>
+                <section id="inviteCard" hidden style="margin-bottom:12px;padding:14px;border:1px solid var(--divider);border-radius:8px">
+                    <form id="inviteForm" class="form">
+                        <div class="row"><label>이메일</label><div class="value"><input type="email" name="email" required></div></div>
+                        <div class="row"><label>유형</label><div class="value"><select name="inviteType"><option value="team_member">프로젝트팀</option><option value="client">고객사</option></select></div></div>
+                        <div id="inviteResult" class="page-sub" style="margin:0"></div>
+                        <div style="display:flex;gap:8px;justify-content:flex-end"><button type="button" id="inviteCancel" class="btn ghost sm">취소</button><button type="submit" class="btn primary sm">초대</button></div>
+                    </form>
+                </section>
+                <div id="memberList" class="card-list"></div>
+            </section>
+
+            <section class="card" id="dangerCard" style="border-color:color-mix(in oklch,var(--hot) 25%,var(--surface))">
+                <div class="card-head"><h3 style="color:var(--hot)">Danger Zone</h3></div>
+                <div class="danger-zone" style="border:0;box-shadow:none;padding:0">
+                    <div>
+                        <b>프로젝트 보관</b>
+                        <p class="page-sub" style="margin:2px 0 0">보관하면 목록에서 숨겨지고 읽기 전용이 됩니다.</p>
+                    </div>
+                    <button class="btn warn" id="archiveBtn" type="button">보관</button>
+                </div>
+                <div class="danger-zone" style="border:0;box-shadow:none;padding:0;margin-top:12px">
+                    <div>
+                        <b style="color:var(--hot)">프로젝트 삭제</b>
+                        <p class="page-sub" style="margin:2px 0 0">30일 후 영구 삭제. 프로젝트명을 정확히 입력해야 합니다.</p>
+                    </div>
+                    <button class="btn danger-solid" id="deleteBtn" type="button">삭제</button>
+                </div>
+                <div id="dangerMsg" class="page-sub" style="margin:10px 0 0"></div>
+            </section>
+        </main>
+    </div>
+</div>
+<script th:src="@{/js/settings.js}" defer></script>
+</body>
+</html>

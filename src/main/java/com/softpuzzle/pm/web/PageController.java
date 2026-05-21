@@ -21,6 +21,21 @@ public class PageController {
         return "login";
     }
 
+    @GetMapping("/invite/accept")
+    public String inviteAccept() {
+        return "auth/invite-accept";
+    }
+
+    @GetMapping("/password/reset")
+    public String passwordResetRequest() {
+        return "auth/password-reset-request";
+    }
+
+    @GetMapping("/password/reset/confirm")
+    public String passwordResetConfirm() {
+        return "auth/password-reset-confirm";
+    }
+
     @GetMapping("/")
     public String dashboard(Model model) {
         addNavAttributes(model);
