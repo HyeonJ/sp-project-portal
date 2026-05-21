@@ -47,6 +47,20 @@
             $('#devMsg').text(
                 ready ? (tier === 'team' ? '' : '개발 시작은 프로젝트팀만 가능합니다.')
                       : '게이트 4개(요구사항·IA·디자인·프로토타입)를 모두 통과해야 합니다.');
+
+            const uat = byStage[22] || 'lock';
+            const $uatBtn = $('#uatApproveBtn');
+            if (uat === 'pass') {
+                $('#uatMeta').text('완료'); $uatBtn.prop('hidden', true);
+                $('#uatMsg').text('프로젝트가 완료되었습니다.');
+            } else if (uat === 'wait') {
+                $('#uatMeta').text('승인 대기');
+                $uatBtn.prop('hidden', tier !== 'client');
+                $('#uatMsg').text(tier === 'client' ? '' : 'UAT 승인은 고객사만 가능합니다.');
+            } else {
+                $('#uatMeta').text('잠김'); $uatBtn.prop('hidden', true);
+                $('#uatMsg').text('개발 완료 후 활성화됩니다.');
+            }
         });
     }
 
@@ -80,6 +94,15 @@
             .fail(function (xhr) {
                 $('#devMsg').css('color', 'var(--hot)').text(errMessage(xhr, '시작 실패'));
             })
+            .always(function () { $btn.prop('disabled', false); loadStatus(); });
+    });
+
+    $('#uatApproveBtn').on('click', function () {
+        const $btn = $(this).prop('disabled', true);
+        $('#uatMsg').text('');
+        $.ajax({ url: `/api/projects/${projectId}/uat-approve`, method: 'POST' })
+            .done(function () { $('#uatMsg').css('color', 'var(--ok)').text('UAT 승인 — 프로젝트 완료.'); })
+            .fail(function (xhr) { $('#uatMsg').css('color', 'var(--hot)').text(errMessage(xhr, '승인 실패')); })
             .always(function () { $btn.prop('disabled', false); loadStatus(); });
     });
 

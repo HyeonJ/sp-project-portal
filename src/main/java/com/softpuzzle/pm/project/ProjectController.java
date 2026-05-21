@@ -54,4 +54,10 @@ public class ProjectController {
         Account me = currentUser.require();
         return ApiResponse.ok(projectService.gates(id, me));
     }
+
+    @PostMapping("/{id}/uat-approve")
+    public ApiResponse<Void> uatApprove(@PathVariable Long id) {
+        projectService.uatApprove(id, currentUser.require());
+        return ApiResponse.ok(null);
+    }
 }

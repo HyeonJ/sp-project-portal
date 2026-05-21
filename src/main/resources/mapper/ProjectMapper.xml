@@ -40,4 +40,23 @@
                 COALESCE(#{currentStage}, 1), COALESCE(#{status}, 'active'))
     </insert>
 
+    <update id="bumpStage">
+        UPDATE project SET current_stage = GREATEST(current_stage, #{stage}) WHERE id = #{id}
+    </update>
+
+    <update id="markCompleted">
+        UPDATE project SET status = 'completed', current_stage = 24 WHERE id = #{id}
+    </update>
+
+    <update id="updateInfo">
+        UPDATE project
+        SET name = #{name}, type = #{type}, description = #{description},
+            start_date = #{startDate}, end_date = #{endDate}
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateStatus">
+        UPDATE project SET status = #{status} WHERE id = #{id}
+    </update>
+
 </mapper>

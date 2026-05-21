@@ -16,4 +16,18 @@ public interface ProjectMapper {
     List<Project> findAll();
 
     void insert(Project project);
+
+    /** 단계 전진 (뒤로 가지 않음). */
+    int bumpStage(@Param("id") Long id, @Param("stage") int stage);
+
+    /** 완료 처리 (status·stage 동시). */
+    int markCompleted(@Param("id") Long id);
+
+    /** 기본 정보 편집 (SCR-SET-001). */
+    int updateInfo(@Param("id") Long id, @Param("name") String name, @Param("type") String type,
+                   @Param("description") String description,
+                   @Param("startDate") java.time.LocalDate startDate,
+                   @Param("endDate") java.time.LocalDate endDate);
+
+    int updateStatus(@Param("id") Long id, @Param("status") String status);
 }

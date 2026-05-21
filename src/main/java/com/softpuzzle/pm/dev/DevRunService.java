@@ -55,6 +55,11 @@ public class DevRunService {
         run.setResult("success");
         run.setTriggeredBy(actor.getId());
         devRunMapper.insert(run);
+        projectMapper.bumpStage(projectId, 18);
+        ProjectGate uat = gateMapper.findByProjectAndStageForUpdate(projectId, (short) 22);
+        if (uat != null && "lock".equals(uat.getStatus())) {
+            gateMapper.unlockToWait(uat.getId()); // 개발 완료 → UAT 게이트 해제(lock→wait)
+        }
         auditService.log(actor, "TRIGGER_DEV", "project=" + projectId);
         log.info("[trigger] project={} by={} → dev_run={}", projectId, actor.getEmail(), run.getId());
         return run;

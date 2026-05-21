@@ -7,6 +7,7 @@ import com.softpuzzle.pm.notify.NotificationService;
 import com.softpuzzle.pm.project.MembershipGuard;
 import com.softpuzzle.pm.project.ProjectGate;
 import com.softpuzzle.pm.project.ProjectGateMapper;
+import com.softpuzzle.pm.project.ProjectMapper;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +34,7 @@ public class ReviewService {
     private final SlotVersionMapper versionMapper;
     private final FileAssetMapper assetMapper;
     private final ProjectGateMapper gateMapper;
+    private final ProjectMapper projectMapper;
     private final ActivityEventMapper activityMapper;
     private final NotificationService notificationService;
     private final AuditService auditService;
@@ -40,12 +42,14 @@ public class ReviewService {
 
     public ReviewService(DeliverableSlotMapper slotMapper, SlotVersionMapper versionMapper,
                          FileAssetMapper assetMapper, ProjectGateMapper gateMapper,
-                         ActivityEventMapper activityMapper, NotificationService notificationService,
-                         AuditService auditService, MembershipGuard guard) {
+                         ProjectMapper projectMapper, ActivityEventMapper activityMapper,
+                         NotificationService notificationService, AuditService auditService,
+                         MembershipGuard guard) {
         this.slotMapper = slotMapper;
         this.versionMapper = versionMapper;
         this.assetMapper = assetMapper;
         this.gateMapper = gateMapper;
+        this.projectMapper = projectMapper;
         this.activityMapper = activityMapper;
         this.notificationService = notificationService;
         this.auditService = auditService;
@@ -142,6 +146,7 @@ public class ReviewService {
                     "이전 게이트(Gate " + previousStage(stage) + ") 미통과로 컨펌할 수 없습니다.");
         }
         gateMapper.markPass(gate.getId(), actorId);
+        projectMapper.bumpStage(projectId, stage); // 단계 전진
         Short next = NEXT_GATE.get(stage);
         if (next != null) {
             ProjectGate nextGate = gateMapper.findByProjectAndStageForUpdate(projectId, next);

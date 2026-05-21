@@ -7,6 +7,7 @@ import com.softpuzzle.pm.audit.AuditService;
 import com.softpuzzle.pm.common.ApiException;
 import com.softpuzzle.pm.deliverable.DeliverableSlot;
 import com.softpuzzle.pm.deliverable.DeliverableSlotMapper;
+import com.softpuzzle.pm.notify.NotificationService;
 import com.softpuzzle.pm.project.dto.CreateProjectRequest;
 import java.util.List;
 import org.slf4j.Logger;
@@ -27,18 +28,45 @@ public class ProjectService {
     private final ClientOrgMapper clientOrgMapper;
     private final DeliverableSlotMapper slotMapper;
     private final AuditService auditService;
+    private final NotificationService notificationService;
     private final MembershipGuard guard;
 
     public ProjectService(ProjectMapper projectMapper, ProjectMemberMapper memberMapper,
                           ProjectGateMapper gateMapper, ClientOrgMapper clientOrgMapper,
-                          DeliverableSlotMapper slotMapper, AuditService auditService, MembershipGuard guard) {
+                          DeliverableSlotMapper slotMapper, AuditService auditService,
+                          NotificationService notificationService, MembershipGuard guard) {
         this.projectMapper = projectMapper;
         this.memberMapper = memberMapper;
         this.gateMapper = gateMapper;
         this.clientOrgMapper = clientOrgMapper;
         this.slotMapper = slotMapper;
         this.auditService = auditService;
+        this.notificationService = notificationService;
         this.guard = guard;
+    }
+
+    /** UAT 최종 승인(고객사) → 게이트 22 통과 + 프로젝트 완료. 개발(dev_run) 후에만 가능. */
+    @Transactional
+    public void uatApprove(Long projectId, Account actor) {
+        if (projectMapper.findById(projectId) == null) {
+            throw ApiException.notFound("프로젝트를 찾을 수 없습니다.");
+        }
+        guard.assertCanReview(projectId, actor); // 고객사 멤버
+        ProjectGate gate = gateMapper.findByProjectAndStageForUpdate(projectId, (short) 22);
+        if (gate == null) {
+            throw ApiException.notFound("UAT 게이트가 없습니다.");
+        }
+        if ("lock".equals(gate.getStatus())) {
+            throw ApiException.conflict("DEV_NOT_DONE", "개발 완료 후 UAT를 승인할 수 있습니다.");
+        }
+        if ("pass".equals(gate.getStatus())) {
+            throw ApiException.conflict("ALREADY_DONE", "이미 UAT 승인이 완료되었습니다.");
+        }
+        gateMapper.markPass(gate.getId(), actor.getId());
+        projectMapper.markCompleted(projectId);
+        auditService.log(actor, "UAT_APPROVE", "project=" + projectId);
+        notificationService.notifyProjectTier(projectId, "team", actor.getId(), "uat_approved",
+                "UAT 승인 — 프로젝트 완료", "/projects/" + projectId);
     }
 
     @Transactional
