@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<!-- 워크스페이스(전역) 사이드바 -->
+<aside class="sidebar" th:fragment="globalSidebar(active)">
+    <div class="brand">
+        <a class="logo" th:href="@{/}">SoftPuzzle PM</a>
+        <span class="proj">프로젝트 워크스페이스<small th:text="${navTier == 'admin'} ? '전체 시스템' : '내 프로젝트'">내 프로젝트</small></span>
+    </div>
+    <nav>
+        <a class="nav-item" th:classappend="${active == 'projects'} ? 'active'" th:href="@{/}">
+            <span>프로젝트 목록</span>
+        </a>
+        <a class="nav-item" id="navNewProject" th:if="${navCanCreate}"
+           th:classappend="${active == 'new'} ? 'active'" href="javascript:void(0)">
+            <span>새 프로젝트</span><span class="tag">+</span>
+        </a>
+        <th:block th:if="${navTier == 'admin'}">
+            <div class="group">관리자</div>
+            <a class="nav-item" th:href="@{/admin/teams}"><span>관리자 메뉴</span></a>
+        </th:block>
+    </nav>
+</aside>
+
+<!-- 상단바 -->
+<header class="topbar" th:fragment="topbar(pageName)">
+    <div class="breadcrumb"><b th:text="${pageName}">페이지</b></div>
+    <div class="spacer"></div>
+    <div class="acct">
+        <span class="avatar" th:text="${navUserInitial}">U</span>
+        <span class="name" th:text="${navUserName}">사용자</span>
+    </div>
+    <form method="post" th:action="@{/logout}" style="margin:0">
+        <button class="btn ghost sm" type="submit">로그아웃</button>
+    </form>
+</header>
+
+</body>
+</html>

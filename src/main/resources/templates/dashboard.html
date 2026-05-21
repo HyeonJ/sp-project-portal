@@ -1,52 +1,62 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="ko">
-<head th:replace="~{fragments/head :: head('대시보드 · SoftPuzzle PM')}"></head>
+<head th:replace="~{fragments/head :: head('프로젝트 · SoftPuzzle PM')}"></head>
 <body>
-<header class="topbar">
-    <span class="brand-sm">SoftPuzzle PM</span>
-    <div class="topbar-right">
-        <span class="muted" id="me">불러오는 중…</span>
-        <form method="post" th:action="@{/logout}" class="logout-form">
-            <button type="submit" class="btn-ghost">로그아웃</button>
-        </form>
-    </div>
-</header>
-<main class="page">
-    <div class="page-head">
-        <h1>대시보드</h1>
-        <button id="newProjectBtn" class="btn-primary" type="button" hidden>+ 새 프로젝트</button>
-    </div>
-
-    <section id="createCard" class="card" hidden>
-        <h2>새 프로젝트</h2>
-        <form id="createForm" class="form-grid">
-            <label><span>프로젝트명 *</span><input name="name" required maxlength="100"></label>
-            <label><span>고객사 *</span><input name="clientOrgName" required maxlength="100"></label>
-            <label><span>유형</span>
-                <select name="type">
-                    <option value="">선택</option>
-                    <option value="SaaS">SaaS</option>
-                    <option value="웹사이트">웹사이트</option>
-                    <option value="모바일">모바일</option>
-                </select>
-            </label>
-            <label><span>시작일</span><input type="date" name="startDate"></label>
-            <label><span>종료일</span><input type="date" name="endDate"></label>
-            <label class="full"><span>설명</span><textarea name="description" rows="2" maxlength="5000"></textarea></label>
-            <div class="form-actions full">
-                <button type="button" id="cancelCreate" class="btn-ghost">취소</button>
-                <button type="submit" class="btn-primary">생성</button>
+<div class="app">
+    <div th:replace="~{fragments/shell :: globalSidebar('projects')}"></div>
+    <div>
+        <div th:replace="~{fragments/shell :: topbar('프로젝트 목록')}"></div>
+        <main class="main">
+            <div class="page-bar">
+                <h1 class="page-title">프로젝트</h1>
+                <button id="newProjectBtn" class="btn primary" type="button" th:if="${navCanCreate}">+ 새 프로젝트</button>
             </div>
-            <p id="createErr" class="msg-err full" hidden></p>
-        </form>
-    </section>
 
-    <section class="card">
-        <h2>내 프로젝트</h2>
-        <div id="projectList" class="project-list">
-            <p class="muted">불러오는 중…</p>
-        </div>
-    </section>
-</main>
+            <section id="createCard" class="card" hidden style="margin-bottom:16px">
+                <div class="card-head"><h3>새 프로젝트</h3></div>
+                <form id="createForm" class="form">
+                    <div class="row">
+                        <label>프로젝트명</label>
+                        <div class="value"><input type="text" name="name" required maxlength="100"></div>
+                    </div>
+                    <div class="row">
+                        <label>고객사</label>
+                        <div class="value"><input type="text" name="clientOrgName" required maxlength="100"></div>
+                    </div>
+                    <div class="row">
+                        <label>유형 <small class="opt">선택</small></label>
+                        <div class="value">
+                            <select name="type">
+                                <option value="">선택</option>
+                                <option value="SaaS">SaaS</option>
+                                <option value="웹사이트">웹사이트</option>
+                                <option value="모바일">모바일</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label>기간 <small class="opt">선택</small></label>
+                        <div class="value" style="display:flex;gap:8px;align-items:center">
+                            <input type="date" name="startDate"> <span style="color:var(--muted-2)">~</span> <input type="date" name="endDate">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label>설명 <small class="opt">선택</small></label>
+                        <div class="value"><textarea name="description" maxlength="5000"></textarea></div>
+                    </div>
+                    <div id="createErr" class="err" style="display:none;color:var(--hot);font-size:12px"></div>
+                    <div style="display:flex;justify-content:flex-end;gap:8px">
+                        <button type="button" id="cancelCreate" class="btn ghost">취소</button>
+                        <button type="submit" class="btn primary">생성</button>
+                    </div>
+                </form>
+            </section>
+
+            <div id="projectList" class="grid cols-3">
+                <p class="page-sub">불러오는 중…</p>
+            </div>
+        </main>
+    </div>
+</div>
 </body>
 </html>
