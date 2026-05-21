@@ -11,6 +11,9 @@ public interface FileStorage {
     /** 기존 객체를 새 키로 복사 → 새 스토리지 키 반환 (새 버전 스냅샷용). */
     String copy(String sourceStorageKey);
 
+    /** 객체 읽기 스트림 (다운로드·뷰어용). */
+    InputStream openStream(String storageKey);
+
     /** 단명 다운로드 URL (presigned). local은 임시 토큰 URL. */
     String presignedGetUrl(String storageKey, java.time.Duration ttl);
 

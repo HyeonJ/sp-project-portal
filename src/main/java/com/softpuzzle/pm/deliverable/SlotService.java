@@ -31,22 +31,53 @@ public class SlotService {
     private final DeliverableSlotMapper slotMapper;
     private final SlotVersionMapper versionMapper;
     private final FileAssetMapper assetMapper;
+    private final ActivityEventMapper activityMapper;
     private final ProjectMapper projectMapper;
     private final FileStorage storage;
     private final MembershipGuard guard;
     private final TransactionTemplate tx;
 
     public SlotService(DeliverableSlotMapper slotMapper, SlotVersionMapper versionMapper,
-                       FileAssetMapper assetMapper, ProjectMapper projectMapper,
-                       FileStorage storage, MembershipGuard guard,
+                       FileAssetMapper assetMapper, ActivityEventMapper activityMapper,
+                       ProjectMapper projectMapper, FileStorage storage, MembershipGuard guard,
                        PlatformTransactionManager txManager) {
         this.slotMapper = slotMapper;
         this.versionMapper = versionMapper;
         this.assetMapper = assetMapper;
+        this.activityMapper = activityMapper;
         this.projectMapper = projectMapper;
         this.storage = storage;
         this.guard = guard;
         this.tx = new TransactionTemplate(txManager);
+    }
+
+    @Transactional(readOnly = true)
+    public List<ActivityEvent> activity(Long projectId, String slotType, Account actor) {
+        requireProject(projectId);
+        guard.assertCanView(projectId, actor);
+        DeliverableSlot slot = requireSlot(projectId, slotType);
+        return activityMapper.findBySlot(slot.getId());
+    }
+
+    /** 다운로드용 자산 조회 (프로젝트 범위·조회 권한 검증, IDOR 방지). */
+    @Transactional(readOnly = true)
+    public FileAsset assetForDownload(Long projectId, Long assetId, Account actor) {
+        requireProject(projectId);
+        guard.assertCanView(projectId, actor);
+        FileAsset asset = assetMapper.findById(assetId);
+        if (asset == null) {
+            throw ApiException.notFound("파일을 찾을 수 없습니다.");
+        }
+        SlotVersion v = versionMapper.findById(asset.getSlotVersionId());
+        DeliverableSlot slot = v != null ? slotMapper.findById(v.getSlotId()) : null;
+        if (slot == null || !slot.getProjectId().equals(projectId)) {
+            throw ApiException.notFound("파일을 찾을 수 없습니다.");
+        }
+        return asset;
+    }
+
+    public InputStream openAsset(String storageKey) {
+        return storage.openStream(storageKey);
     }
 
     @Transactional(readOnly = true)
@@ -187,6 +218,12 @@ public class SlotService {
             v.setCreatedBy(actorId);
             versionMapper.insert(v);
             slotMapper.updateCurrentVersion(slotId, v.getId(), "draft");
+            ActivityEvent e = new ActivityEvent();
+            e.setSlotId(slotId);
+            e.setEventType("version_created");
+            e.setSlotVersionId(v.getId());
+            e.setActorId(actorId);
+            activityMapper.insert(e);
             return v.getId();
         }
         throw ApiException.conflict("SLOT_LOCKED",

@@ -40,6 +40,7 @@ public class ProjectPageController {
     }
 
     private void addNav(Model model, Account me) {
+        model.addAttribute("navUserId", me.getId());
         model.addAttribute("navUserName", me.getName());
         model.addAttribute("navUserInitial", me.getName().isBlank() ? "?" : me.getName().substring(0, 1));
         model.addAttribute("navTier", me.getTier());

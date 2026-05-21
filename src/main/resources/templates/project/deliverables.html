@@ -7,7 +7,7 @@
     <div>
         <div th:replace="~{fragments/shell :: projectTopbar('산출물')}"></div>
         <main class="main" id="deliverables"
-              th:attr="data-project-id=${projId}, data-can-edit=${canEdit}, data-tier=${navTier}">
+              th:attr="data-project-id=${projId}, data-can-edit=${canEdit}, data-tier=${navTier}, data-uid=${navUserId}">
             <div class="page-bar">
                 <h1 class="page-title">산출물</h1>
             </div>

@@ -11,7 +11,12 @@ import com.softpuzzle.pm.deliverable.dto.SlotDetail;
 import jakarta.validation.Valid;
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -116,6 +121,29 @@ public class SlotController {
     public ApiResponse<Void> ackUpstream(@PathVariable Long projectId, @PathVariable String slotType) {
         versionService.ackUpstream(projectId, slotType, currentUser.require());
         return ApiResponse.ok(null);
+    }
+
+    @GetMapping("/{slotType}/activity")
+    public ApiResponse<List<ActivityEvent>> activity(@PathVariable Long projectId, @PathVariable String slotType) {
+        return ApiResponse.ok(slotService.activity(projectId, slotType, currentUser.require()));
+    }
+
+    @GetMapping("/{slotType}/files/{assetId}/download")
+    public ResponseEntity<InputStreamResource> download(@PathVariable Long projectId,
+                                                        @PathVariable String slotType,
+                                                        @PathVariable Long assetId) {
+        FileAsset asset = slotService.assetForDownload(projectId, assetId, currentUser.require());
+        if (!"file".equals(asset.getAssetKind())) {
+            throw ApiException.conflict("NOT_FILE", "외부 링크는 다운로드할 수 없습니다.");
+        }
+        MediaType mediaType = asset.getContentType() != null
+                ? MediaType.parseMediaType(asset.getContentType()) : MediaType.APPLICATION_OCTET_STREAM;
+        ContentDisposition disposition = ContentDisposition.inline()
+                .filename(asset.getOriginalName(), StandardCharsets.UTF_8).build();
+        return ResponseEntity.ok()
+                .contentType(mediaType)
+                .header("Content-Disposition", disposition.toString())
+                .body(new InputStreamResource(slotService.openAsset(asset.getStorageKey())));
     }
 
     private String sanitizeName(String original) {

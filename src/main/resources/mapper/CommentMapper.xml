@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.softpuzzle.pm.deliverable.CommentMapper">
+
+    <select id="findByVersion" resultType="Comment">
+        SELECT c.id, c.slot_version_id, c.defect_id, c.author_id, c.body,
+               c.created_at, c.edited_at, c.deleted_at, a.name AS author_name
+        FROM comment c
+        JOIN account a ON a.id = c.author_id
+        WHERE c.slot_version_id = #{versionId} AND c.deleted_at IS NULL
+        ORDER BY c.created_at, c.id
+    </select>
+
+    <select id="findById" resultType="Comment">
+        SELECT id, slot_version_id, defect_id, author_id, body, created_at, edited_at, deleted_at
+        FROM comment WHERE id = #{id}
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO comment (slot_version_id, author_id, body)
+        VALUES (#{slotVersionId}, #{authorId}, #{body})
+    </insert>
+
+    <update id="updateBody">
+        UPDATE comment SET body = #{body}, edited_at = now() WHERE id = #{id} AND deleted_at IS NULL
+    </update>
+
+    <update id="softDelete">
+        UPDATE comment SET deleted_at = now() WHERE id = #{id} AND deleted_at IS NULL
+    </update>
+
+</mapper>

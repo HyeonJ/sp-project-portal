@@ -52,6 +52,15 @@ public class LocalFileStorage implements FileStorage {
     }
 
     @Override
+    public InputStream openStream(String storageKey) {
+        try {
+            return Files.newInputStream(baseDir.resolve(storageKey));
+        } catch (IOException e) {
+            throw new UncheckedIOException("파일 읽기 실패: " + storageKey, e);
+        }
+    }
+
+    @Override
     public String presignedGetUrl(String storageKey, Duration ttl) {
         // dev: 다운로드 컨트롤러 경유 (실서비스는 S3 presigned). 단순화한 토큰 URL.
         return "/api/files/local/" + storageKey;
