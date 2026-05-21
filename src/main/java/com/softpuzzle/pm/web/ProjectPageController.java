@@ -25,13 +25,25 @@ public class ProjectPageController {
     public String deliverables(@PathVariable Long id, Model model) {
         Account me = currentUser.require();
         Project project = projectService.view(id, me);   // 멤버십/조회 권한 검증
+        addProjectModel(model, me, project);
+        model.addAttribute("canEdit", isMemberCanEdit(me));
+        return "project/deliverables";
+    }
+
+    @GetMapping("/projects/{id}/dev")
+    public String dev(@PathVariable Long id, Model model) {
+        Account me = currentUser.require();
+        Project project = projectService.view(id, me);
+        addProjectModel(model, me, project);
+        return "project/dev";
+    }
+
+    private void addProjectModel(Model model, Account me, Project project) {
         addNav(model, me);
         model.addAttribute("projId", project.getId());
         model.addAttribute("projName", project.getName());
         model.addAttribute("projClient", project.getClientOrgName());
         model.addAttribute("projType", project.getType());
-        model.addAttribute("canEdit", isMemberCanEdit(me));
-        return "project/deliverables";
     }
 
     private boolean isMemberCanEdit(Account me) {

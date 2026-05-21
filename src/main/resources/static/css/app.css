@@ -521,3 +521,6 @@ code{font-family:var(--mono);font-size:.92em;background:var(--surface-2);padding
   .stage-marker{width:28px}
   .stage-row .badge,.stage-row .gate-flag,.stage-row .deliv{grid-column:3;justify-self:start}
 }
+
+/* 비활성 primary 버튼: 흰 글자가 회색 배경에 묻히는 문제 → 가독 회색 (프로토타입 CSS 보강) */
+.btn.primary:disabled,.btn.primary.locked{color:var(--muted-2)}

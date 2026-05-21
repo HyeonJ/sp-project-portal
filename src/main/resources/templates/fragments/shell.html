@@ -35,6 +35,10 @@
            th:href="@{/projects/{id}(id=${projId})}">
             <span>산출물</span>
         </a>
+        <a class="nav-item" th:classappend="${active == 'dev'} ? 'active'"
+           th:href="@{/projects/{id}/dev(id=${projId})}">
+            <span>개발</span>
+        </a>
     </nav>
 </aside>
 

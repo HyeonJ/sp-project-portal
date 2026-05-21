@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.softpuzzle.pm.dev.DevRunMapper">
+
+    <select id="findByProject" resultType="DevRun">
+        SELECT d.id, d.project_id, d.result, d.reason, d.triggered_by, d.created_at,
+               a.name AS triggered_by_name
+        FROM dev_run d
+        LEFT JOIN account a ON a.id = d.triggered_by
+        WHERE d.project_id = #{projectId}
+        ORDER BY d.created_at DESC, d.id DESC
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO dev_run (project_id, result, reason, triggered_by)
+        VALUES (#{projectId}, #{result}, #{reason}, #{triggeredBy})
+    </insert>
+
+</mapper>
