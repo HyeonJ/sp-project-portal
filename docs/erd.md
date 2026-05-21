@@ -3,7 +3,7 @@
 | 항목 | 내용 |
 |------|------|
 | 프로젝트명 | SoftPuzzle PM |
-| 버전 | v1.1 (코덱스 리뷰 반영 — 무결성/인덱스 보강: activity_event→slot_version_id FK, file_asset logical_key·position, current_version 복합 FK, slot_version 검토중 1개·상태 CHECK, account 조건 CHECK, ASCII 머신 코드 통일, §6 인덱스·제약 신설, refresh_token 보강) |
+| 버전 | v1.2 (API 리뷰 반영 — `invitation.token`→`token_hash` 해시 저장) · v1.1 (코덱스 리뷰 — activity_event→slot_version_id FK, file_asset logical_key·position, current_version 복합 FK, slot_version 검토중 1개·상태 CHECK, account 조건 CHECK, ASCII 머신 코드, §6 인덱스·제약, refresh_token 보강) |
 | 이전 버전 | v1.0 (화면설계서 전수 대조 — project 기간·설명, TC 절차/기대/실제, defect 재현단계/환경/등록자/`재현불가`, comment 결함 귀속) · v0.3 (미결 7건 해소) |
 | 작성일 | 2026-05-21 |
 | 기준 | SRS(`requirements.md`) · IA(`ia.md`) · 화면 설계서(`screen-design/`) · 프로토타입(`prototype/index.html`)의 데이터 모델에서 역도출 |
@@ -92,7 +92,7 @@ erDiagram
         varchar email
         bigint project_id FK
         varchar invite_type "client/team_member"
-        varchar token UK
+        varchar token_hash UK
         varchar status "pending/accepted/expired"
         timestamptz expires_at
         bigint invited_by FK
@@ -285,7 +285,7 @@ erDiagram
 | email | VARCHAR(255) | NN | 초대 대상 |
 | project_id | BIGINT | FK→project, NN | 참여 프로젝트 |
 | invite_type | VARCHAR(20) | NN, CHECK | `client`/`team_member` |
-| token | VARCHAR(255) | NN, UQ | 1회용. 수락·재발송 시 무효화(REQ-AUT-012) |
+| token_hash | VARCHAR(255) | NN, UQ | **원문 저장 금지 — 해시 저장**(원문은 메일 링크에만). 1회용, 수락·재발송 시 무효화(REQ-AUT-012) |
 | status | VARCHAR(20) | NN, CHECK | `pending`/`accepted`/`expired` |
 | invited_by | BIGINT | FK→account, NN | |
 | expires_at | TIMESTAMPTZ | NN | 30분 유효 |
