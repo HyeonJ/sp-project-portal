@@ -3,7 +3,7 @@
 | 항목 | 내용 |
 |------|------|
 | 프로젝트명 | SoftPuzzle PM |
-| 버전 | v0.2 (코덱스 리뷰 반영 — after-commit 알림, 슬롯 status 동기화, 무효화 의미 명확화, S3 락 분리, 선행 배지 파생·1-hop, 게이트 락, refresh 행락, review-recall) |
+| 버전 | v0.3 (개발 시작 트리거 시퀀스 추가 — dev_run 사전조건 검증·코드 자동 생성) · v0.2 (코덱스 리뷰 반영 — after-commit·슬롯 status 동기화·무효화·S3 락·선행 배지 파생·게이트 락·refresh 행락·review-recall) |
 | 작성일 | 2026-05-21 |
 | 기준 | ERD(`erd.md` v1.2) · API 명세서(`api-spec.md` v0.3) · 화면 설계서 |
 | 스택 | Spring Boot · MyBatis · PostgreSQL · JWT · S3 |
@@ -286,6 +286,38 @@ sequenceDiagram
     T->>S3: GET presigned url (직접)
 ```
 
+### 2-6. 개발 시작 트리거 (사전조건 검증 → 코드 자동 생성, REQ-DEV-001)
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor T as 프로젝트팀(PM)
+    participant C as DevRunController
+    participant S as DevRunService
+    participant P as PreconditionChecker
+    participant GM as ProjectGateMapper
+    participant DM as DevRunMapper
+    participant A as ActivityRecorder
+    participant Q as CodeGenJob (async)
+    T->>C: POST /projects/{id}/dev-runs
+    C->>S: trigger(projectId)
+    S->>P: assertDevReady(projectId)
+    P->>GM: 게이트 9·11·13·15 상태 조회
+    P->>P: 내부 산출물 등록 확인 (ERD·API·아키텍처·시스템구성도·화면설계서·Figma)
+    alt 사전조건 미충족
+        P-->>S: 실패(미충족 항목)
+        S-->>T: 409 {code: DEV_PRECONDITION, fieldErrors}
+    else 충족
+        S->>DM: insert(devRun, result=pending)
+        S->>A: record(dev_triggered)
+        Note over S,Q: ── COMMIT 후 ──
+        S--)Q: enqueue 코드 자동 생성 (입력: 확정 SRS·IA·시안·프로토타입·ERD·API·Figma)
+        S-->>T: 202 {devRunId, status: pending}
+        Q-->>DM: 완료 시 result=success / 실패 시 fail+reason
+    end
+    Note over T,Q: 코드 생성은 비동기(202) — dev_run 이력으로 추적(REQ-DEV-001 핵심: 수동 코딩 아닌 자동 생성)
+```
+
 ---
 
 ## 3. 노트
@@ -296,4 +328,4 @@ sequenceDiagram
 - **자산 삭제 보상**: `FileAssetMapper.delete`는 **draft 한정**, `kind=file`이면 DB row 삭제 + S3 object 삭제(또는 GC 큐), `kind=url`이면 row만.
 - **반려 사유**·**활동 이력**: `activity_event`(append-only)에 기록, 코멘트와 분리(REQ-WF-004/CMT-002).
 - **보안**: refresh 회전·재사용 탐지, 초대/토큰 해시 저장, presigned 단명 URL — ERD·api-spec과 동일.
-- **미작성(후속 필요 시)**: 개발 트리거(dev_run) 사전조건 검증 시퀀스, 검색 인덱싱, 알림 fan-out 상세.
+- **미작성(후속 필요 시)**: TC 실패→결함 등록·연결, CSV import, 검색 인덱싱, 알림 fan-out 상세. (단순 CRUD·JIT로 충분)
