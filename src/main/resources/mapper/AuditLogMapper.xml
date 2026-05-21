@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.softpuzzle.pm.audit.AuditLogMapper">
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO audit_log (actor_id, actor_role, action, target, ip)
+        VALUES (#{actorId}, #{actorRole}, #{action}, #{target}, #{ip}::inet)
+    </insert>
+
+    <select id="findRecent" resultType="AuditLog">
+        SELECT l.id, l.actor_id, l.actor_role, l.action, l.target, host(l.ip) AS ip, l.created_at,
+               a.name AS actor_name
+        FROM audit_log l
+        LEFT JOIN account a ON a.id = l.actor_id
+        ORDER BY l.created_at DESC, l.id DESC
+        LIMIT #{limit}
+    </select>
+
+</mapper>

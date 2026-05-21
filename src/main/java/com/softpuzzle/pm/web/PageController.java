@@ -27,6 +27,12 @@ public class PageController {
         return "dashboard";
     }
 
+    @GetMapping("/search")
+    public String search(Model model) {
+        addNavAttributes(model);
+        return "search";
+    }
+
     /** 레이아웃 셸(사이드바·상단바)이 쓰는 현재 사용자 속성. */
     private void addNavAttributes(Model model) {
         Account me = currentUser.require();

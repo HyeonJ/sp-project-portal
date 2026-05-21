@@ -1,7 +1,9 @@
 package com.softpuzzle.pm.deliverable;
 
 import com.softpuzzle.pm.account.Account;
+import com.softpuzzle.pm.audit.AuditService;
 import com.softpuzzle.pm.common.ApiException;
+import com.softpuzzle.pm.notify.NotificationService;
 import com.softpuzzle.pm.project.MembershipGuard;
 import com.softpuzzle.pm.project.ProjectGate;
 import com.softpuzzle.pm.project.ProjectGateMapper;
@@ -23,22 +25,30 @@ public class ReviewService {
     /** 게이트 통과 시 해제할 다음 게이트 (15 이후 22는 UAT에서 별도 해제). */
     private static final Map<Short, Short> NEXT_GATE = Map.of(
             (short) 9, (short) 11, (short) 11, (short) 13, (short) 13, (short) 15);
+    private static final Map<String, String> SLOT_LABEL = Map.of(
+            "requirements", "요구사항", "ia", "IA", "design", "디자인 시안",
+            "prototype", "프로토타입", "figma", "Figma");
 
     private final DeliverableSlotMapper slotMapper;
     private final SlotVersionMapper versionMapper;
     private final FileAssetMapper assetMapper;
     private final ProjectGateMapper gateMapper;
     private final ActivityEventMapper activityMapper;
+    private final NotificationService notificationService;
+    private final AuditService auditService;
     private final MembershipGuard guard;
 
     public ReviewService(DeliverableSlotMapper slotMapper, SlotVersionMapper versionMapper,
                          FileAssetMapper assetMapper, ProjectGateMapper gateMapper,
-                         ActivityEventMapper activityMapper, MembershipGuard guard) {
+                         ActivityEventMapper activityMapper, NotificationService notificationService,
+                         AuditService auditService, MembershipGuard guard) {
         this.slotMapper = slotMapper;
         this.versionMapper = versionMapper;
         this.assetMapper = assetMapper;
         this.gateMapper = gateMapper;
         this.activityMapper = activityMapper;
+        this.notificationService = notificationService;
+        this.auditService = auditService;
         this.guard = guard;
     }
 
@@ -56,6 +66,8 @@ public class ReviewService {
         versionMapper.markPendingReview(version.getId(), actor.getId());
         slotMapper.updateStatus(slot.getId(), "pending-review");
         activity(slot.getId(), "review_requested", version.getId(), actor.getId(), null);
+        notificationService.notifyProjectTier(projectId, "client", actor.getId(), "review_requested",
+                "검토 요청: " + label(slotType) + " v" + version.getVersionNo(), "/projects/" + projectId);
         log.info("[requestReview] project={} slot={} v={}", projectId, slotType, version.getVersionNo());
     }
 
@@ -85,6 +97,9 @@ public class ReviewService {
         versionMapper.markConfirmed(version.getId(), actor.getId(), upstreamVersionId);
         slotMapper.updateStatus(slot.getId(), "confirmed");
         activity(slot.getId(), "confirmed", version.getId(), actor.getId(), null);
+        notificationService.notifyProjectTier(projectId, "team", actor.getId(), "confirmed",
+                "컨펌: " + label(slotType) + " v" + version.getVersionNo(), "/projects/" + projectId);
+        auditService.log(actor, "CONFIRM", "project=" + projectId + " slot=" + slotType + " v" + version.getVersionNo());
         log.info("[confirm] project={} slot={} v={}", projectId, slotType, version.getVersionNo());
     }
 
@@ -102,6 +117,13 @@ public class ReviewService {
         versionMapper.markRejected(version.getId(), actor.getId());
         slotMapper.updateStatus(slot.getId(), "rejected");
         activity(slot.getId(), "rejected", version.getId(), actor.getId(), reason.trim());
+        notificationService.notifyProjectTier(projectId, "team", actor.getId(), "rejected",
+                "반려: " + label(slotType) + " — " + reason.trim(), "/projects/" + projectId);
+        auditService.log(actor, "REJECT", "project=" + projectId + " slot=" + slotType);
+    }
+
+    private String label(String slotType) {
+        return SLOT_LABEL.getOrDefault(slotType, slotType);
     }
 
     // --- 내부 ---

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.softpuzzle.pm.notify.NotificationMapper">
+
+    <select id="findByRecipient" resultType="Notification">
+        SELECT id, recipient_id, type, body, link, is_read AS read, created_at
+        FROM notification
+        WHERE recipient_id = #{recipientId}
+        ORDER BY created_at DESC, id DESC
+        LIMIT #{limit}
+    </select>
+
+    <select id="unreadCount" resultType="int">
+        SELECT COUNT(*) FROM notification WHERE recipient_id = #{recipientId} AND is_read = false
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO notification (recipient_id, type, body, link)
+        VALUES (#{recipientId}, #{type}, #{body}, #{link})
+    </insert>
+
+    <update id="markRead">
+        UPDATE notification SET is_read = true WHERE id = #{id} AND recipient_id = #{recipientId}
+    </update>
+
+    <update id="markAllRead">
+        UPDATE notification SET is_read = true WHERE recipient_id = #{recipientId} AND is_read = false
+    </update>
+
+</mapper>

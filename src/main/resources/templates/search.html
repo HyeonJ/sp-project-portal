@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head th:replace="~{fragments/head :: head('통합 검색 · SoftPuzzle PM')}"></head>
+<body>
+<div class="app">
+    <div th:replace="~{fragments/shell :: globalSidebar('')}"></div>
+    <div>
+        <div th:replace="~{fragments/shell :: topbar('통합 검색')}"></div>
+        <main class="main" id="searchPage">
+            <div class="page-bar">
+                <h1 class="page-title">통합 검색</h1>
+            </div>
+            <p class="page-sub" id="searchQuery"></p>
+            <div id="searchResults"></div>
+        </main>
+    </div>
+</div>
+<script th:src="@{/js/search.js}" defer></script>
+</body>
+</html>

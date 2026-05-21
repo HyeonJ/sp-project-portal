@@ -3,6 +3,7 @@ package com.softpuzzle.pm.project;
 import com.softpuzzle.pm.account.Account;
 import com.softpuzzle.pm.account.ClientOrg;
 import com.softpuzzle.pm.account.ClientOrgMapper;
+import com.softpuzzle.pm.audit.AuditService;
 import com.softpuzzle.pm.common.ApiException;
 import com.softpuzzle.pm.deliverable.DeliverableSlot;
 import com.softpuzzle.pm.deliverable.DeliverableSlotMapper;
@@ -25,16 +26,18 @@ public class ProjectService {
     private final ProjectGateMapper gateMapper;
     private final ClientOrgMapper clientOrgMapper;
     private final DeliverableSlotMapper slotMapper;
+    private final AuditService auditService;
     private final MembershipGuard guard;
 
     public ProjectService(ProjectMapper projectMapper, ProjectMemberMapper memberMapper,
                           ProjectGateMapper gateMapper, ClientOrgMapper clientOrgMapper,
-                          DeliverableSlotMapper slotMapper, MembershipGuard guard) {
+                          DeliverableSlotMapper slotMapper, AuditService auditService, MembershipGuard guard) {
         this.projectMapper = projectMapper;
         this.memberMapper = memberMapper;
         this.gateMapper = gateMapper;
         this.clientOrgMapper = clientOrgMapper;
         this.slotMapper = slotMapper;
+        this.auditService = auditService;
         this.guard = guard;
     }
 
@@ -59,6 +62,7 @@ public class ProjectService {
         seedGates(project.getId());
         seedSlots(project.getId());
         addMember(project.getId(), creator.getId(), creator.getId());
+        auditService.log(creator, "CREATE_PROJECT", "project=" + project.getName());
 
         return projectMapper.findById(project.getId());
     }

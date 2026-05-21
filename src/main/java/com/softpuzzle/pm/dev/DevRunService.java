@@ -1,6 +1,7 @@
 package com.softpuzzle.pm.dev;
 
 import com.softpuzzle.pm.account.Account;
+import com.softpuzzle.pm.audit.AuditService;
 import com.softpuzzle.pm.common.ApiException;
 import com.softpuzzle.pm.project.MembershipGuard;
 import com.softpuzzle.pm.project.ProjectGate;
@@ -26,13 +27,15 @@ public class DevRunService {
     private final DevRunMapper devRunMapper;
     private final ProjectGateMapper gateMapper;
     private final ProjectMapper projectMapper;
+    private final AuditService auditService;
     private final MembershipGuard guard;
 
     public DevRunService(DevRunMapper devRunMapper, ProjectGateMapper gateMapper,
-                         ProjectMapper projectMapper, MembershipGuard guard) {
+                         ProjectMapper projectMapper, AuditService auditService, MembershipGuard guard) {
         this.devRunMapper = devRunMapper;
         this.gateMapper = gateMapper;
         this.projectMapper = projectMapper;
+        this.auditService = auditService;
         this.guard = guard;
     }
 
@@ -52,6 +55,7 @@ public class DevRunService {
         run.setResult("success");
         run.setTriggeredBy(actor.getId());
         devRunMapper.insert(run);
+        auditService.log(actor, "TRIGGER_DEV", "project=" + projectId);
         log.info("[trigger] project={} by={} → dev_run={}", projectId, actor.getEmail(), run.getId());
         return run;
     }
