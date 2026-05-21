@@ -1,0 +1,16 @@
+# docker: docker-compose 데모 배포 (시드 계정 포함). 실 운영은 prod 프로필 사용(시드 없음).
+spring:
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://db:5432/sppm}
+    username: ${DB_USERNAME:sppm}
+    password: ${DB_PASSWORD:sppm}
+  thymeleaf:
+    cache: true
+
+storage:
+  type: local
+  local-dir: ${STORAGE_LOCAL_DIR:/data/storage}
+
+logging:
+  level:
+    com.softpuzzle.pm: INFO

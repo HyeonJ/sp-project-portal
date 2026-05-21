@@ -7,11 +7,10 @@ spring:
   thymeleaf:
     cache: true
 
+# 파일 스토리지: 영속 볼륨 디렉토리. (S3 어댑터는 향후 FileStorage 구현 추가 시 type=s3로 전환)
 storage:
-  type: s3
-  s3:
-    bucket: ${S3_BUCKET}
-    region: ${S3_REGION}
+  type: local
+  local-dir: ${STORAGE_LOCAL_DIR:/data/storage}
 
 logging:
   level:

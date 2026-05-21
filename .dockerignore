@@ -1,0 +1,9 @@
+build/
+.gradle/
+.git/
+.storage/
+*.log
+docs/
+.idea/
+.vscode/
+*.png

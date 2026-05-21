@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 
 /** dev 시드 (local/dev 프로필만, 멱등). 조직·계정·샘플 프로젝트. */
 @Component
-@Profile({"local", "dev"})
+@Profile({"local", "dev", "docker"})
 public class DataSeeder implements CommandLineRunner {
 
     private static final Logger log = LoggerFactory.getLogger(DataSeeder.class);

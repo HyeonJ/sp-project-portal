@@ -1,0 +1,37 @@
+# SoftPuzzle PM — 자체 완결 배포 (앱 + PostgreSQL).
+# 실행: docker compose up --build   →   http://localhost:8080
+# 시드 계정(docker 프로필): admin@softpuzzle.com / pm@softpuzzle.com / client@acme.com  (비번 Passw0rd!)
+services:
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: sppm
+      POSTGRES_USER: sppm
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-sppm}
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sppm -d sppm"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+  app:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      DB_URL: jdbc:postgresql://db:5432/sppm
+      DB_USERNAME: sppm
+      DB_PASSWORD: ${DB_PASSWORD:-sppm}
+      STORAGE_LOCAL_DIR: /data/storage
+    ports:
+      - "8080:8080"
+    volumes:
+      - storage-data:/data/storage
+
+volumes:
+  db-data:
+  storage-data:
