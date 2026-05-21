@@ -16,3 +16,11 @@ desktop.ini
 # Temp
 tmp/
 temp/
+
+# Gradle / build
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+
+# 로컬 파일 스토리지 (dev)
+.storage/

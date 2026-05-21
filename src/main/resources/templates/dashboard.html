@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head th:replace="~{fragments/head :: head('대시보드 · SoftPuzzle PM')}"></head>
+<body>
+<header class="topbar">
+    <span class="brand-sm">SoftPuzzle PM</span>
+    <form method="post" th:action="@{/logout}" class="logout-form">
+        <button type="submit" class="btn-ghost">로그아웃</button>
+    </form>
+</header>
+<main class="page">
+    <h1>대시보드</h1>
+    <p class="muted">현재 사용자: <b id="me">불러오는 중…</b></p>
+    <section class="card">
+        <h2>연결 점검 (walking skeleton)</h2>
+        <p class="muted">세션 인증 + CSRF 보호 AJAX 왕복을 확인합니다.</p>
+        <button id="echoBtn" class="btn-primary" type="button">AJAX POST 테스트</button>
+        <pre id="out" class="out"></pre>
+    </section>
+</main>
+</body>
+</html>

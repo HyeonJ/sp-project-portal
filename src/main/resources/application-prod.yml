@@ -1,0 +1,18 @@
+# prod: 모든 시크릿/접속정보는 환경변수 필수. 미설정 시 기동 실패(fail-fast).
+spring:
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+  thymeleaf:
+    cache: true
+
+storage:
+  type: s3
+  s3:
+    bucket: ${S3_BUCKET}
+    region: ${S3_REGION}
+
+logging:
+  level:
+    com.softpuzzle.pm: INFO

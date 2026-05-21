@@ -1,0 +1,67 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.3.5'
+    id 'io.spring.dependency-management' version '1.1.6'
+}
+
+group = 'com.softpuzzle'
+version = '0.1.0'
+description = 'SoftPuzzle PM — B2B 프로젝트 관리 SaaS'
+
+java {
+    // 아키텍처 스펙 floor=17, 로컬 설치 JDK=21 (호환). toolchain으로 고정.
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    mybatisStarterVersion = '3.0.4'
+    // Spring Boot 3.3.5 BOM의 Testcontainers 1.19.8은 Docker API 1.32 고정 → Engine 29.x(min 1.40) 거부.
+    // 데몬 API 버전 협상이 되는 버전으로 상향.
+    set('testcontainers.version', '1.20.6')
+}
+
+dependencies {
+    // web · view · security · validation · actuator
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+    // session (Spring Session JDBC — 세션 영속)
+    implementation 'org.springframework.session:spring-session-jdbc'
+
+    // persistence (MyBatis · PostgreSQL · Flyway)
+    implementation "org.mybatis.spring.boot:mybatis-spring-boot-starter:${mybatisStarterVersion}"
+    implementation 'org.flywaydb:flyway-core'
+    implementation 'org.flywaydb:flyway-database-postgresql'
+    runtimeOnly 'org.postgresql:postgresql'
+
+    // test (Testcontainers PostgreSQL — H2 미사용)
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+    testImplementation 'org.springframework.boot:spring-boot-testcontainers'
+    testImplementation 'org.testcontainers:junit-jupiter'
+    testImplementation 'org.testcontainers:postgresql'
+    testImplementation "org.mybatis.spring.boot:mybatis-spring-boot-starter-test:${mybatisStarterVersion}"
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+    // Docker Engine 29.x 최소 API=1.40. docker-java 기본 1.32는 400 거부됨 → api.version 강제(데몬 1.40~1.54 범위).
+    systemProperty 'api.version', '1.44'
+    environment 'DOCKER_API_VERSION', '1.44'
+}
+
+// 로컬 실행(bootTestRun)도 Testcontainers 기반 → 동일 API 버전 고정
+tasks.matching { it.name == 'bootTestRun' }.configureEach {
+    systemProperty 'api.version', '1.44'
+    environment 'DOCKER_API_VERSION', '1.44'
+}

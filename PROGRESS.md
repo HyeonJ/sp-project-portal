@@ -5,9 +5,11 @@
 
 ## 현재 단계
 
-**18단계 — 개발 (진입 사전조건 전부 충족 + 문서 정합 확인, 착수 대기)**
+**18단계 — 개발 (착수, Phase A 워킹 스켈레톤 완료 ✅ — 빌드·테스트 그린)**
 
-> **개발 착수 전 전체 문서 정합 리뷰 완료 (2026-05-21)** — 치명 블로커 1건 발견·해소: **인증/프런트 아키텍처 충돌**(API/ERD/시퀀스는 JWT REST였으나 SRS·아키텍처·인프라는 세션 SSR) → **세션 SSR로 정렬**(ERD v1.3 refresh_token 제거·API v1.1 세션 인증·클래스시퀀스 v0.4 로그인 세션). 이제 전 산출물 일관. **개발(REQ-DEV-001) 진입 사전조건 충족**: 게이트 9·11·13·15 / 아키텍처 v0.2·인프라 v0.1·ERD v1.3·화면설계서 v1.5·API v1.1·클래스시퀀스 v0.4·Figma 핸드오프, 전 설계 산출물 코덱스 검수. **다음: 18단계 개발 착수.**
+> **개발 착수 (2026-05-21)** — `docs/dev-plan.md`의 walking-skeleton-first 전략으로 빌드 시작. **Phase A(워킹 스켈레톤) 완료**: Spring Boot 3.3.5 + MyBatis + Flyway + PostgreSQL(Testcontainers) + **Spring Security 세션 인증 + Spring Session JDBC** + Thymeleaf SSR + jQuery 전 스택 통합 증명. 로그인(폼/세션) → 보호 페이지 → CSRF 보호 AJAX 왕복(`/api/me`·`/api/echo`) + 매퍼 통합테스트. `./gradlew build` 통과(6테스트, 2 컨텍스트 그린). 환경 이슈 해결: Docker Engine 29.x(API min 1.40) ↔ docker-java 기본 1.32 충돌 → `api.version=1.44` 고정. **다음: Phase B1 — 프로젝트·멤버십·대시보드.**
+>
+> 사전조건(완료): 게이트 9·11·13·15 / 아키텍처 v0.2·인프라 v0.1·ERD v1.3·화면설계서 v1.5·API v1.1·클래스시퀀스 v0.4·Figma 핸드오프, 전 설계 산출물 코덱스 검수. 인증/프런트 아키텍처 충돌(JWT REST vs 세션 SSR)은 세션 SSR로 정렬 완료.
 
 ---
 
@@ -52,7 +54,7 @@
 
 | 단계 | 내용 | 상태 | 완료일 | 비고 |
 |------|------|------|--------|------|
-| 18 | 개발 | ⬜ 대기(착수 가능) | — | REQ-DEV-001 사전조건 전부 충족(게이트 4종·설계 산출물 전체·Figma·API v1.0). 코드 자동 생성/구현 착수 가능 |
+| 18 | 개발 | 🔨 진행 중 | — | `docs/dev-plan.md` 기준 단계별 구현. **Phase A 워킹 스켈레톤 완료**(전 스택 통합·`gradlew build` 그린). 진행: B1 프로젝트·멤버십 → B2 슬롯/버전/업로드 → B3 검토 상태머신 → B4 무효화·선행 배지 → B5 코멘트·활동·뷰어 → C breadth |
 
 ### 테스트
 
@@ -128,6 +130,7 @@
 | 49 | 2026-05-21 | **API 명세서 v1.0 마감 — 16~17단계 완료, 개발 진입 사전조건 충족**. v0.3 → v1.0 동결: 화면설계서 v1.5 전 화면·컨트롤 대비 **커버리지 자가점검**에서 발견한 갭(프로젝트 **보관/삭제/복구** — SCR-SET-003 Danger Zone) 보강(POST archive·restore·DELETE 소프트삭제 30일). 미결 0, ERD v1.2 정합, 코덱스 검수 반영. **개발(18) 입력 baseline으로 동결** — 이후 변경은 버전 증가 추적, 엔드포인트 상세 스키마는 구현 시 springdoc SoT. **이로써 REQ-DEV-001 사전조건 전부 충족**(게이트 9·11·13·15, 아키텍처·시스템구성도·ERD·화면설계서·API·클래스시퀀스·Figma). deliverables No.11 v1.0·체크리스트·18단계 행 갱신. 협의 루프 49회차. | — |
 | 50 | 2026-05-21 | **클래스/시퀀스 v0.3 — 개발 시작 트리거 시퀀스 보강**. 곧 구현될 비자명 흐름이라 추가: `dev_run` 트리거(개발 시작) 시퀀스 — PreconditionChecker가 게이트 9·11·13·15 + 내부 산출물(ERD·API·아키텍처·시스템구성도·화면설계서·Figma) 등록 확인 → 미충족 시 409 `DEV_PRECONDITION`(fieldErrors), 충족 시 dev_run insert(pending)+activity+커밋 후 코드 자동 생성 job enqueue(202 비동기). REQ-DEV-001 핵심(수동 코딩 아닌 자동 생성). 시퀀스 6종. 나머지 미작성(TC→결함·CSV·검색·알림)은 단순/JIT라 보류. 7개 Mermaid 렌더 검증. deliverables No.13 갱신. 협의 루프 50회차. | — |
 | 51 | 2026-05-21 | **개발 착수 전 전체 문서 정합 리뷰 — 치명 블로커 1건 발견·해소**. 사용자 요청으로 모든 산출물을 처음부터 점검. **발견**: 인증/프런트 아키텍처 정면 충돌 — **SRS(REQ-NFR-001 "Spring Security 세션 인증")·아키텍처(SSR Thymeleaf+jQuery, 명시적 "JWT 아님")·인프라(Spring Session JDBC)는 세션 SSR**인데, 이번 세션에 만든 **API v1.0·ERD refresh_token·클래스시퀀스는 JWT REST**로 일탈(API 스택에 JWT를 적으며 아키텍처 세션 결정을 교차검증 안 함). 개발자에 상반된 지시가 되어 착수 불가 판정. **해소(옵션 A — 기반 결정 세션 SSR로 정렬)**: ERD v1.3(refresh_token 테이블 제거 → Spring Session JDBC 프레임워크 관리, 19 엔티티), API v1.1(인증 섹션 세션 쿠키·CSRF로 재작성, /auth/refresh 제거, 프런트=SSR Thymeleaf+jQuery AJAX 성격 명시, 스택 정정), 클래스시퀀스 v0.4(로그인 시퀀스를 Spring Security 세션 생성/무효화로 교체). 나머지 산출물(IA·일정·플로우·와이어프레임·시안)은 정합·완비 확인. JWT/refresh 잔재 grep 0, 8개 Mermaid 재검증. **이제 전 설계 산출물 일관 — 개발 진입 사전조건 충족.** 협의 루프 51회차. | — |
+| 52 | 2026-05-21 | **18단계 개발 착수 — Phase A 워킹 스켈레톤 완료(빌드 그린)**. `docs/dev-plan.md`에 walking-skeleton-first 전략 수립(코덱스 검수 반영)·신규 등록. **전 스택 1줄 수직 슬라이스 구현·검증**: Spring Boot 3.3.5(Java 21 toolchain) + MyBatis(XML 매퍼) + Flyway(V1 Spring Session 스키마·V2 account) + PostgreSQL 15(Testcontainers) + **Spring Security 세션 인증 + Spring Session JDBC**(JWT 아님) + Thymeleaf SSR + jQuery. 산출: build.gradle·settings·Gradle Wrapper 8.14.4, `SpProjectPortalApplication`, `application.yml`(+prod 프로필 fail-fast 환경변수), Flyway V1·V2, `Account`/`AccountMapper`(.xml)/`PmUserDetailsService`, `SecurityConfig`(BCrypt12·CSRF·폼로그인·세션30분), `ApiResponse`/`ApiException`/`GlobalExceptionHandler`(@RestController 한정), `FileStorage`/`LocalFileStorage`, `PageController`(로그인·대시보드 SSR)+`MeController`(/api/me·/api/echo), Thymeleaf 템플릿(head fragment·login·dashboard·error 403/404/500)·정적(app.js CSRF·app.css 토큰)·`DataSeeder`(local), 테스트(`TestcontainersConfiguration` @ServiceConnection·`TestSpProjectPortalApplication` bootTestRun·`AccountMapperIT`·`WalkingSkeletonTest` 로그인/세션/CSRF/봉투). `./gradlew build` 통과(6테스트·2컨텍스트 그린). **환경 이슈 해결**: Docker Engine 29.x(API min 1.40) ↔ Testcontainers/docker-java 기본 1.32 → 400 거부. TC 1.20.6 상향 + `api.version=1.44`(test·bootTestRun) 고정으로 해결. 협의 루프 52회차. | — |
 
 ### UAT 루프 (20↔21)
 

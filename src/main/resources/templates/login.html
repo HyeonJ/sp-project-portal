@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head th:replace="~{fragments/head :: head('로그인 · SoftPuzzle PM')}"></head>
+<body class="auth-body">
+<main class="auth-card">
+    <h1 class="brand">SoftPuzzle PM</h1>
+    <p class="auth-sub">프로젝트 진행 관리</p>
+    <form method="post" th:action="@{/login}" class="auth-form">
+        <label>
+            <span>이메일</span>
+            <input type="email" name="username" autocomplete="username" required autofocus>
+        </label>
+        <label>
+            <span>비밀번호</span>
+            <input type="password" name="password" autocomplete="current-password" required>
+        </label>
+        <button type="submit" class="btn-primary">로그인</button>
+        <p th:if="${param.error}" class="msg-err">이메일 또는 비밀번호가 올바르지 않습니다.</p>
+        <p th:if="${param.logout}" class="msg-ok">로그아웃되었습니다.</p>
+    </form>
+</main>
+</body>
+</html>

@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head th:replace="~{fragments/head :: head('403 · SoftPuzzle PM')}"></head>
+<body>
+<main class="page error-page">
+    <h1>403</h1>
+    <p class="muted">접근 권한이 없습니다.</p>
+    <a class="btn-primary" th:href="@{/}">대시보드로</a>
+</main>
+</body>
+</html>
