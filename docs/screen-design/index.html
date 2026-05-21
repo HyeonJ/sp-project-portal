@@ -71,7 +71,7 @@ table.spec td .vref{display:inline-block;padding:1px 6px;border-radius:4px;font-
 <div class="layout">
 <aside class="side">
   <h1>화면 설계서</h1>
-  <span class="ver">v1.2 · 글로벌 사이드바 통일 + SCR-SET-002 팀원 초대 (30 화면)</span>
+  <span class="ver">v1.3 · 파일 인라인 뷰어(MOD-FILE-001)·CSV 가져오기·결함↔TC 연결·메뉴 순서(개발·TC·결함)·역할별 사이드바 반영 (31 화면)</span>
 
   <div class="group">공통 (그룹 1)</div>
   <a href="#design-tokens">디자인 토큰 <small>색·타이포·간격</small></a>
@@ -83,6 +83,7 @@ table.spec td .vref{display:inline-block;padding:1px 6px;border-radius:4px;font-
   <a href="#mod-ver-001">MOD-VER-001 <small>새 버전</small></a>
   <a href="#mod-wf-001">MOD-WF-001 <small>검토 요청</small></a>
   <a href="#mod-wf-002">MOD-WF-002 <small>컨펌/반려</small></a>
+  <a href="#mod-file-001">MOD-FILE-001 <small>파일 뷰어</small></a>
 
   <div class="group">진입·랜딩 (그룹 3)</div>
   <a href="#scr-prj-001">SCR-PRJ-001 <small>대시보드</small></a>
@@ -243,7 +244,7 @@ table.spec td .vref{display:inline-block;padding:1px 6px;border-radius:4px;font-
         <tr><td class="row-h">인증 후 (프로젝트)</td><td>✅</td><td>✅ 통합 검색</td><td>✅</td><td>✅ 8개 메뉴 (대시보드·진행 현황·요구사항·산출물·개발·TC·결함·설정)</td></tr>
       </tbody>
     </table>
-    <div class="callout"><b>사이드바 메뉴 권한 매트릭스</b>는 <code>requirements.md</code> §3 권한 매트릭스 단일 진실 원천 참조. TC·개발·설정은 [팀] 전용이라 고객사에게는 미노출.</div>
+    <div class="callout"><b>사이드바 메뉴 권한 매트릭스</b>는 <code>requirements.md</code> §3 권한 매트릭스 단일 진실 원천 참조. <b>고객사 미노출 = 개발·TC</b> (결함은 노출). <b>설정은 미노출이 아니라 "멤버·초대"만 노출</b> — 기본 정보·Danger Zone 서브메뉴는 숨김. 팀·관리자는 8개 메뉴 + 설정 전체.</div>
     <div class="callout"><b>옵션 A · AppShell 통일 (협의 27회차, 2026-05-20)</b> — 글로벌 영역도 사이드바 보유. 모든 레이아웃의 헤더·콘텐츠 좌측 정렬이 일치(좌측 240px 사이드바 + 32px main padding). 글로벌·프로젝트·관리자 사이드바 간 전환 시 폭은 그대로, 메뉴 항목만 교체. <b>breadcrumb 1단</b>은 모든 레이아웃에서 <code>프로젝트 목록</code> 링크로 통일 (글로벌 `/`는 자기참조 회피 위해 굵게 단독 표시).</div>
   </div>
 </section>
@@ -564,6 +565,39 @@ table.spec td .vref{display:inline-block;padding:1px 6px;border-radius:4px;font-
         <tr><td class="row-h">반려 (사유 포함)</td><td>검토중 → 반려</td><td>잠금 유지</td><td>"v(n) 반려 — {사유}" (영구 보존)</td><td>팀이 v+1 새 버전 작성 → 재요청</td></tr>
       </tbody>
     </table>
+  </div>
+</section>
+
+
+<!-- ============================== MOD-FILE-001 ============================== -->
+<section class="screen" id="mod-file-001">
+  <div class="screen-head">
+    <p class="eyebrow">모달</p>
+    <h2>MOD-FILE-001 · 파일 인라인 뷰어 모달</h2>
+    <p class="meta">트리거: 파일 행 [보기] (SCR-REQ-001 컨트롤 N · SCR-DSN-001 컨트롤 M) &nbsp;·&nbsp; 권한: 공통 &nbsp;·&nbsp; REQ-FILE-003</p>
+    <p class="desc"><b>Description:</b> 다운로드 없이 모달 안에서 파일 내용을 미리보기. 지원 형식만 렌더하고 그 외는 다운로드 폴백. 헤더에 [다운로드] 동시 제공. 적용 범위 = 요구사항·산출물 전 파일 슬롯.</p>
+  </div>
+  <div class="section">
+    <h3><span class="num">1</span> Information</h3>
+    <table class="spec"><thead><tr><th>No</th><th>설명</th><th>Type</th><th>출처</th></tr></thead><tbody>
+      <tr><td class="id info"><span class="badge">1</span></td><td>파일명 (모달 제목)</td><td class="type">String</td><td class="type">file.original_name</td></tr>
+      <tr><td class="id info"><span class="badge">2</span></td><td>미리보기 영역 (형식별 분기 — §3 States)</td><td class="type">Preview</td><td class="type">file.content_type</td></tr>
+    </tbody></table>
+  </div>
+  <div class="section">
+    <h3><span class="num">2</span> Controls</h3>
+    <table class="spec"><thead><tr><th>No</th><th>액션</th><th>Type</th><th>Effect</th></tr></thead><tbody>
+      <tr><td class="id ctrl"><span class="badge">A</span></td><td>[다운로드]</td><td class="type">Button</td><td class="type">파일 바이너리 응답 (모든 형식 공통)</td></tr>
+      <tr><td class="id ctrl"><span class="badge">B</span></td><td>[✕] / 배경 클릭 / ESC</td><td class="type">Button</td><td class="type">모달 닫기</td></tr>
+    </tbody></table>
+  </div>
+  <div class="section">
+    <h3><span class="num">3</span> States (형식별 미리보기)</h3>
+    <table class="spec matrix"><thead><tr><th>형식</th><th>미리보기</th><th>비고</th></tr></thead><tbody>
+      <tr><td class="row-h">PDF</td><td>문서 페이지 렌더</td><td>브라우저 네이티브 / PDF.js</td></tr>
+      <tr><td class="row-h">이미지 (PNG·JPG·GIF·WebP·SVG)</td><td>이미지 표시</td><td>&lt;img&gt;</td></tr>
+      <tr><td class="row-h">그 외 (워드·엑셀·ZIP·HTML 등)</td><td>미리보기 미지원 — "다운로드 후 확인" 폴백</td><td>향후 서버 PDF 변환 시 확장 (REQ-FILE-003)</td></tr>
+    </tbody></table>
   </div>
 </section>
 
@@ -904,11 +938,11 @@ table.spec td .vref{display:inline-block;padding:1px 6px;border-radius:4px;font-
     <h3><span class="num">2</span> Information · Controls</h3>
     <table class="spec"><tbody>
       <tr><td class="id info"><span class="badge">1·2</span></td><td>총 카운트, 계정 행 (이름·이메일·역할·담당 PJT·상태)</td></tr>
-      <tr><td class="id ctrl"><span class="badge">A</span></td><td>[+ 계정 생성] → SCR-ADM-002 폼 (이름·이메일·역할 입력 → 초대 메일 발송)</td></tr>
+      <tr><td class="id ctrl"><span class="badge">A</span></td><td>[+ 계정 생성] → 모달 (이름·이메일·역할 입력 → 초대-수락 방식, 초대 메일 발송)</td></tr>
       <tr><td class="id ctrl"><span class="badge">B·C·D</span></td><td>역할·상태 필터, 이름·이메일 검색</td></tr>
       <tr><td class="id ctrl"><span class="badge">E·F</span></td><td>행별 [편집] / [비활성화] — 진행 중 PJT는 다른 PM 재할당 후 처리</td></tr>
     </tbody></table>
-    <div class="callout">SCR-ADM-002(계정 폼)는 같은 화면 내 사이드패널 또는 별도 페이지로 진입. 비관리자 접근 시 403 (REQ-NFR-001).</div>
+    <div class="callout">SCR-ADM-002(계정 생성)는 모달로 진입(팀원 초대와 동일 초대-수락 패턴). 비관리자 접근 시 403 (REQ-NFR-001).</div>
   </div>
 </section>
 
@@ -1140,14 +1174,14 @@ table.spec td .vref{display:inline-block;padding:1px 6px;border-radius:4px;font-
     <h3><span class="num">2</span> Information</h3>
     <table class="spec"><thead><tr><th>No</th><th>설명</th><th>Type</th><th>출처</th></tr></thead><tbody>
       <tr><td class="id info"><span class="badge">1</span></td><td>화면 제목 + 총 카운트 ("테스트 케이스 (32)")</td><td class="type">String + Integer</td><td class="type">tests.length</td></tr>
-      <tr><td class="id info"><span class="badge">2</span></td><td>상태별 카운트 (대기·Pass·Fail)</td><td class="type">Integer×3</td><td class="type">tests grouped by status</td></tr>
+      <tr><td class="id info"><span class="badge">2</span></td><td>상태별 카운트 (대기·통과·실패)</td><td class="type">Integer×3</td><td class="type">tests grouped by status</td></tr>
       <tr><td class="id info"><span class="badge">3</span></td><td>TC 행 (ID·제목·단계·우선순위·상태·담당)</td><td class="type">List&lt;TestCase&gt;</td><td class="type">tests[]</td></tr>
     </tbody></table>
   </div>
   <div class="section">
     <h3><span class="num">3</span> Controls</h3>
     <table class="spec"><thead><tr><th>No</th><th>액션</th><th>Type</th><th>Effect</th></tr></thead><tbody>
-      <tr><td class="id ctrl"><span class="badge">A</span></td><td>[+ TC 등록]</td><td class="type">Button</td><td class="type">신규 TC 생성 폼 (인라인 또는 SCR-TST-002 신규 모드)</td></tr>
+      <tr><td class="id ctrl"><span class="badge">A</span></td><td>[+ TC 등록]</td><td class="type">Button → Modal</td><td class="type">신규 TC 등록 모달 — 시나리오명·단계·우선순위·담당자 (상태 '대기' 시작)</td></tr>
       <tr><td class="id ctrl"><span class="badge">B·C·D</span></td><td>단계·우선순위·상태 필터</td><td class="type">Dropdown</td><td class="type">목록 즉시 필터</td></tr>
       <tr><td class="id ctrl"><span class="badge">E</span></td><td>검색 (TC ID·제목)</td><td class="type">Input</td><td class="type">부분 일치</td></tr>
       <tr><td class="id ctrl"><span class="badge">F</span></td><td>TC 행 클릭</td><td class="type">Link</td><td class="type">→ SCR-TST-002</td></tr>
@@ -1171,7 +1205,7 @@ table.spec td .vref{display:inline-block;padding:1px 6px;border-radius:4px;font-
     <p class="eyebrow">화면 설계서 · 그룹 4 · 부가</p>
     <h2>SCR-TST-002 · TC 상세</h2>
     <p class="meta">Path: SCR-TST-001 행 클릭 &nbsp;·&nbsp; URL: <code>/projects/{id}/tests/{tcId}</code> &nbsp;·&nbsp; 권한: 팀(QA), UAT 시 고객사 조회</p>
-    <p class="desc"><b>Description:</b> 단일 TC 항목. 전제·절차·기대 결과 정의 + 실제 결과 입력. Fail 시 결함 자동/수동 연결.</p>
+    <p class="desc"><b>Description:</b> 단일 TC 항목. 전제·절차·기대 결과 정의 + 실제 결과 입력. 실패 시 결함 자동/수동 연결.</p>
   </div>
   <div class="section"><h3><span class="num">1</span> 화면</h3><iframe class="wf-frame" src="../wireframe/index.html?screen=s14" title="SCR-TST-002 와이어프레임"></iframe></div>
   <div class="section">
@@ -1179,7 +1213,7 @@ table.spec td .vref{display:inline-block;padding:1px 6px;border-radius:4px;font-
     <table class="spec"><thead><tr><th>No</th><th>설명</th><th>Type</th><th>출처</th></tr></thead><tbody>
       <tr><td class="id info"><span class="badge">1</span></td><td>TC ID + 제목</td><td class="type">String</td><td class="type">tc.id + tc.title</td></tr>
       <tr><td class="id info"><span class="badge">2</span></td><td>메타 (단계·우선순위·담당·등록일)</td><td class="type">String</td><td class="type">tc.meta</td></tr>
-      <tr><td class="id info"><span class="badge">3</span></td><td>현재 상태 배지 (대기/Pass/Fail/보류)</td><td class="type">Badge</td><td class="type">tc.status</td></tr>
+      <tr><td class="id info"><span class="badge">3</span></td><td>현재 상태 배지 (대기/통과/실패/보류)</td><td class="type">Badge</td><td class="type">tc.status</td></tr>
       <tr><td class="id info"><span class="badge">4</span></td><td>전제 조건</td><td class="type">Text</td><td class="type">tc.precondition</td></tr>
       <tr><td class="id info"><span class="badge">5</span></td><td>테스트 절차 (순서 목록)</td><td class="type">List&lt;Step&gt;</td><td class="type">tc.steps[]</td></tr>
       <tr><td class="id info"><span class="badge">6</span></td><td>기대 결과</td><td class="type">Text</td><td class="type">tc.expected</td></tr>
@@ -1193,16 +1227,16 @@ table.spec td .vref{display:inline-block;padding:1px 6px;border-radius:4px;font-
       <tr><td class="id ctrl"><span class="badge">B</span></td><td>실제 결과 입력</td><td class="type">Textarea</td><td class="type">PATCH tc.actual</td></tr>
       <tr><td class="id ctrl"><span class="badge">C</span></td><td>연결 결함 클릭</td><td class="type">Link</td><td class="type">→ SCR-TST-004</td></tr>
       <tr><td class="id ctrl"><span class="badge">D</span></td><td>[+ 결함 등록] · [+ 결함 연결]</td><td class="type">Button</td><td class="type">[+ 결함 등록] 신규 결함 — 이 TC가 연결 TC로 자동 선택(REQ-TST-001). [+ 결함 연결] 기존 결함 검색·선택. 양방향 link</td></tr>
-      <tr><td class="id ctrl"><span class="badge">E·F·G</span></td><td>Pass / Fail / 보류 결과</td><td class="type">Button</td><td class="type">tc.status 전이. Fail 시 결함 등록 옵션 안내</td></tr>
+      <tr><td class="id ctrl"><span class="badge">E·F·G</span></td><td>통과 / 실패 / 보류 결과</td><td class="type">Button</td><td class="type">tc.status 전이. 실패 시 결함 등록 옵션 안내</td></tr>
       <tr><td class="id ctrl"><span class="badge">H</span></td><td>[편집]</td><td class="type">Button</td><td class="type">전제·절차·기대 결과 편집 모드</td></tr>
     </tbody></table>
   </div>
   <div class="section">
     <h3><span class="num">4</span> States</h3>
     <table class="spec matrix"><thead><tr><th>상태</th><th>전이</th><th>결함 연결</th></tr></thead><tbody>
-      <tr><td class="row-h">대기</td><td>Pass / Fail / 보류로 전이 가능</td><td>—</td></tr>
-      <tr><td class="row-h">Pass</td><td>재실행 시 다른 상태 전이 가능</td><td>—</td></tr>
-      <tr><td class="row-h">Fail</td><td>결함 자동 등록 옵션 노출</td><td>1개 이상 권장</td></tr>
+      <tr><td class="row-h">대기</td><td>통과 / 실패 / 보류로 전이 가능</td><td>—</td></tr>
+      <tr><td class="row-h">통과</td><td>재실행 시 다른 상태 전이 가능</td><td>—</td></tr>
+      <tr><td class="row-h">실패</td><td>결함 자동 등록 옵션 노출</td><td>1개 이상 권장</td></tr>
       <tr><td class="row-h">보류</td><td>이유 코멘트 입력</td><td>선택</td></tr>
     </tbody></table>
   </div>
@@ -1249,7 +1283,7 @@ table.spec td .vref{display:inline-block;padding:1px 6px;border-radius:4px;font-
   <div class="screen-head">
     <p class="eyebrow">화면 설계서 · 그룹 4 · 부가</p>
     <h2>SCR-TST-004 · 결함 상세</h2>
-    <p class="meta">Path: SCR-TST-003 행 클릭 / TC Fail 결함 연결 &nbsp;·&nbsp; URL: <code>/projects/{id}/defects/{defectId}</code> &nbsp;·&nbsp; 권한: 공통</p>
+    <p class="meta">Path: SCR-TST-003 행 클릭 / TC 실패 시 결함 연결&nbsp;·&nbsp; URL: <code>/projects/{id}/defects/{defectId}</code> &nbsp;·&nbsp; 권한: 공통</p>
     <p class="desc"><b>Description:</b> 단일 결함 항목. 재현 단계·환경·첨부·코멘트·상태 전이·TC 연결.</p>
   </div>
   <div class="section"><h3><span class="num">1</span> 화면</h3><iframe class="wf-frame" src="../wireframe/index.html?screen=s15" title="SCR-TST-004 와이어프레임"></iframe></div>
@@ -1275,7 +1309,7 @@ table.spec td .vref{display:inline-block;padding:1px 6px;border-radius:4px;font-
       <tr><td class="id ctrl"><span class="badge">E</span></td><td>코멘트 입력 <a class="vref" href="#validation">V-003</a></td><td class="type">Textarea</td><td class="type">POST → comments[]</td></tr>
       <tr><td class="id ctrl"><span class="badge">F</span></td><td>코멘트 [등록]</td><td class="type">Button</td><td class="type">submit</td></tr>
       <tr><td class="id ctrl"><span class="badge">G·H·I·J</span></td><td>상태 변경 (미해결/진행 중/해결 완료/재현 불가)</td><td class="type">Button</td><td class="type">PATCH defect.status</td></tr>
-      <tr><td class="id ctrl"><span class="badge">K</span></td><td>[담당자 변경]</td><td class="type">Button → Picker</td><td class="type">PATCH defect.assignee</td></tr>
+      <tr><td class="id ctrl"><span class="badge">K</span></td><td>[담당자 변경]</td><td class="type">Button → Modal</td><td class="type">담당자 선택 모달 → PATCH defect.assignee</td></tr>
     </tbody></table>
   </div>
   <div class="section">
