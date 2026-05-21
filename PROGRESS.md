@@ -7,7 +7,7 @@
 
 **Gate 15 통과 → 16~17단계 Figma 정제·핸드오프 (대기)**
 
-> **Gate 15 프로토타입 컨펌 통과 (2026-05-21)** — 본 프로젝트는 프로젝트팀=고객사 동일 주체가 수행, 고객사 역할로 프로토타입 v2 컨펌. 다음: Figma 핸드오프(REQ-DSN-004) + **API v1.0 마감** → 18단계 개발 진입 사전조건 충족. 설계 산출물 모두 코덱스 검수 완료 — ERD v1.2 · 화면설계서 v1.5 · API v0.3 · 클래스/시퀀스 v0.2. (게이트 9·11·13·15 통과)
+> **Gate 15 통과 + Figma 핸드오프 완료 (2026-05-21)** — 프로젝트팀=고객사 동일 주체. 프로토타입 v2 컨펌, Figma 핸드오프(`docs/figma-handoff.md`, REQ-DSN-004) 등록. **개발(18) 진입까지 남은 것 = API 명세서 v1.0 마감 하나.** 나머지 사전조건(게이트 9·11·13·15, 아키텍처·시스템구성도·ERD v1.2·화면설계서 v1.5·클래스/시퀀스 v0.2, Figma)은 충족. 모든 설계 산출물 코덱스 검수 완료.
 
 ---
 
@@ -46,7 +46,7 @@
 | **13** | **[Gate] 디자인 시안 컨펌** | ✅ **통과** | 2026-05-19 | **A. Precision grid 선택** (PM 친화 운영 대시보드, 화이트+코발트) |
 | 14 | 프로토타입(HTML) 등록 | ✅ 완료 | 2026-05-21 | 프로토타입 v2 (협의 루프 27~43 정제). 설계 산출물 병행 완료: ERD v1.2·화면설계서 v1.5·API v0.3·클래스/시퀀스 v0.2 (모두 코덱스 검수) |
 | **15** | **[Gate] 프로토타입 컨펌** | ✅ **통과** | 2026-05-21 | 고객사 역할 컨펌 (프로젝트팀=고객사 동일 주체). 프로토타입 v2 확정 |
-| 16~17 | Figma 정제·핸드오프 | 🔄 진행 예정 | — | REQ-DSN-004 핸드오프 + API 명세서 v1.0 마감 (개발 18단계 사전조건) |
+| 16~17 | Figma 정제·핸드오프 | 🔄 진행 중 | — | **Figma 핸드오프 완료** (`docs/figma-handoff.md` v1.0 — 토큰·프레임 매핑·컴포넌트·에셋·등록 링크, REQ-DSN-004). 컨펌 게이트 없음. **남은 것: API 명세서 v1.0 마감** → 18단계 개발 진입 |
 
 ### 개발
 
@@ -124,6 +124,7 @@
 | 45 | 2026-05-21 | **API 명세서 미결 정리(v0.2) + 코덱스 리뷰 반영(v0.3)**. ① **미결 5건 결정**: 다운로드=presigned URL, 버전 경로=vno, 대량 import=MVP 동기, idempotency=상태 가드, Swagger=springdoc. ② **codex CLI 리뷰(read-only)** 받아 반영: **프로젝트 스코프(IDOR)** — files/comments/defect-comments 경로를 `/projects/{id}/...`로, **admin 권한 명확화**(전역 read+계정/감사 write, 프로젝트 쓰기 불가), **assets 통일**(files/links→assetId 공통 교체·삭제·다운로드), **review-recall** 엔드포인트(ERD review_recalled 정합), **다운로드 200 {url,expiresAt}**(302/envelope 충돌 해소), **error envelope** `{code,message,fieldErrors}`, 결함 일반편집 PATCH·첨부 download/delete, TC/결함 하드삭제 미지원 명시, **동시성**(상태가드+행잠금 SELECT FOR UPDATE), 보안(쿠키 SameSite/CSRF·presigned 상세·**초대 토큰 해시**), §14 구현 규칙(S3 원자성·CSV 한계·page 1-based·정렬 화이트리스트·enum @JsonValue), export→exports 리소스. ③ **ERD v1.2** — `invitation.token`→`token_hash` 해시 저장(보안 지적). 검증된 선택(action 하위리소스·동기 import) 유지. Mermaid 렌더 검증. deliverables No.9 v1.2·No.11 v0.3 갱신. 협의 루프 45회차. | — |
 | 46 | 2026-05-21 | **클래스/시퀀스 다이어그램(No.13, 선택) v0.1 신설** (`docs/class-sequence.md`). ERD v1.2·API v0.3에서 도출, ERD와 동일 Mermaid 마크다운. **클래스 다이어그램** — 가장 복잡한 산출물 워크플로우 도메인을 대표로 Spring 계층(얇은 Controller → @Transactional Service → MyBatis Mapper) + 횡단 컴포넌트(GateService·FileStorageService·NotificationService·ActivityRecorder) + 도메인(DeliverableSlot→SlotVersion→FileAsset). 다른 도메인도 동일 계층. **시퀀스 5종**: ① 로그인·토큰 회전(refresh 재사용 탐지) ② 검토 요청→컨펌(게이트 해제)/반려 ③ 새 버전 만들기(컨펌 자동 무효화 + 선행 배지 전파, FOR UPDATE 잠금) ④ 멤버 초대 스마트 분기(신규 온보딩/기존 참여/이미 참여) ⑤ 파일 업로드(S3 orphan 보상)·presigned 다운로드. 6개 Mermaid 렌더 검증. deliverables No.13 경로 등록. 협의 루프 46회차. | — |
 | 47 | 2026-05-21 | **클래스/시퀀스 다이어그램 코덱스 리뷰 반영(v0.2)**. codex CLI(read-only) 리뷰 받아 구현 오해 소지를 정리(ERD/API 무변, 다이어그램을 결정에 정합): ① **알림 after-commit 분리** — NotificationService=DB row(tx 내)+외부 발송(커밋 후, `@TransactionalEventListener`/outbox). ② **슬롯 status 동기화** — 시퀀스에 `SlotMapper.updateCurrentVersionAndStatus`(create/review/recall/confirm/reject) 추가. ③ **무효화 의미 명확화** — 과거 slot_version은 confirmed 유지, 슬롯 포인터·status만 새 draft로 + activity invalidate(ERD enum에 invalidated 없음과 정합). ④ **S3 락 분리** — putObject를 row lock 밖에서 먼저, 짧은 tx에서 락+검증+insert, 실패 시 orphan 보상. ⑤ **선행 배지 파생·1-hop** — upstreamChanged는 저장 아닌 파생(confirmed_upstream_version_id 비교), 새 draft만으론 트리거 안 됨·재컨펌마다 1-hop 전파(setUpstreamChanged 쓰기 제거). ⑥ 게이트 락(project_gate 행), refresh 재사용 행락(findByHashForUpdate+revoked_reason/last_used_at), review-recall 흐름, 용어 매핑(/upstream-review↔ackUpstream), 자산 삭제 보상(draft 한정·S3), 인가 사전검증 노트, 트랜잭션 자세(GateService/ActivityRecorder 호출자 tx). 6개 Mermaid 재검증. deliverables No.13 갱신. 협의 루프 47회차. | — |
+| 48 | 2026-05-21 | **Figma 핸드오프(REQ-DSN-004) 산출 — 16~17단계 Figma 파트 마감** (`docs/figma-handoff.md` v1.0). 실제 Figma 파일은 외부 도구라 만들 수 없어, **핸드오프 명세 문서**로 산출(우리가 정한 Figma=링크+에셋 모델). 내용: Figma Dev Mode 링크 등록 + **디자인 토큰**(프로토타입 `:root`에서 도출 — 컬러 OKLAB·Inter 타이포 스케일·spacing·radius·shadow·motion) + **화면→Figma 프레임 인벤토리**(SCR-* 31개 6페이지 그룹) + **핵심 컴포넌트셋**(Button 변형·Pill·Level dot·Card·Modal/confirm·File row(url 포함)·Sidebar 등 ↔ 프로토타입 클래스) + export 에셋 + figma 슬롯 등록(url+zip). 토큰 SoT=프로토타입, 화면 구조=화면설계서. 컨펌 게이트 없음(등록만). deliverables 개발 사전조건 체크리스트 갱신 — **남은 건 API v1.0 마감 하나**. 협의 루프 48회차. | — |
 
 ### UAT 루프 (20↔21)
 
