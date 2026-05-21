@@ -3,7 +3,7 @@
 | 항목 | 내용 |
 |------|------|
 | 프로젝트명 | SoftPuzzle PM |
-| 버전 | v0.2 (설계 결정 5건 반영 — 선행 baseline FK·Figma URL 흡수·소프트 제외·코드 채번·결함 첨부. 19 엔티티) |
+| 버전 | v0.3 (미결 7건 전부 해소 — v0.2의 5건 + 반려사유 활동이력 단일화·`refresh_token` 추가. 20 엔티티) |
 | 작성일 | 2026-05-21 |
 | 기준 | SRS(`requirements.md`) · IA(`ia.md`) · 화면 설계서(`screen-design/`) · 프로토타입(`prototype/index.html`)의 데이터 모델에서 역도출 |
 | 대상 DBMS | PostgreSQL 16 (운영) · MyBatis 매핑 |
@@ -49,6 +49,7 @@ erDiagram
     ACCOUNT        ||--o{ TEST_CASE        : "담당(QA)"
     ACCOUNT        ||--o{ DEFECT           : "담당(개발)"
     ACCOUNT        ||--o{ NOTIFICATION     : "수신"
+    ACCOUNT        ||--o{ REFRESH_TOKEN    : "세션"
     ACCOUNT        ||--o{ AUDIT_LOG        : "행위자"
     PROJECT        ||--o{ DEV_RUN          : "개발 실행"
     PROJECT        ||--o{ CODE_SEQUENCE    : "코드 채번"
@@ -129,7 +130,6 @@ erDiagram
         bigint id PK
         bigint slot_version_id FK
         bigint author_id FK
-        varchar comment_type "general/reject_reason"
         text body
         timestamptz deleted_at
     }
@@ -197,6 +197,13 @@ erDiagram
         bigint project_id FK
         varchar entity_type "test_case/defect"
         int next_no
+    }
+    REFRESH_TOKEN {
+        bigint id PK
+        bigint account_id FK
+        varchar token_hash UK
+        timestamptz expires_at
+        timestamptz revoked_at
     }
 ```
 
@@ -339,13 +346,12 @@ erDiagram
 | id | BIGSERIAL | PK | |
 | slot_version_id | BIGINT | FK→slot_version, NN | 스냅샷별 귀속(라운드 36) |
 | author_id | BIGINT | FK→account, NN | |
-| comment_type | VARCHAR(20) | NN, CHECK | `general`/`reject_reason`(REQ-CMT-002 반려 사유) |
 | body | TEXT | NN | |
 | created_at | TIMESTAMPTZ | NN | |
 | edited_at | TIMESTAMPTZ | NULL | 본인 수정 |
 | deleted_at | TIMESTAMPTZ | NULL | 소프트 삭제. 관리자 강제 삭제 시 audit 기록 |
 
-> 활동 이력에는 코멘트 미기록(REQ-WF-004). 본인만 수정·삭제 + 관리자 강제 삭제(REQ-CMT-001).
+> 일반 토론용. 활동 이력에는 코멘트 미기록(REQ-WF-004). 본인만 수정·삭제 + 관리자 강제 삭제(REQ-CMT-001). **반려 사유(REQ-CMT-002)는 코멘트가 아니라 `activity_event(rejected).body`에 단일 저장**(영구 보존 — 코멘트는 수정·삭제 가능하므로 분리).
 
 #### `activity_event` — 활동 이력 (시스템 이벤트)
 | 컬럼 | 타입 | 제약 | 설명 |
@@ -355,7 +361,7 @@ erDiagram
 | event_type | VARCHAR(30) | NN, CHECK | `version_created`/`review_requested`/`review_recalled`/`confirmed`/`rejected`/`invalidated`/`upstream_reviewed`(선행 변경 `검토 완료(영향 없음)`) |
 | version_no | SMALLINT | NULL | 관련 버전 |
 | actor_id | BIGINT | FK→account, NN | |
-| body | TEXT | NULL | 요약·반려 사유 등 |
+| body | TEXT | NULL | 변경 요약 · **반려 사유(REQ-CMT-002 단일 소스)** 등 |
 | created_at | TIMESTAMPTZ | NN | append-only(수정·삭제 불가) |
 
 ### 3-3. 테스트·결함
@@ -457,6 +463,18 @@ erDiagram
 
 > `TC-001`/`DEF-001` **프로젝트별 채번**. INSERT 트랜잭션 내 `UPDATE ... SET next_no = next_no + N RETURNING`으로 원자적 할당(행 잠금으로 직렬화). CSV 일괄 N건 = `next_no += N` 연속 블록 일괄 할당. 표시 포맷 `TC-%03d`·`DEF-%03d`.
 
+#### `refresh_token` — 리프레시 토큰
+| 컬럼 | 타입 | 제약 | 설명 |
+|------|------|------|------|
+| id | BIGSERIAL | PK | |
+| account_id | BIGINT | FK→account, NN | |
+| token_hash | VARCHAR(255) | NN, UQ | **원문 저장 금지(해시)** |
+| expires_at | TIMESTAMPTZ | NN | |
+| revoked_at | TIMESTAMPTZ | NULL | 갱신·로그아웃 시 폐기 |
+| created_at | TIMESTAMPTZ | NN | |
+
+> Access token은 stateless JWT 가정(미저장), **refresh만 영속**. 갱신 = 이전 행 `revoked_at` 세팅(또는 삭제) + 새 행 insert(글로벌 규칙: 이전 토큰 명시적 폐기). 초대 토큰은 `invitation`이 별도 관리. 비밀번호 재설정 토큰은 후속(필요 시 유사 단명 토큰 테이블).
+
 ---
 
 ## 4. 핵심 관계 요약
@@ -473,7 +491,9 @@ erDiagram
 | slot_version → comment | 1:N | 스냅샷별 코멘트 |
 | deliverable_slot → activity_event | 1:N | 슬롯 단위 전체 이력 |
 | test_case ↔ defect | N:M (`test_defect_link`) | 양방향 연결 |
-| project → test_case / defect / dev_run | 1:N | |
+| defect → defect_attachment | 1:N | 증거 파일 |
+| project → test_case / defect / dev_run / code_sequence | 1:N | |
+| account → notification / refresh_token / audit_log | 1:N | 알림·세션·감사 |
 
 ---
 
@@ -492,7 +512,6 @@ erDiagram
 | slot_version.status / deliverable_slot.status | draft · pending-review · confirmed · rejected (slot은 empty 추가) |
 | invitation.invite_type | client · team_member |
 | invitation.status | pending · accepted · expired |
-| comment.comment_type | general · reject_reason |
 | activity_event.event_type | version_created · review_requested · review_recalled · confirmed · rejected · invalidated · upstream_reviewed |
 | test_case.priority / defect.severity | High · Medium · Low |
 | test_case.status | 통과 · 실패 · 대기 |
@@ -508,6 +527,6 @@ erDiagram
 2. ~~외부 URL(Figma) 저장~~ **(결정 완료 2026-05-21)** — `file_asset`에 **흡수**(별도 테이블 X). `asset_kind`(file/url) 구분자 + 전용 `external_url` 컬럼 + CHECK. 한 버전 묶음에 파일·링크 혼재. **Figma 핸드오프 = url 1개(필수) + 선택 export 에셋(file)** — `.fig` 업로드 강제 안 함(실무상 링크 핸드오프, Dev Mode). 라이브 URL 가변성은 버전 링크 권장으로 완화(강제 불가, Figma는 고객 게이트 아님). SRS REQ-FILE-001·REQ-DSN-004 반영.
 3. ~~`project_member` 제외(라운드 40 소프트 제외)~~ **(결정 완료 2026-05-21)** — `left_at` 소프트 삭제 채택. NULL=참여, 값=제외. 1쌍 1행 reactivate. 활성 조회 `left_at IS NULL` 필터 필수(부분 인덱스/뷰로 방어).
 4. ~~업무 코드 채번~~ **(결정 완료 2026-05-21)** — **프로젝트별 채번** 채택(`UNIQUE(project_id, code)`). `code_sequence` 카운터 테이블 + 트랜잭션 내 원자적 증가(CSV 일괄은 연속 블록 할당). 표시 `TC-%03d`·`DEF-%03d`.
-5. **반려 사유 중복** — `comment(comment_type=reject_reason)` + `activity_event(rejected).body` 양쪽 표기. 단일 소스(코멘트 참조) 권장.
+5. ~~반려 사유 중복~~ **(결정 완료 2026-05-21)** — `activity_event(rejected).body` **단일 소스**(append-only·영구 보존). `comment.comment_type` 제거(코멘트는 일반 토론 전용). 코멘트는 수정·삭제 가능하므로 영구 보존 대상인 반려 사유와 분리.
 6. ~~첨부(결함 첨부파일)~~ **(결정 완료 2026-05-21)** — 별도 `defect_attachment` 테이블 채택(다형성·nullable 혼용 회피, FK 무결성 유지). 뷰어 적용은 UI 후속.
-7. **세션·인증 토큰** — 로그인 세션·refresh token 저장(글로벌 규칙: refresh 갱신 시 이전 토큰 명시 삭제)은 인증 설계 범위로 분리.
+7. ~~세션·인증 토큰~~ **(결정 완료 2026-05-21)** — `refresh_token` 테이블 추가(token_hash UK·expires_at·revoked_at). Access는 stateless JWT(미저장), refresh만 영속. 갱신 시 이전 토큰 폐기(글로벌 규칙). 비밀번호 재설정 토큰은 후속.
