@@ -3,7 +3,7 @@
 | 항목 | 내용 |
 |------|------|
 | 프로젝트명 | SoftPuzzle PM |
-| 버전 | v1.2 (API 리뷰 반영 — `invitation.token`→`token_hash` 해시 저장) · v1.1 (코덱스 리뷰 — activity_event→slot_version_id FK, file_asset logical_key·position, current_version 복합 FK, slot_version 검토중 1개·상태 CHECK, account 조건 CHECK, ASCII 머신 코드, §6 인덱스·제약, refresh_token 보강) |
+| 버전 | v1.3 (문서 정합 리뷰 — 세션 SSR 정렬: `refresh_token` 제거, Spring Session JDBC 프레임워크 관리로 대체. JWT 미사용. 19 엔티티) · v1.2 (invitation.token→token_hash) · v1.1 (코덱스 리뷰 — 무결성·인덱스·ASCII 코드) |
 | 이전 버전 | v1.0 (화면설계서 전수 대조 — project 기간·설명, TC 절차/기대/실제, defect 재현단계/환경/등록자/`재현불가`, comment 결함 귀속) · v0.3 (미결 7건 해소) |
 | 작성일 | 2026-05-21 |
 | 기준 | SRS(`requirements.md`) · IA(`ia.md`) · 화면 설계서(`screen-design/`) · 프로토타입(`prototype/index.html`)의 데이터 모델에서 역도출 |
@@ -51,7 +51,6 @@ erDiagram
     ACCOUNT        ||--o{ TEST_CASE        : "담당(QA)"
     ACCOUNT        ||--o{ DEFECT           : "담당(개발)"
     ACCOUNT        ||--o{ NOTIFICATION     : "수신"
-    ACCOUNT        ||--o{ REFRESH_TOKEN    : "세션"
     ACCOUNT        ||--o{ AUDIT_LOG        : "행위자"
     PROJECT        ||--o{ DEV_RUN          : "개발 실행"
     PROJECT        ||--o{ CODE_SEQUENCE    : "코드 채번"
@@ -212,14 +211,9 @@ erDiagram
         varchar entity_type "test_case/defect"
         int next_no
     }
-    REFRESH_TOKEN {
-        bigint id PK
-        bigint account_id FK
-        varchar token_hash UK
-        timestamptz expires_at
-        timestamptz revoked_at
-    }
 ```
+
+> 세션은 **Spring Security 세션 인증 + Spring Session JDBC**(SRS REQ-NFR-001·아키텍처). 세션 영속 테이블(`SPRING_SESSION`·`SPRING_SESSION_ATTRIBUTES`)은 **프레임워크가 관리**하므로 본 ERD에 모델링하지 않음. (JWT/refresh_token 미사용)
 
 ---
 
@@ -498,19 +492,9 @@ erDiagram
 
 > `TC-001`/`DEF-001` **프로젝트별 채번**. INSERT 트랜잭션 내 `UPDATE ... SET next_no = next_no + N RETURNING`으로 원자적 할당(행 잠금으로 직렬화). CSV 일괄 N건 = `next_no += N` 연속 블록 일괄 할당. 표시 포맷 `TC-%03d`·`DEF-%03d`.
 
-#### `refresh_token` — 리프레시 토큰
-| 컬럼 | 타입 | 제약 | 설명 |
-|------|------|------|------|
-| id | BIGSERIAL | PK | |
-| account_id | BIGINT | FK→account, NN | |
-| token_hash | VARCHAR(255) | NN, UQ | **원문 저장 금지** — HMAC/SHA-256 다이제스트(서버 pepper) |
-| expires_at | TIMESTAMPTZ | NN | |
-| revoked_at | TIMESTAMPTZ | NULL | 갱신·로그아웃 시 폐기 |
-| revoked_reason | VARCHAR(30) | NULL | `rotated`/`logout`/`reuse_detected` 등 |
-| last_used_at | TIMESTAMPTZ | NULL | 마지막 사용(재사용 탐지용) |
-| created_at | TIMESTAMPTZ | NN | |
+#### 세션 (테이블 모델링 없음)
 
-> Access token은 stateless JWT 가정(미저장), **refresh만 영속**. 갱신 = 이전 행 `revoked_at` 세팅(또는 삭제) + 새 행 insert(글로벌 규칙: 이전 토큰 명시적 폐기). **이미 폐기된 토큰 재사용 시 = 탈취 의심 → 해당 계정 토큰 전체 폐기**(reuse detection). 초대 토큰은 `invitation`이 별도 관리. 비밀번호 재설정 토큰은 후속(필요 시 유사 단명 토큰 테이블).
+> **Spring Security 세션 인증 + Spring Session JDBC**(SRS REQ-NFR-001·아키텍처·인프라). 세션은 `SPRING_SESSION`·`SPRING_SESSION_ATTRIBUTES` **프레임워크 스키마**가 관리하므로 본 ERD에 정의하지 않음(Flyway 마이그레이션은 Spring Session 공식 DDL 포함). 로그아웃=세션 무효화(REQ-AUT-008), 30분 무활동 만료(REQ-AUT-009). **JWT/refresh_token 미사용.** 초대·비밀번호 재설정 토큰만 `invitation`/단명 토큰으로 해시 저장.
 
 ---
 
@@ -531,7 +515,7 @@ erDiagram
 | test_case ↔ defect | N:M (`test_defect_link`) | 양방향 연결 |
 | defect → defect_attachment | 1:N | 증거 파일 |
 | project → test_case / defect / dev_run / code_sequence | 1:N | |
-| account → notification / refresh_token / audit_log | 1:N | 알림·세션·감사 |
+| account → notification / audit_log | 1:N | 알림·감사 (세션은 Spring Session 프레임워크 관리) |
 
 ---
 
@@ -578,7 +562,6 @@ erDiagram
 | `defect(project_id, status, severity, created_at DESC)` | 결함 목록·필터 |
 | `test_case(project_id, status, priority, created_at DESC)` | TC 목록·필터 |
 | `notification(recipient_id, is_read, created_at DESC)` | 알림함 |
-| `refresh_token(account_id, revoked_at, expires_at)` | 세션 조회·정리 |
 | `project_member(account_id) WHERE left_at IS NULL` | 내 참여 프로젝트 |
 
 **추가 제약 (본문 테이블에도 표기)**
@@ -603,4 +586,4 @@ erDiagram
 4. ~~업무 코드 채번~~ **(결정 완료 2026-05-21)** — **프로젝트별 채번** 채택(`UNIQUE(project_id, code)`). `code_sequence` 카운터 테이블 + 트랜잭션 내 원자적 증가(CSV 일괄은 연속 블록 할당). 표시 `TC-%03d`·`DEF-%03d`.
 5. ~~반려 사유 중복~~ **(결정 완료 2026-05-21)** — `activity_event(rejected).body` **단일 소스**(append-only·영구 보존). `comment.comment_type` 제거(코멘트는 일반 토론 전용). 코멘트는 수정·삭제 가능하므로 영구 보존 대상인 반려 사유와 분리.
 6. ~~첨부(결함 첨부파일)~~ **(결정 완료 2026-05-21)** — 별도 `defect_attachment` 테이블 채택(다형성·nullable 혼용 회피, FK 무결성 유지). 뷰어 적용은 UI 후속.
-7. ~~세션·인증 토큰~~ **(결정 완료 2026-05-21)** — `refresh_token` 테이블 추가(token_hash UK·expires_at·revoked_at). Access는 stateless JWT(미저장), refresh만 영속. 갱신 시 이전 토큰 폐기(글로벌 규칙). 비밀번호 재설정 토큰은 후속.
+7. ~~세션·인증 토큰~~ **(결정 완료 2026-05-21, v1.3 정정)** — **Spring Security 세션 인증 + Spring Session JDBC** 채택(SRS·아키텍처·인프라 정합). 세션은 프레임워크 스키마(`SPRING_SESSION`) 관리, **ERD 모델링·JWT/refresh_token 없음**. (앞선 v1.1의 refresh_token은 아키텍처 세션 결정과 충돌해 제거 — 문서 정합 리뷰 반영)

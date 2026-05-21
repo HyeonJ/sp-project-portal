@@ -3,11 +3,11 @@
 | 항목 | 내용 |
 |------|------|
 | 프로젝트명 | SoftPuzzle PM |
-| 버전 | **v1.0 (마감 — 17단계 종료, 개발 입력 baseline)**. 전 도메인 커버리지 점검 완료(프로젝트 보관/삭제 등 잔여 갭 보강), 미결 0, 코덱스 검수 반영 |
-| 이전 버전 | v0.3 (코덱스 리뷰 반영) · v0.2 (미결 5건 정리) · v0.1 (전 도메인 1차 도출) |
+| 버전 | **v1.1 (문서 정합 리뷰 — 세션 SSR 정렬)**. JWT/refresh → **Spring Security 세션 + Thymeleaf SSR**로 수정(SRS·아키텍처·인프라 정합). 프런트=SSR+jQuery AJAX 성격 명시 |
+| 이전 버전 | v1.0 (마감 baseline — 커버리지·미결 0) · v0.3 (코덱스 리뷰) · v0.2 (미결 5건) · v0.1 (1차 도출) |
 | 작성일 | 2026-05-21 |
-| 기준 | ERD(`erd.md` v1.2) · 화면 설계서(`screen-design/` v1.5) · SRS(`requirements.md`) |
-| 스택 | Spring Boot · MyBatis · PostgreSQL · JWT |
+| 기준 | ERD(`erd.md` v1.3) · 화면 설계서(`screen-design/` v1.5) · SRS(`requirements.md`) · 아키텍처(`architecture.md` v0.2) |
+| 스택 | Spring Boot · MyBatis · PostgreSQL · Thymeleaf SSR + jQuery · 세션(Spring Security + Spring Session JDBC) |
 | 관련 단계 | 16~17 (화면 설계서·ERD 안정 후, 17단계 종료 전 v1.0) |
 
 > 산출물 No.11. **설계 시점 명세는 이 문서(사람이 읽는 계약)**, **런타임 Swagger UI는 구현 시 springdoc-openapi가 코드에서 자동 생성**한다 (이중관리 회피). 화면 설계서 컨트롤·ERD 변경 시 동기화.
@@ -19,8 +19,9 @@
 ## 1. 공통 규약
 
 ### 1-1. 기본
-- **Base URL**: `/api`
-- **포맷**: 요청/응답 `application/json` (파일 업로드만 `multipart/form-data`)
+- **프런트 = SSR Thymeleaf + jQuery**: 화면 진입은 Thymeleaf 컨트롤러가 HTML 렌더, **본 명세의 JSON 엔드포인트는 jQuery AJAX·상태 변경 액션용**(전부 분리된 REST API를 소비하는 SPA가 아님). 인증은 세션 쿠키(§1-4).
+- **Base URL**: JSON 엔드포인트 `/api`. (페이지 라우트는 `/projects/...` 등 HTML)
+- **포맷**: JSON 요청/응답 `application/json` (파일 업로드만 `multipart/form-data`)
 - **시각**: ISO-8601 UTC (`2026-05-21T07:20:00Z`), 표시는 클라이언트가 KST 변환
 
 ### 1-2. 응답 봉투 (글로벌 규칙)
@@ -50,11 +51,10 @@
 | 500 | 서버 에러 |
 
 ### 1-4. 인증
-- **Access token**: JWT, `Authorization: Bearer <token>`. 무상태(미저장).
-- **Refresh token**: **HttpOnly · Secure · SameSite=Strict · Path=/api/auth** 쿠키. `POST /auth/refresh`로 갱신(회전 — 이전 토큰 폐기, **이미 폐기된 토큰 재사용 탐지 시 계정 토큰 전체 폐기**). DB는 원문 아닌 **HMAC/SHA-256 해시** 저장(`refresh_token`).
-- **CSRF**: 쿠키 인증 엔드포인트(`/auth/refresh`·`/auth/logout`)는 SameSite=Strict + Origin 검증(또는 CSRF 토큰).
-- 만료/누락 = 401.
-- **토큰 해시**: 초대·비밀번호 재설정 토큰도 DB에 **해시로만** 저장(원문은 메일 링크에만).
+- **세션 인증**: **Spring Security 세션** — 로그인 시 서버가 세션 생성, `SESSION` 쿠키(**HttpOnly · Secure · SameSite=Lax**) 발급. 세션 영속 = **Spring Session JDBC**(`SPRING_SESSION`). JWT·Bearer·refresh **미사용**(SRS REQ-NFR-001·아키텍처).
+- **만료**: 30분 무활동 자동 만료(REQ-AUT-009), 로그아웃 시 즉시 무효화(REQ-AUT-008). 미인증·만료 = 401 → 로그인으로.
+- **CSRF**: 상태 변경 요청(POST/PUT/PATCH/DELETE)은 **CSRF 토큰** 필요(Spring Security CSRF) — SSR 폼은 hidden 필드, jQuery AJAX는 `X-CSRF-TOKEN` 헤더.
+- **토큰 해시**: 초대·비밀번호 재설정 토큰은 DB에 **해시로만** 저장(원문은 메일 링크에만, 1회용).
 
 ### 1-5. 권한 (3-tier)
 `admin`(관리자) / `team`(프로젝트팀) / `client`(고객사).
@@ -77,9 +77,8 @@
 
 | Method | Path | 권한 | 설명 |
 |--------|------|------|------|
-| POST | `/auth/login` | 공개 | 로그인. `{email, password}` → access token + refresh 쿠키. 5회 실패 시 잠금(REQ-AUT) |
-| POST | `/auth/refresh` | 쿠키 | access token 갱신(refresh 회전) |
-| POST | `/auth/logout` | 인증 | 세션 종료(refresh 폐기) |
+| POST | `/auth/login` | 공개 | 로그인. `{email, password}` → 세션 생성 + `SESSION` 쿠키. 5회 실패 시 10분 잠금(REQ-AUT-007) |
+| POST | `/auth/logout` | 인증 | 세션 즉시 무효화(REQ-AUT-008) → 로그인 페이지 |
 | POST | `/auth/password/reset-request` | 공개 | `{email}` → 재설정 메일 발송(존재 여부 노출 안 함) |
 | POST | `/auth/password/reset` | 공개 | `{token, newPassword}` → 비밀번호 설정, 토큰 무효화 |
 | GET | `/auth/invitations/{token}` | 공개 | 초대 정보 조회(조직·역할·참여 프로젝트) |
@@ -89,13 +88,12 @@
 ```jsonc
 // req
 { "email": "pm@agency.com", "password": "••••••••" }
-// res 200
+// res 200 — 세션 생성, Set-Cookie: SESSION=...; HttpOnly; Secure; SameSite=Lax
 { "success": true, "data": {
-  "accessToken": "eyJ...",
   "account": { "id": 12, "name": "김PM", "tier": "team", "job": "pm" }
 } }
 // res 400 (5회 실패 잠금)
-{ "success": false, "message": "로그인 5회 실패로 계정이 잠겼습니다. 잠시 후 다시 시도하세요." }
+{ "success": false, "code": "ACCOUNT_LOCKED", "message": "로그인 5회 실패로 계정이 잠겼습니다. 10분 후 다시 시도하세요." }
 ```
 
 ---

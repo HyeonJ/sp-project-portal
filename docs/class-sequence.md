@@ -3,10 +3,10 @@
 | 항목 | 내용 |
 |------|------|
 | 프로젝트명 | SoftPuzzle PM |
-| 버전 | v0.3 (개발 시작 트리거 시퀀스 추가 — dev_run 사전조건 검증·코드 자동 생성) · v0.2 (코덱스 리뷰 반영 — after-commit·슬롯 status 동기화·무효화·S3 락·선행 배지 파생·게이트 락·refresh 행락·review-recall) |
+| 버전 | v0.4 (문서 정합 — 로그인 시퀀스를 Spring Security 세션으로 정렬, JWT/refresh 제거) · v0.3 (dev_run 트리거 시퀀스) · v0.2 (코덱스 리뷰) |
 | 작성일 | 2026-05-21 |
 | 기준 | ERD(`erd.md` v1.2) · API 명세서(`api-spec.md` v0.3) · 화면 설계서 |
-| 스택 | Spring Boot · MyBatis · PostgreSQL · JWT · S3 |
+| 스택 | Spring Boot · MyBatis · PostgreSQL · Thymeleaf SSR · 세션(Spring Security + Spring Session JDBC) · S3 |
 | 관련 단계 | 17~18 (선택 산출물 — 객체 구조·처리 흐름 명세) |
 
 > 산출물 No.13(선택). ERD/API와 같은 Mermaid 마크다운. **전 도메인을 다 그리지 않고**, 가장 복잡한 **산출물 슬롯 워크플로우**를 대표로 계층 구조를 보이고, 핵심 흐름만 시퀀스로 명세한다. 다른 도메인(TC·결함·계정 등)도 동일한 `Controller → Service → Mapper` 계층을 따른다.
@@ -126,35 +126,34 @@ classDiagram
 
 ## 2. 시퀀스 다이어그램
 
-### 2-1. 로그인 · 토큰 회전
+### 2-1. 로그인 · 로그아웃 (Spring Security 세션)
 
 ```mermaid
 sequenceDiagram
     autonumber
     actor U as 사용자
     participant C as AuthController
+    participant SS as Spring Security
     participant S as AuthService
     participant M as AccountMapper
-    participant R as RefreshTokenMapper
+    participant SJ as Spring Session JDBC
     U->>C: POST /auth/login {email, password}
-    C->>S: login(email, password)
+    C->>S: authenticate(email, password)
     S->>M: findByEmail(lower(email))
     M-->>S: Account
-    S->>S: 비밀번호 검증 (실패 시 시도 카운트++, 5회=잠금)
-    S->>R: insert(refresh hash, expiresAt)
-    S-->>C: accessToken(JWT) + account
-    C-->>U: 200 {accessToken, account} + Set-Cookie(refresh)
-    Note over U,R: 이후 access 만료 시
-    U->>C: POST /auth/refresh (refresh 쿠키)
-    C->>S: refresh(token)
-    S->>R: findByHashForUpdate(hash) — 행 락(동시 회전 방지)
-    alt 이미 폐기된 토큰 재사용 (revoked_at != null)
-        S->>R: revokeAll(accountId, reason=reuse_detected) — 탈취 의심
-        S-->>C: 401 reuse_detected
-    else 정상
-        S->>R: revoke(old, reason=rotated) + last_used_at + insert(new)
-        S-->>C: new accessToken + Set-Cookie(new refresh)
+    S->>S: BCrypt 검증 (실패 시 카운트++, 5회=10분 잠금)
+    alt 인증 실패
+        S-->>U: 400 (ACCOUNT_LOCKED / 인증 실패)
+    else 성공
+        S->>SS: SecurityContext 인증 설정
+        SS->>SJ: 세션 생성·영속 (SPRING_SESSION)
+        SS-->>U: 200 {account} + SESSION 쿠키(HttpOnly·Secure·SameSite=Lax)
     end
+    Note over U,SJ: 이후 요청은 SESSION 쿠키로 인증. 30분 무활동 자동 만료(REQ-AUT-009). 상태 변경 요청은 CSRF 토큰 필요
+    U->>C: POST /auth/logout
+    C->>SS: 세션 무효화 (REQ-AUT-008)
+    SS->>SJ: delete(session)
+    SS-->>U: 200 → 로그인 페이지
 ```
 
 ### 2-2. 검토 요청 → 컨펌 / 반려 (게이트 해제)
@@ -327,5 +326,5 @@ sequenceDiagram
 - **용어 매핑**: API `POST /upstream-review` ↔ 클래스 `DeliverableService.ackUpstream(slot)` — 하류 슬롯의 `confirmed_upstream_version_id`를 현재 선행 최신 컨펌 버전으로 **재-스탬프**(배지 파생 해소) + `activity_event.upstream_reviewed`.
 - **자산 삭제 보상**: `FileAssetMapper.delete`는 **draft 한정**, `kind=file`이면 DB row 삭제 + S3 object 삭제(또는 GC 큐), `kind=url`이면 row만.
 - **반려 사유**·**활동 이력**: `activity_event`(append-only)에 기록, 코멘트와 분리(REQ-WF-004/CMT-002).
-- **보안**: refresh 회전·재사용 탐지, 초대/토큰 해시 저장, presigned 단명 URL — ERD·api-spec과 동일.
+- **보안**: **Spring Security 세션 인증**(JWT 아님), 로그아웃=세션 무효화·30분 만료, CSRF 토큰(상태 변경), 초대/재설정 토큰 해시 저장, presigned 단명 URL — ERD·api-spec과 동일.
 - **미작성(후속 필요 시)**: TC 실패→결함 등록·연결, CSV import, 검색 인덱싱, 알림 fan-out 상세. (단순 CRUD·JIT로 충분)
