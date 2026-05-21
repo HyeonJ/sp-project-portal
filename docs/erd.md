@@ -3,7 +3,8 @@
 | 항목 | 내용 |
 |------|------|
 | 프로젝트명 | SoftPuzzle PM |
-| 버전 | v0.3 (미결 7건 전부 해소 — v0.2의 5건 + 반려사유 활동이력 단일화·`refresh_token` 추가. 20 엔티티) |
+| 버전 | v1.0 (화면설계서 전수 대조 완료 — project 기간·설명, TC 전제·절차·기대·실제, defect 재현단계·환경·등록자·`재현불가` 상태, comment 결함 귀속(nullable FK) 보강. 20 엔티티) |
+| 이전 버전 | v0.3 (미결 7건 해소 — 선행 baseline FK·Figma URL 흡수·소프트 제외·코드 채번·결함 첨부·반려사유 단일화·refresh_token) |
 | 작성일 | 2026-05-21 |
 | 기준 | SRS(`requirements.md`) · IA(`ia.md`) · 화면 설계서(`screen-design/`) · 프로토타입(`prototype/index.html`)의 데이터 모델에서 역도출 |
 | 대상 DBMS | PostgreSQL 16 (운영) · MyBatis 매핑 |
@@ -41,6 +42,7 @@ erDiagram
     DELIVERABLE_SLOT ||--o{ ACTIVITY_EVENT : "활동 이력"
     SLOT_VERSION   ||--o{ FILE_ASSET       : "파일 묶음"
     SLOT_VERSION   ||--o{ COMMENT          : "코멘트(스냅샷별)"
+    DEFECT         ||--o{ COMMENT          : "코멘트"
     PROJECT        ||--o{ TEST_CASE        : "TC"
     PROJECT        ||--o{ DEFECT           : "결함"
     TEST_CASE      ||--o{ TEST_DEFECT_LINK : ""
@@ -72,6 +74,9 @@ erDiagram
         varchar name
         bigint client_org_id FK
         varchar type "SaaS/웹사이트/모바일"
+        text description
+        date start_date
+        date end_date
         smallint current_stage "1~24"
         varchar status
     }
@@ -128,7 +133,8 @@ erDiagram
     }
     COMMENT {
         bigint id PK
-        bigint slot_version_id FK
+        bigint slot_version_id FK "slot 코멘트"
+        bigint defect_id FK "defect 코멘트"
         bigint author_id FK
         text body
         timestamptz deleted_at
@@ -149,6 +155,10 @@ erDiagram
         varchar phase
         varchar priority "High/Medium/Low"
         varchar status "통과/실패/대기"
+        text precondition
+        text steps
+        text expected_result
+        text actual_result
         bigint assignee_id FK
     }
     DEFECT {
@@ -157,7 +167,10 @@ erDiagram
         varchar code "DEF-001 (프로젝트별)"
         varchar title
         varchar severity "High/Medium/Low"
-        varchar status "미해결/진행중/해결완료"
+        varchar status "미해결/진행중/해결완료/재현불가"
+        text repro_steps
+        varchar environment
+        bigint reporter_id FK
         bigint assignee_id FK
     }
     TEST_DEFECT_LINK {
@@ -242,9 +255,12 @@ erDiagram
 | name | VARCHAR(100) | NN | |
 | client_org_id | BIGINT | FK→client_org, NN | 발주 고객사 |
 | type | VARCHAR(20) | CHECK | `SaaS`/`웹사이트`/`모바일` |
+| description | TEXT | NULL | 프로젝트 설명 (SCR-SET-001 편집) |
+| start_date | DATE | NULL | 기간 시작 |
+| end_date | DATE | NULL | 기간 종료 |
 | current_stage | SMALLINT | NN, default 1 | 1~24 진행 단계 |
 | status | VARCHAR(20) | NN | 진행/완료 등 |
-| created_at | TIMESTAMPTZ | NN | |
+| created_at | TIMESTAMPTZ | NN | 생성일(수정 불가, SCR-SET-001) |
 
 #### `project_member` — 프로젝트 참여(N:M)
 | 컬럼 | 타입 | 제약 | 설명 |
@@ -344,14 +360,16 @@ erDiagram
 | 컬럼 | 타입 | 제약 | 설명 |
 |------|------|------|------|
 | id | BIGSERIAL | PK | |
-| slot_version_id | BIGINT | FK→slot_version, NN | 스냅샷별 귀속(라운드 36) |
+| slot_version_id | BIGINT | FK→slot_version, NULL | 슬롯 코멘트면 채움(스냅샷별 귀속, 라운드 36) |
+| defect_id | BIGINT | FK→defect, NULL | 결함 코멘트면 채움(SCR-TST-004) |
 | author_id | BIGINT | FK→account, NN | |
 | body | TEXT | NN | |
 | created_at | TIMESTAMPTZ | NN | |
 | edited_at | TIMESTAMPTZ | NULL | 본인 수정 |
 | deleted_at | TIMESTAMPTZ | NULL | 소프트 삭제. 관리자 강제 삭제 시 audit 기록 |
+| | | CHECK | `slot_version_id`·`defect_id` 중 **정확히 하나**만 NOT NULL (소유자 단일) |
 
-> 일반 토론용. 활동 이력에는 코멘트 미기록(REQ-WF-004). 본인만 수정·삭제 + 관리자 강제 삭제(REQ-CMT-001). **반려 사유(REQ-CMT-002)는 코멘트가 아니라 `activity_event(rejected).body`에 단일 저장**(영구 보존 — 코멘트는 수정·삭제 가능하므로 분리).
+> 슬롯 버전 또는 결함에 귀속(둘 중 하나). 구조가 동일해 단일 테이블 + nullable FK로 통합. 일반 토론용, 활동 이력에는 코멘트 미기록(REQ-WF-004). 본인만 수정·삭제 + 관리자 강제 삭제(REQ-CMT-001). **반려 사유(REQ-CMT-002)는 코멘트가 아니라 `activity_event(rejected).body`에 단일 저장**(영구 보존 — 코멘트는 수정·삭제 가능하므로 분리).
 
 #### `activity_event` — 활동 이력 (시스템 이벤트)
 | 컬럼 | 타입 | 제약 | 설명 |
@@ -376,11 +394,15 @@ erDiagram
 | phase | VARCHAR(30) | NN | 인증/요구사항/워크플로우/코멘트/개발 등 |
 | priority | VARCHAR(10) | NN, CHECK | `High`/`Medium`/`Low` |
 | status | VARCHAR(10) | NN, CHECK | `통과`/`실패`/`대기` |
+| precondition | TEXT | NULL | 전제 조건 (SCR-TST-002) |
+| steps | TEXT | NULL | 테스트 절차 (순서 목록, 줄바꿈 구분) |
+| expected_result | TEXT | NULL | 기대 결과 |
+| actual_result | TEXT | NULL | 실제 결과 (실행 시 입력) |
 | assignee_id | BIGINT | FK→account, NULL | QA 담당 |
 | created_at | TIMESTAMPTZ | NN | |
 | | | UQ(project_id, code) | 프로젝트 내 유일 |
 
-> 단건 폼 등록 + CSV/Excel 일괄 가져오기(REQ-TST-001, 라운드 41).
+> 단건 폼 등록 + CSV/Excel 일괄 가져오기(REQ-TST-001, 라운드 41). 절차/기대/실제는 상세 화면(SCR-TST-002) 필드. 순서 목록은 MVP는 TEXT, 정규화는 후속.
 
 #### `defect` — 결함
 | 컬럼 | 타입 | 제약 | 설명 |
@@ -390,7 +412,10 @@ erDiagram
 | code | VARCHAR(20) | NN | `DEF-001`. **프로젝트별 채번**(code_sequence) |
 | title | VARCHAR(200) | NN | |
 | severity | VARCHAR(10) | NN, CHECK | `High`/`Medium`/`Low` |
-| status | VARCHAR(10) | NN, CHECK | `미해결`/`진행중`/`해결완료` |
+| status | VARCHAR(10) | NN, CHECK | `미해결`/`진행중`/`해결완료`/`재현불가` |
+| repro_steps | TEXT | NULL | 재현 단계 (순서 목록, SCR-TST-004) |
+| environment | VARCHAR(200) | NULL | 환경 (브라우저·OS·시각) |
+| reporter_id | BIGINT | FK→account, NULL | 등록자 (팀/고객사) |
 | assignee_id | BIGINT | FK→account, NULL | 개발 담당 |
 | created_at | TIMESTAMPTZ | NN | |
 | | | UQ(project_id, code) | 프로젝트 내 유일 |
@@ -489,6 +514,7 @@ erDiagram
 | deliverable_slot → slot_version | 1:N | 버전 스냅샷 누적 |
 | slot_version → file_asset | 1:N | 한 버전 = 파일 묶음 |
 | slot_version → comment | 1:N | 스냅샷별 코멘트 |
+| defect → comment | 1:N | 결함 코멘트 (comment는 slot_version·defect 중 하나에 귀속) |
 | deliverable_slot → activity_event | 1:N | 슬롯 단위 전체 이력 |
 | test_case ↔ defect | N:M (`test_defect_link`) | 양방향 연결 |
 | defect → defect_attachment | 1:N | 증거 파일 |
@@ -515,7 +541,7 @@ erDiagram
 | activity_event.event_type | version_created · review_requested · review_recalled · confirmed · rejected · invalidated · upstream_reviewed |
 | test_case.priority / defect.severity | High · Medium · Low |
 | test_case.status | 통과 · 실패 · 대기 |
-| defect.status | 미해결 · 진행중 · 해결완료 |
+| defect.status | 미해결 · 진행중 · 해결완료 · 재현불가 |
 | dev_run.result | success · fail |
 | code_sequence.entity_type | test_case · defect |
 
