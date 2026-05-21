@@ -5,9 +5,9 @@
 
 ## 현재 단계
 
-**Gate 15 통과 → 16~17단계 Figma 정제·핸드오프 (대기)**
+**18단계 — 개발 (진입 사전조건 전부 충족, 착수 대기)**
 
-> **Gate 15 통과 + Figma 핸드오프 완료 (2026-05-21)** — 프로젝트팀=고객사 동일 주체. 프로토타입 v2 컨펌, Figma 핸드오프(`docs/figma-handoff.md`, REQ-DSN-004) 등록. **개발(18) 진입까지 남은 것 = API 명세서 v1.0 마감 하나.** 나머지 사전조건(게이트 9·11·13·15, 아키텍처·시스템구성도·ERD v1.2·화면설계서 v1.5·클래스/시퀀스 v0.2, Figma)은 충족. 모든 설계 산출물 코덱스 검수 완료.
+> **16~17단계 완료 (2026-05-21)** — Figma 핸드오프 + API 명세서 v1.0 마감. **개발(REQ-DEV-001) 진입 사전조건 전부 충족**: 게이트 9·11·13·15 통과 / 아키텍처·시스템구성도·ERD v1.2·화면설계서 v1.5·API v1.0·클래스시퀀스 v0.2·Figma 핸드오프 모두 완료, 전 설계 산출물 코덱스 검수. 프로젝트팀=고객사 동일 주체 수행. **다음: 18단계 개발 착수.**
 
 ---
 
@@ -46,13 +46,13 @@
 | **13** | **[Gate] 디자인 시안 컨펌** | ✅ **통과** | 2026-05-19 | **A. Precision grid 선택** (PM 친화 운영 대시보드, 화이트+코발트) |
 | 14 | 프로토타입(HTML) 등록 | ✅ 완료 | 2026-05-21 | 프로토타입 v2 (협의 루프 27~43 정제). 설계 산출물 병행 완료: ERD v1.2·화면설계서 v1.5·API v0.3·클래스/시퀀스 v0.2 (모두 코덱스 검수) |
 | **15** | **[Gate] 프로토타입 컨펌** | ✅ **통과** | 2026-05-21 | 고객사 역할 컨펌 (프로젝트팀=고객사 동일 주체). 프로토타입 v2 확정 |
-| 16~17 | Figma 정제·핸드오프 | 🔄 진행 중 | — | **Figma 핸드오프 완료** (`docs/figma-handoff.md` v1.0 — 토큰·프레임 매핑·컴포넌트·에셋·등록 링크, REQ-DSN-004). 컨펌 게이트 없음. **남은 것: API 명세서 v1.0 마감** → 18단계 개발 진입 |
+| 16~17 | Figma 정제·핸드오프 | ✅ 완료 | 2026-05-21 | Figma 핸드오프(`docs/figma-handoff.md` v1.0) + **API 명세서 v1.0 마감**(`docs/api-spec.md`, 개발 입력 baseline 동결). 컨펌 게이트 없음 |
 
 ### 개발
 
 | 단계 | 내용 | 상태 | 완료일 | 비고 |
 |------|------|------|--------|------|
-| 18 | 개발 | ⬜ 대기 | — | |
+| 18 | 개발 | ⬜ 대기(착수 가능) | — | REQ-DEV-001 사전조건 전부 충족(게이트 4종·설계 산출물 전체·Figma·API v1.0). 코드 자동 생성/구현 착수 가능 |
 
 ### 테스트
 
@@ -125,6 +125,7 @@
 | 46 | 2026-05-21 | **클래스/시퀀스 다이어그램(No.13, 선택) v0.1 신설** (`docs/class-sequence.md`). ERD v1.2·API v0.3에서 도출, ERD와 동일 Mermaid 마크다운. **클래스 다이어그램** — 가장 복잡한 산출물 워크플로우 도메인을 대표로 Spring 계층(얇은 Controller → @Transactional Service → MyBatis Mapper) + 횡단 컴포넌트(GateService·FileStorageService·NotificationService·ActivityRecorder) + 도메인(DeliverableSlot→SlotVersion→FileAsset). 다른 도메인도 동일 계층. **시퀀스 5종**: ① 로그인·토큰 회전(refresh 재사용 탐지) ② 검토 요청→컨펌(게이트 해제)/반려 ③ 새 버전 만들기(컨펌 자동 무효화 + 선행 배지 전파, FOR UPDATE 잠금) ④ 멤버 초대 스마트 분기(신규 온보딩/기존 참여/이미 참여) ⑤ 파일 업로드(S3 orphan 보상)·presigned 다운로드. 6개 Mermaid 렌더 검증. deliverables No.13 경로 등록. 협의 루프 46회차. | — |
 | 47 | 2026-05-21 | **클래스/시퀀스 다이어그램 코덱스 리뷰 반영(v0.2)**. codex CLI(read-only) 리뷰 받아 구현 오해 소지를 정리(ERD/API 무변, 다이어그램을 결정에 정합): ① **알림 after-commit 분리** — NotificationService=DB row(tx 내)+외부 발송(커밋 후, `@TransactionalEventListener`/outbox). ② **슬롯 status 동기화** — 시퀀스에 `SlotMapper.updateCurrentVersionAndStatus`(create/review/recall/confirm/reject) 추가. ③ **무효화 의미 명확화** — 과거 slot_version은 confirmed 유지, 슬롯 포인터·status만 새 draft로 + activity invalidate(ERD enum에 invalidated 없음과 정합). ④ **S3 락 분리** — putObject를 row lock 밖에서 먼저, 짧은 tx에서 락+검증+insert, 실패 시 orphan 보상. ⑤ **선행 배지 파생·1-hop** — upstreamChanged는 저장 아닌 파생(confirmed_upstream_version_id 비교), 새 draft만으론 트리거 안 됨·재컨펌마다 1-hop 전파(setUpstreamChanged 쓰기 제거). ⑥ 게이트 락(project_gate 행), refresh 재사용 행락(findByHashForUpdate+revoked_reason/last_used_at), review-recall 흐름, 용어 매핑(/upstream-review↔ackUpstream), 자산 삭제 보상(draft 한정·S3), 인가 사전검증 노트, 트랜잭션 자세(GateService/ActivityRecorder 호출자 tx). 6개 Mermaid 재검증. deliverables No.13 갱신. 협의 루프 47회차. | — |
 | 48 | 2026-05-21 | **Figma 핸드오프(REQ-DSN-004) 산출 — 16~17단계 Figma 파트 마감** (`docs/figma-handoff.md` v1.0). 실제 Figma 파일은 외부 도구라 만들 수 없어, **핸드오프 명세 문서**로 산출(우리가 정한 Figma=링크+에셋 모델). 내용: Figma Dev Mode 링크 등록 + **디자인 토큰**(프로토타입 `:root`에서 도출 — 컬러 OKLAB·Inter 타이포 스케일·spacing·radius·shadow·motion) + **화면→Figma 프레임 인벤토리**(SCR-* 31개 6페이지 그룹) + **핵심 컴포넌트셋**(Button 변형·Pill·Level dot·Card·Modal/confirm·File row(url 포함)·Sidebar 등 ↔ 프로토타입 클래스) + export 에셋 + figma 슬롯 등록(url+zip). 토큰 SoT=프로토타입, 화면 구조=화면설계서. 컨펌 게이트 없음(등록만). deliverables 개발 사전조건 체크리스트 갱신 — **남은 건 API v1.0 마감 하나**. 협의 루프 48회차. | — |
+| 49 | 2026-05-21 | **API 명세서 v1.0 마감 — 16~17단계 완료, 개발 진입 사전조건 충족**. v0.3 → v1.0 동결: 화면설계서 v1.5 전 화면·컨트롤 대비 **커버리지 자가점검**에서 발견한 갭(프로젝트 **보관/삭제/복구** — SCR-SET-003 Danger Zone) 보강(POST archive·restore·DELETE 소프트삭제 30일). 미결 0, ERD v1.2 정합, 코덱스 검수 반영. **개발(18) 입력 baseline으로 동결** — 이후 변경은 버전 증가 추적, 엔드포인트 상세 스키마는 구현 시 springdoc SoT. **이로써 REQ-DEV-001 사전조건 전부 충족**(게이트 9·11·13·15, 아키텍처·시스템구성도·ERD·화면설계서·API·클래스시퀀스·Figma). deliverables No.11 v1.0·체크리스트·18단계 행 갱신. 협의 루프 49회차. | — |
 
 ### UAT 루프 (20↔21)
 
