@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.softpuzzle.pm.project.ProjectGateMapper">
+
+    <select id="findByProject" resultType="ProjectGate">
+        SELECT id, project_id, gate_stage, status, passed_at, passed_by
+        FROM project_gate
+        WHERE project_id = #{projectId}
+        ORDER BY gate_stage
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO project_gate (project_id, gate_stage, status)
+        VALUES (#{projectId}, #{gateStage}, #{status})
+    </insert>
+
+</mapper>

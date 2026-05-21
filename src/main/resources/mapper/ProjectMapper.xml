@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.softpuzzle.pm.project.ProjectMapper">
+
+    <sql id="cols">
+        p.id, p.name, p.client_org_id, p.type, p.description,
+        p.start_date, p.end_date, p.current_stage, p.status, p.created_at,
+        o.name AS client_org_name
+    </sql>
+
+    <select id="findById" resultType="Project">
+        SELECT <include refid="cols"/>
+        FROM project p
+        JOIN client_org o ON o.id = p.client_org_id
+        WHERE p.id = #{id}
+    </select>
+
+    <select id="findActiveByMember" resultType="Project">
+        SELECT <include refid="cols"/>
+        FROM project p
+        JOIN client_org o ON o.id = p.client_org_id
+        JOIN project_member m ON m.project_id = p.id
+        WHERE m.account_id = #{accountId}
+          AND m.left_at IS NULL
+        ORDER BY p.created_at DESC
+    </select>
+
+    <select id="findAll" resultType="Project">
+        SELECT <include refid="cols"/>
+        FROM project p
+        JOIN client_org o ON o.id = p.client_org_id
+        ORDER BY p.created_at DESC
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO project (name, client_org_id, type, description, start_date, end_date,
+                             current_stage, status)
+        VALUES (#{name}, #{clientOrgId}, #{type}, #{description}, #{startDate}, #{endDate},
+                COALESCE(#{currentStage}, 1), COALESCE(#{status}, 'active'))
+    </insert>
+
+</mapper>

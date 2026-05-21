@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.softpuzzle.pm.project.ProjectMemberMapper">
+
+    <sql id="cols">
+        m.id, m.project_id, m.account_id, m.invited_by, m.joined_at, m.left_at
+    </sql>
+
+    <select id="findActive" resultType="ProjectMember">
+        SELECT <include refid="cols"/>
+        FROM project_member m
+        WHERE m.project_id = #{projectId} AND m.account_id = #{accountId} AND m.left_at IS NULL
+    </select>
+
+    <select id="findAny" resultType="ProjectMember">
+        SELECT <include refid="cols"/>
+        FROM project_member m
+        WHERE m.project_id = #{projectId} AND m.account_id = #{accountId}
+    </select>
+
+    <select id="findActiveMembers" resultType="ProjectMember">
+        SELECT <include refid="cols"/>,
+               a.name AS account_name, a.email AS account_email,
+               a.tier AS account_tier, a.job AS account_job
+        FROM project_member m
+        JOIN account a ON a.id = m.account_id
+        WHERE m.project_id = #{projectId} AND m.left_at IS NULL
+        ORDER BY a.tier, a.name
+    </select>
+
+    <select id="existsActive" resultType="boolean">
+        SELECT EXISTS (
+            SELECT 1 FROM project_member
+            WHERE project_id = #{projectId} AND account_id = #{accountId} AND left_at IS NULL
+        )
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO project_member (project_id, account_id, invited_by, joined_at)
+        VALUES (#{projectId}, #{accountId}, #{invitedBy}, now())
+    </insert>
+
+    <update id="reactivate">
+        UPDATE project_member
+        SET left_at = NULL, joined_at = now(), invited_by = #{invitedBy}
+        WHERE project_id = #{projectId} AND account_id = #{accountId}
+    </update>
+
+    <update id="softRemove">
+        UPDATE project_member
+        SET left_at = now()
+        WHERE project_id = #{projectId} AND account_id = #{accountId} AND left_at IS NULL
+    </update>
+
+</mapper>

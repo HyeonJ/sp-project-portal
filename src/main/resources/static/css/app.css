@@ -78,3 +78,29 @@ body {
 
 .msg-err { color: var(--color-err); font-size: 13px; margin: 4px 0 0; }
 .msg-ok { color: var(--color-ok); font-size: 13px; margin: 4px 0 0; }
+
+/* 대시보드 */
+.topbar-right { display: flex; align-items: center; gap: 16px; }
+.page-head { display: flex; align-items: center; justify-content: space-between; }
+
+.project-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+.project-card { padding: 16px; border: 1px solid var(--color-border); border-radius: var(--radius); background: var(--color-surface); }
+.project-card-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.project-card-head h3 { margin: 0; font-size: 16px; }
+.project-meta { font-size: 13px; color: var(--color-muted); margin: 8px 0 0; }
+
+.pill { font-size: 11px; padding: 2px 8px; border-radius: 999px; background: #eef2ff; color: var(--color-primary); white-space: nowrap; }
+.pill-active { background: #ecfdf5; color: var(--color-ok); }
+.cat-tag { font-size: 11px; padding: 2px 8px; border-radius: 4px; background: #f3f4f6; color: var(--color-muted); }
+
+/* 폼 */
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.form-grid label { display: flex; flex-direction: column; gap: 4px; font-size: 13px; color: var(--color-muted); }
+.form-grid label.full, .form-grid .full { grid-column: 1 / -1; }
+.form-grid input, .form-grid select, .form-grid textarea {
+    padding: 9px; border: 1px solid var(--color-border); border-radius: var(--radius); font-size: 14px; font-family: inherit;
+}
+.form-actions { display: flex; justify-content: flex-end; gap: 8px; }
+
+/* hidden 속성이 display 지정 클래스(.btn-primary 등)에 눌리지 않도록 마지막에 재확인 (소스 순서 우선) */
+[hidden] { display: none; }

@@ -4,18 +4,48 @@
 <body>
 <header class="topbar">
     <span class="brand-sm">SoftPuzzle PM</span>
-    <form method="post" th:action="@{/logout}" class="logout-form">
-        <button type="submit" class="btn-ghost">로그아웃</button>
-    </form>
+    <div class="topbar-right">
+        <span class="muted" id="me">불러오는 중…</span>
+        <form method="post" th:action="@{/logout}" class="logout-form">
+            <button type="submit" class="btn-ghost">로그아웃</button>
+        </form>
+    </div>
 </header>
 <main class="page">
-    <h1>대시보드</h1>
-    <p class="muted">현재 사용자: <b id="me">불러오는 중…</b></p>
+    <div class="page-head">
+        <h1>대시보드</h1>
+        <button id="newProjectBtn" class="btn-primary" type="button" hidden>+ 새 프로젝트</button>
+    </div>
+
+    <section id="createCard" class="card" hidden>
+        <h2>새 프로젝트</h2>
+        <form id="createForm" class="form-grid">
+            <label><span>프로젝트명 *</span><input name="name" required maxlength="100"></label>
+            <label><span>고객사 *</span><input name="clientOrgName" required maxlength="100"></label>
+            <label><span>유형</span>
+                <select name="type">
+                    <option value="">선택</option>
+                    <option value="SaaS">SaaS</option>
+                    <option value="웹사이트">웹사이트</option>
+                    <option value="모바일">모바일</option>
+                </select>
+            </label>
+            <label><span>시작일</span><input type="date" name="startDate"></label>
+            <label><span>종료일</span><input type="date" name="endDate"></label>
+            <label class="full"><span>설명</span><textarea name="description" rows="2" maxlength="5000"></textarea></label>
+            <div class="form-actions full">
+                <button type="button" id="cancelCreate" class="btn-ghost">취소</button>
+                <button type="submit" class="btn-primary">생성</button>
+            </div>
+            <p id="createErr" class="msg-err full" hidden></p>
+        </form>
+    </section>
+
     <section class="card">
-        <h2>연결 점검 (walking skeleton)</h2>
-        <p class="muted">세션 인증 + CSRF 보호 AJAX 왕복을 확인합니다.</p>
-        <button id="echoBtn" class="btn-primary" type="button">AJAX POST 테스트</button>
-        <pre id="out" class="out"></pre>
+        <h2>내 프로젝트</h2>
+        <div id="projectList" class="project-list">
+            <p class="muted">불러오는 중…</p>
+        </div>
     </section>
 </main>
 </body>
