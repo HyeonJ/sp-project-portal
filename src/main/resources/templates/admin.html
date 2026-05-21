@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head th:replace="~{fragments/head :: head('관리자 콘솔 · SoftPuzzle PM')}"></head>
+<body>
+<div class="app">
+    <div th:replace="~{fragments/shell :: globalSidebar('admin')}"></div>
+    <div>
+        <div th:replace="~{fragments/shell :: topbar('관리자 콘솔')}"></div>
+        <main class="main" id="adminPage">
+            <div class="page-bar"><h1 class="page-title">관리자 콘솔</h1></div>
+
+            <section class="card" style="margin-bottom:16px">
+                <div class="card-head">
+                    <h3>계정 관리</h3>
+                    <button id="newAccountBtn" class="btn primary sm" type="button">+ 계정 생성</button>
+                </div>
+                <div style="display:flex;gap:6px;margin-bottom:12px">
+                    <button class="btn sm acct-tab" data-tier="team">프로젝트팀</button>
+                    <button class="btn sm acct-tab" data-tier="client">고객사</button>
+                    <button class="btn sm acct-tab" data-tier="admin">관리자</button>
+                </div>
+                <section id="newAccountCard" hidden style="margin-bottom:12px;padding:14px;border:1px solid var(--divider);border-radius:8px">
+                    <form id="accountForm" class="form">
+                        <div class="row"><label>이메일</label><div class="value"><input type="email" name="email" required></div></div>
+                        <div class="row"><label>이름</label><div class="value"><input type="text" name="name" required maxlength="50"></div></div>
+                        <div class="row"><label>유형</label><div class="value"><select name="tier"><option value="team">프로젝트팀</option><option value="client">고객사</option><option value="admin">관리자</option></select></div></div>
+                        <div class="row"><label>직무 <small class="opt">팀</small></label><div class="value"><select name="job"><option>pm</option><option>planner</option><option>designer</option><option>developer</option><option>qa</option></select></div></div>
+                        <div class="row"><label>고객사명 <small class="opt">고객사</small></label><div class="value"><input type="text" name="clientOrgName" maxlength="100"></div></div>
+                        <div id="accountErr" class="err" style="display:none;color:var(--hot)"></div>
+                        <div style="display:flex;gap:8px;justify-content:flex-end">
+                            <button type="button" id="accountCancel" class="btn ghost sm">취소</button>
+                            <button type="submit" class="btn primary sm">생성 (임시 비번 Welcome1!)</button>
+                        </div>
+                    </form>
+                </section>
+                <div id="accountList" class="card-list"></div>
+            </section>
+
+            <section class="card" style="margin-bottom:16px">
+                <div class="card-head"><h3>전체 프로젝트</h3><span class="meta" id="projCount"></span></div>
+                <div id="adminProjects" class="card-list"></div>
+            </section>
+
+            <section class="card">
+                <div class="card-head"><h3>감사 로그</h3></div>
+                <div id="auditList" class="card-list"></div>
+            </section>
+        </main>
+    </div>
+</div>
+<script th:src="@{/js/admin.js}" defer></script>
+</body>
+</html>

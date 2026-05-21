@@ -18,7 +18,8 @@
         </a>
         <th:block th:if="${navTier == 'admin'}">
             <div class="group">관리자</div>
-            <a class="nav-item" th:href="@{/admin/teams}"><span>관리자 메뉴</span></a>
+            <a class="nav-item" th:classappend="${active == 'admin'} ? 'active'"
+               th:href="@{/admin}"><span>관리자 콘솔</span></a>
         </th:block>
     </nav>
 </aside>

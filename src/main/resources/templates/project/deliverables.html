@@ -10,6 +10,8 @@
               th:attr="data-project-id=${projId}, data-can-edit=${canEdit}, data-tier=${navTier}, data-uid=${navUserId}">
             <div class="page-bar">
                 <h1 class="page-title">산출물</h1>
+                <a class="btn sm" th:href="@{/api/projects/{id}/export(id=${projId})}"
+                   th:attr="download='project-' + ${projId} + '-export.json'">Export</a>
             </div>
 
             <div id="gateStrip" class="action-bar" style="margin-bottom:16px"></div>

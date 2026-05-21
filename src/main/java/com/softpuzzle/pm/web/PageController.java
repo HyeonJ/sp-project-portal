@@ -33,6 +33,16 @@ public class PageController {
         return "search";
     }
 
+    @GetMapping("/admin")
+    public String admin(Model model) {
+        Account me = currentUser.require();
+        if (!"admin".equals(me.getTier())) {
+            return "redirect:/";
+        }
+        addNavAttributes(model);
+        return "admin";
+    }
+
     /** 레이아웃 셸(사이드바·상단바)이 쓰는 현재 사용자 속성. */
     private void addNavAttributes(Model model) {
         Account me = currentUser.require();

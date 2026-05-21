@@ -25,4 +25,17 @@
                 COALESCE(#{status}, 'pending'))
     </insert>
 
+    <select id="findByTier" resultType="Account">
+        SELECT <include refid="cols"/>
+        FROM account
+        <where>
+            <if test="tier != null">tier = #{tier}</if>
+        </where>
+        ORDER BY created_at DESC
+    </select>
+
+    <update id="updateStatus">
+        UPDATE account SET status = #{status} WHERE id = #{id}
+    </update>
+
 </mapper>
