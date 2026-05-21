@@ -70,4 +70,11 @@ public class MembershipGuard {
             throw ApiException.forbidden("고객사 멤버만 컨펌·반려할 수 있습니다.");
         }
     }
+
+    /** 프로젝트팀 작업(TC 관리·결함 처리 등): 프로젝트팀 멤버만. */
+    public void assertTeamMember(Long projectId, Account account) {
+        if (!isTeam(account) || !isMember(projectId, account)) {
+            throw ApiException.forbidden("프로젝트팀 멤버만 수행할 수 있습니다.");
+        }
+    }
 }

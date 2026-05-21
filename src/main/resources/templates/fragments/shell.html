@@ -39,6 +39,14 @@
            th:href="@{/projects/{id}/dev(id=${projId})}">
             <span>개발</span>
         </a>
+        <a class="nav-item" th:classappend="${active == 'tests'} ? 'active'"
+           th:href="@{/projects/{id}/test-cases(id=${projId})}">
+            <span>TC</span>
+        </a>
+        <a class="nav-item" th:classappend="${active == 'defects'} ? 'active'"
+           th:href="@{/projects/{id}/defects(id=${projId})}">
+            <span>결함</span>
+        </a>
     </nav>
 </aside>
 

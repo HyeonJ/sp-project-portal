@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.softpuzzle.pm.qa.TestCaseMapper">
+
+    <sql id="cols">
+        t.id, t.project_id, t.code, t.title, t.phase, t.priority, t.status,
+        t.precondition, t.steps, t.expected_result, t.actual_result, t.assignee_id, t.created_at,
+        a.name AS assignee_name
+    </sql>
+
+    <select id="findByProject" resultType="TestCase">
+        SELECT <include refid="cols"/>
+        FROM test_case t
+        LEFT JOIN account a ON a.id = t.assignee_id
+        WHERE t.project_id = #{projectId}
+        ORDER BY t.code
+    </select>
+
+    <select id="findById" resultType="TestCase">
+        SELECT <include refid="cols"/>
+        FROM test_case t
+        LEFT JOIN account a ON a.id = t.assignee_id
+        WHERE t.id = #{id}
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO test_case (project_id, code, title, phase, priority, status,
+                               precondition, steps, expected_result, actual_result, assignee_id)
+        VALUES (#{projectId}, #{code}, #{title}, #{phase}, #{priority}, COALESCE(#{status}, 'pending'),
+                #{precondition}, #{steps}, #{expectedResult}, #{actualResult}, #{assigneeId})
+    </insert>
+
+    <update id="updateStatus">
+        UPDATE test_case SET status = #{status}, actual_result = #{actualResult} WHERE id = #{id}
+    </update>
+
+</mapper>

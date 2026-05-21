@@ -38,6 +38,22 @@ public class ProjectPageController {
         return "project/dev";
     }
 
+    @GetMapping("/projects/{id}/test-cases")
+    public String testCases(@PathVariable Long id, Model model) {
+        Account me = currentUser.require();
+        Project project = projectService.view(id, me);
+        addProjectModel(model, me, project);
+        return "project/tests";
+    }
+
+    @GetMapping("/projects/{id}/defects")
+    public String defects(@PathVariable Long id, Model model) {
+        Account me = currentUser.require();
+        Project project = projectService.view(id, me);
+        addProjectModel(model, me, project);
+        return "project/defects";
+    }
+
     private void addProjectModel(Model model, Account me, Project project) {
         addNav(model, me);
         model.addAttribute("projId", project.getId());

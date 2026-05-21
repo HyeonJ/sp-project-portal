@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.softpuzzle.pm.qa.DefectMapper">
+
+    <sql id="cols">
+        d.id, d.project_id, d.code, d.title, d.severity, d.status, d.repro_steps, d.environment,
+        d.reporter_id, d.assignee_id, d.created_at,
+        r.name AS reporter_name, asg.name AS assignee_name
+    </sql>
+
+    <select id="findByProject" resultType="Defect">
+        SELECT <include refid="cols"/>
+        FROM defect d
+        LEFT JOIN account r ON r.id = d.reporter_id
+        LEFT JOIN account asg ON asg.id = d.assignee_id
+        WHERE d.project_id = #{projectId}
+        ORDER BY d.code
+    </select>
+
+    <select id="findById" resultType="Defect">
+        SELECT <include refid="cols"/>
+        FROM defect d
+        LEFT JOIN account r ON r.id = d.reporter_id
+        LEFT JOIN account asg ON asg.id = d.assignee_id
+        WHERE d.id = #{id}
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO defect (project_id, code, title, severity, status, repro_steps, environment,
+                            reporter_id, assignee_id)
+        VALUES (#{projectId}, #{code}, #{title}, #{severity}, COALESCE(#{status}, 'open'),
+                #{reproSteps}, #{environment}, #{reporterId}, #{assigneeId})
+    </insert>
+
+    <update id="updateStatus">
+        UPDATE defect SET status = #{status} WHERE id = #{id}
+    </update>
+
+    <update id="updateAssignee">
+        UPDATE defect SET assignee_id = #{assigneeId} WHERE id = #{id}
+    </update>
+
+    <insert id="insertLink">
+        INSERT INTO test_defect_link (test_case_id, defect_id)
+        VALUES (#{testCaseId}, #{defectId})
+        ON CONFLICT DO NOTHING
+    </insert>
+
+    <delete id="deleteLink">
+        DELETE FROM test_defect_link WHERE test_case_id = #{testCaseId} AND defect_id = #{defectId}
+    </delete>
+
+    <select id="findLinkedTestCases" resultType="TestCase">
+        SELECT t.id, t.project_id, t.code, t.title, t.phase, t.priority, t.status, t.created_at
+        FROM test_defect_link l
+        JOIN test_case t ON t.id = l.test_case_id
+        WHERE l.defect_id = #{defectId}
+        ORDER BY t.code
+    </select>
+
+    <select id="findLinkedDefects" resultType="Defect">
+        SELECT d.id, d.project_id, d.code, d.title, d.severity, d.status, d.created_at
+        FROM test_defect_link l
+        JOIN defect d ON d.id = l.defect_id
+        WHERE l.test_case_id = #{testCaseId}
+        ORDER BY d.code
+    </select>
+
+</mapper>

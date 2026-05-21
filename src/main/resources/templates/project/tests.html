@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head th:replace="~{fragments/head :: head('TC · SoftPuzzle PM')}"></head>
+<body>
+<div class="app">
+    <div th:replace="~{fragments/shell :: projectSidebar('tests')}"></div>
+    <div>
+        <div th:replace="~{fragments/shell :: projectTopbar('TC')}"></div>
+        <main class="main" id="tcPage" th:attr="data-project-id=${projId}, data-tier=${navTier}">
+            <div class="page-bar">
+                <h1 class="page-title">테스트 케이스</h1>
+                <div style="display:flex;gap:8px" th:if="${navTier == 'team'}">
+                    <button id="csvBtn" class="btn" type="button">CSV 가져오기</button>
+                    <button id="newTcBtn" class="btn primary" type="button">+ 새 TC</button>
+                </div>
+            </div>
+
+            <section id="csvCard" class="card" hidden style="margin-bottom:16px">
+                <div class="card-head"><h3>CSV 일괄 가져오기</h3></div>
+                <p class="page-sub">형식: <code>제목,단계,우선순위(High/Medium/Low),전제조건,절차,기대결과</code> — 헤더 행은 자동 무시.</p>
+                <textarea id="csvText" rows="5" style="width:100%;border:1px solid var(--divider);border-radius:8px;padding:9px 11px;font-family:var(--mono);font-size:12px"></textarea>
+                <div style="margin-top:8px;display:flex;gap:8px;justify-content:flex-end">
+                    <button class="btn ghost" id="csvCancel" type="button">취소</button>
+                    <button class="btn primary" id="csvSubmit" type="button">가져오기</button>
+                </div>
+                <p id="csvErr" class="err" style="display:none;color:var(--hot);margin-top:6px"></p>
+            </section>
+
+            <section id="newTcCard" class="card" hidden style="margin-bottom:16px">
+                <div class="card-head"><h3>새 테스트 케이스</h3></div>
+                <form id="tcForm" class="form">
+                    <div class="row"><label>제목</label><div class="value"><input type="text" name="title" required maxlength="200"></div></div>
+                    <div class="row"><label>단계</label><div class="value"><input type="text" name="phase" placeholder="인증·요구사항·워크플로우 등" maxlength="30"></div></div>
+                    <div class="row"><label>우선순위</label><div class="value"><select name="priority"><option>Medium</option><option>High</option><option>Low</option></select></div></div>
+                    <div class="row"><label>전제조건 <small class="opt">선택</small></label><div class="value"><textarea name="precondition"></textarea></div></div>
+                    <div class="row"><label>절차 <small class="opt">선택</small></label><div class="value"><textarea name="steps"></textarea></div></div>
+                    <div class="row"><label>기대결과 <small class="opt">선택</small></label><div class="value"><textarea name="expectedResult"></textarea></div></div>
+                    <div id="tcErr" class="err" style="display:none;color:var(--hot)"></div>
+                    <div style="display:flex;gap:8px;justify-content:flex-end">
+                        <button type="button" id="tcCancel" class="btn ghost">취소</button>
+                        <button type="submit" class="btn primary">등록</button>
+                    </div>
+                </form>
+            </section>
+
+            <section class="card">
+                <div class="card-head"><h3>목록</h3><span class="meta" id="tcCount"></span></div>
+                <div id="tcList" class="card-list"><p class="page-sub" style="margin:0">불러오는 중…</p></div>
+            </section>
+
+            <section id="tcDetail" class="card" hidden style="margin-top:16px"></section>
+        </main>
+    </div>
+</div>
+<script th:src="@{/js/tc.js}" defer></script>
+</body>
+</html>

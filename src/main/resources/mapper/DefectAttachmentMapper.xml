@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.softpuzzle.pm.qa.DefectAttachmentMapper">
+
+    <select id="findByDefect" resultType="DefectAttachment">
+        SELECT f.id, f.defect_id, f.original_name, f.content_type, f.size_bytes, f.storage_key,
+               f.uploaded_by, f.uploaded_at, a.name AS uploaded_by_name
+        FROM defect_attachment f
+        JOIN account a ON a.id = f.uploaded_by
+        WHERE f.defect_id = #{defectId}
+        ORDER BY f.id
+    </select>
+
+    <select id="findById" resultType="DefectAttachment">
+        SELECT id, defect_id, original_name, content_type, size_bytes, storage_key,
+               uploaded_by, uploaded_at
+        FROM defect_attachment WHERE id = #{id}
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO defect_attachment (defect_id, original_name, content_type, size_bytes,
+                                       storage_key, uploaded_by)
+        VALUES (#{defectId}, #{originalName}, #{contentType}, #{sizeBytes}, #{storageKey}, #{uploadedBy})
+    </insert>
+
+    <delete id="delete">
+        DELETE FROM defect_attachment WHERE id = #{id}
+    </delete>
+
+</mapper>
