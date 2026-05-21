@@ -71,7 +71,7 @@ table.spec td .vref{display:inline-block;padding:1px 6px;border-radius:4px;font-
 <div class="layout">
 <aside class="side">
   <h1>화면 설계서</h1>
-  <span class="ver">v1.4 · 파일/코멘트 액션 UX(교체=인라인 확인·삭제=공통 confirm·코멘트 인라인 편집)·파일 뷰어(MOD-FILE-001)·CSV·결함↔TC·역할별 사이드바 (31 화면)</span>
+  <span class="ver">v1.5 · 선행 산출물 변경 배지(REQ-WF-005)·외부 링크/Figma url 항목·새 버전 stateful + 파일/코멘트 액션 UX·파일 뷰어(MOD-FILE-001)·CSV·결함↔TC (31 화면)</span>
 
   <div class="group">공통 (그룹 1)</div>
   <a href="#design-tokens">디자인 토큰 <small>색·타이포·간격</small></a>
@@ -387,8 +387,11 @@ table.spec td .vref{display:inline-block;padding:1px 6px;border-radius:4px;font-
         <tr><td class="id ctrl"><span class="badge">J</span></td><td>[팀] 검토 요청 발송 <a class="vref" href="#validation">V-005</a></td><td class="type">Button → MOD-WF-001</td><td class="type">draft에서만 활성</td></tr>
         <tr><td class="id ctrl"><span class="badge">K</span></td><td>[고객] 컨펌</td><td class="type">Button → MOD-WF-002</td><td class="type">게이트(11/13/15) 해제</td></tr>
         <tr><td class="id ctrl"><span class="badge">L</span></td><td>[고객] 반려 <a class="vref" href="#validation">V-006</a></td><td class="type">Button → MOD-WF-002</td><td class="type">사유 필수</td></tr>
+        <tr><td class="id ctrl"><span class="badge">N</span></td><td>[+ 외부 링크 추가] · url 항목 [열기]</td><td class="type">Button (+ Modal)</td><td class="type">draft에서 외부 URL(Figma 등) 항목 추가(REQ-FILE-001·REQ-DSN-004). url 항목은 뷰어 대신 [열기]로 링크 이동. Figma 슬롯 = url 1개 + 선택 export 에셋</td></tr>
+        <tr><td class="id ctrl"><span class="badge">O</span></td><td>[검토 완료(영향 없음)] (선행 변경 배지)</td><td class="type">Button</td><td class="type">선행 산출물 새 버전 시 컨펌 슬롯에 `선행 산출물 변경 · 검토 권장` 배지 표시(REQ-WF-005). 영향 없으면 이 액션으로 해소, 수정 필요 시 [+ 새 버전 만들기]</td></tr>
       </tbody>
     </table>
+    <div class="callout"><b>선행 산출물 변경 배지 (REQ-WF-005)</b>: 직속 선행 슬롯(요구사항→IA→시안→프로토타입)이 새 버전으로 바뀌면 이를 기반으로 컨펌된 하류 슬롯에 소프트 배지 표시(자동 무효화 아님). <b>재컨펌</b> 또는 <b>[검토 완료(영향 없음)]</b> 시 해소. 같은 슬롯의 [+ 새 버전 만들기]는 stateful — 컨펌 상태에서 실행 시 v+1 draft 생성 + 이전 컨펌 자동 무효화(상태 '검토중' 복귀).</div>
   </div>
 
   <div class="section">
