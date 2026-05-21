@@ -41,6 +41,17 @@ public class LocalFileStorage implements FileStorage {
     }
 
     @Override
+    public String copy(String sourceStorageKey) {
+        String newKey = UUID.randomUUID().toString().replace("-", "");
+        try {
+            Files.copy(baseDir.resolve(sourceStorageKey), baseDir.resolve(newKey));
+        } catch (IOException e) {
+            throw new UncheckedIOException("파일 복사 실패: " + sourceStorageKey, e);
+        }
+        return newKey;
+    }
+
+    @Override
     public String presignedGetUrl(String storageKey, Duration ttl) {
         // dev: 다운로드 컨트롤러 경유 (실서비스는 S3 presigned). 단순화한 토큰 URL.
         return "/api/files/local/" + storageKey;

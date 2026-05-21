@@ -75,6 +75,8 @@
 
     function renderSlotCard(slot) {
         const ver = slot.currentVersionNo ? `v${slot.currentVersionNo}` : '—';
+        const badge = slot.upstreamChanged
+            ? '<span class="pill warn" style="margin-top:6px">선행 변경 · 검토 권장</span>' : '';
         const $card = $(`
             <div class="deliverable" data-slot="${esc(slot.slotType)}">
                 <div style="display:flex;justify-content:space-between;width:100%;align-items:flex-start;gap:8px">
@@ -82,6 +84,7 @@
                     ${statusPill(slot.status)}
                 </div>
                 <span style="margin-top:auto;font:500 11px/1 var(--mono);color:var(--muted)">${ver}</span>
+                ${badge}
             </div>
         `);
         $card.on('click', function () { openSlot(slot.slotType); });
@@ -100,17 +103,24 @@
 
     function actionButtons(slot) {
         const st = slot.status;
+        const btns = [];
         if (st === 'draft' && tier === 'team') {
-            return '<button class="btn primary" data-act="review-request">검토 요청</button>';
+            btns.push('<button class="btn primary" data-act="review-request">검토 요청</button>');
         }
         if (st === 'pending-review' && tier === 'team') {
-            return '<button class="btn" data-act="review-recall">검토 요청 회수</button>';
+            btns.push('<button class="btn" data-act="review-recall">검토 요청 회수</button>');
         }
         if (st === 'pending-review' && tier === 'client') {
-            return '<button class="btn ok" data-act="confirm">컨펌</button>'
-                + '<button class="btn danger" data-act="reject">반려</button>';
+            btns.push('<button class="btn ok" data-act="confirm">컨펌</button>');
+            btns.push('<button class="btn danger" data-act="reject">반려</button>');
         }
-        return '';
+        if ((st === 'confirmed' || st === 'rejected') && tier === 'team') {
+            btns.push('<button class="btn accent" data-act="new-version">새 버전 만들기</button>');
+        }
+        if (slot.upstreamChanged && tier === 'team') {
+            btns.push('<button class="btn ok" data-act="ack-upstream">선행 검토 완료(영향 없음)</button>');
+        }
+        return btns.join('');
     }
 
     function renderDetail(detail) {
@@ -139,6 +149,10 @@
                 <button type="submit" class="btn sm">링크 추가</button>
             </form>` : '';
 
+        const banner = slot.upstreamChanged
+            ? `<div style="margin:0 0 14px;padding:10px 12px;border-radius:8px;background:var(--warn-soft);color:var(--warn);border:1px solid color-mix(in oklch,var(--warn) 25%,var(--surface));font-size:13px">선행 산출물이 변경되었습니다 · 영향 검토 권장</div>`
+            : '';
+
         const actions = actionButtons(slot);
         const actionsHtml = actions
             ? `<div id="reviewActions" style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap">${actions}</div>
@@ -148,6 +162,13 @@
                        <button class="btn ghost sm" data-act="reject-cancel">취소</button>
                        <button class="btn danger-solid sm" data-act="reject-confirm">반려 확정</button>
                    </div>
+               </div>
+               <div id="newVersionBox" hidden style="margin-top:10px">
+                   <textarea id="changeSummary" placeholder="변경 요약 (필수) — 무엇이 바뀌었나요?" style="width:100%;border:1px solid var(--divider);border-radius:8px;padding:9px 11px;min-height:60px"></textarea>
+                   <div style="margin-top:6px;display:flex;gap:8px;justify-content:flex-end">
+                       <button class="btn ghost sm" data-act="new-version-cancel">취소</button>
+                       <button class="btn accent sm" data-act="new-version-confirm">새 버전 생성</button>
+                   </div>
                </div>` : '';
 
         $('#slotDetail').html(`
@@ -155,6 +176,7 @@
                 <h3>${esc(SLOT_LABEL[slotType] || slotType)}</h3>
                 <span class="meta">${verLine}</span>
             </div>
+            ${banner}
             <div class="card-list" id="fileList">${filesHtml}</div>
             <div id="detailErr" class="err" style="display:none;color:var(--hot);margin-top:8px"></div>
             ${uploadHtml}
@@ -235,6 +257,14 @@
                 if (!reason) { $err.text('반려 사유를 입력해 주세요.').show(); return; }
                 postAction(slotType, 'reject', { reason: reason });
             }
+            else if (act === 'new-version') { $('#newVersionBox').prop('hidden', false); }
+            else if (act === 'new-version-cancel') { $('#newVersionBox').prop('hidden', true); }
+            else if (act === 'new-version-confirm') {
+                const summary = $('#changeSummary').val().trim();
+                if (!summary) { $err.text('변경 요약을 입력해 주세요.').show(); return; }
+                postAction(slotType, 'versions', { changeSummary: summary });
+            }
+            else if (act === 'ack-upstream') { postAction(slotType, 'ack-upstream'); }
         });
     }
 

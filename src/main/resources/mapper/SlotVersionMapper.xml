@@ -73,4 +73,8 @@
         WHERE id = #{id}
     </update>
 
+    <update id="updateUpstreamStamp">
+        UPDATE slot_version SET confirmed_upstream_version_id = #{upstreamVersionId} WHERE id = #{id}
+    </update>
+
 </mapper>

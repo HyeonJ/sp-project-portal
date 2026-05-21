@@ -8,6 +8,9 @@ import com.softpuzzle.pm.project.MembershipGuard;
 import com.softpuzzle.pm.project.ProjectMapper;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -50,7 +53,9 @@ public class SlotService {
     public List<DeliverableSlot> listSlots(Long projectId, Account actor) {
         requireProject(projectId);
         guard.assertCanView(projectId, actor);
-        return slotMapper.findByProject(projectId);
+        List<DeliverableSlot> slots = slotMapper.findByProject(projectId);
+        computeUpstreamBadges(slots);
+        return slots;
     }
 
     @Transactional(readOnly = true)
@@ -64,7 +69,44 @@ public class SlotService {
             version = versionMapper.findById(slot.getCurrentVersionId());
             files = assetMapper.findByVersion(slot.getCurrentVersionId());
         }
+        slot.setUpstreamChanged(upstreamChanged(projectId, slot, version));
         return new SlotDetail(slot, version, files);
+    }
+
+    /** REQ-WF-005: 컨펌된 슬롯이 스탬프한 선행 버전 ≠ 선행 슬롯의 현재 컨펌 버전 → 배지. */
+    private void computeUpstreamBadges(List<DeliverableSlot> slots) {
+        Map<String, DeliverableSlot> byType =
+                slots.stream().collect(Collectors.toMap(DeliverableSlot::getSlotType, s -> s));
+        for (DeliverableSlot slot : slots) {
+            String upstreamType = SlotTypes.UPSTREAM.get(slot.getSlotType());
+            if (upstreamType == null || !"confirmed".equals(slot.getStatus()) || slot.getCurrentVersionId() == null) {
+                continue;
+            }
+            DeliverableSlot upstream = byType.get(upstreamType);
+            if (isStaleUpstream(slot, upstream)) {
+                slot.setUpstreamChanged(true);
+            }
+        }
+    }
+
+    private boolean upstreamChanged(Long projectId, DeliverableSlot slot, SlotVersion version) {
+        String upstreamType = SlotTypes.UPSTREAM.get(slot.getSlotType());
+        if (upstreamType == null || !"confirmed".equals(slot.getStatus()) || version == null) {
+            return false;
+        }
+        DeliverableSlot upstream = slotMapper.findByProjectAndType(projectId, upstreamType);
+        if (upstream == null || !"confirmed".equals(upstream.getStatus()) || upstream.getCurrentVersionId() == null) {
+            return false;
+        }
+        return !Objects.equals(version.getConfirmedUpstreamVersionId(), upstream.getCurrentVersionId());
+    }
+
+    private boolean isStaleUpstream(DeliverableSlot slot, DeliverableSlot upstream) {
+        if (upstream == null || !"confirmed".equals(upstream.getStatus()) || upstream.getCurrentVersionId() == null) {
+            return false;
+        }
+        SlotVersion dv = versionMapper.findById(slot.getCurrentVersionId());
+        return dv != null && !Objects.equals(dv.getConfirmedUpstreamVersionId(), upstream.getCurrentVersionId());
     }
 
     /** 파일 업로드 (스토리지 먼저 → 짧은 tx). draft 버전이 없으면 v1 생성. */

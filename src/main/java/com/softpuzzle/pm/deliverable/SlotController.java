@@ -5,6 +5,7 @@ import com.softpuzzle.pm.common.ApiException;
 import com.softpuzzle.pm.common.ApiResponse;
 import com.softpuzzle.pm.common.CurrentUser;
 import com.softpuzzle.pm.deliverable.dto.AddUrlRequest;
+import com.softpuzzle.pm.deliverable.dto.NewVersionRequest;
 import com.softpuzzle.pm.deliverable.dto.RejectRequest;
 import com.softpuzzle.pm.deliverable.dto.SlotDetail;
 import jakarta.validation.Valid;
@@ -27,11 +28,14 @@ public class SlotController {
 
     private final SlotService slotService;
     private final ReviewService reviewService;
+    private final VersionService versionService;
     private final CurrentUser currentUser;
 
-    public SlotController(SlotService slotService, ReviewService reviewService, CurrentUser currentUser) {
+    public SlotController(SlotService slotService, ReviewService reviewService,
+                          VersionService versionService, CurrentUser currentUser) {
         this.slotService = slotService;
         this.reviewService = reviewService;
+        this.versionService = versionService;
         this.currentUser = currentUser;
     }
 
@@ -98,6 +102,19 @@ public class SlotController {
     public ApiResponse<Void> reject(@PathVariable Long projectId, @PathVariable String slotType,
                                     @Valid @RequestBody RejectRequest req) {
         reviewService.reject(projectId, slotType, req.reason(), currentUser.require());
+        return ApiResponse.ok(null);
+    }
+
+    @PostMapping("/{slotType}/versions")
+    public ApiResponse<SlotVersion> newVersion(@PathVariable Long projectId, @PathVariable String slotType,
+                                               @Valid @RequestBody NewVersionRequest req) {
+        return ApiResponse.ok(versionService.createNewVersion(projectId, slotType, req.changeSummary(),
+                currentUser.require()));
+    }
+
+    @PostMapping("/{slotType}/ack-upstream")
+    public ApiResponse<Void> ackUpstream(@PathVariable Long projectId, @PathVariable String slotType) {
+        versionService.ackUpstream(projectId, slotType, currentUser.require());
         return ApiResponse.ok(null);
     }
 

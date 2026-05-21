@@ -13,6 +13,8 @@ public class DeliverableSlot {
 
     // 조인 조회용
     private Short currentVersionNo;
+    // 파생(미저장): 선행 산출물 변경 감지 배지 (REQ-WF-005)
+    private boolean upstreamChanged;
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -34,4 +36,7 @@ public class DeliverableSlot {
 
     public Short getCurrentVersionNo() { return currentVersionNo; }
     public void setCurrentVersionNo(Short currentVersionNo) { this.currentVersionNo = currentVersionNo; }
+
+    public boolean isUpstreamChanged() { return upstreamChanged; }
+    public void setUpstreamChanged(boolean upstreamChanged) { this.upstreamChanged = upstreamChanged; }
 }

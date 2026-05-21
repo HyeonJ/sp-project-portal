@@ -20,15 +20,9 @@ public class ReviewService {
 
     private static final Logger log = LoggerFactory.getLogger(ReviewService.class);
 
-    /** 슬롯 컨펌 → 통과 게이트. figma는 게이트 없음. */
-    private static final Map<String, Short> SLOT_GATE = Map.of(
-            "requirements", (short) 9, "ia", (short) 11, "design", (short) 13, "prototype", (short) 15);
     /** 게이트 통과 시 해제할 다음 게이트 (15 이후 22는 UAT에서 별도 해제). */
     private static final Map<Short, Short> NEXT_GATE = Map.of(
             (short) 9, (short) 11, (short) 11, (short) 13, (short) 13, (short) 15);
-    /** 직속 선행 슬롯 (REQ-WF-005 선행 배지·스탬프용). */
-    private static final Map<String, String> UPSTREAM = Map.of(
-            "ia", "requirements", "design", "ia", "prototype", "design", "figma", "prototype");
 
     private final DeliverableSlotMapper slotMapper;
     private final SlotVersionMapper versionMapper;
@@ -113,7 +107,7 @@ public class ReviewService {
     // --- 내부 ---
 
     private void passGate(Long projectId, String slotType, Long actorId) {
-        Short stage = SLOT_GATE.get(slotType);
+        Short stage = SlotTypes.GATE.get(slotType);
         if (stage == null) {
             return; // figma 등 게이트 없음
         }
@@ -145,7 +139,7 @@ public class ReviewService {
     }
 
     private Long upstreamConfirmedVersionId(Long projectId, String slotType) {
-        String upstreamType = UPSTREAM.get(slotType);
+        String upstreamType = SlotTypes.UPSTREAM.get(slotType);
         if (upstreamType == null) {
             return null;
         }

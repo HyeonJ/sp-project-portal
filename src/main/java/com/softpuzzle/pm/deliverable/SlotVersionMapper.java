@@ -32,4 +32,7 @@ public interface SlotVersionMapper {
 
     /** pending-review → draft (review_* 초기화). */
     int markRecalledToDraft(@Param("id") Long id);
+
+    /** 선행 스탬프 재설정 (ackUpstream — 선행 변경 검토 완료). */
+    int updateUpstreamStamp(@Param("id") Long id, @Param("upstreamVersionId") Long upstreamVersionId);
 }
