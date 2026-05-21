@@ -71,7 +71,7 @@ table.spec td .vref{display:inline-block;padding:1px 6px;border-radius:4px;font-
 <div class="layout">
 <aside class="side">
   <h1>화면 설계서</h1>
-  <span class="ver">v1.3 · 파일 인라인 뷰어(MOD-FILE-001)·CSV 가져오기·결함↔TC 연결·메뉴 순서(개발·TC·결함)·역할별 사이드바 반영 (31 화면)</span>
+  <span class="ver">v1.4 · 파일/코멘트 액션 UX(교체=인라인 확인·삭제=공통 confirm·코멘트 인라인 편집)·파일 뷰어(MOD-FILE-001)·CSV·결함↔TC·역할별 사이드바 (31 화면)</span>
 
   <div class="group">공통 (그룹 1)</div>
   <a href="#design-tokens">디자인 토큰 <small>색·타이포·간격</small></a>
@@ -292,11 +292,11 @@ table.spec td .vref{display:inline-block;padding:1px 6px;border-radius:4px;font-
         <tr><td class="id ctrl"><span class="badge">B</span></td><td>버전 드롭다운</td><td class="type">Dropdown</td><td class="type">슬롯 스냅샷 전환, 잠긴 버전은 읽기 전용</td></tr>
         <tr><td class="id ctrl"><span class="badge">C</span></td><td>파일 [다운로드]</td><td class="type">Button</td><td class="type">파일 바이너리 응답</td></tr>
         <tr><td class="id ctrl"><span class="badge">N</span></td><td>파일 [보기] 인라인 뷰어 (REQ-FILE-003)</td><td class="type">Button → 뷰어 모달</td><td class="type">PDF·이미지 미리보기, 그 외 형식은 "다운로드 후 확인" 폴백. 헤더에 [다운로드] 동시 제공</td></tr>
-        <tr><td class="id ctrl"><span class="badge">D</span></td><td>파일 [교체] <a class="vref" href="#validation">V-001</a></td><td class="type">Button + File picker</td><td class="type">OS 다이얼로그 → 즉시 교체 (활동 이력 미기록)</td></tr>
-        <tr><td class="id ctrl"><span class="badge">E</span></td><td>파일 [삭제]</td><td class="type">Button + Confirm</td><td class="type">인라인 확인 → 즉시 삭제</td></tr>
+        <tr><td class="id ctrl"><span class="badge">D</span></td><td>파일 [교체] <a class="vref" href="#validation">V-001</a></td><td class="type">Button + File picker</td><td class="type">OS 다이얼로그 → <b>인라인 확인</b>(행에 선택 파일명 표시 → [교체 확정]/[취소]) → 교체 (활동 이력 미기록). 잘못 고른 파일을 commit 전에 차단</td></tr>
+        <tr><td class="id ctrl"><span class="badge">E</span></td><td>파일 [삭제]</td><td class="type">Button → 공통 confirm</td><td class="type"><b>스타일드 confirm 모달</b>("정말 삭제하시겠습니까?", 위험 톤) → 삭제. draft에서 제거, 이전 버전 스냅샷 보존</td></tr>
         <tr><td class="id ctrl"><span class="badge">F</span></td><td>[+ 파일 업로드] <a class="vref" href="#validation">V-001</a></td><td class="type">Button + File picker</td><td class="type">OS 다이얼로그 → 즉시 추가 (모달 없음)</td></tr>
-        <tr><td class="id ctrl"><span class="badge">G</span></td><td>코멘트 [수정] (본인만) <a class="vref" href="#validation">V-002</a></td><td class="type">Button</td><td class="type">인라인 편집 → PATCH</td></tr>
-        <tr><td class="id ctrl"><span class="badge">H</span></td><td>코멘트 [삭제] (본인 + 관리자) <a class="vref" href="#validation">V-002</a></td><td class="type">Button + Confirm</td><td class="type">DELETE. 관리자는 감사 로그 기록</td></tr>
+        <tr><td class="id ctrl"><span class="badge">G</span></td><td>코멘트 [수정] (본인만) <a class="vref" href="#validation">V-002</a></td><td class="type">Button</td><td class="type"><b>인라인 편집</b>(본문이 in-place textarea로 → [저장]/[취소], 저장 시 "수정됨" 표시) → PATCH</td></tr>
+        <tr><td class="id ctrl"><span class="badge">H</span></td><td>코멘트 [삭제] (본인 + 관리자) <a class="vref" href="#validation">V-002</a></td><td class="type">Button → 공통 confirm</td><td class="type"><b>스타일드 confirm 모달</b> → DELETE. 관리자는 강제 삭제 + 감사 로그 기록</td></tr>
         <tr><td class="id ctrl"><span class="badge">I</span></td><td>자유 코멘트 [등록] <a class="vref" href="#validation">V-003</a></td><td class="type">Textarea + Button</td><td class="type">POST → 코멘트 섹션 추가 (현재 보는 스냅샷에 귀속)</td></tr>
         <tr><td class="id ctrl"><span class="badge">J</span></td><td>[팀] + 새 버전 만들기 <a class="vref" href="#validation">V-004</a></td><td class="type">Button → MOD-VER-001</td><td class="type">모달 열림</td></tr>
         <tr><td class="id ctrl"><span class="badge">K</span></td><td>[팀] 검토 요청 발송 <a class="vref" href="#validation">V-005</a></td><td class="type">Button → MOD-WF-001</td><td class="type">발송 시 버전 잠금 + 고객사 이메일</td></tr>
@@ -304,6 +304,7 @@ table.spec td .vref{display:inline-block;padding:1px 6px;border-radius:4px;font-
         <tr><td class="id ctrl"><span class="badge">M</span></td><td>[고객] 반려 <a class="vref" href="#validation">V-006</a></td><td class="type">Button → MOD-WF-002</td><td class="type">사유 필수</td></tr>
       </tbody>
     </table>
+    <div class="callout"><b>파일 액션 인터랙션 패턴</b>: <b>교체</b>=인라인 확인(선택 파일명 노출 후 확정/취소) · <b>삭제</b>=공통 스타일드 confirm 모달 · <b>코멘트 수정</b>=인라인 편집 · <b>코멘트 삭제</b>=공통 confirm. <b>공통 confirm 컴포넌트</b>(위험/일반 톤, 제목 옆 아이콘 — B안)는 파일·코멘트 삭제, 로그아웃 등 파괴적·확인 액션에 재사용. 디자인 후보 비교는 협의 과정에서 B안 채택.</div>
   </div>
 
   <div class="section">

@@ -362,6 +362,19 @@ code{font-family:var(--mono);font-size:.92em;background:var(--surface-2);padding
 .file .name .sub{color:var(--muted);font-size:11px;margin-top:2px}
 .file .badge{font:600 10px/1 var(--mono);padding:3px 7px;border-radius:4px;background:var(--accent-soft);color:var(--accent)}
 .file .actions{display:flex;gap:4px}
+.file.replacing{background:var(--accent-soft);border-color:color-mix(in oklab,var(--accent),var(--surface) 60%);box-shadow:0 0 0 1px color-mix(in oklab,var(--accent),transparent 80%) inset}
+.file.replacing .name .sub .to{color:var(--accent-deep);font-weight:600}
+.file.replacing .icn{background:var(--surface);color:var(--accent)}
+.conf-msg{font-size:14px;line-height:1.7;color:var(--fg)}
+.conf-note{display:block;margin-top:7px;font-size:12px;color:var(--muted);line-height:1.6}
+.conf-head-title{display:inline-flex;align-items:center;gap:9px;font:700 16px/1.2 var(--font);letter-spacing:-.005em}
+.conf-icon-sm{width:28px;height:28px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+.conf-icon-sm svg{width:16px;height:16px}
+.conf-icon-sm.danger{background:var(--hot-soft);color:var(--hot)}
+.conf-icon-sm.accent{background:var(--accent-soft);color:var(--accent)}
+.comment-edit-ta{width:100%;border:1px solid var(--layer-border);background:var(--surface);border-radius:8px;padding:9px 11px;min-height:62px;outline:none;font:inherit;font-size:13px;line-height:1.6;resize:vertical;box-shadow:var(--soft-inset)}
+.comment-edit-ta:focus{border-color:var(--accent);box-shadow:var(--focus-ring)}
+.comment-edit-actions{display:flex;justify-content:flex-end;gap:6px;margin-top:7px}
 
 /* ========== Auth pages ========== */
 .auth-page{min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:48px 18px;background:linear-gradient(180deg,var(--bg) 0%,var(--surface-3) 100%)}
@@ -666,6 +679,9 @@ const state = {
   role: 'pm', // pm | client | admin
   currentRoute: '#/projects/A',
   viewVersion: {}, // slug → 조회 중인 과거 버전 (없으면 최신)
+  replacePending: null, // {slug, idx, newName, newSize} — 교체 인라인 확인 대기
+  confirmAction: null, // openConfirm 콜백 보관
+  editingComment: null, // {slug, version, idx} — 코멘트 인라인 편집 대기
 };
 
 /* 슬롯별 버전 히스토리 — 최신 버전(=slot.version)은 files 생략, slot.files 사용 */
@@ -693,6 +709,7 @@ const VERSIONS = {
 };
 const STATUS_LABEL = {draft:'draft', 'pending-review':'검토중', confirmed:'컨펌', rejected:'반려', empty:'없음'};
 function lvlBadge(v){ const c = v==='High'?'lvl-high':v==='Medium'?'lvl-med':'lvl-low'; return `<span class="lvl ${c}">${esc(v)}</span>`; }
+function fmtSize(bytes){ if(bytes>=1048576) return (bytes/1048576).toFixed(1)+'MB'; if(bytes>=1024) return Math.round(bytes/1024)+'KB'; return bytes+'B'; }
 
 /* 산출물 슬롯의 진입 게이트 — 이전 게이트 미통과면 '선행 작업'(소프트 잠금: 허용 + 경고) */
 const SLOT_ENTRY_GATE = {
@@ -735,6 +752,27 @@ function navigate(path){ location.hash = '#' + path; }
 function closeModals(){ $('#modalRoot').innerHTML = ''; }
 function openModal(content, lg=false){
   $('#modalRoot').innerHTML = `<div class="modal-backdrop open"><div class="modal ${lg?'lg':''}">${content}</div></div>`;
+}
+/* 스타일드 confirm 기본 아이콘 (톤별) */
+const CONFIRM_ICONS = {
+  danger: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2m2 0v14a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V6"/><path d="M10 11v6M14 11v6"/></svg>',
+  accent: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5"/><circle cx="12" cy="16.3" r=".6" fill="currentColor" stroke="none"/></svg>',
+};
+/* 재사용 스타일드 confirm 모달 (B안) — 삭제·확인 등 범용. body는 호출부에서 esc 처리한 HTML 전달 */
+function openConfirm({title, body, confirmLabel='확인', danger=false, icon, onConfirm}){
+  state.confirmAction = onConfirm || null;
+  const tone = danger ? 'danger' : 'accent';
+  const ic = icon || CONFIRM_ICONS[tone];
+  openModal(`
+    <div class="modal-head">
+      <h2 class="conf-head-title"><span class="conf-icon-sm ${tone}">${ic}</span>${esc(title)}</h2>
+      <button class="close" data-action="close-modal">✕</button>
+    </div>
+    <div class="modal-body"><div class="conf-msg">${body}</div></div>
+    <div class="modal-foot">
+      <button class="btn" data-action="close-modal">취소</button>
+      <button class="btn ${danger?'danger-solid':'primary'}" data-action="confirm-yes">${esc(confirmLabel)}</button>
+    </div>`);
 }
 function closeDropdowns(){ $('#dropdownRoot').innerHTML = ''; }
 function openDropdown(content, x, y){
@@ -1320,7 +1358,23 @@ function renderSlotPage({slot, slug, title, subtitle, isDeliverable=false}){
   const canEditFiles = !viewingOld && isDraft && role==='pm';
 
   // file list
-  const filesHtml = displayFiles.length ? displayFiles.map((f,i) => html`
+  const filesHtml = displayFiles.length ? displayFiles.map((f,i) => {
+    const rp = state.replacePending;
+    if(rp && rp.slug===slug && rp.idx===i){
+      return html`
+        <div class="file replacing">
+          <span class="icn">🔄</span>
+          <div class="name">
+            <b>${esc(f.name)}</b>
+            <span class="sub">→ <span class="to">${esc(rp.newName)}</span> (${esc(rp.newSize)}) 로 교체할까요?</span>
+          </div>
+          <div class="actions">
+            <button class="btn sm accent" data-action="confirm-replace">교체 확정</button>
+            <button class="btn sm" data-action="cancel-replace">취소</button>
+          </div>
+        </div>`;
+    }
+    return html`
     <div class="file">
       <span class="icn">📄</span>
       <div class="name">
@@ -1332,10 +1386,11 @@ function renderSlotPage({slot, slug, title, subtitle, isDeliverable=false}){
         <button class="btn sm accent" data-action="view-file" data-file="${esc(f.name)}" data-slug="${slug}">보기</button>
         <button class="btn sm" data-action="download" data-file="${esc(f.name)}">다운로드</button>
         ${canEditFiles ? `
-          <button class="btn sm" data-action="replace-file" data-idx="${i}">교체</button>
-          <button class="btn sm danger" data-action="delete-file" data-idx="${i}">삭제</button>` : ''}
+          <button class="btn sm" data-action="replace-file" data-idx="${i}" data-slug="${slug}">교체</button>
+          <button class="btn sm danger" data-action="delete-file" data-idx="${i}" data-slug="${slug}">삭제</button>` : ''}
       </div>
-    </div>`).join('') : '<div class="empty"><span class="ico">📁</span><p>파일 없음 — [+ 파일 업로드]로 시작</p></div>';
+    </div>`;
+  }).join('') : '<div class="empty"><span class="ico">📁</span><p>파일 없음 — [+ 파일 업로드]로 시작</p></div>';
 
   // snapshot comments
   const commentGroups = slot.comments || (slot.comments = []);
@@ -1345,17 +1400,30 @@ function renderSlotPage({slot, slug, title, subtitle, isDeliverable=false}){
     if(slot.status !== 'empty') commentGroups.push(activeCommentGroup);
   }
   const comments = activeCommentGroup.items || [];
-  const commentsHtml = comments.length ? comments.map((c) => {
+  const commentsHtml = comments.length ? comments.map((c, ci) => {
     const a = commentAuthor(c.who);
+    const ec = state.editingComment;
+    const editing = ec && ec.slug===slug && ec.version===viewV && ec.idx===ci;
+    const editIcon = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>`;
+    const delIcon = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>`;
+    const dataAttr = `data-slug="${slug}" data-version="${esc(viewV)}" data-idx="${ci}"`;
     return html`
     <div class="comment-item">
       <span class="comment-avatar ${a.role}">${esc(a.initial)}</span>
       <div>
         <div class="comment-meta">
-          <span><span class="who">${esc(a.name)}</span><span class="role-badge ${a.role}">${a.roleLabel}</span> <span class="time">· ${esc(c.time)}</span></span>
-          ${c.own ? `<div class="actions" style="margin-top:0;flex-shrink:0"><button class="icon-action accent" data-action="edit-comment" title="수정" aria-label="수정"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></button><button class="icon-action danger" data-action="delete-comment" title="삭제" aria-label="삭제"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button></div>` : ''}
+          <span><span class="who">${esc(a.name)}</span><span class="role-badge ${a.role}">${a.roleLabel}</span> <span class="time">· ${esc(c.time)}${c.edited?' · 수정됨':''}</span></span>
+          ${c.own && !editing ? `<div class="actions" style="margin-top:0;flex-shrink:0"><button class="icon-action accent" data-action="edit-comment" ${dataAttr} title="수정" aria-label="수정">${editIcon}</button><button class="icon-action danger" data-action="delete-comment" ${dataAttr} title="삭제" aria-label="삭제">${delIcon}</button></div>` : ''}
         </div>
-        <div class="comment-body">${esc(c.body)}</div>
+        ${editing
+          ? `<div class="comment-edit">
+              <textarea id="editCommentTa" class="comment-edit-ta">${esc(c.body)}</textarea>
+              <div class="comment-edit-actions">
+                <button class="btn sm" data-action="cancel-comment-edit">취소</button>
+                <button class="btn sm primary" data-action="save-comment-edit">저장</button>
+              </div>
+            </div>`
+          : `<div class="comment-body">${esc(c.body)}</div>`}
       </div>
     </div>`;
   }).join('') : '<div class="empty"><span class="ico">💬</span><p>이 스냅샷에는 아직 코멘트가 없습니다.</p></div>';
@@ -2527,8 +2595,60 @@ document.addEventListener('click', e => {
 
   // File ops
   if(a==='upload-file'){ toast('파일 추가됨 (mock) — draft 안 변경은 활동 이력 미기록','info'); return; }
-  if(a==='replace-file'){ toast('파일 교체됨 (mock)','info'); return; }
-  if(a==='delete-file'){ toast('파일 삭제됨 (mock)','info'); return; }
+  if(a==='replace-file'){
+    const idx = +t.dataset.idx;
+    const slug = t.dataset.slug;
+    const inp = document.createElement('input');
+    inp.type = 'file'; inp.style.display = 'none';
+    inp.onchange = () => {
+      const file = inp.files && inp.files[0];
+      if(file){
+        state.replacePending = {slug, idx, newName:file.name, newSize:fmtSize(file.size)};
+        rerender();
+      }
+      inp.remove();
+    };
+    document.body.appendChild(inp);
+    inp.click();
+    return;
+  }
+  if(a==='cancel-replace'){ state.replacePending = null; rerender(); return; }
+  if(a==='confirm-replace'){
+    const p = state.replacePending;
+    if(p && DATA.slot[p.slug] && DATA.slot[p.slug].files[p.idx]){
+      const file = DATA.slot[p.slug].files[p.idx];
+      file.name = p.newName; file.size = p.newSize; file.badge = '교체됨';
+    }
+    state.replacePending = null;
+    rerender();
+    toast('파일 교체 완료','success');
+    return;
+  }
+  if(a==='delete-file'){
+    const idx = +t.dataset.idx;
+    const slug = t.dataset.slug;
+    const file = DATA.slot[slug] && DATA.slot[slug].files[idx];
+    const name = file ? file.name : '파일';
+    openConfirm({
+      title: '파일 삭제',
+      body: `<b>${esc(name)}</b> 파일을 정말 삭제하시겠습니까?<span class="conf-note">현재 draft 버전에서 제거됩니다. 이전 버전 스냅샷은 그대로 보존됩니다.</span>`,
+      confirmLabel: '삭제',
+      danger: true,
+      onConfirm: () => {
+        if(DATA.slot[slug] && DATA.slot[slug].files[idx]) DATA.slot[slug].files.splice(idx, 1);
+        rerender();
+        toast('파일 삭제됨','info');
+      },
+    });
+    return;
+  }
+  if(a==='confirm-yes'){
+    const fn = state.confirmAction;
+    state.confirmAction = null;
+    closeModals();
+    if(fn) fn();
+    return;
+  }
   if(a==='view-file'){ openModal(modalFileViewer(t.dataset.file, t.dataset.slug), true); return; }
   if(a==='download'){ toast(`${t.dataset.file} 다운로드 (mock)`,'info'); return; }
 
@@ -2555,8 +2675,42 @@ document.addEventListener('click', e => {
     toast('코멘트 등록됨','success');
     return;
   }
-  if(a==='edit-comment'){ toast('코멘트 수정 모드 (mock)','info'); return; }
-  if(a==='delete-comment'){ toast('코멘트 삭제됨' + (state.role==='admin'?' (관리자 강제 삭제 — 감사 로그 기록)':''),state.role==='admin'?'danger':'info'); return; }
+  if(a==='edit-comment'){
+    state.editingComment = {slug:t.dataset.slug, version:t.dataset.version, idx:+t.dataset.idx};
+    rerender();
+    const ta = document.getElementById('editCommentTa');
+    if(ta){ ta.focus(); ta.setSelectionRange(ta.value.length, ta.value.length); }
+    return;
+  }
+  if(a==='cancel-comment-edit'){ state.editingComment = null; rerender(); return; }
+  if(a==='save-comment-edit'){
+    const ec = state.editingComment;
+    const ta = document.getElementById('editCommentTa');
+    if(!ec || !ta){ state.editingComment = null; rerender(); return; }
+    const val = ta.value.trim();
+    if(!val){ toast('코멘트 내용을 입력해 주세요','danger'); return; }
+    const group = (DATA.slot[ec.slug]?.comments || []).find(g => g.version === ec.version);
+    if(group && group.items[ec.idx]){ group.items[ec.idx].body = val; group.items[ec.idx].edited = true; }
+    state.editingComment = null;
+    rerender();
+    toast('코멘트 수정됨','success');
+    return;
+  }
+  if(a==='delete-comment'){
+    const slug = t.dataset.slug, version = t.dataset.version, idx = +t.dataset.idx;
+    const isAdmin = state.role==='admin';
+    openConfirm({
+      title:'코멘트 삭제', confirmLabel:'삭제', danger:true,
+      body:`이 코멘트를 삭제하시겠습니까?${isAdmin?'<span class="conf-note">관리자 강제 삭제 — 감사 로그에 기록됩니다.</span>':''}`,
+      onConfirm:()=>{
+        const group = (DATA.slot[slug]?.comments || []).find(g => g.version === version);
+        if(group && group.items[idx]) group.items.splice(idx, 1);
+        rerender();
+        toast('코멘트 삭제됨'+(isAdmin?' (감사 로그 기록)':''), isAdmin?'danger':'info');
+      },
+    });
+    return;
+  }
 
   // Project switcher
   if(a==='proj-switch'){
@@ -2590,7 +2744,15 @@ document.addEventListener('click', e => {
     e.stopPropagation();
     return;
   }
-  if(a==='logout'){ closeDropdowns(); navigate('/login'); toast('로그아웃되었습니다','info'); return; }
+  if(a==='logout'){
+    closeDropdowns();
+    openConfirm({
+      title:'로그아웃', confirmLabel:'로그아웃', danger:false,
+      body:'로그아웃하시겠습니까?<span class="conf-note">진행 중인 작업이 저장되지 않았다면 먼저 저장해 주세요.</span>',
+      onConfirm:()=>{ navigate('/login'); toast('로그아웃되었습니다','info'); },
+    });
+    return;
+  }
 
   // Auth
   if(a==='login-submit'){
