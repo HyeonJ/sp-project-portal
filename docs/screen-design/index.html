@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>sp-project-portal 화면 설계서</title>
+<title>SoftPuzzle PM 화면 설계서</title>
 <style>
 :root{
   --bg:#f6f7f9;--surface:#fff;--fg:#1c2230;--muted:#6b7384;
@@ -71,7 +71,7 @@ table.spec td .vref{display:inline-block;padding:1px 6px;border-radius:4px;font-
 <div class="layout">
 <aside class="side">
   <h1>화면 설계서</h1>
-  <span class="ver">v1.1 · 진행 현황(SCR-RDM-001) 추가 (30 화면)</span>
+  <span class="ver">v1.2 · 글로벌 사이드바 통일 + SCR-SET-002 팀원 초대 (30 화면)</span>
 
   <div class="group">공통 (그룹 1)</div>
   <a href="#design-tokens">디자인 토큰 <small>색·타이포·간격</small></a>
@@ -92,12 +92,12 @@ table.spec td .vref{display:inline-block;padding:1px 6px;border-radius:4px;font-
 
   <div class="group">부가 (그룹 4)</div>
   <a href="#scr-sch-001">SCR-SCH-001 <small>통합 검색</small></a>
-  <a href="#scr-dev-001">SCR-DEV-001 <small>AI 개발 진행</small></a>
+  <a href="#scr-dev-001">SCR-DEV-001 <small>개발 진행</small></a>
   <a href="#scr-tst-001">SCR-TST-001 <small>TC 목록</small></a>
   <a href="#scr-tst-002">SCR-TST-002 <small>TC 상세</small></a>
   <a href="#scr-tst-003">SCR-TST-003 <small>결함 목록</small></a>
   <a href="#scr-tst-004">SCR-TST-004 <small>결함 상세</small></a>
-  <a href="#mod-dev-001">MOD-DEV-001 <small>AI 개발 시작</small></a>
+  <a href="#mod-dev-001">MOD-DEV-001 <small>개발 시작</small></a>
 
   <div class="group">계정·관리 (그룹 5)</div>
   <a href="#scr-aut-002">SCR-AUT-002 <small>비밀번호 재설정 요청</small></a>
@@ -240,10 +240,10 @@ table.spec td .vref{display:inline-block;padding:1px 6px;border-radius:4px;font-
       <tbody>
         <tr><td class="row-h">인증 전 (Public)</td><td>✅</td><td>❌</td><td>❌</td><td>❌</td></tr>
         <tr><td class="row-h">인증 후 (글로벌)</td><td>✅</td><td>❌ (사이드바 메뉴로 대체)</td><td>✅</td><td>✅ 워크스페이스 메뉴 (프로젝트 목록·새 프로젝트·계정 설정·[관리자] 관리자 메뉴)</td></tr>
-        <tr><td class="row-h">인증 후 (프로젝트)</td><td>✅</td><td>✅ 통합 검색</td><td>✅</td><td>✅ 7개 메뉴 (대시보드·요구사항·산출물·결함·TC·AI 개발·설정)</td></tr>
+        <tr><td class="row-h">인증 후 (프로젝트)</td><td>✅</td><td>✅ 통합 검색</td><td>✅</td><td>✅ 8개 메뉴 (대시보드·진행 현황·요구사항·산출물·개발·TC·결함·설정)</td></tr>
       </tbody>
     </table>
-    <div class="callout"><b>사이드바 메뉴 권한 매트릭스</b>는 <code>requirements.md</code> §3 권한 매트릭스 단일 진실 원천 참조. TC·AI 개발·설정은 [팀] 전용이라 고객사에게는 미노출.</div>
+    <div class="callout"><b>사이드바 메뉴 권한 매트릭스</b>는 <code>requirements.md</code> §3 권한 매트릭스 단일 진실 원천 참조. TC·개발·설정은 [팀] 전용이라 고객사에게는 미노출.</div>
     <div class="callout"><b>옵션 A · AppShell 통일 (협의 27회차, 2026-05-20)</b> — 글로벌 영역도 사이드바 보유. 모든 레이아웃의 헤더·콘텐츠 좌측 정렬이 일치(좌측 240px 사이드바 + 32px main padding). 글로벌·프로젝트·관리자 사이드바 간 전환 시 폭은 그대로, 메뉴 항목만 교체. <b>breadcrumb 1단</b>은 모든 레이아웃에서 <code>프로젝트 목록</code> 링크로 통일 (글로벌 `/`는 자기참조 회피 위해 굵게 단독 표시).</div>
   </div>
 </section>
@@ -273,12 +273,13 @@ table.spec td .vref{display:inline-block;padding:1px 6px;border-radius:4px;font-
         <tr><td class="id info"><span class="badge">3</span></td><td>버전 드롭다운 라벨</td><td class="type">String</td><td class="type">slot.version + status</td></tr>
         <tr><td class="id info"><span class="badge">4</span></td><td>파일 묶음 카운트</td><td class="type">Integer</td><td class="type">files.length</td></tr>
         <tr><td class="id info"><span class="badge">5</span></td><td>파일 카드 (파일명·크기·설명, NEW/교체됨 배지)</td><td class="type">List&lt;File&gt;</td><td class="type">files[]</td></tr>
-        <tr><td class="id info"><span class="badge">6</span></td><td>활동 이력 카운트</td><td class="type">Integer</td><td class="type">activities.length</td></tr>
-        <tr><td class="id info"><span class="badge">7</span></td><td>활동 이력 항목 (시각·작성자·이벤트·본문)</td><td class="type">List&lt;Activity&gt;</td><td class="type">activities[]</td></tr>
-        <tr><td class="id info"><span class="badge">8</span></td><td>자유 코멘트 작성란 안내</td><td class="type">String (정적)</td><td class="type">i18n</td></tr>
+        <tr><td class="id info"><span class="badge">6</span></td><td>코멘트 섹션 (자유 코멘트 — <b>버전 스냅샷별</b> 스레드, "vN 스냅샷 기준")</td><td class="type">List&lt;Comment&gt;</td><td class="type">comments[version]</td></tr>
+        <tr><td class="id info"><span class="badge">7</span></td><td>활동 이력 (시스템 이벤트만 — 새 버전·검토 요청·회수·반려·컨펌·무효화, 항상 전체)</td><td class="type">List&lt;Activity&gt;</td><td class="type">activityEvents[]</td></tr>
+        <tr><td class="id info"><span class="badge">8</span></td><td>코멘트 작성란 안내 ("vN 스냅샷에 코멘트 작성")</td><td class="type">String (정적)</td><td class="type">i18n</td></tr>
         <tr><td class="id info"><span class="badge">9</span></td><td>액션 영역 안내</td><td class="type">String (정적)</td><td class="type">i18n</td></tr>
       </tbody>
     </table>
+    <div class="callout"><b>코멘트 / 활동 이력 분리 (REQ-WF-004·CMT-001, 디자인 v2)</b>: 두 섹션으로 분리. <b>코멘트</b>는 자유 코멘트 — <b>버전 스냅샷별로 저장</b>(각 버전이 자신의 스레드, 활동 이력에 미기록). <b>활동 이력</b>은 시스템 이벤트(상태 변경·검토 요청·승인/반려)만, 버전 무관 항상 전체.</div>
   </div>
 
   <div class="section">
@@ -289,12 +290,13 @@ table.spec td .vref{display:inline-block;padding:1px 6px;border-radius:4px;font-
         <tr><td class="id ctrl"><span class="badge">A</span></td><td>사이드바 메뉴</td><td class="type">Nav Link</td><td class="type">→ SCR-LAY 참조</td></tr>
         <tr><td class="id ctrl"><span class="badge">B</span></td><td>버전 드롭다운</td><td class="type">Dropdown</td><td class="type">슬롯 스냅샷 전환, 잠긴 버전은 읽기 전용</td></tr>
         <tr><td class="id ctrl"><span class="badge">C</span></td><td>파일 [다운로드]</td><td class="type">Button</td><td class="type">파일 바이너리 응답</td></tr>
+        <tr><td class="id ctrl"><span class="badge">N</span></td><td>파일 [보기] 인라인 뷰어 (REQ-FILE-003)</td><td class="type">Button → 뷰어 모달</td><td class="type">PDF·이미지 미리보기, 그 외 형식은 "다운로드 후 확인" 폴백. 헤더에 [다운로드] 동시 제공</td></tr>
         <tr><td class="id ctrl"><span class="badge">D</span></td><td>파일 [교체] <a class="vref" href="#validation">V-001</a></td><td class="type">Button + File picker</td><td class="type">OS 다이얼로그 → 즉시 교체 (활동 이력 미기록)</td></tr>
         <tr><td class="id ctrl"><span class="badge">E</span></td><td>파일 [삭제]</td><td class="type">Button + Confirm</td><td class="type">인라인 확인 → 즉시 삭제</td></tr>
         <tr><td class="id ctrl"><span class="badge">F</span></td><td>[+ 파일 업로드] <a class="vref" href="#validation">V-001</a></td><td class="type">Button + File picker</td><td class="type">OS 다이얼로그 → 즉시 추가 (모달 없음)</td></tr>
         <tr><td class="id ctrl"><span class="badge">G</span></td><td>코멘트 [수정] (본인만) <a class="vref" href="#validation">V-002</a></td><td class="type">Button</td><td class="type">인라인 편집 → PATCH</td></tr>
         <tr><td class="id ctrl"><span class="badge">H</span></td><td>코멘트 [삭제] (본인 + 관리자) <a class="vref" href="#validation">V-002</a></td><td class="type">Button + Confirm</td><td class="type">DELETE. 관리자는 감사 로그 기록</td></tr>
-        <tr><td class="id ctrl"><span class="badge">I</span></td><td>자유 코멘트 [등록] <a class="vref" href="#validation">V-003</a></td><td class="type">Textarea + Button</td><td class="type">POST → 활동 이력 추가</td></tr>
+        <tr><td class="id ctrl"><span class="badge">I</span></td><td>자유 코멘트 [등록] <a class="vref" href="#validation">V-003</a></td><td class="type">Textarea + Button</td><td class="type">POST → 코멘트 섹션 추가 (현재 보는 스냅샷에 귀속)</td></tr>
         <tr><td class="id ctrl"><span class="badge">J</span></td><td>[팀] + 새 버전 만들기 <a class="vref" href="#validation">V-004</a></td><td class="type">Button → MOD-VER-001</td><td class="type">모달 열림</td></tr>
         <tr><td class="id ctrl"><span class="badge">K</span></td><td>[팀] 검토 요청 발송 <a class="vref" href="#validation">V-005</a></td><td class="type">Button → MOD-WF-001</td><td class="type">발송 시 버전 잠금 + 고객사 이메일</td></tr>
         <tr><td class="id ctrl"><span class="badge">L</span></td><td>[고객] 컨펌</td><td class="type">Button → MOD-WF-002</td><td class="type">게이트 해제</td></tr>
@@ -358,10 +360,11 @@ table.spec td .vref{display:inline-block;padding:1px 6px;border-radius:4px;font-
         <tr><td class="id info"><span class="badge">5</span></td><td>버전 드롭다운 라벨</td><td class="type">String</td><td class="type">slot.version</td></tr>
         <tr><td class="id info"><span class="badge">6</span></td><td>파일 묶음 카운트</td><td class="type">Integer</td><td class="type">files.length</td></tr>
         <tr><td class="id info"><span class="badge">7</span></td><td>파일 카드 (파일명·크기·설명)</td><td class="type">List&lt;File&gt;</td><td class="type">files[]</td></tr>
-        <tr><td class="id info"><span class="badge">8</span></td><td>활동 이력 카운트</td><td class="type">Integer</td><td class="type">activities.length</td></tr>
-        <tr><td class="id info"><span class="badge">9</span></td><td>활동 이력 항목</td><td class="type">List&lt;Activity&gt;</td><td class="type">activities[]</td></tr>
+        <tr><td class="id info"><span class="badge">8</span></td><td>코멘트 섹션 (자유 코멘트 — <b>버전 스냅샷별</b> 스레드)</td><td class="type">List&lt;Comment&gt;</td><td class="type">comments[version]</td></tr>
+        <tr><td class="id info"><span class="badge">9</span></td><td>활동 이력 (시스템 이벤트만 — 상태 변경·검토 요청·승인/반려, 항상 전체)</td><td class="type">List&lt;Activity&gt;</td><td class="type">activityEvents[]</td></tr>
       </tbody>
     </table>
+    <div class="callout"><b>코멘트 / 활동 이력 분리 (REQ-WF-004·CMT-001, 디자인 v2)</b>: SCR-REQ-001과 동일. 코멘트=버전 스냅샷별 별도 섹션(활동 이력 미기록), 활동 이력=시스템 이벤트만(버전 무관 전체).</div>
   </div>
 
   <div class="section">
@@ -373,10 +376,11 @@ table.spec td .vref{display:inline-block;padding:1px 6px;border-radius:4px;font-
         <tr><td class="id ctrl"><span class="badge">B</span></td><td>단계 탭 클릭</td><td class="type">Tab Link</td><td class="type">URL slug 변경 (<code>/deliverables/design</code> 등). 클라이언트 사이드 라우팅</td></tr>
         <tr><td class="id ctrl"><span class="badge">C</span></td><td>버전 드롭다운</td><td class="type">Dropdown</td><td class="type">슬롯 스냅샷 전환</td></tr>
         <tr><td class="id ctrl"><span class="badge">D</span></td><td>파일 [다운로드]</td><td class="type">Button</td><td class="type">파일 바이너리 응답</td></tr>
+        <tr><td class="id ctrl"><span class="badge">M</span></td><td>파일 [보기] 인라인 뷰어 (REQ-FILE-003)</td><td class="type">Button → 뷰어 모달</td><td class="type">PDF·이미지 미리보기, 그 외 형식은 "다운로드 후 확인" 폴백. 헤더에 [다운로드] 동시 제공. SCR-REQ-001과 동일</td></tr>
         <tr><td class="id ctrl"><span class="badge">E</span></td><td>[+ 파일 업로드] <a class="vref" href="#validation">V-001</a></td><td class="type">Button + File picker</td><td class="type">draft에서만 활성. 현재 v1.0 컨펌이라 비활성</td></tr>
         <tr><td class="id ctrl"><span class="badge">F</span></td><td>코멘트 [수정] (본인만) <a class="vref" href="#validation">V-002</a></td><td class="type">Button</td><td class="type">PATCH</td></tr>
         <tr><td class="id ctrl"><span class="badge">G</span></td><td>코멘트 [삭제] (본인 + 관리자) <a class="vref" href="#validation">V-002</a></td><td class="type">Button + Confirm</td><td class="type">DELETE. 관리자는 감사 로그</td></tr>
-        <tr><td class="id ctrl"><span class="badge">H</span></td><td>자유 코멘트 [등록] <a class="vref" href="#validation">V-003</a></td><td class="type">Textarea + Button</td><td class="type">POST</td></tr>
+        <tr><td class="id ctrl"><span class="badge">H</span></td><td>자유 코멘트 [등록] <a class="vref" href="#validation">V-003</a></td><td class="type">Textarea + Button</td><td class="type">POST → 코멘트 섹션 (현재 스냅샷에 귀속)</td></tr>
         <tr><td class="id ctrl"><span class="badge">I</span></td><td>[팀] + 새 버전 만들기 <a class="vref" href="#validation">V-004</a></td><td class="type">Button → MOD-VER-001</td><td class="type">컨펌 무효화 경고 동반 (REQ-WF-005)</td></tr>
         <tr><td class="id ctrl"><span class="badge">J</span></td><td>[팀] 검토 요청 발송 <a class="vref" href="#validation">V-005</a></td><td class="type">Button → MOD-WF-001</td><td class="type">draft에서만 활성</td></tr>
         <tr><td class="id ctrl"><span class="badge">K</span></td><td>[고객] 컨펌</td><td class="type">Button → MOD-WF-002</td><td class="type">게이트(11/13/15) 해제</td></tr>
@@ -393,10 +397,11 @@ table.spec td .vref{display:inline-block;padding:1px 6px;border-radius:4px;font-
         <tr><td class="row-h"><code>ia</code></td><td>Gate 11</td><td>v1.0 컨펌 완료 (시범 시나리오)</td></tr>
         <tr><td class="row-h"><code>design</code></td><td>Gate 13</td><td>v2 컨펌 완료 (A. Precision grid)</td></tr>
         <tr><td class="row-h"><code>prototype</code></td><td>Gate 15</td><td>14단계 등록 예정 — draft 진입 시 활성</td></tr>
-        <tr><td class="row-h"><code>figma</code></td><td>—</td><td>16~17단계 산출. 게이트 없음, AI 개발 사전조건</td></tr>
+        <tr><td class="row-h"><code>figma</code></td><td>—</td><td>16~17단계 산출. 게이트 없음, 개발 사전조건</td></tr>
       </tbody>
     </table>
-    <div class="callout"><b>SCR-REQ-001과 동일 패턴</b>이지만 차이점: ① 단계 탭(B) 추가, ② 컨펌 완료가 게이트 통과로 연결, ③ AI 개발 사전조건 자료의 일부.</div>
+    <div class="callout"><b>SCR-REQ-001과 동일 패턴</b>이지만 차이점: ① 단계 탭(B) 추가, ② 컨펌 완료가 게이트 통과로 연결, ③ 개발 사전조건 자료의 일부.</div>
+    <div class="callout"><b>소프트 게이트 (REQ-WF-003)</b>: 진입 게이트 미통과 다운스트림 탭(예: 디자인 시안 컨펌 전 프로토타입)도 진입·업로드·새 버전 가능 — 탭에 <code>선행</code> 마커 + "선행 작업 · Gate X 미통과" 경고 표시(소프트 잠금). 컨펌은 게이트 순서대로만(다운스트림 먼저 컨펌 불가). [개발 시작]은 하드 게이트(별도, 비활성화).</div>
   </div>
 </section>
 
@@ -599,9 +604,9 @@ table.spec td .vref{display:inline-block;padding:1px 6px;border-radius:4px;font-
     <table class="spec">
       <thead><tr><th>No</th><th>액션</th><th>Type</th><th>Effect</th></tr></thead>
       <tbody>
-        <tr><td class="id ctrl"><span class="badge">A</span></td><td>사이드바 메뉴</td><td class="type">Nav Link</td><td class="type">→ SCR-LAY 참조 (7개 메뉴)</td></tr>
+        <tr><td class="id ctrl"><span class="badge">A</span></td><td>사이드바 메뉴</td><td class="type">Nav Link</td><td class="type">→ SCR-LAY 참조 (8개 메뉴)</td></tr>
         <tr><td class="id ctrl"><span class="badge">B</span></td><td>[팀] 검토 요청 발송</td><td class="type">Button → MOD-WF-001</td><td class="type">draft 버전 존재 시 활성. SCR-REQ-001 또는 SCR-DSN-001에서도 동일 액션 가능</td></tr>
-        <tr><td class="id ctrl"><span class="badge">C</span></td><td>[팀] AI 개발 시작</td><td class="type">Button → MOD-DEV-001</td><td class="type">9·11·13·15 게이트 모두 통과 + 내부 산출물 등록 완료 시 활성 (REQ-DEV-001)</td></tr>
+        <tr><td class="id ctrl"><span class="badge">C</span></td><td>[팀] 개발 시작</td><td class="type">Button → MOD-DEV-001</td><td class="type">9·11·13·15 게이트 모두 통과 + 내부 산출물 등록 완료 시 활성 (REQ-DEV-001)</td></tr>
         <tr><td class="id ctrl"><span class="badge">D</span></td><td>[고객] 컨펌</td><td class="type">Button → MOD-WF-002</td><td class="type">검토 요청 수신 시 활성</td></tr>
         <tr><td class="id ctrl"><span class="badge">E</span></td><td>[고객] 반려</td><td class="type">Button → MOD-WF-002</td><td class="type">동일</td></tr>
         <tr><td class="id ctrl"><span class="badge">F</span></td><td>[공통] 산출물 Export</td><td class="type">Button → SCR-DEV-002</td><td class="type">Gate 22 통과 후만 활성 (REQ-DEV-002)</td></tr>
@@ -619,7 +624,7 @@ table.spec td .vref{display:inline-block;padding:1px 6px;border-radius:4px;font-
       <thead><tr><th>액션</th><th>관리자</th><th>프로젝트팀(PM)</th><th>고객사</th><th>사전조건</th></tr></thead>
       <tbody>
         <tr><td class="row-h">B 검토 요청 발송</td><td>❌</td><td>✅</td><td>❌</td><td>최신 버전 = draft + 파일 ≥1</td></tr>
-        <tr><td class="row-h">C AI 개발 시작</td><td>❌</td><td>✅</td><td>❌</td><td>9·11·13·15 게이트 통과 + 내부 산출물 6종 등록</td></tr>
+        <tr><td class="row-h">C 개발 시작</td><td>❌</td><td>✅</td><td>❌</td><td>9·11·13·15 게이트 통과 + 내부 산출물 6종 등록</td></tr>
         <tr><td class="row-h">D·E 컨펌·반려</td><td>❌</td><td>❌</td><td>✅</td><td>검토 요청 수신 (= 최신 버전 검토중)</td></tr>
         <tr><td class="row-h">F 산출물 Export</td><td>✅</td><td>✅</td><td>✅</td><td>Gate 22 통과</td></tr>
         <tr><td class="row-h">6 미처리 항목</td><td>표시 (전체)</td><td>표시 (팀 액션)</td><td>표시 (고객 액션)</td><td>역할별 필터링</td></tr>
@@ -665,12 +670,12 @@ table.spec td .vref{display:inline-block;padding:1px 6px;border-radius:4px;font-
     <table class="spec">
       <thead><tr><th>No</th><th>액션</th><th>Type</th><th>Effect</th></tr></thead>
       <tbody>
-        <tr><td class="id ctrl"><span class="badge">A</span></td><td>사이드바 메뉴 (다른 화면 진입)</td><td class="type">Nav Link</td><td class="type">→ SCR-LAY 참조 (7개 메뉴)</td></tr>
+        <tr><td class="id ctrl"><span class="badge">A</span></td><td>사이드바 메뉴 (다른 화면 진입)</td><td class="type">Nav Link</td><td class="type">→ SCR-LAY 참조 (8개 메뉴)</td></tr>
         <tr><td class="id ctrl"><span class="badge">B</span></td><td>산출물 링크 클릭 (예: "SRS v1.3 →")</td><td class="type">Link</td><td class="type">→ 해당 산출물 페이지 (SCR-REQ-001 · SCR-DSN-001/{slug})</td></tr>
         <tr><td class="id ctrl"><span class="badge">C</span></td><td>잠금 단계 마우스 오버</td><td class="type">Tooltip (Hover)</td><td class="type">잠금 사유 표시 (예: "Gate 13 통과 후 진입")</td></tr>
       </tbody>
     </table>
-    <div class="callout"><b>액션 버튼 없음</b>: 검토 요청·컨펌·반려·AI 개발 시작 등은 모두 대시보드(SCR-PRJ-001)·산출물 페이지(SCR-DSN-001·SCR-REQ-001)에 있음. 진행 현황은 정보 제공·탐색 전용.</div>
+    <div class="callout"><b>액션 버튼 없음</b>: 검토 요청·컨펌·반려·개발 시작 등은 모두 대시보드(SCR-PRJ-001)·산출물 페이지(SCR-DSN-001·SCR-REQ-001)에 있음. 진행 현황은 정보 제공·탐색 전용.</div>
   </div>
 
   <div class="section">
@@ -883,7 +888,7 @@ table.spec td .vref{display:inline-block;padding:1px 6px;border-radius:4px;font-
       <tr><td class="id ctrl"><span class="badge">C·D·E·F</span></td><td>현재/새/확인 비밀번호 입력·변경 <a class="vref" href="#validation">V-102</a></td></tr>
       <tr><td class="id ctrl"><span class="badge">G</span></td><td>참여 프로젝트 클릭 → SCR-PRJ-001</td></tr>
     </tbody></table>
-    <div class="callout">이메일·역할 수정 불가. 비밀번호 변경 시 현재 비밀번호 확인 필수. 변경 성공 시 다른 세션 유지(현재 세션만 갱신) — 옵션 결정 필요.</div>
+    <div class="callout">이메일·역할 수정 불가(읽기 전용 표시, 별도 "수정 불가" 캡션 없이 비활성 스타일로 구분). 역할은 접근 tier·직무 병기 — 프로젝트팀 계정은 <code>프로젝트팀 · PM</code>처럼 직무(PM/기획자/디자이너/개발자/QA, REQ-AUT-002) 동반 표기, 고객사·관리자는 tier만. 비밀번호 변경 시 현재 비밀번호 확인 필수. 변경 성공 시 다른 세션 유지(현재 세션만 갱신) — 옵션 결정 필요.</div>
   </div>
 </section>
 
@@ -919,11 +924,11 @@ table.spec td .vref{display:inline-block;padding:1px 6px;border-radius:4px;font-
     <h3><span class="num">2</span> Information · Controls</h3>
     <table class="spec"><tbody>
       <tr><td class="id info"><span class="badge">1·2</span></td><td>총 카운트, 계정 행 (이름·이메일·고객사·참여 PJT·상태)</td></tr>
-      <tr><td class="id ctrl"><span class="badge">A</span></td><td>[+ 계정 생성] → SCR-ADM-004 폼 (이름·이메일·고객사·참여 PJT)</td></tr>
+      <tr><td class="id ctrl"><span class="badge">A</span></td><td>[+ 고객사 초대] → 초대 모달 (이름·이메일·고객사명·참여 프로젝트). SCR-SET-002와 <b>동일 모달 재사용</b></td></tr>
       <tr><td class="id ctrl"><span class="badge">B·C·D</span></td><td>고객사·상태 필터, 이름·이메일·고객사 검색</td></tr>
-      <tr><td class="id ctrl"><span class="badge">E·F·G</span></td><td>[편집] / [초대 재발송] (MOD-AUT-001) / [비활성화]</td></tr>
+      <tr><td class="id ctrl"><span class="badge">E·F·G</span></td><td>[참여 프로젝트] (SCR-ADM-004 — 참여 프로젝트 multi-select 체크박스로 추가·제거, 신규 추가분 참여 알림) / [초대 재발송] (MOD-AUT-001) / [비활성화]</td></tr>
     </tbody></table>
-    <div class="callout">이메일+고객사 조합 unique (REQ-AUT-006). 팀 발급(SCR-SET-002)과 병행 가능. 초대 대기 → 수락 시 활성 전환.</div>
+    <div class="callout"><b>초대 모달 진입점별 차이</b>: 동일 "고객사 초대" 모달을 재사용하되 <b>참여 프로젝트</b> 필드만 다름 — <b>관리자 메뉴(SCR-ADM-003) 진입</b> = 프로젝트 목록 드롭다운(단일 선택), <b>프로젝트 설정(SCR-SET-002) 진입</b> = 현재 프로젝트 고정(변경 불가). "계정 생성" → "고객사 초대"로 명칭 통일(둘 다 초대-수락 방식, REQ-AUT-002·006). 이메일 중복 발급 차단, 초대 대기 → 수락 시 활성(REQ-AUT-003).</div>
   </div>
 </section>
 
@@ -941,7 +946,7 @@ table.spec td .vref{display:inline-block;padding:1px 6px;border-radius:4px;font-
       <tr><td class="id info"><span class="badge">1·2</span></td><td>화면 제목, 로그 행 (일시 UTC·사용자·역할·액션·대상·IP)</td></tr>
       <tr><td class="id ctrl"><span class="badge">A·B·C·D</span></td><td>기간·사용자·액션·대상 객체 필터·검색</td></tr>
     </tbody></table>
-    <div class="callout"><b>변조 방지</b>: append-only, 수정·삭제 불가. 보존 1년. UTC 시간 표기. 자동 기록 이벤트: 로그인·계정·파일·컨펌·게이트·AI 개발·Export.</div>
+    <div class="callout"><b>변조 방지</b>: append-only, 수정·삭제 불가. 보존 1년. UTC 시간 표기. 자동 기록 이벤트: 로그인·계정·파일·컨펌·게이트·개발·Export.</div>
   </div>
 </section>
 
@@ -969,18 +974,20 @@ table.spec td .vref{display:inline-block;padding:1px 6px;border-radius:4px;font-
   <div class="screen-head">
     <p class="eyebrow">그룹 5 · 계정·관리</p>
     <h2>SCR-SET-002 · 프로젝트 설정 — 팀 멤버·고객사 초대</h2>
-    <p class="meta">URL: <code>/projects/{id}/settings/members</code> · 권한: 팀(액션) / 공통(조회) · REQ-AUT-002·012</p>
+    <p class="meta">URL: <code>/projects/{id}/settings/members</code> · 권한: 팀(팀원·고객사 초대) / 공통(조회) · REQ-AUT-002·004·012</p>
   </div>
   <div class="section"><h3><span class="num">1</span> 화면</h3><iframe class="wf-frame" src="../wireframe/index.html?screen=s9" title="SCR-SET-002"></iframe></div>
   <div class="section">
     <h3><span class="num">2</span> Information · Controls</h3>
     <table class="spec"><tbody>
       <tr><td class="id info"><span class="badge">1·2·3·4·5</span></td><td>제목, 팀 멤버 목록, 멤버 행, 고객사 목록, 초대 상태 배지</td></tr>
-      <tr><td class="id ctrl"><span class="badge">A</span></td><td>[+ 고객사 초대] — 팀 전용 (이메일 입력 → 토큰 발급·메일 발송, REQ-AUT-002)</td></tr>
-      <tr><td class="id ctrl"><span class="badge">B</span></td><td>[재발송] → MOD-AUT-001 (M5) — 이전 토큰 무효화</td></tr>
-      <tr><td class="id ctrl"><span class="badge">C</span></td><td>[취소] — 초대 자체 취소 (토큰 무효화)</td></tr>
+      <tr><td class="id ctrl"><span class="badge">A</span></td><td>[+ 팀원 초대] — 팀 전용 (이름·이메일·역할 PM/기획/디자인/개발/QA 입력 → 토큰 발급·메일 발송, REQ-AUT-002)</td></tr>
+      <tr><td class="id ctrl"><span class="badge">B</span></td><td>[+ 고객사 초대] — 팀 전용. 이메일 판별: <b>신규</b>=온보딩 초대(토큰) / <b>기존 고객사</b>=이 프로젝트 참여만 추가(비번 없음)+참여 알림 / 이미 참여=무동작 (REQ-AUT-002)</td></tr>
+      <tr><td class="id ctrl"><span class="badge">C</span></td><td>[재발송] → MOD-AUT-001 (M5) — 이전 토큰 무효화</td></tr>
+      <tr><td class="id ctrl"><span class="badge">D</span></td><td>[취소] — 초대 자체 취소 (토큰 무효화)</td></tr>
+      <tr><td class="id ctrl"><span class="badge">E</span></td><td>[제외] — 활성 고객사를 <b>이 프로젝트에서 제외</b> (멤버십만 제거, 계정·과거 이력 보존). 팀(자기 프로젝트)·관리자</td></tr>
     </tbody></table>
-    <div class="callout">고객사도 본 화면 조회 가능(액션 X). 팀 멤버는 관리자가 SCR-ADM-002에서 할당 (본 화면에선 조회만).</div>
+    <div class="callout">고객사도 본 화면 조회 가능(액션 X). <b>팀은 팀원·고객사 모두 초대 + 자기 프로젝트 제외 가능</b> — MVP RBAC 제외로 팀 tier 전체 가능. 단 <b>계정 수정·비활성화(전역)는 관리자 전용</b>(REQ-AUT-004·006). <b>다중 프로젝트 멤버십</b>: 고객사 계정은 이메일당 1개, 여러 프로젝트 참여 가능(N:M). 기존 고객사 재초대 시 참여만 추가됨.</div>
   </div>
 </section>
 
@@ -1085,9 +1092,9 @@ table.spec td .vref{display:inline-block;padding:1px 6px;border-radius:4px;font-
 <section class="screen" id="scr-dev-001">
   <div class="screen-head">
     <p class="eyebrow">화면 설계서 · 그룹 4 · 부가</p>
-    <h2>SCR-DEV-001 · AI 개발 진행 상태</h2>
-    <p class="meta">Path: 사이드바 메뉴 / 대시보드 [AI 개발 시작] 후 자동 진입 &nbsp;·&nbsp; URL: <code>/projects/{id}/ai-build</code> &nbsp;·&nbsp; 권한: 팀</p>
-    <p class="desc"><b>Description:</b> 18단계 AI 자동 개발의 비동기 작업 진행 상태. 5초 폴링 갱신. 과거 작업 이력 + 재시도(24h당 3회, REQ-DEV-001).</p>
+    <h2>SCR-DEV-001 · 개발 진행 상태</h2>
+    <p class="meta">Path: 사이드바 메뉴 / 대시보드 [개발 시작] 후 자동 진입 &nbsp;·&nbsp; URL: <code>/projects/{id}/dev</code> &nbsp;·&nbsp; 권한: 팀</p>
+    <p class="desc"><b>Description:</b> 18단계 개발의 비동기 작업 진행 상태. 5초 폴링 갱신. 과거 작업 이력 + 재시도(24h당 3회, REQ-DEV-001).</p>
   </div>
   <div class="section"><h3><span class="num">1</span> 화면</h3><iframe class="wf-frame" src="../wireframe/index.html?screen=s8" title="SCR-DEV-001 와이어프레임"></iframe></div>
   <div class="section">
@@ -1144,6 +1151,7 @@ table.spec td .vref{display:inline-block;padding:1px 6px;border-radius:4px;font-
       <tr><td class="id ctrl"><span class="badge">B·C·D</span></td><td>단계·우선순위·상태 필터</td><td class="type">Dropdown</td><td class="type">목록 즉시 필터</td></tr>
       <tr><td class="id ctrl"><span class="badge">E</span></td><td>검색 (TC ID·제목)</td><td class="type">Input</td><td class="type">부분 일치</td></tr>
       <tr><td class="id ctrl"><span class="badge">F</span></td><td>TC 행 클릭</td><td class="type">Link</td><td class="type">→ SCR-TST-002</td></tr>
+      <tr><td class="id ctrl"><span class="badge">G</span></td><td>[CSV 가져오기]</td><td class="type">Button</td><td class="type">CSV·Excel 일괄 가져오기 모달 — 템플릿 다운로드 → 파일 업로드 → 인식 행·컬럼 매핑 미리보기 → 등록 (REQ-TST-001). 단건 [+ TC 등록]과 병행, 대량 작성용</td></tr>
     </tbody></table>
   </div>
   <div class="section">
@@ -1184,7 +1192,7 @@ table.spec td .vref{display:inline-block;padding:1px 6px;border-radius:4px;font-
     <table class="spec"><thead><tr><th>No</th><th>액션</th><th>Type</th><th>Effect</th></tr></thead><tbody>
       <tr><td class="id ctrl"><span class="badge">B</span></td><td>실제 결과 입력</td><td class="type">Textarea</td><td class="type">PATCH tc.actual</td></tr>
       <tr><td class="id ctrl"><span class="badge">C</span></td><td>연결 결함 클릭</td><td class="type">Link</td><td class="type">→ SCR-TST-004</td></tr>
-      <tr><td class="id ctrl"><span class="badge">D</span></td><td>[+ 결함 연결]</td><td class="type">Button → Picker</td><td class="type">기존 결함 검색·선택 또는 신규 등록</td></tr>
+      <tr><td class="id ctrl"><span class="badge">D</span></td><td>[+ 결함 등록] · [+ 결함 연결]</td><td class="type">Button</td><td class="type">[+ 결함 등록] 신규 결함 — 이 TC가 연결 TC로 자동 선택(REQ-TST-001). [+ 결함 연결] 기존 결함 검색·선택. 양방향 link</td></tr>
       <tr><td class="id ctrl"><span class="badge">E·F·G</span></td><td>Pass / Fail / 보류 결과</td><td class="type">Button</td><td class="type">tc.status 전이. Fail 시 결함 등록 옵션 안내</td></tr>
       <tr><td class="id ctrl"><span class="badge">H</span></td><td>[편집]</td><td class="type">Button</td><td class="type">전제·절차·기대 결과 편집 모드</td></tr>
     </tbody></table>
@@ -1220,7 +1228,7 @@ table.spec td .vref{display:inline-block;padding:1px 6px;border-radius:4px;font-
   <div class="section">
     <h3><span class="num">3</span> Controls</h3>
     <table class="spec"><thead><tr><th>No</th><th>액션</th><th>Type</th><th>Effect</th></tr></thead><tbody>
-      <tr><td class="id ctrl"><span class="badge">B</span></td><td>[+ 결함 등록]</td><td class="type">Button</td><td class="type">신규 결함 생성 (인라인 또는 SCR-TST-004 신규 모드)</td></tr>
+      <tr><td class="id ctrl"><span class="badge">B</span></td><td>[+ 결함 등록]</td><td class="type">Button → Modal</td><td class="type">신규 결함 생성 모달 — 제목·심각도·담당자 + 연결 TC(선택, REQ-TST-001). 단건만(일괄 가져오기 없음)</td></tr>
       <tr><td class="id ctrl"><span class="badge">C·D·E</span></td><td>상태·심각도·담당자 필터</td><td class="type">Dropdown</td><td class="type">목록 즉시 필터</td></tr>
       <tr><td class="id ctrl"><span class="badge">F</span></td><td>검색</td><td class="type">Input</td><td class="type">ID·제목 부분 일치</td></tr>
       <tr><td class="id ctrl"><span class="badge">G</span></td><td>결함 행 클릭</td><td class="type">Link</td><td class="type">→ SCR-TST-004</td></tr>
@@ -1286,9 +1294,9 @@ table.spec td .vref{display:inline-block;padding:1px 6px;border-radius:4px;font-
 <section class="screen" id="mod-dev-001">
   <div class="screen-head">
     <p class="eyebrow">화면 설계서 · 그룹 4 · 부가</p>
-    <h2>MOD-DEV-001 · AI 개발 시작 모달</h2>
-    <p class="meta">트리거: SCR-PRJ-001 [팀] AI 개발 시작 &nbsp;·&nbsp; 권한: 프로젝트팀 PM</p>
-    <p class="desc"><b>Description:</b> 18단계 AI 자동 개발 시작 컨펌. 사전 조건(9·11·13·15 게이트 + 내부 산출물 6종) 확인 후 큐 등록 (REQ-DEV-001).</p>
+    <h2>MOD-DEV-001 · 개발 시작 모달</h2>
+    <p class="meta">트리거: SCR-PRJ-001 [팀] 개발 시작 &nbsp;·&nbsp; 권한: 프로젝트팀 PM</p>
+    <p class="desc"><b>Description:</b> 18단계 개발 시작 컨펌. 사전 조건(9·11·13·15 게이트 + 내부 산출물 6종) 확인 후 큐 등록 (REQ-DEV-001).</p>
   </div>
   <div class="section"><h3><span class="num">1</span> 화면</h3><iframe class="wf-frame" src="../wireframe/index.html?screen=m3" title="MOD-DEV-001 와이어프레임"></iframe></div>
   <div class="section">
@@ -1314,7 +1322,7 @@ table.spec td .vref{display:inline-block;padding:1px 6px;border-radius:4px;font-
       <tr><td class="row-h">내부 산출물(No.5·6·9·10·11·Figma) 미등록</td><td>❌ 비활성</td><td>"내부 설계 산출물 N개 미등록"</td></tr>
       <tr><td class="row-h">24h당 3회 재시도 초과</td><td>❌ 비활성</td><td>"24시간 후 가능"</td></tr>
     </tbody></table>
-    <div class="callout"><b>UX 보강</b>: 사전조건 미충족 시 SCR-PRJ-001의 [AI 개발 시작] 버튼 자체가 비활성. 본 모달은 진입한 시점에 이미 충족 상태가 거의 보장됨. 단, 진입과 제출 사이의 race condition 방어 위해 서버 측 재검증 필수.</div>
+    <div class="callout"><b>UX 보강</b>: 사전조건 미충족 시 SCR-PRJ-001의 [개발 시작] 버튼 자체가 비활성. 본 모달은 진입한 시점에 이미 충족 상태가 거의 보장됨. 단, 진입과 제출 사이의 race condition 방어 위해 서버 측 재검증 필수.</div>
   </div>
 </section>
 

@@ -2,7 +2,7 @@
 
 | 항목 | 내용 |
 |------|------|
-| 프로젝트명 | sp-project-portal |
+| 프로젝트명 | SoftPuzzle PM |
 | 작성일 | 2026-05-19 |
 | 버전 | v0.1 |
 | 관련 단계 | 10~17 (설계 전반, 시안 진입 전 작성 권장) |
@@ -40,14 +40,14 @@
 | RDBMS | PostgreSQL | 15.x | 모든 도메인 데이터 |
 | 세션 저장소 | PostgreSQL (Spring Session JDBC) | — | 세션 영속화 (MVP) — Redis 대안은 운영 결정 |
 | 파일 스토리지 | S3 (운영) / 로컬 디렉토리(dev) | — | 산출물 파일 저장 |
-| 큐 | DB 기반 큐 (MVP) | — | AI 개발·이메일 비동기 처리. SQS는 추후 검토 |
+| 큐 | DB 기반 큐 (MVP) | — | 개발·이메일 비동기 처리. SQS는 추후 검토 |
 
 ### 1-3. 외부 의존성
 
 | 의존성 | 용도 | 채택 후보 | 비고 |
 |--------|------|----------|------|
 | 이메일 발송 | REQ-NTF-001 | AWS SES / SendGrid | 운영 시 1차 채택 결정. 개발 환경은 MailHog |
-| AI 개발 백엔드 | REQ-DEV-001 | 외부 SaaS 또는 내부 모델 | 외부 인터페이스만 정의(REQ-DEV-001 §12-1), 실제 백엔드는 별도 |
+| 개발 백엔드 | REQ-DEV-001 | 외부 SaaS 또는 내부 모델 | 외부 인터페이스만 정의(REQ-DEV-001 §12-1), 실제 백엔드는 별도 |
 | 파일 저장소 | REQ-FILE-001 | AWS S3 | 최대 50MB/파일 |
 | 도메인·DNS | 운영 | AWS Route 53 | — |
 | 인증서 | HTTPS | AWS ACM | 무료 발급·자동 갱신 |
@@ -70,7 +70,7 @@
 ```
                     ┌─────────────────────────────┐
                     │      AWS Route 53           │
-                    │  sp-project-portal.com      │
+                    │  pm.softpuzzle.com          │
                     └────────────┬────────────────┘
                                  │ HTTPS (ACM 인증서)
                                  ▼
@@ -84,7 +84,7 @@
                 ▼                ▼                ▼
         ┌───────────────┐┌───────────────┐┌──────────────┐
         │  EC2 (AZ-a)   ││  EC2 (AZ-c)   ││  Worker EC2  │
-        │ Spring Boot   ││ Spring Boot   ││ AI 개발 워커  │
+        │ Spring Boot   ││ Spring Boot   ││ 개발 워커  │
         │ (Private SN)  ││ (Private SN)  ││ 이메일 워커   │
         └──────┬────────┘└──────┬────────┘└──────┬───────┘
                │                │                │
@@ -121,7 +121,7 @@
 | Security Group: ALB | Inbound 443/80 (Internet) |
 | Security Group: App | Inbound 8080 (ALB SG만 허용) |
 | Security Group: DB | Inbound 5432 (App SG만 허용) |
-| NAT Gateway | App에서 외부 호출(SES·AI 개발 백엔드) 시 사용 |
+| NAT Gateway | App에서 외부 호출(SES·개발 백엔드) 시 사용 |
 
 ---
 
@@ -134,7 +134,7 @@
 | dev | t3.small | 2 | 2 GB | 1 | 단순 검증용 |
 | staging | t3.medium | 2 | 4 GB | 1 | UAT 부하 |
 | prod | t3.medium | 2 | 4 GB | 2 (AZ 분산) | Auto Scaling Group 권장(추후) |
-| worker (prod) | t3.small | 2 | 2 GB | 1 | AI 개발 큐·이메일 워커 |
+| worker (prod) | t3.small | 2 | 2 GB | 1 | 개발 큐·이메일 워커 |
 
 ### 3-2. RDS PostgreSQL
 
@@ -175,7 +175,7 @@
 | DB 비밀번호 | AWS Secrets Manager 또는 환경변수 (운영 결정) |
 | SES API 키 / SMTP 자격증명 | Secrets Manager |
 | 세션 키 / 암호화 키 | Secrets Manager |
-| AI 개발 백엔드 토큰 | Secrets Manager |
+| 개발 백엔드 토큰 | Secrets Manager |
 | 환경변수 주입 | Spring Boot `application-{env}.yml` + `${ENV_VAR}` 바인딩 |
 
 > 글로벌 컨벤션: 시크릿 기본값 하드코딩 금지. 환경변수 없으면 애플리케이션 시작 실패.

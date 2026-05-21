@@ -1,4 +1,6 @@
-# sp-project-portal
+# SoftPuzzle PM
+
+> 제품(사이트)명: **SoftPuzzle PM** — SoftPuzzle의 B2B 프로젝트 관리 SaaS. 레포 슬러그·폴더는 `sp-project-portal` 유지.
 
 고객사와 대행사 간 승인/컨펌 워크플로우 중심의 프로젝트 진행 관리 웹 시스템.
 

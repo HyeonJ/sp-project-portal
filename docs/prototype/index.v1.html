@@ -7,8 +7,14 @@
 <style>
 /* ========== Design Tokens (A. Precision grid) ========== */
 :root{
-  --bg:#fafafa;--surface:#ffffff;--surface-warm:var(--surface);--fg:#111111;--fg-2:var(--fg);--muted:#6b6b6b;--meta:var(--muted);--border:#e5e5e5;--border-soft:var(--border);--accent:#2f6feb;--accent-on:#ffffff;--accent-hover:color-mix(in oklab,var(--accent),black 8%);--accent-active:color-mix(in oklab,var(--accent),black 14%);--success:#17a34a;--warn:#eab308;--danger:#dc2626;--font-display:"Inter",-apple-system,system-ui,sans-serif;--font-body:"Inter",-apple-system,system-ui,sans-serif;--font-mono:ui-monospace,"JetBrains Mono",monospace;--text-xs:12px;--text-sm:14px;--text-base:16px;--text-lg:20px;--text-xl:24px;--text-2xl:32px;--text-3xl:48px;--text-4xl:64px;--leading-body:1.5;--leading-tight:1.2;--tracking-display:-0.01em;--space-1:4px;--space-2:8px;--space-3:12px;--space-4:16px;--space-5:20px;--space-6:24px;--space-8:32px;--space-12:48px;--space-20:80px;--section-y-desktop:80px;--section-y-tablet:48px;--section-y-phone:32px;--radius-sm:8px;--radius-md:12px;--radius-lg:16px;--radius-pill:9999px;--elev-flat:none;--elev-ring:0 0 0 1px var(--border);--elev-raised:0 2px 8px color-mix(in oklab,var(--fg),transparent 92%);--focus-ring:0 0 0 3px color-mix(in oklab,var(--accent),transparent 70%);--motion-fast:150ms;--motion-base:200ms;--ease-standard:cubic-bezier(0.2,0,0,1);--container-max:1200px;--container-gutter-desktop:24px;--container-gutter-tablet:16px;--container-gutter-phone:12px;
-  --surface-2:color-mix(in oklab,var(--surface),var(--bg) 68%);--surface-3:color-mix(in oklab,var(--bg),var(--accent) 2%);--muted-2:color-mix(in oklab,var(--muted),var(--surface) 40%);--border-strong:color-mix(in oklab,var(--border),var(--fg) 7%);--divider:color-mix(in oklab,var(--border),transparent 46%);--accent-soft:color-mix(in oklab,var(--accent),transparent 94%);--accent-deep:color-mix(in oklab,var(--accent),var(--fg) 24%);--ok:var(--success);--ok-soft:color-mix(in oklab,var(--success),transparent 93%);--warn-soft:color-mix(in oklab,var(--warn),transparent 92%);--hot:var(--danger);--hot-soft:color-mix(in oklab,var(--danger),transparent 94%);--layer-border:color-mix(in oklab,var(--border),var(--surface) 28%);--layer-border-hover:color-mix(in oklab,var(--accent),var(--border) 80%);--panel-shadow:0 10px 24px color-mix(in oklab,var(--accent),transparent 94%),0 1px 2px color-mix(in oklab,var(--fg),transparent 96%);--panel-shadow-hover:0 16px 34px color-mix(in oklab,var(--accent),transparent 91%),0 2px 8px color-mix(in oklab,var(--fg),transparent 95%);--soft-inset:inset 0 1px 0 color-mix(in oklab,var(--surface),var(--fg) 3%);--font:var(--font-body);--mono:var(--font-mono);
+  --bg:oklch(99% .002 240);--surface:oklch(100% 0 0);--surface-2:oklch(98% .003 240);--surface-3:oklch(96% .004 240);
+  --fg:oklch(18% .012 250);--fg-2:oklch(28% .014 250);--muted:oklch(54% .012 250);--muted-2:oklch(68% .010 250);
+  --border:oklch(92% .005 250);--border-strong:oklch(86% .007 250);--divider:oklch(94% .004 250);
+  --accent:oklch(58% .18 255);--accent-hover:oklch(52% .19 255);--accent-soft:oklch(96% .04 255);--accent-deep:oklch(38% .18 255);
+  --ok:oklch(48% .16 145);--ok-soft:oklch(96% .07 145);--warn:oklch(56% .13 75);--warn-soft:oklch(96% .08 75);--hot:oklch(56% .18 25);--hot-soft:oklch(96% .06 25);
+  --font:-apple-system,BlinkMacSystemFont,'SF Pro Text','Noto Sans KR',system-ui,sans-serif;
+  --font-display:-apple-system,BlinkMacSystemFont,'SF Pro Display','Noto Sans KR',system-ui,sans-serif;
+  --mono:'JetBrains Mono','IBM Plex Mono',ui-monospace,Menlo,Consolas,monospace;
 }
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.5 var(--font);-webkit-font-smoothing:antialiased}
@@ -22,71 +28,63 @@ code{font-family:var(--mono);font-size:.92em;background:var(--surface-2);padding
 /* ========== Layout - project ========== */
 .app{display:grid;grid-template-columns:240px minmax(0,1fr);min-height:100vh}
 .app.no-sidebar{grid-template-columns:1fr}
-.sidebar{background:color-mix(in oklab,var(--surface),var(--bg) 36%);border-right:1px solid var(--divider);padding:14px 12px;position:sticky;top:0;height:100vh;overflow-y:auto;display:flex;flex-direction:column}
-.sidebar .brand{display:flex;flex-direction:column;padding:10px 10px 16px;border-bottom:1px solid var(--divider);margin-bottom:12px;border-radius:10px}
-.sidebar .brand .logo{width:max-content;color:var(--accent);font:750 20px/1.12 var(--font-display);letter-spacing:-.015em}
-.sidebar .brand .logo:hover{color:var(--accent-hover);text-decoration:none}
+.sidebar{background:var(--surface);border-right:1px solid var(--border);padding:14px 12px;position:sticky;top:0;height:100vh;overflow-y:auto;display:flex;flex-direction:column}
+.sidebar .brand{display:flex;flex-direction:column;padding:8px 10px 14px;border-bottom:1px solid var(--border);margin-bottom:12px;cursor:pointer}
+.sidebar .brand:hover{background:var(--surface-2);border-radius:8px}
+.sidebar .brand .logo{font:700 14px/1.2 var(--font-display);letter-spacing:-.01em}
 .sidebar .brand .proj{font-size:12px;color:var(--muted);margin-top:4px}
 .sidebar .brand .proj small{display:block;color:var(--muted-2);font-size:11px;margin-top:1px}
 .sidebar nav{display:flex;flex-direction:column;gap:1px}
-.sidebar .nav-item{position:relative;display:flex;justify-content:space-between;align-items:center;padding:9px 10px 9px 12px;border-radius:10px;font-size:13px;color:var(--fg-2);cursor:pointer;transition:background var(--motion-fast) var(--ease-standard),color var(--motion-fast) var(--ease-standard),box-shadow var(--motion-fast) var(--ease-standard),transform var(--motion-fast) var(--ease-standard)}
-.sidebar .nav-item:hover{background:color-mix(in oklab,var(--surface),var(--accent) 3.5%);color:var(--fg);text-decoration:none;box-shadow:var(--soft-inset),0 7px 16px color-mix(in oklab,var(--accent),transparent 95%);transform:translateX(1px)}
-.sidebar .nav-item.active{background:color-mix(in oklab,var(--surface),var(--accent) 5.5%);color:var(--accent);font-weight:650;box-shadow:var(--soft-inset),0 10px 22px color-mix(in oklab,var(--accent),transparent 92%)}
-.sidebar .nav-item.active::before{content:"";position:absolute;left:5px;top:50%;width:2px;height:16px;border-radius:var(--radius-pill);background:color-mix(in oklab,var(--accent),var(--surface) 18%);transform:translateY(-50%)}
+.sidebar .nav-item{display:flex;justify-content:space-between;align-items:center;padding:9px 10px;border-radius:8px;font-size:13px;color:var(--fg-2);cursor:pointer}
+.sidebar .nav-item:hover{background:var(--surface-2);text-decoration:none}
+.sidebar .nav-item.active{background:var(--accent-soft);color:var(--accent);font-weight:600}
 .sidebar .nav-item.locked{color:var(--muted-2)}
-.sidebar .nav-item .tag{font:500 10px/1 var(--mono);color:var(--muted);background:color-mix(in oklab,var(--surface),var(--bg) 40%);padding:3px 7px;border-radius:99px;border:1px solid var(--divider)}
-.sidebar .nav-item.active .tag{color:var(--accent);background:var(--accent-soft);border-color:color-mix(in oklab,var(--accent),var(--surface) 74%)}
+.sidebar .nav-item .tag{font:500 10px/1 var(--mono);color:var(--muted);background:var(--surface-2);padding:3px 7px;border-radius:99px;border:1px solid var(--border)}
+.sidebar .nav-item.active .tag{color:var(--accent);background:#fff;border-color:var(--accent)}
 .sidebar .nav-item.locked .tag{color:var(--muted-2)}
-.sidebar .subnav{display:grid;gap:2px;margin:3px 0 6px 10px;padding:5px 0 5px 10px;border-left:1.5px solid color-mix(in oklab,var(--border),transparent 34%)}
-.sidebar .sub{position:relative;display:flex;align-items:center;min-height:30px;padding:6px 9px;border-radius:9px;font-size:12px;color:var(--muted);transition:background var(--motion-fast) var(--ease-standard),color var(--motion-fast) var(--ease-standard),transform var(--motion-fast) var(--ease-standard),box-shadow var(--motion-fast) var(--ease-standard)}
-.sidebar .sub:hover{background:color-mix(in oklab,var(--surface),var(--accent) 2.8%);color:var(--fg);text-decoration:none;box-shadow:var(--soft-inset);transform:translateX(1px)}
-.sidebar .sub.active{color:var(--accent);font-weight:650;background:color-mix(in oklab,var(--surface),var(--accent) 4.5%);box-shadow:var(--soft-inset)}
-.sidebar .sub.active::before{content:"";position:absolute;left:-12px;top:50%;width:3px;height:14px;border-radius:var(--radius-pill);background:color-mix(in oklab,var(--accent),var(--surface) 22%);transform:translateY(-50%)}
+.sidebar .sub{padding-left:18px;font-size:12px;color:var(--muted)}
+.sidebar .sub.active{color:var(--accent);font-weight:600}
 .sidebar .group{font:600 10px/1 var(--mono);color:var(--muted-2);text-transform:uppercase;letter-spacing:.06em;padding:14px 10px 6px;border-top:1px solid var(--divider);margin-top:10px}
 .sidebar .group:first-of-type{border-top:0;margin-top:4px}
 
 /* ========== Topbar ========== */
-.topbar{position:sticky;top:0;background:color-mix(in oklab,var(--surface),transparent 6%);backdrop-filter:blur(14px);border-bottom:1px solid var(--divider);padding:11px 28px;display:flex;align-items:center;gap:14px;z-index:10;box-shadow:0 1px 0 color-mix(in oklab,var(--surface),var(--fg) 3%)}
+.topbar{position:sticky;top:0;background:rgba(255,255,255,.9);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);padding:11px 28px;display:flex;align-items:center;gap:14px;z-index:10}
 .topbar.no-sidebar{padding:12px 32px}
 .topbar .breadcrumb{font-size:13px;color:var(--muted);display:flex;align-items:center;gap:6px}
 .topbar .breadcrumb a{color:var(--muted)}.topbar .breadcrumb a:hover{color:var(--fg)}
 .topbar .breadcrumb b{color:var(--fg);font-weight:600}
 .topbar .breadcrumb .sep{color:var(--muted-2)}
-.topbar .proj-switcher{display:flex;align-items:center;gap:6px;padding:5px 10px;border:1px solid var(--divider);border-radius:99px;background:var(--surface);font-size:13px;cursor:pointer;font-weight:500;box-shadow:var(--soft-inset)}
-.topbar .proj-switcher:hover{border-color:var(--layer-border-hover);background:color-mix(in oklab,var(--surface),var(--accent) 2%)}
-.topbar .proj-switcher .arrow{color:var(--muted);font-size:14px}
+.topbar .proj-switcher{display:flex;align-items:center;gap:6px;padding:5px 10px;border:1px solid var(--border);border-radius:8px;background:var(--surface);font-size:13px;cursor:pointer;font-weight:500}
+.topbar .proj-switcher:hover{border-color:var(--border-strong);background:var(--surface-2)}
+.topbar .proj-switcher .arrow{color:var(--muted);font-size:10px}
 .topbar .spacer{flex:1}
-.topbar .search{border:1px solid var(--divider);background:var(--surface);border-radius:99px;padding:7px 12px;font-size:13px;color:var(--muted);min-width:240px;cursor:pointer;display:flex;align-items:center;gap:8px;box-shadow:var(--soft-inset)}
-.topbar .search:hover{border-color:var(--layer-border-hover);background:color-mix(in oklab,var(--surface),var(--accent) 2%)}
+.topbar .search{border:1px solid var(--border);background:var(--surface);border-radius:8px;padding:7px 12px;font-size:13px;color:var(--muted);min-width:240px;cursor:pointer;display:flex;align-items:center;gap:8px}
+.topbar .search:hover{border-color:var(--border-strong)}
 .topbar .search .kbd{margin-left:auto;font:500 10px/1 var(--mono);background:var(--surface-2);border:1px solid var(--border);padding:2px 6px;border-radius:4px;color:var(--muted-2)}
-.topbar .icon-btn{width:36px;height:36px;border-radius:99px;display:inline-flex;align-items:center;justify-content:center;font-size:16px;color:var(--muted);position:relative;border:1px solid transparent}
-.topbar .icon-btn svg{width:18px;height:18px;display:block;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;fill:none}
-.topbar .icon-btn:hover{background:var(--surface);color:var(--fg);border-color:var(--divider);box-shadow:var(--soft-inset)}
-.topbar .icon-btn .dot{position:absolute;width:7px;height:7px;background:var(--hot);border-radius:50%;top:8px;right:8px;border:1px solid var(--surface)}
-.topbar .acct{display:flex;align-items:center;gap:8px;padding:5px 10px 5px 6px;border:1px solid var(--divider);border-radius:99px;cursor:pointer;background:var(--surface);box-shadow:var(--soft-inset)}
-.topbar .acct:hover{background:color-mix(in oklab,var(--surface),var(--accent) 2%);border-color:var(--layer-border-hover)}
-.topbar .acct .avatar{width:24px;height:24px;border-radius:50%;background:var(--accent);color:var(--accent-on);display:inline-flex;align-items:center;justify-content:center;font:600 11px/1 var(--font)}
+.topbar .icon-btn{width:36px;height:36px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;font-size:16px;color:var(--muted);position:relative}
+.topbar .icon-btn:hover{background:var(--surface-2);color:var(--fg)}
+.topbar .icon-btn .dot{position:absolute;width:7px;height:7px;background:var(--hot);border-radius:50%;top:8px;right:8px;border:2px solid var(--surface)}
+.topbar .acct{display:flex;align-items:center;gap:8px;padding:5px 10px 5px 6px;border:1px solid var(--border);border-radius:99px;cursor:pointer}
+.topbar .acct:hover{background:var(--surface-2)}
+.topbar .acct .avatar{width:24px;height:24px;border-radius:50%;background:var(--accent);color:#fff;display:inline-flex;align-items:center;justify-content:center;font:600 11px/1 var(--font)}
 .topbar .acct .name{font-size:13px;color:var(--fg-2)}
-.topbar .acct .arrow{color:var(--muted);font-size:14px}
+.topbar .acct .arrow{color:var(--muted);font-size:10px}
 
 /* ========== Content ========== */
 .main{padding:24px 32px 80px;max-width:1320px}
-.page-title{font:700 24px/1.2 var(--font-display);letter-spacing:-.015em;margin:0 0 20px}
-.page-bar .page-title{margin-bottom:0}
-.page-title:has(+ .page-sub){margin-bottom:6px}
+.page-title{font:700 24px/1.2 var(--font-display);letter-spacing:-.015em;margin:0 0 6px}
 .page-sub{color:var(--muted);font-size:13px;margin:0 0 18px}
 .page-bar{display:flex;justify-content:space-between;align-items:flex-end;gap:14px;margin-bottom:16px}
 
 /* ========== Card ========== */
-.card{background:var(--surface);border:1px solid var(--layer-border);border-radius:var(--radius-md);padding:18px;box-shadow:var(--panel-shadow),var(--soft-inset);transition:border-color var(--motion-fast) var(--ease-standard),box-shadow var(--motion-fast) var(--ease-standard),transform var(--motion-fast) var(--ease-standard),background var(--motion-fast) var(--ease-standard)}
-.card:hover{border-color:var(--layer-border-hover);box-shadow:var(--panel-shadow-hover),var(--soft-inset)}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px;box-shadow:0 1px 2px rgba(0,0,0,.03)}
 .card.flat{box-shadow:none}
-.card-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:10px;padding-bottom:10px;border-bottom:1px solid var(--divider)}
-.card-head h3{font:600 15px/1.2 var(--font-display);letter-spacing:var(--tracking-display)}
+.card-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:10px}
+.card-head h3{font:700 15px/1.2 var(--font);letter-spacing:-.005em}
 .card-head .meta{font:500 11px/1 var(--mono);color:var(--muted)}
 .card-list{display:flex;flex-direction:column;gap:1px}
-.card-list .item{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:11px 8px;border-bottom:1px solid var(--divider);cursor:pointer;border-radius:8px;transition:background var(--motion-fast) var(--ease-standard),transform var(--motion-fast) var(--ease-standard),box-shadow var(--motion-fast) var(--ease-standard)}
-.card-list .item:hover{background:color-mix(in oklab,var(--surface),var(--accent) 2%);transform:translateX(2px);box-shadow:inset 2px 0 0 color-mix(in oklab,var(--accent),transparent 50%)}
+.card-list .item{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:11px 4px;border-bottom:1px solid var(--divider);cursor:pointer;border-radius:4px}
+.card-list .item:hover{background:var(--surface-2);padding-left:8px;padding-right:8px}
 .card-list .item:last-child{border-bottom:0}
 .card-list .item .body{font-size:13px;color:var(--fg-2);flex:1}
 .card-list .item .body b{color:var(--fg);font-weight:600}
@@ -98,28 +96,16 @@ code{font-family:var(--mono);font-size:.92em;background:var(--surface-2);padding
 .grid.cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}
 .grid.cols-4{grid-template-columns:repeat(4,minmax(0,1fr))}
 @media (max-width:1100px){.grid.cols-4{grid-template-columns:1fr 1fr}}
-@media (max-width:780px){.app{grid-template-columns:1fr}.sidebar{display:none}.grid.cols-2,.grid.cols-3,.grid.cols-4{grid-template-columns:1fr}.main{padding:16px}.proj-header-top{grid-template-columns:1fr}.dashboard-health{max-width:none}.page-bar{align-items:flex-start;flex-direction:column}}
+@media (max-width:780px){.app{grid-template-columns:1fr}.sidebar{display:none}.grid.cols-2,.grid.cols-3,.grid.cols-4{grid-template-columns:1fr}.main{padding:16px}}
 
 /* ========== Buttons ========== */
-.btn{display:inline-flex;align-items:center;gap:7px;padding:9px 14px;border-radius:8px;font:600 13px/1 var(--font);border:1px solid var(--layer-border);background:var(--surface);color:var(--fg);transition:border-color var(--motion-fast) var(--ease-standard),background var(--motion-fast) var(--ease-standard),box-shadow var(--motion-fast) var(--ease-standard),transform var(--motion-fast) var(--ease-standard);white-space:nowrap;box-shadow:var(--soft-inset)}
-.btn:hover{border-color:var(--layer-border-hover);background:color-mix(in oklab,var(--surface),var(--accent) 2%);box-shadow:var(--panel-shadow)}
-.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-on);box-shadow:0 8px 18px color-mix(in oklab,var(--accent),transparent 84%)}
+.btn{display:inline-flex;align-items:center;gap:7px;padding:9px 14px;border-radius:8px;font:600 13px/1 var(--font);border:1px solid var(--border);background:var(--surface);color:var(--fg);transition:all .12s ease;white-space:nowrap}
+.btn:hover{border-color:var(--border-strong);background:var(--surface-2)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
 .btn.primary:hover{background:var(--accent-hover);border-color:var(--accent-hover)}
-.btn.danger{background:var(--surface);color:var(--hot);border-color:color-mix(in oklch,var(--hot) 30%,var(--surface))}
+.btn.danger{background:var(--surface);color:var(--hot);border-color:color-mix(in oklch,var(--hot) 30%,white)}
 .btn.danger:hover{background:var(--hot-soft)}
-.btn.ok{background:var(--surface);color:var(--ok);border-color:color-mix(in oklch,var(--ok) 32%,var(--surface))}
-.btn.ok:hover{background:var(--ok-soft)}
-.btn.warn{background:var(--surface);color:var(--warn);border-color:color-mix(in oklch,var(--warn) 32%,var(--surface))}
-.btn.warn:hover{background:var(--warn-soft)}
-.btn.accent{background:var(--surface);color:var(--accent);border-color:color-mix(in oklch,var(--accent) 32%,var(--surface))}
-.btn.accent:hover{background:var(--accent-soft)}
-.icon-action{display:inline-flex;align-items:center;justify-content:center;width:26px;height:21px;padding:0;border:none;background:transparent;border-radius:7px;color:var(--muted-2);cursor:pointer;box-shadow:none;transition:background var(--motion-fast) var(--ease-standard),color var(--motion-fast) var(--ease-standard)}
-.icon-action svg{display:block}
-.comment-meta .actions{display:flex;align-items:center;gap:2px}
-.icon-action:hover{background:var(--surface-2);color:var(--fg)}
-.icon-action.danger:hover{background:var(--hot-soft);color:var(--hot)}
-.icon-action.accent:hover{background:var(--accent-soft);color:var(--accent)}
-.btn.danger-solid{background:var(--hot);color:var(--accent-on);border-color:var(--hot);box-shadow:none}
+.btn.danger-solid{background:var(--hot);color:#fff;border-color:var(--hot)}
 .btn.danger-solid:hover{background:color-mix(in oklch,var(--hot) 90%,black);border-color:color-mix(in oklch,var(--hot) 90%,black)}
 .btn.ghost{background:transparent;border-color:transparent;color:var(--muted)}
 .btn.ghost:hover{background:var(--surface-2);color:var(--fg)}
@@ -127,70 +113,48 @@ code{font-family:var(--mono);font-size:.92em;background:var(--surface-2);padding
 .btn:disabled,.btn.locked{opacity:.5;cursor:not-allowed;background:var(--surface-2)}
 .btn:disabled:hover,.btn.locked:hover{background:var(--surface-2);border-color:var(--border)}
 .btn .role-tag{font:500 10px/1 var(--mono);color:var(--muted);padding:2px 5px;background:var(--surface-2);border-radius:4px;margin-right:2px}
-.btn.primary .role-tag{color:var(--accent-on);background:color-mix(in oklab,var(--accent-on),transparent 82%)}
+.btn.primary .role-tag{color:#fff;background:rgba(255,255,255,.18)}
 .btn.danger .role-tag{color:var(--hot);background:var(--hot-soft)}
-.btn-caret{display:inline-flex;align-items:center;justify-content:center;margin-left:1px;font-size:14px;line-height:1;color:var(--muted);transform:translateY(-.5px)}
 
 /* ========== Pill ========== */
-.pill{display:inline-flex;align-items:center;font:600 11px/1 var(--font);padding:5px 10px;border-radius:99px;border:1px solid var(--divider);white-space:nowrap;background:var(--surface);box-shadow:var(--soft-inset)}
-.pill.ok{background:var(--ok-soft);color:var(--ok);border-color:color-mix(in oklch,var(--ok) 25%,var(--surface))}
-.pill.warn{background:var(--warn-soft);color:var(--warn);border-color:color-mix(in oklch,var(--warn) 25%,var(--surface))}
-.pill.hot{background:var(--hot-soft);color:var(--hot);border-color:color-mix(in oklch,var(--hot) 25%,var(--surface))}
+.pill{display:inline-flex;align-items:center;font:600 11px/1 var(--font);padding:4px 9px;border-radius:99px;border:1px solid var(--border);white-space:nowrap}
+.pill.ok{background:var(--ok-soft);color:var(--ok);border-color:color-mix(in oklch,var(--ok) 25%,white)}
+.pill.warn{background:var(--warn-soft);color:var(--warn);border-color:color-mix(in oklch,var(--warn) 25%,white)}
+.pill.hot{background:var(--hot-soft);color:var(--hot);border-color:color-mix(in oklch,var(--hot) 25%,white)}
 .pill.muted{color:var(--muted)}
-.lvl{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--fg-2);white-space:nowrap}
-.lvl::before{content:"";width:7px;height:7px;border-radius:50%;flex-shrink:0;background:var(--muted-2)}
-.lvl.lvl-high::before{background:var(--hot)}
-.lvl.lvl-med::before{background:var(--warn)}
-.lvl.lvl-low::before{background:var(--muted-2)}
-.cat-tag{display:inline-block;font:500 11px/1.5 var(--font);padding:1px 9px;border-radius:6px;background:var(--surface-2);color:var(--muted);border:1px solid var(--divider)}
-.pill.accent{background:var(--accent-soft);color:var(--accent);border-color:color-mix(in oklch,var(--accent) 25%,var(--surface))}
+.pill.accent{background:var(--accent-soft);color:var(--accent);border-color:color-mix(in oklch,var(--accent) 25%,white)}
 .pill.lg{padding:6px 12px;font-size:12px}
 
 /* ========== Project header (dashboard) ========== */
-.proj-header{background:var(--surface);border:1px solid color-mix(in oklab,var(--accent),var(--border) 86%);border-radius:var(--radius-lg);padding:24px 24px;margin-bottom:16px;box-shadow:var(--panel-shadow);position:relative;overflow:hidden}
-.proj-header::before{content:none}
-.proj-header-top{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:22px;align-items:start}
-.dashboard-overline{font:500 11px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 12px}
-.proj-header h1{font:650 27px/1.16 var(--font-display);letter-spacing:var(--tracking-display)}
+.proj-header{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px 22px;margin-bottom:16px}
+.proj-header h1{font:700 24px/1.2 var(--font-display);letter-spacing:-.015em}
 .proj-header .meta{margin:6px 0 0;color:var(--muted);font-size:13px}
 .proj-header .stage{margin:10px 0 0;font-size:13px;color:var(--fg-2)}
 .proj-header .stage b{color:var(--fg)}
-.dashboard-health{display:flex;flex-direction:column;gap:8px;align-items:flex-end;min-width:210px}
-.dashboard-health .row{display:inline-flex;justify-content:flex-end;gap:8px;align-items:center;min-height:30px;padding:0 12px;border:1px solid color-mix(in oklab,var(--border),transparent 16%);border-radius:99px;background:var(--surface)}
-.dashboard-health .row.gate-row{padding:0;border:0;background:transparent}
-.dashboard-health .label{font:500 10px/1 var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
-.dashboard-health .value{font:600 12px/1.2 var(--font-display);color:var(--fg)}
-.gate-badge{display:inline-flex;align-items:center;gap:6px;min-height:30px;padding:0 11px;border-radius:99px;font:600 12px/1 var(--font);background:var(--warn-soft);color:var(--warn);border:0;box-shadow:inset 0 0 0 1px color-mix(in oklab,var(--warn),transparent 84%)}
-.gate-badge.ok{background:var(--ok-soft);color:var(--ok);border-color:color-mix(in oklch,var(--ok) 24%,var(--surface))}
+.gate-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:99px;font:600 12px/1 var(--font);background:var(--warn-soft);color:var(--warn);border:1px solid color-mix(in oklch,var(--warn) 24%,white)}
+.gate-badge.ok{background:var(--ok-soft);color:var(--ok);border-color:color-mix(in oklch,var(--ok) 24%,white)}
 .progress{margin-top:14px}
-.progress .bar{height:10px;background:color-mix(in oklab,var(--border),transparent 42%);border-radius:99px;overflow:hidden;box-shadow:inset 0 1px 1px color-mix(in oklab,var(--fg),transparent 94%)}
-.progress .bar i{display:block;position:relative;height:100%;background:var(--accent);border-radius:inherit;transition:width .4s var(--ease-standard);box-shadow:0 0 0 1px color-mix(in oklab,var(--accent),var(--surface) 70%)}
-.progress .bar i::after{content:"";position:absolute;inset:1px 1px auto 1px;height:35%;border-radius:inherit;background:color-mix(in oklab,var(--accent-on),transparent 78%)}
-.progress .label{margin-top:8px;font:500 12px/1 var(--mono);color:var(--muted);display:flex;justify-content:space-between}
+.progress .bar{height:6px;background:var(--surface-2);border-radius:99px;overflow:hidden;border:1px solid var(--border)}
+.progress .bar i{display:block;height:100%;background:var(--accent);transition:width .4s ease}
+.progress .label{margin-top:6px;font:500 12px/1 var(--mono);color:var(--muted);display:flex;justify-content:space-between}
 
 /* ========== Action bar (dashboard) ========== */
-.action-bar{background:var(--surface);border:1px solid var(--layer-border);border-radius:var(--radius-md);padding:12px 14px;margin-bottom:16px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;box-shadow:var(--panel-shadow),var(--soft-inset)}
+.action-bar{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px 18px;margin-bottom:16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .action-bar .label{font:600 12px/1 var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-right:8px}
 
 /* ========== Deliverable box ========== */
-.deliverable{background:var(--surface);border:1px solid var(--layer-border);border-radius:var(--radius-md);padding:15px;cursor:pointer;transition:border-color var(--motion-fast) var(--ease-standard),background var(--motion-fast) var(--ease-standard),transform var(--motion-fast) var(--ease-standard),box-shadow var(--motion-fast) var(--ease-standard);position:relative;min-height:118px;display:flex;flex-direction:column;align-items:flex-start;box-shadow:var(--soft-inset)}
-.deliverable::after{content:"";position:absolute;left:15px;right:15px;bottom:13px;height:2px;border-radius:99px;background:color-mix(in oklab,var(--border),transparent 30%)}
-.deliverable:hover{border-color:var(--layer-border-hover);background:color-mix(in oklab,var(--surface),var(--accent) 2%);transform:translateY(-1px);box-shadow:var(--panel-shadow)}
+.deliverable{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;cursor:pointer;transition:all .12s ease}
+.deliverable:hover{border-color:var(--accent);background:var(--accent-soft)}
 .deliverable .stage-num{font:600 10px/1 var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
 .deliverable .name{margin:6px 0;font:700 14px/1.2 var(--font);letter-spacing:-.005em}
-.deliverable .pill{margin-top:auto;margin-bottom:11px}
-.deliverable:has(.pill.ok){border-color:color-mix(in oklch,var(--ok) 45%,var(--surface))}
-.deliverable:has(.pill.warn){border-color:color-mix(in oklch,var(--warn) 45%,var(--surface))}
-.deliverable:has(.pill.ok)::after{background:color-mix(in oklch,var(--ok) 55%,var(--surface))}
-.deliverable:has(.pill.warn)::after{background:color-mix(in oklch,var(--warn) 55%,var(--surface))}
 
 /* ========== Modal ========== */
-.modal-backdrop{position:fixed;inset:0;background:color-mix(in oklab,var(--fg),transparent 74%);display:none;align-items:center;justify-content:center;z-index:50;backdrop-filter:blur(8px)}
+.modal-backdrop{position:fixed;inset:0;background:rgba(20,30,50,.42);display:none;align-items:center;justify-content:center;z-index:50;backdrop-filter:blur(2px)}
 .modal-backdrop.open{display:flex}
-.modal{background:var(--surface);border:1px solid var(--layer-border);border-radius:16px;width:min(560px,92vw);max-height:90vh;box-shadow:0 24px 70px color-mix(in oklab,var(--fg),transparent 84%),0 10px 34px color-mix(in oklab,var(--accent),transparent 92%);overflow:hidden;animation:popin .14s ease;display:flex;flex-direction:column}
+.modal{background:var(--surface);border-radius:14px;width:min(560px,92vw);max-height:90vh;box-shadow:0 20px 60px rgba(0,0,0,.18);overflow:hidden;animation:popin .14s ease;display:flex;flex-direction:column}
 .modal.lg{width:min(720px,92vw)}
 @keyframes popin{from{transform:scale(.95);opacity:0}to{transform:scale(1);opacity:1}}
-.modal-head{padding:16px 22px;border-bottom:1px solid var(--divider);display:flex;justify-content:space-between;align-items:center;background:color-mix(in oklab,var(--surface),var(--bg) 24%)}
+.modal-head{padding:16px 22px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
 .modal-head h2{font:700 16px/1.2 var(--font);letter-spacing:-.005em}
 .modal-head .close{font-size:18px;color:var(--muted);width:28px;height:28px;border-radius:6px;display:inline-flex;align-items:center;justify-content:center}
 .modal-head .close:hover{background:var(--surface-2);color:var(--fg)}
@@ -199,191 +163,141 @@ code{font-family:var(--mono);font-size:.92em;background:var(--surface-2);padding
 .modal-body .row label{flex:0 0 110px;color:var(--muted);font:500 12px/1.6 var(--font);padding-top:8px}
 .modal-body .row label small{display:block;color:var(--muted-2);font-size:10px;margin-top:2px}
 .modal-body .row .value{flex:1;font-size:13px;min-width:0}
-.modal-body .row .value.static{background:color-mix(in oklab,var(--surface),var(--bg) 48%);border:1px solid var(--divider);border-radius:9px;padding:9px 11px;color:var(--fg-2);box-shadow:var(--soft-inset)}
-.modal-body input[type=text],.modal-body input[type=email],.modal-body input[type=password],.modal-body input[type=date],.modal-body textarea,.modal-body select{width:100%;border:1px solid var(--divider);background:var(--surface);border-radius:9px;padding:9px 11px;color:var(--fg);outline:none;box-shadow:var(--soft-inset)}
-.modal-body input:focus,.modal-body textarea:focus,.modal-body select:focus{border-color:color-mix(in oklab,var(--accent),var(--surface) 55%);background:var(--surface);box-shadow:var(--focus-ring)}
+.modal-body .row .value.static{background:var(--surface-2);border:1px solid var(--border);border-radius:7px;padding:9px 11px;color:var(--fg-2)}
+.modal-body input[type=text],.modal-body input[type=email],.modal-body input[type=password],.modal-body input[type=date],.modal-body textarea,.modal-body select{width:100%;border:1px solid var(--border);background:var(--surface-2);border-radius:7px;padding:9px 11px;color:var(--fg);outline:none}
+.modal-body input:focus,.modal-body textarea:focus,.modal-body select:focus{border-color:var(--accent);background:var(--surface);box-shadow:0 0 0 3px var(--accent-soft)}
 .modal-body textarea{min-height:64px;resize:vertical;font:inherit}
 .modal-body .radio-group{display:flex;gap:18px;font-size:13px;padding-top:6px}
 .modal-body .radio-group label{flex:none;color:var(--fg);padding:0;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
-.modal-body .note{padding:11px 13px;background:var(--accent-soft);border-radius:10px;font-size:12px;line-height:1.7;color:var(--accent-deep);border:1px solid color-mix(in oklab,var(--accent),var(--surface) 82%);box-shadow:var(--soft-inset)}
-.modal-body .note.warn{background:var(--warn-soft);color:var(--warn);border-color:color-mix(in oklch,var(--warn) 18%,var(--surface))}
-.modal-body .note.danger{background:var(--hot-soft);color:var(--hot);border-color:color-mix(in oklch,var(--hot) 18%,var(--surface))}
-.dropzone{margin-top:12px;border:1.5px dashed var(--divider);border-radius:12px;padding:22px;text-align:center;cursor:pointer;color:var(--muted);transition:border-color var(--motion-fast) var(--ease-standard),background var(--motion-fast) var(--ease-standard)}
-.dropzone:hover{border-color:color-mix(in oklch,var(--accent) 40%,var(--surface));background:color-mix(in oklab,var(--surface),var(--accent) 3%)}
-.dropzone.has-file{border-style:solid;border-color:color-mix(in oklch,var(--ok) 40%,var(--surface));background:var(--ok-soft)}
-.dropzone .dz-icon{font-size:20px;margin-bottom:6px}
-.dropzone .dz-text{font-size:12px;line-height:1.6;color:var(--fg-2)}
-.dropzone .dz-text span{color:var(--muted-2);font-size:11px}
-.dz-result{margin-top:12px;font-size:12px;color:var(--fg-2)}
-.viewer-body{background:var(--bg);padding:20px}
-.viewer-stage{display:flex;flex-direction:column;gap:16px;align-items:center}
-.doc-page{width:100%;max-width:520px;background:#fff;border:1px solid var(--divider);border-radius:3px;box-shadow:var(--panel-shadow);padding:38px 44px}
-.doc-page .doc-title{font:700 18px/1.3 var(--font);color:#111}
-.doc-page .doc-sub{font:500 11px/1 var(--mono);color:#9aa0a6;margin:6px 0 18px}
-.doc-page .doc-h{font:600 13px/1.4 var(--font);color:#222;margin:18px 0 9px}
-.doc-page .doc-line{height:9px;background:#e6e8eb;border-radius:3px;margin:7px 0;width:100%}
-.doc-page .doc-line.w92{width:92%}.doc-page .doc-line.w88{width:88%}.doc-page .doc-line.w85{width:85%}.doc-page .doc-line.w78{width:78%}.doc-page .doc-line.w76{width:76%}.doc-page .doc-line.w70{width:70%}.doc-page .doc-line.w60{width:60%}.doc-page .doc-line.w50{width:50%}.doc-page .doc-line.w95{width:95%}.doc-page .doc-line.w90{width:90%}
-.viewer-img{width:100%;max-width:520px;min-height:320px;background:var(--surface-2);border:1px dashed var(--divider);border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--muted)}
-.viewer-img .icn{font-size:40px}
-.viewer-img .sub{font-size:11px;color:var(--muted-2)}
+.modal-body .note{padding:11px 13px;background:var(--accent-soft);border-radius:8px;font-size:12px;line-height:1.7;color:var(--accent-deep);border-left:3px solid var(--accent)}
+.modal-body .note.warn{background:var(--warn-soft);color:var(--warn);border-left-color:var(--warn)}
+.modal-body .note.danger{background:var(--hot-soft);color:var(--hot);border-left-color:var(--hot)}
 .modal-body .file-list{display:flex;flex-direction:column;gap:6px}
-.modal-body .file-row{display:flex;align-items:center;gap:8px;padding:8px 11px;border:1px solid var(--divider);border-radius:9px;font-size:12px;background:var(--surface);box-shadow:var(--soft-inset)}
+.modal-body .file-row{display:flex;align-items:center;gap:8px;padding:8px 11px;border:1px solid var(--border);border-radius:7px;font-size:12px}
 .modal-body .file-row .name{flex:1;color:var(--fg-2)}
 .modal-body .file-row .name b{color:var(--fg)}
 .modal-body .file-row .actions{display:flex;gap:4px}
-.modal-body .gate-check{display:flex;flex-direction:column;gap:7px;background:color-mix(in oklab,var(--surface),var(--bg) 48%);padding:12px 14px;border:1px solid var(--divider);border-radius:10px;box-shadow:var(--soft-inset)}
+.modal-body .gate-check{display:flex;flex-direction:column;gap:7px;background:var(--surface-2);padding:12px 14px;border-radius:8px}
 .modal-body .gate-check .gate-row{display:flex;justify-content:space-between;align-items:center;font-size:13px}
 .modal-body .gate-check .gate-row.ok{color:var(--ok)}
 .modal-body .gate-check .gate-row .checkmark{font-weight:700}
 .modal-body .input-list{display:flex;flex-direction:column;gap:6px}
-.modal-body .input-list .item{display:flex;justify-content:space-between;padding:7px 11px;background:color-mix(in oklab,var(--surface),var(--bg) 45%);border:1px solid var(--divider);border-radius:8px;font-size:13px}
+.modal-body .input-list .item{display:flex;justify-content:space-between;padding:7px 11px;background:var(--surface-2);border-radius:6px;font-size:13px}
 .modal-body .input-list .item .t{font:500 11px/1 var(--mono);color:var(--muted)}
-.modal-foot{padding:14px 22px;border-top:1px solid var(--divider);display:flex;justify-content:flex-end;gap:8px;background:color-mix(in oklab,var(--surface),var(--bg) 36%)}
+.modal-foot{padding:14px 22px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px;background:var(--surface-2)}
 .modal-body .err{color:var(--hot);font-size:12px;margin-top:4px}
 
 /* ========== Dropdown ========== */
-.dropdown{position:absolute;background:var(--surface);border:1px solid var(--layer-border);border-radius:12px;box-shadow:var(--panel-shadow-hover);padding:6px;z-index:60;min-width:220px;animation:popin .12s ease}
+.dropdown{position:absolute;background:var(--surface);border:1px solid var(--border-strong);border-radius:10px;box-shadow:0 12px 32px rgba(0,0,0,.12);padding:6px;z-index:60;min-width:220px;animation:popin .12s ease}
 .dropdown .item{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:9px 12px;border-radius:6px;font-size:13px;color:var(--fg-2);cursor:pointer}
 .dropdown .item:hover{background:var(--surface-2);color:var(--fg)}
 .dropdown .item .meta{font:500 10px/1 var(--mono);color:var(--muted)}
 .dropdown .item.active{background:var(--accent-soft);color:var(--accent)}
 .dropdown .divider{height:1px;background:var(--divider);margin:5px 4px}
-.dropdown .dd-head{display:flex;justify-content:space-between;align-items:center;padding:6px 12px 8px;font:600 12px/1 var(--font);color:var(--fg);border-bottom:1px solid var(--divider);margin-bottom:4px}
-.dropdown .dd-head .meta{font:500 10px/1 var(--mono);color:var(--muted)}
 
 /* ========== Toast ========== */
 .toast-area{position:fixed;bottom:24px;right:24px;z-index:80;display:flex;flex-direction:column;gap:8px;pointer-events:none}
-.toast{background:var(--surface);color:var(--fg);padding:11px 16px;border-radius:12px;font-size:13px;animation:slidein .2s ease;box-shadow:var(--panel-shadow-hover);border:1px solid var(--layer-border);pointer-events:auto;max-width:380px}
-.toast.success{border-color:color-mix(in oklch,var(--ok) 20%,var(--surface));color:var(--ok);background:var(--surface)}
-.toast.danger{border-color:color-mix(in oklch,var(--hot) 20%,var(--surface));color:var(--hot);background:var(--surface)}
-.toast.info{border-color:color-mix(in oklch,var(--accent) 20%,var(--surface));color:var(--accent);background:var(--surface)}
+.toast{background:var(--fg);color:#fff;padding:11px 16px;border-radius:8px;font-size:13px;animation:slidein .2s ease;box-shadow:0 8px 24px rgba(0,0,0,.16);pointer-events:auto;max-width:380px}
+.toast.success{background:var(--ok)}
+.toast.danger{background:var(--hot)}
+.toast.info{background:var(--accent)}
 @keyframes slidein{from{transform:translateX(20px);opacity:0}to{transform:translateX(0);opacity:1}}
 
 /* ========== Role switcher ========== */
-.role-switcher{position:fixed;bottom:24px;left:24px;background:color-mix(in oklab,var(--surface),transparent 4%);backdrop-filter:blur(12px);border:1px solid var(--layer-border);border-radius:99px;padding:6px 8px;box-shadow:var(--panel-shadow-hover);display:flex;gap:4px;z-index:40;align-items:center}
+.role-switcher{position:fixed;bottom:24px;left:24px;background:var(--surface);border:1px solid var(--border-strong);border-radius:99px;padding:6px 8px;box-shadow:0 8px 24px rgba(0,0,0,.1);display:flex;gap:4px;z-index:40;align-items:center}
 .role-switcher .label{font:500 11px/1 var(--mono);color:var(--muted);padding:0 4px 0 8px}
-.role-switcher button{padding:7px 12px;border-radius:99px;font:600 11px/1 var(--font);color:var(--muted);transition:background var(--motion-fast) var(--ease-standard),color var(--motion-fast) var(--ease-standard)}
-.role-switcher button.active{background:var(--accent);color:var(--accent-on);box-shadow:0 6px 14px color-mix(in oklab,var(--accent),transparent 84%)}
+.role-switcher button{padding:7px 12px;border-radius:99px;font:600 11px/1 var(--font);color:var(--muted)}
+.role-switcher button.active{background:var(--accent);color:#fff}
 
 /* ========== Table ========== */
 .tbl{width:100%;border-collapse:collapse;font-size:13px}
 .tbl th,.tbl td{padding:11px 12px;text-align:left;border-bottom:1px solid var(--divider)}
-.tbl th{font:600 11px/1 var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.04em;background:color-mix(in oklab,var(--surface),var(--bg) 50%);border-bottom:1px solid var(--divider)}
+.tbl th{font:600 11px/1 var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.04em;background:var(--surface-2);border-bottom:1px solid var(--border)}
 .tbl tbody tr{cursor:pointer}
 .tbl tbody tr:hover{background:var(--surface-2)}
 .tbl td.id-cell{font:600 12px/1 var(--mono);color:var(--accent)}
 .tbl td.actions{text-align:right;white-space:nowrap}
-.tbl td.actions .btn+.btn{margin-left:8px}
 
 /* ========== Filter bar ========== */
-.filter-bar{background:var(--surface);border:1px solid var(--layer-border);border-radius:12px;padding:10px;margin-bottom:14px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;box-shadow:var(--panel-shadow),var(--soft-inset)}
-.filter{padding:6px 11px;border:1px solid var(--divider);border-radius:99px;font-size:12px;color:var(--fg-2);background:var(--surface);cursor:pointer;display:inline-flex;align-items:center;gap:5px;box-shadow:var(--soft-inset)}
-.filter:hover{border-color:var(--layer-border-hover);background:color-mix(in oklab,var(--surface),var(--accent) 2%)}
+.filter-bar{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px;margin-bottom:14px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.filter{padding:6px 11px;border:1px solid var(--border);border-radius:99px;font-size:12px;color:var(--fg-2);background:var(--surface);cursor:pointer;display:inline-flex;align-items:center;gap:5px}
+.filter:hover{border-color:var(--border-strong);background:var(--surface-2)}
 .filter .arrow{font-size:9px;color:var(--muted)}
 .filter.search-input{padding:5px 11px;flex:1;min-width:180px;background:var(--surface-2)}
 .filter.search-input input{border:0;background:transparent;outline:none;width:100%;font-size:12px}
 
 /* ========== Stat cards ========== */
-.stat{background:var(--surface);border:1px solid var(--layer-border);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:4px;box-shadow:var(--panel-shadow),var(--soft-inset)}
+.stat{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:4px}
 .stat .label{font:500 11px/1 var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
 .stat .value{font:700 24px/1 var(--font-display);letter-spacing:-.01em}
 .stat .delta{font-size:12px;color:var(--muted)}
 
 /* ========== Form rows ========== */
-.form{display:flex;flex-direction:column;gap:16px}
+.form{display:flex;flex-direction:column;gap:14px}
 .form .row{display:flex;gap:12px;align-items:flex-start}
 .form .row label{flex:0 0 140px;color:var(--muted);font:500 13px/1.6 var(--font);padding-top:8px}
 .form .row label small{display:block;color:var(--muted-2);font-size:10px;margin-top:2px}
-.form .row label small.opt,.modal-body .row label small.opt{display:inline;font-size:11px;font-weight:400;margin:0 0 0 3px}
 .form .row .value{flex:1;font-size:13px;min-width:0}
-.form .value .field-hint{font-size:11px;color:var(--muted-2);margin-top:6px;line-height:1.35}
-.form input[type=text],.form input[type=email],.form input[type=password],.form input[type=date],.form textarea,.form select{width:100%;border:1px solid var(--divider);background:var(--surface);border-radius:9px;padding:9px 11px;color:var(--fg);outline:none;box-shadow:var(--soft-inset)}
-.form input:focus,.form textarea:focus,.form select:focus{border-color:color-mix(in oklab,var(--accent),var(--surface) 55%);box-shadow:var(--focus-ring)}
+.form input[type=text],.form input[type=email],.form input[type=password],.form input[type=date],.form textarea,.form select{width:100%;border:1px solid var(--border);background:var(--surface);border-radius:7px;padding:9px 11px;color:var(--fg);outline:none}
+.form input:focus,.form textarea:focus,.form select:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
 .form textarea{min-height:64px;resize:vertical;font:inherit}
-.form .static{background:color-mix(in oklab,var(--bg),var(--fg) 4%);border:1px solid var(--divider);border-radius:9px;padding:9px 11px;color:var(--muted);box-shadow:none;cursor:not-allowed}
+.form .static{background:var(--surface-2);border:1px solid var(--border);border-radius:7px;padding:9px 11px;color:var(--fg-2)}
 
 /* ========== Tabs (deliverables) ========== */
-.tabs{display:flex;border-bottom:1px solid var(--divider);margin-bottom:18px;gap:2px}
+.tabs{display:flex;border-bottom:1px solid var(--border);margin-bottom:18px;gap:2px}
 .tab{padding:10px 16px;font:600 13px/1 var(--font);color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px}
 .tab:hover{color:var(--fg)}
 .tab.active{color:var(--accent);border-bottom-color:var(--accent)}
 
-/* ========== Activity timeline ========== */
+/* ========== Activity timeline (connector + dot) ========== */
 .activity{display:flex;flex-direction:column}
-.activity .item{display:flex;gap:14px;padding:0 4px 18px 2px;position:relative}
+.activity .item{display:flex;gap:14px;padding:0 4px 18px 4px;position:relative}
 .activity .item:last-child{padding-bottom:0}
-.activity .marker{--marker-color:var(--muted-2);--tick-width:16px;--tick-height:3px;--rail-width:1.5px;--tick-top:7px;flex:0 0 22px;min-width:22px;margin-top:1px;position:relative;z-index:1}
-.activity .marker.upload{--marker-color:var(--accent)}
-.activity .marker.review{--marker-color:var(--warn)}
-.activity .marker.reject{--marker-color:var(--hot)}
-.activity .marker.approve{--marker-color:var(--ok)}
-.activity .marker.comment{--marker-color:var(--muted-2)}
-.activity .marker .dot{display:none}
-.activity .marker::before{content:'';position:absolute;left:50%;top:0;bottom:-18px;width:var(--rail-width);transform:translateX(-50%);background:color-mix(in oklab,var(--marker-color),var(--surface) 70%)}
-.activity .item:last-child .marker::before{bottom:0}
-.activity .marker::after{content:'';position:absolute;left:50%;top:var(--tick-top);width:var(--tick-width);height:var(--tick-height);transform:translateX(-50%);border-radius:999px;background:var(--marker-color);box-shadow:0 0 0 4px var(--surface)}
+.activity .item::before{content:'';position:absolute;left:9px;top:6px;bottom:0;width:2px;background:var(--divider)}
+.activity .item:last-child::before{display:none}
+.activity .dot{width:11px;height:11px;border-radius:50%;flex-shrink:0;margin-top:3px;background:var(--muted-2);box-shadow:0 0 0 3px var(--surface);position:relative;z-index:1}
+.activity .dot.upload{background:var(--accent)}
+.activity .dot.review{background:var(--warn)}
+.activity .dot.reject{background:var(--hot)}
+.activity .dot.approve{background:var(--ok)}
+.activity .dot.comment{background:var(--muted-2)}
 .activity .body{flex:1;min-width:0}
 .activity .meta{font-size:12px;color:var(--muted);margin-bottom:4px}
 .activity .meta b{color:var(--fg-2);font-weight:600}
 .activity .desc{font-size:13px;color:var(--fg-2);line-height:1.55}
 .activity .desc b{color:var(--fg);font-weight:600}
 .activity .actions{margin-top:6px;display:flex;gap:6px}
-@media (max-width:620px){
-  .activity .body [style*="justify-content:space-between"]{align-items:flex-start!important;flex-direction:column}
-}
-
-/* ========== Snapshot comments ========== */
-.snapshot-comments{display:flex;flex-direction:column;gap:12px}
-.comment-thread{display:flex;flex-direction:column;gap:8px}
-.comment-item{display:grid;grid-template-columns:32px minmax(0,1fr);gap:10px;padding:12px;border:1px solid var(--divider);border-radius:12px;background:color-mix(in oklab,var(--surface),var(--bg) 18%);box-shadow:var(--soft-inset)}
-.comment-avatar{width:32px;height:32px;border-radius:999px;display:grid;place-items:center;background:var(--muted-2);color:#fff;font:700 11px/1 var(--mono)}
-.comment-avatar.team{background:var(--accent)}
-.comment-avatar.client{background:var(--ok)}
-.comment-avatar.admin{background:var(--fg)}
-.role-badge{font:600 9px/1.5 var(--font);border-radius:4px;padding:1px 5px;margin-left:5px;vertical-align:middle;border:1px solid var(--divider);color:var(--muted);background:var(--surface-2)}
-.role-badge.team{color:var(--accent);background:var(--accent-soft);border-color:color-mix(in oklab,var(--accent),transparent 75%)}
-.role-badge.client{color:var(--ok);background:var(--ok-soft);border-color:color-mix(in oklab,var(--ok),transparent 70%)}
-.role-badge.admin{color:var(--fg);background:var(--surface-2);border-color:var(--border)}
-.comment-meta{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:3px}
-.comment-meta .who{font:650 13px/1 var(--font);color:var(--fg)}
-.comment-meta .time{font:500 11px/1 var(--mono);color:var(--muted)}
-.comment-body{font-size:13px;line-height:1.55;color:var(--fg-2)}
-.comment-composer{padding-top:12px;border-top:1px solid var(--divider)}
-.comment-composer textarea{width:100%;border:1px solid var(--divider);background:var(--surface);border-radius:10px;padding:10px 12px;min-height:56px;outline:none;font:inherit;box-shadow:var(--soft-inset)}
-.comment-composer textarea:focus{border-color:color-mix(in oklab,var(--accent),var(--surface) 55%);box-shadow:var(--focus-ring)}
-.comment-note{font-size:11px;color:var(--muted);margin-top:8px}
 
 /* ========== File card ========== */
-.file{display:flex;align-items:center;gap:12px;padding:12px 14px;border:1px solid var(--layer-border);border-radius:12px;background:var(--surface);box-shadow:var(--soft-inset);transition:border-color var(--motion-fast) var(--ease-standard),box-shadow var(--motion-fast) var(--ease-standard)}
-.file:hover{border-color:var(--layer-border-hover);box-shadow:var(--panel-shadow),var(--soft-inset)}
-.file .icn{width:36px;height:36px;border-radius:9px;background:color-mix(in oklab,var(--surface),var(--bg) 55%);display:inline-flex;align-items:center;justify-content:center;font-size:16px;border:1px solid var(--divider)}
+.file{display:flex;align-items:center;gap:12px;padding:12px 14px;border:1px solid var(--border);border-radius:10px;background:var(--surface)}
+.file .icn{width:36px;height:36px;border-radius:8px;background:var(--surface-2);display:inline-flex;align-items:center;justify-content:center;font-size:16px;border:1px solid var(--border)}
 .file .name{flex:1;min-width:0}
 .file .name b{display:block;font-weight:600;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .file .name .sub{color:var(--muted);font-size:11px;margin-top:2px}
-.file .badge{font:600 10px/1 var(--mono);padding:3px 7px;border-radius:4px;background:var(--accent-soft);color:var(--accent)}
+.file .badge{font:600 10px/1 var(--mono);padding:3px 7px;border-radius:4px;background:var(--accent-soft);color:var(--accent);text-transform:uppercase}
 .file .actions{display:flex;gap:4px}
 
 /* ========== Auth pages ========== */
 .auth-page{min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:48px 18px;background:linear-gradient(180deg,var(--bg) 0%,var(--surface-3) 100%)}
 .auth-page .logo{font:700 16px/1 var(--font-display);letter-spacing:-.01em;margin-bottom:40px}
-.auth-card{background:var(--surface);border:1px solid var(--layer-border);border-radius:16px;padding:34px 36px;width:min(420px,92vw);box-shadow:var(--panel-shadow-hover),var(--soft-inset)}
+.auth-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:34px 36px;width:min(420px,92vw);box-shadow:0 8px 32px rgba(0,0,0,.06)}
 .auth-card.lg{width:min(480px,92vw)}
 .auth-card h1{font:700 22px/1.2 var(--font-display);letter-spacing:-.01em;margin-bottom:6px;text-align:center}
 .auth-card .sub{color:var(--muted);font-size:13px;text-align:center;margin-bottom:24px}
 .auth-card .footer{margin-top:18px;text-align:center;font-size:12px;color:var(--muted)}
 .auth-card .footer a{margin:0 6px}
-.auth-card .invite-info{background:var(--accent-soft);border:1px solid color-mix(in oklch,var(--accent) 22%,var(--surface));border-radius:8px;padding:14px;margin-bottom:18px;text-align:center;font-size:13px}
+.auth-card .invite-info{background:var(--accent-soft);border:1px solid color-mix(in oklch,var(--accent) 22%,white);border-radius:8px;padding:14px;margin-bottom:18px;text-align:center;font-size:13px}
 .auth-card .invite-info b{display:block;color:var(--accent-deep);margin-bottom:4px;font-size:14px}
 .auth-card .err{color:var(--hot);font-size:12px;margin-top:8px;text-align:center}
-.auth-page input[type=text],.auth-page input[type=email],.auth-page input[type=password]{width:100%;border:1px solid var(--divider);background:var(--surface);border-radius:9px;padding:11px 13px;font-size:14px;outline:none;margin-bottom:12px;box-shadow:var(--soft-inset)}
-.auth-page input:focus{border-color:color-mix(in oklab,var(--accent),var(--surface) 55%);box-shadow:var(--focus-ring)}
+.auth-page input[type=text],.auth-page input[type=email],.auth-page input[type=password]{width:100%;border:1px solid var(--border);background:var(--surface);border-radius:7px;padding:11px 13px;font-size:14px;outline:none;margin-bottom:12px}
+.auth-page input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
 .auth-page .label{display:block;font:500 12px/1 var(--font);color:var(--muted);margin-bottom:6px}
 .auth-page .policy{font-size:11px;color:var(--muted-2);margin:-6px 0 12px;line-height:1.6}
 .auth-page .btn-full{width:100%;justify-content:center;padding:12px}
 .auth-page .check{display:flex;align-items:flex-start;gap:8px;font-size:12px;color:var(--fg-2);margin-bottom:14px;cursor:pointer}
 
 /* ========== Error page ========== */
-.error-page{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:48px 18px;background:var(--bg)}
+.error-page{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:48px 18px;background:var(--surface)}
 .error-page .code{font:700 96px/1 var(--mono);color:var(--muted-2);letter-spacing:-.04em;margin-bottom:14px}
 .error-page h1{font:700 22px/1.2 var(--font-display);letter-spacing:-.01em;margin-bottom:8px}
 .error-page p{color:var(--muted);margin-bottom:22px;max-width:420px}
@@ -391,8 +305,8 @@ code{font-family:var(--mono);font-size:.92em;background:var(--surface-2);padding
 .error-page .actions{display:flex;gap:10px}
 
 /* ========== Search ========== */
-.search-page .search-input-big{border:1px solid var(--layer-border);background:var(--surface);border-radius:12px;padding:12px 16px;font-size:15px;width:100%;margin-bottom:14px;outline:none;box-shadow:var(--panel-shadow),var(--soft-inset)}
-.search-page .search-input-big:focus{border-color:color-mix(in oklab,var(--accent),var(--surface) 55%);box-shadow:var(--focus-ring)}
+.search-page .search-input-big{border:1px solid var(--border);background:var(--surface);border-radius:10px;padding:12px 16px;font-size:15px;width:100%;margin-bottom:14px;outline:none}
+.search-page .search-input-big:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
 .search-page .result-group{margin-bottom:14px}
 .search-page .result-group h4{font:600 13px/1 var(--font);color:var(--muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:.04em;font-size:11px;font-family:var(--mono)}
 
@@ -403,18 +317,12 @@ code{font-family:var(--mono);font-size:.92em;background:var(--surface-2);padding
 .ai-progress .step .ico{width:22px;display:inline-flex;justify-content:center}
 .ai-progress .step.done{color:var(--ok)}
 .ai-progress .step.now{color:var(--accent);font-weight:600}
-.ai-progress .step.fail{color:var(--hot)}
 .ai-progress .step.pending{color:var(--muted-2)}
-.ai-progress .step .ico .sdot{width:9px;height:9px;border-radius:50%;background:var(--muted-2);display:inline-block}
-.ai-progress .step.done .ico .sdot{background:var(--ok)}
-.ai-progress .step.fail .ico .sdot{background:var(--hot)}
-.ai-progress .step.now .ico .sdot{background:var(--accent)}
-.ai-progress .step.pending .ico .sdot{background:color-mix(in oklab,var(--muted-2),var(--surface) 30%)}
 .ai-progress .step .t{margin-left:auto;font:500 11px/1 var(--mono);color:var(--muted)}
 
 /* ========== Project list (GLB) ========== */
-.proj-card{background:var(--surface);border:1px solid var(--layer-border);border-radius:14px;padding:18px;cursor:pointer;transition:border-color var(--motion-fast) var(--ease-standard),box-shadow var(--motion-fast) var(--ease-standard),transform var(--motion-fast) var(--ease-standard),background var(--motion-fast) var(--ease-standard);display:flex;flex-direction:column;gap:8px;box-shadow:var(--panel-shadow),var(--soft-inset)}
-.proj-card:hover{border-color:var(--layer-border-hover);box-shadow:var(--panel-shadow-hover),var(--soft-inset);transform:translateY(-1px);background:color-mix(in oklab,var(--surface),var(--accent) 1.5%)}
+.proj-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px;cursor:pointer;transition:all .12s ease;display:flex;flex-direction:column;gap:8px}
+.proj-card:hover{border-color:var(--accent);box-shadow:0 4px 16px rgba(0,0,0,.06);transform:translateY(-1px)}
 .proj-card .top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
 .proj-card h3{font:700 16px/1.2 var(--font-display);letter-spacing:-.01em}
 .proj-card .client{font-size:12px;color:var(--muted);margin-top:2px}
@@ -423,20 +331,20 @@ code{font-family:var(--mono);font-size:.92em;background:var(--surface-2);padding
 .proj-card .footer{display:flex;justify-content:space-between;margin-top:4px;font-size:12px;color:var(--muted)}
 
 /* ========== State variants and inline editing helpers ========== */
-.state-info{background:color-mix(in oklab,var(--surface),var(--bg) 52%);border:1px solid var(--divider);border-radius:10px;padding:10px 12px;font-size:12px;color:var(--muted);line-height:1.6;box-shadow:var(--soft-inset)}
+.state-info{background:var(--surface-2);border:1px dashed var(--border-strong);border-radius:8px;padding:10px 12px;font-size:12px;color:var(--muted);line-height:1.6}
 .state-info b{color:var(--fg-2)}
 .empty{text-align:center;padding:48px 24px;color:var(--muted);font-size:13px}
 .empty .ico{font-size:32px;display:block;margin-bottom:8px;opacity:.4}
 
 /* ========== Danger zone ========== */
-.danger-zone{background:var(--surface);border:1px solid color-mix(in oklch,var(--hot) 18%,var(--surface));border-radius:12px;padding:18px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;gap:16px;box-shadow:var(--panel-shadow),var(--soft-inset)}
+.danger-zone{background:#fff;border:1px solid color-mix(in oklch,var(--hot) 30%,white);border-radius:10px;padding:18px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;gap:16px}
 .danger-zone .info{flex:1}
 .danger-zone .info h4{font:700 14px/1.2 var(--font);color:var(--hot);margin-bottom:4px}
 .danger-zone .info p{font-size:12px;color:var(--muted);line-height:1.6}
 
 /* ========== Roadmap (진행 현황) ========== */
 .kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
-.kpi{background:var(--surface);border:1px solid var(--layer-border);border-radius:12px;padding:14px 16px;box-shadow:var(--panel-shadow),var(--soft-inset)}
+.kpi{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 16px}
 .kpi .label{font:500 11px/1 var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
 .kpi .value{font:700 24px/1.1 var(--font-display);letter-spacing:-.01em;color:var(--fg)}
 .kpi .value .unit{font-size:14px;color:var(--muted);font-weight:500;margin-left:2px}
@@ -444,73 +352,62 @@ code{font-family:var(--mono);font-size:.92em;background:var(--surface-2);padding
 .kpi.accent{background:var(--accent-soft);border-color:color-mix(in oklch,var(--accent) 18%,var(--surface))}
 .kpi.accent .value{color:var(--accent-deep)}
 
-.milestone-strip{display:flex;gap:22px;overflow-x:auto;padding-bottom:4px;margin-bottom:24px;scrollbar-width:thin}
-.milestone-strip .ms{flex:0 0 auto;min-width:160px;background:var(--surface);border:1px solid var(--layer-border);border-radius:12px;padding:11px 14px;display:flex;flex-direction:column;gap:4px;position:relative;box-shadow:var(--soft-inset)}
+.milestone-strip{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:24px;scrollbar-width:thin}
+.milestone-strip .ms{flex:0 0 auto;min-width:160px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:11px 14px;display:flex;flex-direction:column;gap:4px;position:relative}
 .milestone-strip .ms .code{font:600 10px/1 var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
 .milestone-strip .ms .ttl{font:600 13px/1.2 var(--font);color:var(--fg)}
 .milestone-strip .ms .meta{font-size:11px;color:var(--muted)}
 .milestone-strip .ms.done{background:var(--ok-soft);border-color:color-mix(in oklch,var(--ok) 22%,var(--surface))}
 .milestone-strip .ms.done .code{color:var(--ok)}
-.milestone-strip .ms.current{border-color:color-mix(in oklab,var(--accent),var(--surface) 70%);box-shadow:0 0 0 1px color-mix(in oklab,var(--accent),transparent 76%) inset,var(--panel-shadow);background:var(--accent-soft)}
+.milestone-strip .ms.current{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset;background:var(--accent-soft)}
 .milestone-strip .ms.current .code{color:var(--accent)}
-.milestone-strip .ms+.ms::before{content:'›';position:absolute;left:-14px;top:50%;transform:translateY(-50%);color:var(--muted-2);font-size:14px}
+.milestone-strip .ms+.ms::before{content:'›';position:absolute;left:-9px;top:50%;transform:translateY(-50%);color:var(--muted-2);font-size:14px}
 
-.roadmap-section-title{font:600 12px/1 var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin:0 0 10px}
-.phase{margin-bottom:14px;border:1px solid var(--layer-border);border-radius:14px;background:color-mix(in oklab,var(--surface),transparent 1%);box-shadow:var(--panel-shadow),var(--soft-inset);overflow:hidden}
-.phase-head{display:grid;grid-template-columns:34px minmax(0,1fr) auto;gap:12px;align-items:center;padding:14px 16px;border-bottom:1px solid var(--divider);background:linear-gradient(180deg,color-mix(in oklab,var(--surface),var(--accent) 1.2%),var(--surface))}
-.phase-head .num{font:650 11px/1 var(--mono);color:var(--muted);min-width:0;height:auto;padding:0;background:transparent;border:0;border-radius:0;display:inline-flex;align-items:center;justify-content:flex-start}
+.phase{margin-bottom:24px}
+.phase-head{display:flex;align-items:center;gap:10px;margin-bottom:12px;padding-bottom:9px;border-bottom:1px solid var(--divider)}
+.phase-head .num{font:700 12px/1 var(--mono);color:var(--accent);background:var(--accent-soft);border:1px solid color-mix(in oklch,var(--accent) 25%,white);min-width:24px;height:24px;padding:0 6px;border-radius:7px;display:inline-flex;align-items:center;justify-content:center}
 .phase-head .name{font:700 14px/1.2 var(--font);color:var(--fg)}
-.phase-head .count{font:500 11px/1 var(--mono);color:var(--muted);background:var(--surface);padding:4px 9px;border-radius:99px;border:1px solid var(--divider);box-shadow:var(--soft-inset)}
-.phase-note{grid-column:2 / -1;color:var(--muted);font:500 11px/1.35 var(--mono)}
-.phase.muted .phase-head{background:var(--surface)}
-.phase.muted .phase-head .name{color:var(--fg-2)}
+.phase-head .count{font:500 11px/1 var(--mono);color:var(--muted);background:var(--surface-2);padding:3px 8px;border-radius:99px;border:1px solid var(--border)}
+.phase.muted .phase-head .num{color:var(--muted);background:var(--surface-2);border-color:var(--border)}
+.phase.muted .phase-head .name{color:var(--muted)}
+.phase.muted .stage-row{opacity:.6}
 
-.stage-list{display:flex;flex-direction:column;gap:0;padding:4px 0}
-.stage-row{display:grid;grid-template-columns:34px 64px minmax(0,1fr) auto auto;gap:12px;align-items:center;padding:12px 16px;position:relative}
+.stage-list{display:flex;flex-direction:column;gap:0;border-left:2px solid var(--divider);margin-left:14px;padding-left:0}
+.stage-row{display:grid;grid-template-columns:28px 60px 1fr auto auto;gap:12px;align-items:center;padding:11px 14px 11px 18px;position:relative;border-radius:8px;margin-left:-1px}
 .stage-row+.stage-row{border-top:1px solid var(--divider)}
-.stage-row::before{content:"";position:absolute;left:33px;top:0;bottom:0;width:1.5px;transform:translateX(-50%);background:var(--divider)}
-.stage-row:first-child::before{top:50%}
-.stage-row:last-child::before{bottom:50%}
-.stage-row:hover{background:color-mix(in oklab,var(--surface),var(--accent) 1.2%)}
-.stage-row.current{background:linear-gradient(90deg,color-mix(in oklab,var(--accent),transparent 94%),color-mix(in oklab,var(--surface),var(--accent) 1.6%) 42%,var(--surface));box-shadow:inset 2px 0 0 color-mix(in oklab,var(--accent),var(--surface) 42%),inset 0 1px 0 color-mix(in oklab,var(--surface),var(--accent) 4%),inset 0 -1px 0 color-mix(in oklab,var(--surface),var(--accent) 3%)}
-.stage-row.current:hover{background:linear-gradient(90deg,color-mix(in oklab,var(--accent),transparent 92%),color-mix(in oklab,var(--surface),var(--accent) 2.4%) 42%,var(--surface))}
-.stage-marker{--marker:var(--muted-2);position:relative;z-index:1;width:34px;height:18px;display:block}
-.stage-marker::before{content:"";position:absolute;left:50%;top:7px;width:16px;height:3px;transform:translateX(-50%);border-radius:99px;background:var(--marker);box-shadow:0 0 0 5px var(--surface)}
-.stage-row.current .stage-marker::before{box-shadow:0 0 0 5px color-mix(in oklab,var(--surface),var(--accent) 1.6%)}
-.stage-row.done .stage-marker,.stage-row.pass .stage-marker{--marker:var(--ok)}
-.stage-row.current .stage-marker{--marker:var(--accent)}
-.stage-row.pending .stage-marker{--marker:var(--warn)}
-.stage-row.skip .stage-marker{--marker:var(--border-strong)}
-.stage-row.lock .stage-marker{--marker:var(--divider)}
+.stage-row:hover{background:var(--surface-2)}
+.stage-row .node{position:absolute;left:-9px;top:50%;transform:translateY(-50%);width:16px;height:16px;border-radius:50%;background:var(--surface);border:2px solid var(--border-strong);display:inline-flex;align-items:center;justify-content:center;font-size:9px}
+.stage-row.gate .node{border-radius:3px;transform:translateY(-50%) rotate(45deg);width:14px;height:14px}
+.stage-row.done .node{background:var(--ok);border-color:var(--ok);color:#fff}
+.stage-row.pass .node{background:var(--ok);border-color:var(--ok)}
+.stage-row.current .node{background:var(--accent);border-color:var(--accent);box-shadow:0 0 0 4px var(--accent-soft)}
+.stage-row.pending .node{background:var(--warn);border-color:var(--warn)}
+.stage-row.lock .node{background:var(--surface);border-color:var(--border)}
+.stage-row.skip .node{background:var(--surface-2);border-color:var(--border);border-style:dashed}
 
-.stage-row .num{font:650 12px/1 var(--mono);color:var(--muted);text-align:left}
-.stage-row.current .num{color:var(--accent)}
+.stage-row .num{font:600 13px/1 var(--mono);color:var(--muted);text-align:right}
+.stage-row.current .num{color:var(--accent);font-weight:700}
 .stage-row.pass .num,.stage-row.done .num{color:var(--fg-2)}
-.stage-row .name{font:550 13px/1.4 var(--font);color:var(--fg-2)}
+.stage-row .name{font:500 13px/1.4 var(--font);color:var(--fg-2)}
 .stage-row.current .name{font-weight:700;color:var(--fg)}
 .stage-row.lock .name{color:var(--muted)}
 .stage-row.skip .name{color:var(--muted);text-decoration:line-through;text-decoration-color:var(--border-strong)}
 .stage-row .name .detail{display:block;font-weight:400;font-size:11px;color:var(--muted);margin-top:2px}
-.stage-row .badge{display:inline-flex;align-items:center;gap:4px;font:550 11px/1 var(--mono);padding:5px 9px;border-radius:99px;border:1px solid var(--divider);background:var(--surface);color:var(--muted);white-space:nowrap;box-shadow:var(--soft-inset)}
-.stage-row.done .badge,.stage-row.pass .badge{background:var(--ok-soft);border-color:color-mix(in oklch,var(--ok) 16%,var(--surface));color:var(--ok)}
-.stage-row.current .badge{background:var(--accent-soft);border-color:color-mix(in oklch,var(--accent) 18%,var(--surface));color:var(--accent-deep)}
-.stage-row.pending .badge{background:var(--warn-soft);border-color:color-mix(in oklch,var(--warn) 18%,var(--surface));color:color-mix(in oklab,var(--warn),var(--fg) 45%)}
+.stage-row .badge{display:inline-flex;align-items:center;gap:4px;font:500 11px/1 var(--mono);padding:4px 9px;border-radius:99px;border:1px solid var(--border);background:var(--surface);color:var(--muted);white-space:nowrap}
+.stage-row.done .badge,.stage-row.pass .badge{background:var(--ok-soft);border-color:color-mix(in oklch,var(--ok) 24%,var(--surface));color:var(--ok)}
+.stage-row.current .badge{background:var(--accent-soft);border-color:color-mix(in oklch,var(--accent) 28%,var(--surface));color:var(--accent-deep)}
+.stage-row.pending .badge{background:var(--warn-soft);border-color:color-mix(in oklch,var(--warn) 26%,var(--surface));color:#7a5500}
 .stage-row.lock .badge{color:var(--muted-2)}
 .stage-row.skip .badge{font-style:italic}
-.stage-row .gate-flag{font:650 10px/1 var(--mono);text-transform:uppercase;letter-spacing:.06em;color:var(--muted);background:var(--surface-2);padding:5px 8px;border-radius:99px;border:1px solid var(--divider);box-shadow:var(--soft-inset)}
-.stage-row.gate.major .gate-flag{color:var(--accent);background:var(--accent-soft);border-color:color-mix(in oklch,var(--accent) 18%,var(--surface))}
-.stage-row .deliv{font:600 12px/1 var(--mono);color:var(--accent);padding:6px 10px;border:1px solid color-mix(in oklch,var(--accent) 16%,var(--surface));border-radius:99px;background:var(--surface);cursor:pointer;box-shadow:var(--soft-inset)}
-.stage-row .deliv:hover{background:var(--accent-soft);border-color:color-mix(in oklch,var(--accent) 22%,var(--surface))}
+.stage-row .gate-flag{font:600 10px/1 var(--mono);text-transform:uppercase;letter-spacing:.06em;color:var(--muted);background:var(--surface-2);padding:3px 7px;border-radius:4px;border:1px solid var(--border)}
+.stage-row.gate.major .gate-flag{color:var(--accent);background:var(--accent-soft);border-color:color-mix(in oklch,var(--accent) 25%,var(--surface))}
+.stage-row .deliv{font:500 12px/1 var(--mono);color:var(--accent);padding:5px 10px;border:1px solid color-mix(in oklch,var(--accent) 20%,var(--surface));border-radius:6px;background:var(--surface);cursor:pointer}
+.stage-row .deliv:hover{background:var(--accent-soft)}
 
 @media (max-width:900px){
   .kpi-row{grid-template-columns:1fr 1fr}
   .milestone-strip .ms{min-width:140px}
-  .phase-head{grid-template-columns:28px minmax(0,1fr);padding:13px 14px}
-  .phase-head .count{grid-column:2;justify-self:start}
-  .phase-note{grid-column:2}
-  .stage-row{grid-template-columns:28px 50px 1fr;row-gap:6px;padding:12px 14px}
-  .stage-row::before{left:28px}
-  .stage-marker{width:28px}
+  .stage-row{grid-template-columns:24px 50px 1fr;row-gap:6px}
   .stage-row .badge,.stage-row .gate-flag,.stage-row .deliv{grid-column:3;justify-self:start}
 }
 </style>
@@ -535,7 +432,7 @@ code{font-family:var(--mono);font-size:.92em;background:var(--surface-2);padding
  * MOCK DATA
  * ============================================================ */
 const DATA = {
-  user: {pm: {name:'김PM', email:'pm@agency.com', role:'프로젝트팀', job:'PM'}, client:{name:'홍OO', email:'hong@oo.co', role:'고객사'}, admin:{name:'관리자', email:'admin@sp.co', role:'관리자'}},
+  user: {pm: {name:'김PM', email:'pm@agency.com', role:'프로젝트팀'}, client:{name:'홍OO', email:'hong@oo.co', role:'고객사'}, admin:{name:'관리자', email:'admin@sp.co', role:'관리자'}},
   projects: [
     {id:'A', name:'A 프로젝트', client:'㈜OO', type:'SaaS', stage:12, total:24, week:6, pending:3, updated:'2시간 전', progress:50},
     {id:'B', name:'B 프로젝트', client:'㈜XX', type:'웹사이트', stage:9, total:24, week:3, pending:0, updated:'어제', progress:37},
@@ -557,31 +454,15 @@ const DATA = {
       {type:'review', who:'PM', time:'05-19 14:15', body:'고객사에 v2 검토 요청 발송'},
       {type:'reject', who:'고객사', time:'05-19 15:40', body:'§7 NFR 보안 요구사항 추가 부탁드립니다.', tag:'반려 사유'},
       {type:'upload', who:'PM', time:'05-19 16:10', body:'<b>v3 스냅샷 생성 (draft)</b> — §7 NFR 추가 + glossary 신규'},
-    ], comments:[
-      {version:'v3', items:[
-        {who:'PM', time:'05-19 16:20', body:'§7 보안 NFR 초안 추가했습니다. 내부 검토 후 v3 검토 요청 발송 예정.', own:true},
-        {who:'고객사', time:'05-19 16:40', body:'요구사항 범위는 확인했습니다. 보안 항목만 다음 버전에 반영 부탁드려요.'},
-        {who:'관리자', time:'05-19 16:45', body:'감사 로그 기준으로 변경 이력 검토 완료했습니다.'},
-      ]},
-      {version:'v2', items:[
-        {who:'고객사', time:'05-19 15:08', body:'권한 매트릭스는 충분합니다. 보안 NFR만 다음 버전에 추가해 주세요.'},
-      ]},
-      {version:'v1', items:[
-        {who:'고객사', time:'05-19 13:48', body:'관리자 권한과 일반 사용자 권한 차이가 표로 보이면 좋겠습니다.'},
-      ]},
+      {type:'comment', who:'PM', time:'05-19 16:20', body:'§7 보안 NFR 초안 추가했습니다. 내부 검토 후 v3 검토 요청 발송 예정.', own:true},
     ]},
-    ia: {label:'IA (정보구조도)', version:'v1', status:'confirmed', updated:'2026-05-19', files:[
-      {name:'ia-v1.pdf', size:'2.4MB', desc:'메인 사이트맵'},
-      {name:'ia-notes.docx', size:'48KB', desc:'IA 작성 노트 (워드 — 미리보기 미지원 예시)'}
+    ia: {label:'IA (정보구조도)', version:'v1.0', status:'confirmed', updated:'2026-05-19', files:[
+      {name:'ia-v1.0.pdf', size:'2.4MB', desc:'메인 사이트맵'}
     ], activities:[
-      {type:'upload', who:'PM', time:'05-19 09:00', body:'<b>v1 스냅샷 생성</b> — IA 초안 (파일 1개)'},
-      {type:'review', who:'PM', time:'05-19 09:05', body:'고객사에 v1 검토 요청 발송'},
-      {type:'approve', who:'고객사', time:'05-19 11:30', body:'<b>v1 컨펌 완료</b> (Gate 11 통과)'},
-    ], comments:[
-      {version:'v1', items:[
-        {who:'PM', time:'05-19 09:10', body:'메뉴 항목 누락 없는지 확인 부탁드립니다.', own:true},
-        {who:'고객사', time:'05-19 10:42', body:'마이페이지 하위의 결제 내역 메뉴만 추가되면 컨펌 가능합니다.'},
-      ]},
+      {type:'upload', who:'PM', time:'05-19 09:00', body:'<b>v1.0 스냅샷 생성</b> — IA 초안 (파일 1개)'},
+      {type:'review', who:'PM', time:'05-19 09:05', body:'고객사에 v1.0 검토 요청 발송'},
+      {type:'comment', who:'PM', time:'05-19 09:10', body:'메뉴 항목 누락 없는지 확인 부탁드립니다.', own:true},
+      {type:'approve', who:'고객사', time:'05-19 11:30', body:'<b>v1.0 컨펌 완료</b> (Gate 11 통과)'},
     ]},
     design: {label:'디자인 시안', version:'v2', status:'pending-review', updated:'2026-05-19 13:42', files:[
       {name:'design-v2-A.png', size:'4.2MB', desc:'Precision grid'},
@@ -592,14 +473,6 @@ const DATA = {
       {type:'reject', who:'고객사', time:'05-19 10:00', body:'A·D 두 후보 한 번에 비교 가능한 단일 HTML로 합쳐 주세요.', tag:'반려 사유'},
       {type:'upload', who:'디자이너', time:'05-19 13:42', body:'<b>v2 스냅샷 생성</b> — 단일 HTML 6안 통합'},
       {type:'review', who:'PM', time:'05-19 13:45', body:'고객사에 v2 검토 요청 발송 (현재 검토중)'},
-    ], comments:[
-      {version:'v2', items:[
-        {who:'고객사', time:'05-19 14:02', body:'A안의 정보 밀도는 좋고, D안의 헤더 톤을 일부 섞어보면 좋겠습니다.'},
-        {who:'디자이너', time:'05-19 14:18', body:'두 후보를 단일 HTML 안에서 비교 가능하도록 정리했습니다.', own:true},
-      ]},
-      {version:'v1', items:[
-        {who:'고객사', time:'05-19 10:00', body:'A·D 두 후보 한 번에 비교 가능한 단일 HTML로 합쳐 주세요.'},
-      ]},
     ]},
     prototype: {label:'프로토타입', version:'-', status:'empty', updated:'-', files:[], activities:[]},
     figma: {label:'Figma 핸드오프', version:'-', status:'empty', updated:'-', files:[], activities:[]},
@@ -613,18 +486,18 @@ const DATA = {
     {id:'DEF-006', title:'검토 요청 후 알림 미수신', severity:'High', status:'미해결', assignee:'김개발', created:'05-19'},
   ],
   tests: [
-    {id:'TC-001', title:'로그인 성공 케이스', phase:'인증', priority:'High', status:'통과', assignee:'이QA'},
-    {id:'TC-002', title:'로그인 5회 실패 잠금', phase:'인증', priority:'High', status:'통과', assignee:'이QA'},
+    {id:'TC-001', title:'로그인 성공 케이스', phase:'인증', priority:'High', status:'Pass', assignee:'이QA'},
+    {id:'TC-002', title:'로그인 5회 실패 잠금', phase:'인증', priority:'High', status:'Pass', assignee:'이QA'},
     {id:'TC-003', title:'요구사항 파일 업로드 50MB', phase:'요구사항', priority:'Medium', status:'대기', assignee:'이QA'},
-    {id:'TC-004', title:'버전 스냅샷 전환', phase:'요구사항', priority:'Medium', status:'실패', assignee:'이QA'},
-    {id:'TC-005', title:'검토 요청 잠금 동작', phase:'워크플로우', priority:'High', status:'통과', assignee:'이QA'},
-    {id:'TC-006', title:'반려 사유 영구 보존', phase:'워크플로우', priority:'High', status:'통과', assignee:'이QA'},
+    {id:'TC-004', title:'버전 스냅샷 전환', phase:'요구사항', priority:'Medium', status:'Fail', assignee:'이QA'},
+    {id:'TC-005', title:'검토 요청 잠금 동작', phase:'워크플로우', priority:'High', status:'Pass', assignee:'이QA'},
+    {id:'TC-006', title:'반려 사유 영구 보존', phase:'워크플로우', priority:'High', status:'Pass', assignee:'이QA'},
     {id:'TC-007', title:'관리자 코멘트 강제 삭제', phase:'코멘트', priority:'Low', status:'대기', assignee:'이QA'},
     {id:'TC-008', title:'개발 사전조건 차단', phase:'개발', priority:'High', status:'대기', assignee:'이QA'},
   ],
   members: {team:[
     {name:'김PM', role:'PM', email:'pm@agency.com'},
-    {name:'이기획', role:'기획자', email:'planner@agency.com'},
+    {name:'이기획', role:'기획', email:'planner@agency.com'},
     {name:'박디자이너', role:'디자이너', email:'designer@agency.com'},
   ], clients:[
     {name:'홍OO', email:'hong@oo.co', status:'active'},
@@ -643,11 +516,11 @@ const DATA = {
     {name:'이YY', email:'lee@yy.co', client:'㈜YY', projects:3, status:'active'},
   ],
   audit: [
-    {time:'2026-05-19 06:00', user:'김PM', role:'팀', action:'요구사항 파일 교체', target:'main-srs.pdf', ip:'1.2.3.4'},
-    {time:'2026-05-19 05:50', user:'홍OO', role:'고객사', action:'컨펌', target:'Gate 11 IA', ip:'5.6.7.8'},
+    {time:'2026-05-19 06:00', user:'김PM', role:'팀', action:'요구사항 수정', target:'REQ-PRJ-002', ip:'1.2.3.4'},
+    {time:'2026-05-19 05:50', user:'홍OO', role:'고객', action:'컨펌', target:'Gate 11 IA', ip:'5.6.7.8'},
     {time:'2026-05-19 05:30', user:'김PM', role:'팀', action:'로그인', target:'-', ip:'1.2.3.4'},
     {time:'2026-05-19 04:15', user:'박디자이너', role:'팀', action:'파일 업로드', target:'design-v2-A.png', ip:'1.2.3.5'},
-    {time:'2026-05-19 03:42', user:'관리자', role:'관리자', action:'고객사 계정 초대 재발송', target:'choi@oo.co', ip:'10.0.0.1'},
+    {time:'2026-05-19 03:42', user:'관리자', role:'관리자', action:'고객 계정 초대 재발송', target:'choi@oo.co', ip:'10.0.0.1'},
   ],
   ai: {
     status:'locked',
@@ -682,17 +555,16 @@ const VERSIONS = {
     {v:'v3', status:'draft'}, // 최신 → slot.files
   ],
   ia: [
-    {v:'v1', status:'confirmed'}, // 최신/유일 → slot.files
+    {v:'v1.0', status:'confirmed'}, // 최신/유일 → slot.files
   ],
   design: [
     {v:'v1', status:'rejected', files:[
-      {name:'design-v1-set.zip', size:'12.0MB', desc:'시안 6안 (개별 파일 패키지)'},
+      {name:'design-v1-set.zip', size:'12.0MB', desc:'시안 6안 (개별 파일 묶음)'},
     ]},
     {v:'v2', status:'pending-review'}, // 최신 → slot.files
   ],
 };
 const STATUS_LABEL = {draft:'draft', 'pending-review':'검토중', confirmed:'컨펌', rejected:'반려', empty:'없음'};
-function lvlBadge(v){ const c = v==='High'?'lvl-high':v==='Medium'?'lvl-med':'lvl-low'; return `<span class="lvl ${c}">${esc(v)}</span>`; }
 
 /* 산출물 슬롯의 진입 게이트 — 이전 게이트 미통과면 '선행 작업'(소프트 잠금: 허용 + 경고) */
 const SLOT_ENTRY_GATE = {
@@ -706,15 +578,6 @@ function gateAhead(slug){
   if(!g) return null;
   const stage = (DATA.projects.find(p=>p.id==='A')||{}).stage || 0;
   return stage > g.stage ? null : g; // 통과 시 null, 미통과 시 게이트 정보 반환
-}
-
-/* 코멘트 작성자 → 이름·역할(team/client/admin)·배지 라벨·아바타 이니셜 */
-function commentAuthor(who){
-  const nameMap = {'PM':'김PM','디자이너':'박디자이너','기획자':'이기획','고객사':'홍OO','관리자':'김관리'};
-  const role = who==='고객사' ? 'client' : who==='관리자' ? 'admin' : 'team';
-  const name = nameMap[who] || who;
-  const roleLabel = {team:'팀', client:'고객사', admin:'관리자'}[role];
-  return {name, role, roleLabel, initial:name.slice(0,1)};
 }
 
 /* ============================================================
@@ -858,41 +721,33 @@ function renderLayoutWith(layout, content, params={}, activeKey=null){
 }
 
 function renderProjectSidebar(proj, active, params){
-  const currentPath = location.hash.slice(1) || `/projects/${proj.id}`;
-  const settingSubActive = currentPath.includes('/settings/members')
-    ? 'members'
-    : currentPath.includes('/settings/danger')
-      ? 'danger'
-      : 'info';
-  const role = state.role;
   const items = [
-    {key:'dashboard', href:`/projects/${proj.id}`, label:'대시보드'},
-    {key:'roadmap', href:`/projects/${proj.id}/roadmap`, label:'진행 현황'},
-    {key:'requirements', href:`/projects/${proj.id}/requirements`, label:'요구사항'},
-    {key:'deliverables', href:`/projects/${proj.id}/deliverables/ia`, label:'산출물'},
-    {key:'dev', href:`/projects/${proj.id}/dev`, label:'개발', locked:true, roles:['pm','admin']},
-    {key:'tests', href:`/projects/${proj.id}/tests`, label:'TC', roles:['pm','admin']},
-    {key:'defects', href:`/projects/${proj.id}/defects`, label:'결함'},
-    {key:'settings', href: role==='client' ? `/projects/${proj.id}/settings/members` : `/projects/${proj.id}/settings`, label:'설정'},
-  ].filter(i => !i.roles || i.roles.includes(role));
+    {key:'dashboard', href:`/projects/${proj.id}`, label:'대시보드', tag:`${proj.stage}/${proj.total}`},
+    {key:'roadmap', href:`/projects/${proj.id}/roadmap`, label:'진행 현황', tag:'24단계'},
+    {key:'requirements', href:`/projects/${proj.id}/requirements`, label:'요구사항', tag:'44'},
+    {key:'deliverables', href:`/projects/${proj.id}/deliverables/ia`, label:'산출물', tag:'4'},
+    {key:'defects', href:`/projects/${proj.id}/defects`, label:'결함', tag:'6'},
+    {key:'tests', href:`/projects/${proj.id}/tests`, label:'TC', tag:'팀'},
+    {key:'dev', href:`/projects/${proj.id}/dev`, label:'개발', tag:'잠금', locked:true},
+    {key:'settings', href:`/projects/${proj.id}/settings`, label:'설정', tag:'팀'},
+  ];
   return `
     <aside class="sidebar">
-      <div class="brand">
-        <a class="logo" data-route="/">SoftPuzzle PM</a>
+      <a class="brand" data-route="/">
+        <span class="logo">SoftPuzzle PM</span>
         <span class="proj">${esc(proj.name)}<small>${esc(proj.client)} · ${esc(proj.type)} · W${proj.week}</small></span>
-      </div>
+      </a>
       <nav>
         ${items.map(i => `
           <a class="nav-item ${i.locked?'locked':''} ${active===i.key?'active':''}" data-route="${i.href}">
             <span>${i.label}</span>
+            <span class="tag">${i.tag}</span>
           </a>
         `).join('')}
         ${active==='settings' ? `
-          <div class="subnav" aria-label="설정 하위 메뉴">
-            ${role!=='client' ? `<a class="sub ${settingSubActive==='info'?'active':''}" data-route="/projects/${proj.id}/settings">기본 정보</a>` : ''}
-            <a class="sub ${settingSubActive==='members'?'active':''}" data-route="/projects/${proj.id}/settings/members">멤버·초대</a>
-            ${role!=='client' ? `<a class="sub ${settingSubActive==='danger'?'active':''}" data-route="/projects/${proj.id}/settings/danger">Danger Zone</a>` : ''}
-          </div>
+          <a class="sub ${!params.path?'active':''}" data-route="/projects/${proj.id}/settings">기본 정보</a>
+          <a class="sub" data-route="/projects/${proj.id}/settings/members">멤버·초대</a>
+          <a class="sub" data-route="/projects/${proj.id}/settings/danger">Danger Zone</a>
         ` : ''}
       </nav>
     </aside>`;
@@ -900,18 +755,18 @@ function renderProjectSidebar(proj, active, params){
 
 function renderAdminSidebar(active){
   const items = [
-    {key:'teams', href:'/admin/teams', label:'프로젝트팀 계정'},
-    {key:'clients', href:'/admin/clients', label:'고객사 계정'},
-    {key:'audit', href:'/admin/audit', label:'감사 로그'},
+    {key:'teams', href:'/admin/teams', label:'프로젝트팀 계정', tag:'18'},
+    {key:'clients', href:'/admin/clients', label:'고객사 계정', tag:'32'},
+    {key:'audit', href:'/admin/audit', label:'감사 로그', tag:'1y'},
   ];
   return `
     <aside class="sidebar">
-      <div class="brand">
-        <a class="logo" data-route="/">SoftPuzzle PM</a>
+      <a class="brand" data-route="/">
+        <span class="logo">SoftPuzzle PM</span>
         <span class="proj">관리자 메뉴<small>전체 시스템 관리</small></span>
-      </div>
+      </a>
       <nav>
-        ${items.map(i => `<a class="nav-item ${active===i.key?'active':''}" data-route="${i.href}"><span>${i.label}</span></a>`).join('')}
+        ${items.map(i => `<a class="nav-item ${active===i.key?'active':''}" data-route="${i.href}"><span>${i.label}</span><span class="tag">${i.tag}</span></a>`).join('')}
       </nav>
     </aside>`;
 }
@@ -933,19 +788,20 @@ function renderGlobalSidebar(){
   ];
   return `
     <aside class="sidebar">
-      <div class="brand">
-        <a class="logo" data-route="/">SoftPuzzle PM</a>
+      <a class="brand" data-route="/">
+        <span class="logo">SoftPuzzle PM</span>
         <span class="proj">프로젝트 워크스페이스<small>${scopeLabel} 프로젝트 ${visibleProjs.length}개</small></span>
-      </div>
+      </a>
       <nav>
         ${items.map(i => `
           <a class="nav-item ${active===i.key?'active':''}" data-route="${i.href}">
             <span>${i.label}</span>
+            ${i.tag ? `<span class="tag">${i.tag}</span>` : ''}
           </a>
         `).join('')}
         ${role==='admin' ? `
           <div class="group">관리자</div>
-          <a class="nav-item" data-route="/admin/teams"><span>관리자 메뉴</span></a>
+          <a class="nav-item" data-route="/admin/teams"><span>관리자 메뉴</span><span class="tag">→</span></a>
         ` : ''}
       </nav>
     </aside>`;
@@ -991,13 +847,7 @@ function renderTopbar(layout, ctx={}){
       ${crumb}
       <div class="spacer"></div>
       ${layout==='project' ? `<div class="search" data-action="open-search">⌕ 통합 검색<span class="kbd">/</span></div>` : ''}
-      <button class="icon-btn" data-action="notify" title="알림" aria-label="알림">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path>
-          <path d="M10 21h4"></path>
-        </svg>
-        <span class="dot"></span>
-      </button>
+      <button class="icon-btn" data-action="notify" title="알림">🔔<span class="dot"></span></button>
       <div class="acct" data-action="acct">
         <span class="avatar">${initial}</span>
         <span class="name">${esc(u.name)}</span>
@@ -1020,25 +870,22 @@ function renderDashboard(params){
       <button class="btn locked" data-action="export-locked"><span class="role-tag">공통</span>산출물 Export</button>`;
   } else if(role === 'client'){
     actions = `
-      <button class="btn primary" data-action="open-approve" data-mode="approve"><span class="role-tag">고객사</span>컨펌</button>
-      <button class="btn danger" data-action="open-approve" data-mode="reject"><span class="role-tag">고객사</span>반려</button>`;
+      <button class="btn primary" data-action="open-approve" data-mode="approve"><span class="role-tag">고객</span>컨펌</button>
+      <button class="btn danger" data-action="open-approve" data-mode="reject"><span class="role-tag">고객</span>반려</button>`;
   } else {
     actions = `
       <button class="btn" data-route="/admin/teams">전체 프로젝트팀</button>
       <button class="btn" data-route="/admin/audit">감사 로그</button>`;
   }
   return html`
-    <section class="proj-header" data-od-id="dashboard-header">
-      <div class="proj-header-top">
+    <section class="proj-header">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px">
         <div>
           <h1>${esc(proj.name)}</h1>
           <p class="meta">고객사: <b>${esc(proj.client)}</b> · 유형: ${esc(proj.type)} · 기간: 2026-05 ~ 2026-08</p>
           <p class="stage">현재 단계: <b>12. 디자인 시안 등록</b> — <span style="color:var(--warn)">Gate 13 컨펌 대기</span></p>
         </div>
-        <aside class="dashboard-health" aria-label="프로젝트 상태 요약">
-          <div class="row gate-row"><span class="gate-badge">Gate 13 컨펌 대기</span></div>
-          <div class="row"><span class="value">디자인 시안 v2</span></div>
-        </aside>
+        <span class="gate-badge">🔒 Gate 13 잠금</span>
       </div>
       <div class="progress">
         <div class="bar"><i style="width:${proj.progress}%"></i></div>
@@ -1046,47 +893,35 @@ function renderDashboard(params){
       </div>
     </section>
 
-    <section class="action-bar" data-od-id="dashboard-actions">
+    <section class="action-bar">
       <span class="label">액션</span>
       ${actions}
     </section>
 
-    <section class="grid cols-2" data-od-id="dashboard-work-queue" style="margin-bottom:14px">
+    <section class="grid cols-2" style="margin-bottom:14px">
       <div class="card">
         <div class="card-head"><h3>미처리 항목</h3><span class="meta">우선순위 순</span></div>
         <div class="card-list">
-          <div class="item" data-route="/projects/A/deliverables/design"><div class="body">시안 v2 컨펌 대기 — <b>디자인 시안</b></div><span class="pill warn">고객사</span></div>
+          <div class="item" data-route="/projects/A/deliverables/design"><div class="body">시안 v2 컨펌 대기 — <b>디자인 시안</b></div><span class="pill warn">고객</span></div>
           <div class="item" data-route="/projects/A/requirements"><div class="body">요구사항 #12 코멘트 미응답</div><span class="pill muted">팀</span></div>
           <div class="item" data-route="/projects/A/defects"><div class="body">결함 DEF-001 미해결 (High)</div><span class="pill hot">팀</span></div>
         </div>
       </div>
       <div class="card">
         <div class="card-head"><h3>최근 활동</h3><span class="meta">최근 20건</span></div>
-        <div class="activity">
-          <div class="activity-item activity"><div class="item">
-            <span class="marker upload"><span class="dot"></span></span>
-            <div class="body"><div class="meta"><b>디자이너</b> · 2h · 새 버전 생성</div><div class="desc">시안 v2 업로드</div></div>
-          </div></div>
-          <div class="activity-item activity"><div class="item">
-            <span class="marker comment"><span class="dot"></span></span>
-            <div class="body"><div class="meta"><b>고객사</b> · 3h · 코멘트</div><div class="desc">대시보드 미처리 카드 영역 보강 요청</div></div>
-          </div></div>
-          <div class="activity-item activity"><div class="item">
-            <span class="marker approve"><span class="dot"></span></span>
-            <div class="body"><div class="meta"><b>Gate 11</b> · 1d · 컨펌</div><div class="desc">IA 컨펌 통과</div></div>
-          </div></div>
-          <div class="activity-item activity"><div class="item">
-            <span class="marker approve"><span class="dot"></span></span>
-            <div class="body"><div class="meta"><b>PM</b> · 2d · 컨펌</div><div class="desc">요구사항 정의서 v1.3 컨펌</div></div>
-          </div></div>
+        <div class="card-list">
+          <div class="item"><div class="body"><b>디자이너</b>가 시안 v2 업로드</div><span class="t">2h</span></div>
+          <div class="item"><div class="body"><b>고객사</b>가 코멘트 작성</div><span class="t">3h</span></div>
+          <div class="item"><div class="body">Gate 11 IA 컨펌 통과</div><span class="t">1d</span></div>
+          <div class="item"><div class="body">요구사항 정의서 v1.3 컨펌</div><span class="t">2d</span></div>
         </div>
       </div>
     </section>
 
-    <section class="card" data-od-id="dashboard-deliverables">
+    <section class="card">
       <div class="card-head"><h3>산출물 요약</h3><span class="meta">단계별 최신 버전</span></div>
       <div class="grid cols-4">
-        <div class="deliverable" data-route="/projects/A/deliverables/ia"><div class="stage-num">단계 10~11</div><div class="name">IA</div><span class="pill ok">✓ v1 컨펌</span></div>
+        <div class="deliverable" data-route="/projects/A/deliverables/ia"><div class="stage-num">단계 10~11</div><div class="name">IA</div><span class="pill ok">✓ v1.0 컨펌</span></div>
         <div class="deliverable" data-route="/projects/A/deliverables/design"><div class="stage-num">단계 12~13</div><div class="name">디자인 시안</div><span class="pill warn">v2 검토중</span></div>
         <div class="deliverable" data-route="/projects/A/deliverables/prototype"><div class="stage-num">단계 14~15</div><div class="name">프로토타입</div><span class="pill muted">대기</span></div>
         <div class="deliverable" data-route="/projects/A/deliverables/figma"><div class="stage-num">단계 16~17</div><div class="name">Figma</div><span class="pill muted">대기</span></div>
@@ -1119,7 +954,7 @@ const ROADMAP = {
     {
       label:'계정·접근', muted:true, note:'시스템 미개발 — 스킵',
       stages:[
-        {n:'3', name:'3-tier 접근 구분 설정', status:'skip', badge:'스킵'},
+        {n:'3', name:'2-tier 접근 구분 설정', status:'skip', badge:'스킵'},
         {n:'4', name:'고객사 계정 발급·초대', status:'skip', badge:'스킵'},
         {n:'5', name:'고객사 최초 로그인', status:'skip', badge:'스킵'},
       ]
@@ -1190,12 +1025,13 @@ function renderRoadmap(params){
 
   const phasesHtml = ROADMAP.phases.map((ph, i) => {
     const stagesHtml = ph.stages.map(s => {
+      const nodeChar = s.status==='done'?'✓' : s.status==='pass'?'✓' : s.status==='current'?'●' : s.status==='pending'?'⋯' : s.status==='skip'?'/' : '';
       const deliv = s.deliverable ? `<button class="deliv" data-route="${s.deliverable.route}">${esc(s.deliverable.label)}</button>` : '';
       const gateFlag = s.gate ? `<span class="gate-flag">${s.major?'Major ':''}Gate ${s.n}</span>` : '';
       const detail = s.detail ? `<span class="detail">${esc(s.detail)}</span>` : '';
       return `
         <div class="stage-row ${s.status} ${s.gate?'gate':''} ${s.major?'major':''}">
-          <span class="stage-marker" aria-hidden="true"></span>
+          <span class="node">${nodeChar}</span>
           <span class="num">${esc(s.n)}</span>
           <div class="name">${esc(s.name)}${detail}</div>
           ${gateFlag}
@@ -1209,7 +1045,7 @@ function renderRoadmap(params){
           <span class="num">${i+1}</span>
           <span class="name">${esc(ph.label)}</span>
           <span class="count">${ph.stages.length}단계</span>
-          ${ph.note?`<span class="phase-note">${esc(ph.note)}</span>`:''}
+          ${ph.note?`<span class="meta" style="color:var(--muted);font-size:11px;font-family:var(--mono)">· ${esc(ph.note)}</span>`:''}
         </div>
         <div class="stage-list">${stagesHtml}</div>
       </div>
@@ -1220,6 +1056,7 @@ function renderRoadmap(params){
     <div class="page-bar">
       <div>
         <h1 class="page-title">진행 현황</h1>
+        <p class="page-sub">${esc(proj.name)} · 24단계 전체 여정과 게이트·마일스톤을 한눈에 봅니다.</p>
       </div>
     </div>
 
@@ -1246,15 +1083,15 @@ function renderRoadmap(params){
       </div>
     </section>
 
-    <h3 class="roadmap-section-title">마일스톤 (M1 ~ M7)</h3>
+    <h3 style="font:600 12px/1 var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">마일스톤 (M1 ~ M7)</h3>
     <div class="milestone-strip">${milestoneHtml}</div>
 
-    <h3 class="roadmap-section-title">단계별 상세</h3>
+    <h3 style="font:600 12px/1 var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">단계별 상세</h3>
     ${phasesHtml}
 
     <div class="state-info" style="margin-top:18px">
-      <b>범례</b> · 얇은 tick 색상으로 완료/진행/검토/대기 상태를 구분합니다. 긴 진행 바 대신 행의 상태 pill과 산출물 액션이 다음 확인 지점을 보여줍니다.<br>
-      <b>게이트</b> · Gate pill은 컨펌 전 다음 단계 진행 불가 지점을 의미합니다. <b>Major</b>(9·22)는 프로젝트 진행 전체 차단.
+      <b>범례</b> · <span style="color:var(--ok)">●</span> 완료/통과 · <span style="color:var(--accent)">●</span> 진행 중 · <span style="color:var(--warn)">●</span> 검토 중 (게이트 대기) · <span style="color:var(--muted)">○</span> 잠금 · <span style="color:var(--muted)">/</span> 스킵<br>
+      <b>게이트</b> · 마름모 노드(◆)는 게이트 단계 — 컨펌 전 다음 단계 진행 불가. <b>Major</b>(9·22)는 프로젝트 진행 전체 차단.
     </div>
   `;
 }
@@ -1264,7 +1101,7 @@ function renderRoadmap(params){
  * ============================================================ */
 function renderRequirements(params){
   const slot = DATA.slot.requirements;
-  return renderSlotPage({slot, slug:'requirements', title:'요구사항 정의서', subtitle:'슬롯 스냅샷 단위 파일 관리'});
+  return renderSlotPage({slot, slug:'requirements', title:'요구사항 정의서', subtitle:'슬롯 스냅샷 단위 파일 묶음 관리'});
 }
 
 /* ============================================================
@@ -1276,13 +1113,14 @@ function renderDeliverables(params){
   const slot = slotMap[slug] || DATA.slot.ia;
   const tabs = ['ia','design','prototype','figma'].map(s => {
     const label = {ia:'IA', design:'디자인 시안', prototype:'프로토타입', figma:'Figma'}[s];
-    const pre = gateAhead(s) ? ` <span style="font-size:9px;font-weight:600;color:var(--warn);border:1px solid color-mix(in oklab,var(--warn),transparent 70%);border-radius:4px;padding:1px 4px;vertical-align:middle">선행</span>` : '';
+    const pre = gateAhead(s) ? ` <span style="font-size:9px;font-weight:600;color:var(--warn);border:1px solid color-mix(in oklch,var(--warn) 30%,white);border-radius:4px;padding:1px 4px;vertical-align:middle">선행</span>` : '';
     return `<a class="tab ${slug===s?'active':''}" data-route="/projects/A/deliverables/${s}">${label}${pre}</a>`;
   }).join('');
   return html`
     <h1 class="page-title">산출물</h1>
+    <p class="page-sub">단계별 산출물(IA·디자인·프로토타입·Figma)을 슬롯 스냅샷 단위로 관리</p>
     <div class="tabs">${tabs}</div>
-    ${slot.status === 'empty' ? renderEmptySlot(slug, slot) : renderSlotPage({slot, slug, title:slot.label, subtitle:'슬롯 스냅샷 단위 파일', isDeliverable:true})}`;
+    ${slot.status === 'empty' ? renderEmptySlot(slug, slot) : renderSlotPage({slot, slug, title:slot.label, subtitle:'슬롯 스냅샷 단위 파일 묶음', isDeliverable:true})}`;
 }
 
 function renderEmptySlot(slug, slot){
@@ -1292,7 +1130,7 @@ function renderEmptySlot(slug, slot){
       <span class="ico">📁</span>
       <p><b>${esc(slot.label)} — 아직 등록 없음</b></p>
       <p>해당 단계 진입 후 [+ 새 버전 만들기]로 첫 스냅샷 등록</p>
-      ${ahead ? `<div class="state-info" style="max-width:560px;margin:14px auto 0;text-align:left;border-color:color-mix(in oklab,var(--warn),transparent 70%);color:var(--warn)">⚠ <b>선행 작업</b> · ${esc(ahead.label)} 미통과 — 지금 등록하면 잠정(선행) 버전입니다. 이전 단계가 변경되면 재작업이 필요할 수 있고, 컨펌은 게이트 순서대로만 가능합니다.</div>` : ''}
+      ${ahead ? `<div class="state-info" style="max-width:560px;margin:14px auto 0;text-align:left;border-color:color-mix(in oklch,var(--warn) 30%,white);color:var(--warn)">⚠ <b>선행 작업</b> · ${esc(ahead.label)} 미통과 — 지금 등록하면 잠정(선행) 버전입니다. 이전 단계가 변경되면 재작업이 필요할 수 있고, 컨펌은 게이트 순서대로만 가능합니다.</div>` : ''}
       ${state.role==='pm' ? `<button class="btn primary" style="margin-top:14px" data-action="open-new-version" data-slot="${slug}">+ 새 버전 만들기${ahead?' (선행)':''}</button>` : ''}
     </div>`;
 }
@@ -1327,54 +1165,27 @@ function renderSlotPage({slot, slug, title, subtitle, isDeliverable=false}){
         <b>${esc(f.name)}</b>
         <span class="sub">${esc(f.size)} · ${esc(f.desc)}</span>
       </div>
-      ${f.badge ? `<span class="badge" style="background:${f.badge==='NEW'?'var(--accent-soft)':'var(--surface-2)'};color:${f.badge==='NEW'?'var(--accent-deep)':'var(--muted)'}">${esc(f.badge)}</span>` : ''}
+      ${f.badge ? `<span class="badge" style="background:${f.badge==='NEW'?'#cfe2ff':'var(--surface-2)'};color:${f.badge==='NEW'?'#0a4b8a':'var(--muted)'}">${esc(f.badge)}</span>` : ''}
       <div class="actions">
-        <button class="btn sm accent" data-action="view-file" data-file="${esc(f.name)}" data-slug="${slug}">보기</button>
-        <button class="btn sm" data-action="download" data-file="${esc(f.name)}">다운로드</button>
+        <button class="btn sm ghost" data-action="download" data-file="${esc(f.name)}">다운로드</button>
         ${canEditFiles ? `
-          <button class="btn sm" data-action="replace-file" data-idx="${i}">교체</button>
-          <button class="btn sm danger" data-action="delete-file" data-idx="${i}">삭제</button>` : ''}
+          <button class="btn sm ghost" data-action="replace-file" data-idx="${i}">교체</button>
+          <button class="btn sm ghost" data-action="delete-file" data-idx="${i}">삭제</button>` : ''}
       </div>
     </div>`).join('') : '<div class="empty"><span class="ico">📁</span><p>파일 없음 — [+ 파일 업로드]로 시작</p></div>';
 
-  // snapshot comments
-  const commentGroups = slot.comments || (slot.comments = []);
-  let activeCommentGroup = commentGroups.find((group) => group.version === viewV);
-  if(!activeCommentGroup){
-    activeCommentGroup = {version:viewV, items:[]};
-    if(slot.status !== 'empty') commentGroups.push(activeCommentGroup);
-  }
-  const comments = activeCommentGroup.items || [];
-  const commentsHtml = comments.length ? comments.map((c) => {
-    const a = commentAuthor(c.who);
-    return html`
-    <div class="comment-item">
-      <span class="comment-avatar ${a.role}">${esc(a.initial)}</span>
-      <div>
-        <div class="comment-meta">
-          <span><span class="who">${esc(a.name)}</span><span class="role-badge ${a.role}">${a.roleLabel}</span> <span class="time">· ${esc(c.time)}</span></span>
-          ${c.own ? `<div class="actions" style="margin-top:0;flex-shrink:0"><button class="icon-action accent" data-action="edit-comment" title="수정" aria-label="수정"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></button><button class="icon-action danger" data-action="delete-comment" title="삭제" aria-label="삭제"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button></div>` : ''}
-        </div>
-        <div class="comment-body">${esc(c.body)}</div>
-      </div>
-    </div>`;
-  }).join('') : '<div class="empty"><span class="ico">💬</span><p>이 스냅샷에는 아직 코멘트가 없습니다.</p></div>';
-
   // activities
-  const activityEvents = slot.activities.filter((a) => a.type !== 'comment');
-  const activityTypeLabels = {upload:'새 버전 생성', review:'검토 요청', reject:'반려', approve:'컨펌'};
-  const actHtml = activityEvents.map((a) => {
-    return html`
+  const actHtml = slot.activities.map(a => html`
     <div class="activity-item activity"><div class="item">
-      <span class="marker ${a.type}"><span class="dot"></span></span>
+      <span class="dot ${a.type}"></span>
       <div class="body">
         <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
-          <div class="meta" style="margin-bottom:0"><b>${esc(a.who)}</b> · ${esc(a.time)} · ${activityTypeLabels[a.type]}${a.tag?` <span style="color:var(--hot)">(${esc(a.tag)})</span>`:''}</div>
+          <div class="meta" style="margin-bottom:0"><b>${esc(a.who)}</b> · ${esc(a.time)} · ${({upload:'새 버전 생성', review:'검토 요청', reject:'반려', approve:'컨펌', comment:'코멘트'})[a.type]}${a.tag?` <span style="color:var(--hot)">(${esc(a.tag)})</span>`:''}</div>
+        ${a.own ? `<div class="actions" style="margin-top:0;flex-shrink:0"><button class="btn sm ghost" data-action="edit-comment">수정</button><button class="btn sm ghost" data-action="delete-comment">삭제</button></div>` : ''}
         </div>
         <div class="desc" style="margin-top:4px">${a.body}</div>
       </div>
-    </div></div>`;
-  }).join('') || '<div class="empty"><span class="ico">🕘</span><p>아직 기록된 운영 이벤트가 없습니다.</p></div>';
+    </div></div>`).join('');
 
   // version dropdown
   const versionLabel = viewingOld
@@ -1388,8 +1199,8 @@ function renderSlotPage({slot, slug, title, subtitle, isDeliverable=false}){
       <button class="btn" data-action="open-new-version" data-slot="${slug}">+ 새 버전 만들기</button>
       ${isDraft ? `<button class="btn primary" data-action="open-review" data-slot="${slug}">검토 요청 발송</button>` :
         `<button class="btn locked" title="draft에서만 활성">검토 요청 발송</button>`}
-      <button class="btn locked">[고객사] 컨펌</button>
-      <button class="btn locked">[고객사] 반려</button>`;
+      <button class="btn locked">[고객] 컨펌</button>
+      <button class="btn locked">[고객] 반려</button>`;
   } else if(role === 'client'){
     if(slot.status === 'pending-review'){
       actions = html`
@@ -1408,50 +1219,42 @@ function renderSlotPage({slot, slug, title, subtitle, isDeliverable=false}){
     <div class="page-bar">
       <div>
         <h1 class="page-title">${esc(title)}</h1>
+        <p class="page-sub">${esc(subtitle)} · 마지막 편집 ${esc(slot.updated)}</p>
       </div>
       <div style="display:flex;align-items:center;gap:8px">
         ${statusBadge}
-        <button class="btn sm" data-action="version-dropdown" data-slot="${slug}">${esc(versionLabel)} <span class="btn-caret">▾</span></button>
+        <button class="btn sm" data-action="version-dropdown" data-slot="${slug}">${esc(versionLabel)} ▾</button>
       </div>
     </div>
 
-    ${ahead ? `<div class="state-info" style="margin-bottom:14px;border-color:color-mix(in oklab,var(--warn),transparent 70%);color:var(--warn)">⚠ <b>선행 작업</b> · ${esc(ahead.label)} 미통과 — 이 산출물은 잠정(선행) 단계입니다. 업로드·편집은 가능하나 정식 진행은 이전 게이트 통과 후, 컨펌은 순서대로만 가능합니다.</div>` : ''}
+    ${ahead ? `<div class="state-info" style="margin-bottom:14px;border-color:color-mix(in oklch,var(--warn) 30%,white);color:var(--warn)">⚠ <b>선행 작업</b> · ${esc(ahead.label)} 미통과 — 이 산출물은 잠정(선행) 단계입니다. 업로드·편집은 가능하나 정식 진행은 이전 게이트 통과 후, 컨펌은 순서대로만 가능합니다.</div>` : ''}
 
     <section class="card" style="margin-bottom:14px">
       <div class="card-head">
-        <h3>파일 (${esc(viewV)} 스냅샷 — ${displayFiles.length}개)</h3>
+        <h3>파일 묶음 (${esc(viewV)} 스냅샷 — ${displayFiles.length}개)</h3>
         <span class="meta">${viewingOld ? '과거 버전 · 읽기 전용' : isDraft ? '편집 가능 · 검토 요청 시 잠금' : '읽기 전용 · 다운로드만'}</span>
       </div>
       ${viewingOld ? `<div class="state-info" style="margin-bottom:12px">📌 <b>${esc(viewV)} 스냅샷</b>을 조회 중입니다 (읽기 전용). <a data-action="select-version" data-slug="${slug}" data-v="${esc(latestV)}" style="color:var(--accent);cursor:pointer;text-decoration:underline">최신 ${esc(latestV)}으로 돌아가기</a></div>` : ''}
       <div style="display:flex;flex-direction:column;gap:8px">${filesHtml}</div>
       <div style="margin-top:14px;display:flex;align-items:center;gap:10px">
         <button class="btn ${canEditFiles ? 'primary':'locked'}" ${canEditFiles ? 'data-action="upload-file" data-slot="'+slug+'"':''}>+ 파일 업로드</button>
-        <span style="font-size:11px;color:var(--muted)">${viewingOld ? '과거 스냅샷에서는 편집 불가. 최신 버전으로 돌아가세요.' : ''}</span>
+        <span style="font-size:11px;color:var(--muted)">${viewingOld ? '과거 스냅샷에서는 편집 불가. 최신 버전으로 돌아가세요.' : isDraft ? '현재 버전에 파일 추가 — OS 다이얼로그 (모달 없음, 인-페이지)' : 'draft 상태에서만 활성. 변경하려면 [+ 새 버전 만들기].'}</span>
       </div>
-      ${slot.status==='confirmed' && role==='pm' ? `<div class="state-info" style="margin-top:12px;border-color:color-mix(in oklch,var(--warn) 30%,var(--surface));color:var(--warn)">주의: 컨펌 완료 상태에서 새 버전 생성 시 <b>이전 컨펌 자동 무효화 → 상태 '검토중' 복귀</b></div>`:''}
+      ${slot.status==='confirmed' && role==='pm' ? `<div class="state-info" style="margin-top:12px;border-color:color-mix(in oklch,var(--warn) 30%,white);color:var(--warn)">⚠ 컨펌 완료 상태에서 새 버전 생성 시 <b>이전 컨펌 자동 무효화 → 상태 '검토중' 복귀</b> (REQ-WF-005)</div>`:''}
     </section>
 
     <section class="card" style="margin-bottom:14px">
       <div class="card-head">
-        <h3>코멘트 (${comments.length})</h3>
-        <span class="meta">${esc(viewV)} 스냅샷 기준</span>
-      </div>
-      <div class="snapshot-comments">
-        <div class="comment-thread">${commentsHtml}</div>
-        ${slot.status !== 'empty' ? html`
-          <div class="comment-composer">
-            <textarea id="newComment" placeholder="${esc(viewV)} 스냅샷에 코멘트 작성"></textarea>
-            <div style="text-align:right;margin-top:6px"><button class="btn primary sm" data-action="post-comment" data-slug="${slug}" data-version="${esc(viewV)}">등록</button></div>
-          </div>` : ''}
-      </div>
-    </section>
-
-    <section class="card" style="margin-bottom:14px">
-      <div class="card-head">
-        <h3>활동 이력 (${activityEvents.length})</h3>
-        <span class="meta">상태 변경 · 검토 요청 · 승인/반려만 기록</span>
+        <h3>활동 이력 (${slot.activities.length})</h3>
+        <span class="meta">전체 버전 통합 · 시간순 · 영구 보존</span>
       </div>
       <div class="activity">${actHtml}</div>
+      ${slot.status !== 'empty' ? html`
+        <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--divider)">
+          <textarea id="newComment" placeholder="자유 코멘트 작성 (최신 버전에서만)" style="width:100%;border:1px solid var(--border);background:var(--surface-2);border-radius:7px;padding:10px 12px;min-height:48px;outline:none;font:inherit"></textarea>
+          <div style="text-align:right;margin-top:6px"><button class="btn primary sm" data-action="post-comment" data-slug="${slug}">등록</button></div>
+          <p style="font-size:11px;color:var(--muted);margin-top:8px">※ 시스템 이벤트 자동 기록. 자유 코멘트 수정: 본인만 / 삭제: 본인 + 관리자(감사 로그). draft 안 파일 추가·교체·삭제는 활동 이력 미기록(Git commit 패턴).</p>
+        </div>` : ''}
     </section>
 
     <section class="action-bar" style="margin-bottom:0">
@@ -1469,6 +1272,7 @@ function renderProjectList(){
   if(role === 'client'){ projs = projs.filter(p=>p.id==='A' || p.id==='C'); }
   return html`
     <h1 class="page-title">프로젝트 목록</h1>
+    <p class="page-sub">${role==='admin'?'전체 프로젝트':'담당·참여 프로젝트'} · ${projs.length}개</p>
 
     <div class="filter-bar">
       <div class="filter">상태 ▾</div>
@@ -1506,13 +1310,14 @@ function renderAccount(){
   const u = DATA.user[state.role];
   return html`
     <h1 class="page-title">내 계정</h1>
+    <p class="page-sub">기본 정보·비밀번호·참여 프로젝트</p>
 
     <section class="card" style="margin-bottom:14px">
       <div class="card-head"><h3>기본 정보</h3></div>
       <div class="form">
         <div class="row"><label>이름</label><div class="value"><input type="text" value="${esc(u.name)}" /></div></div>
-        <div class="row"><label>이메일</label><div class="value"><div class="static">${esc(u.email)}</div></div></div>
-        <div class="row"><label>역할</label><div class="value"><div class="static">${esc(u.role + (u.job ? ' · ' + u.job : ''))}</div></div></div>
+        <div class="row"><label>이메일 <small>수정 불가</small></label><div class="value"><div class="static">${esc(u.email)}</div></div></div>
+        <div class="row"><label>역할</label><div class="value"><div class="static">${esc(u.role)}</div></div></div>
       </div>
       <div style="text-align:right;margin-top:14px"><button class="btn primary" data-action="save-account">저장</button></div>
     </section>
@@ -1521,7 +1326,7 @@ function renderAccount(){
       <div class="card-head"><h3>비밀번호 변경</h3></div>
       <div class="form">
         <div class="row"><label>현재 비밀번호</label><div class="value"><input type="password" /></div></div>
-        <div class="row"><label>새 비밀번호</label><div class="value"><input type="password" /><div class="field-hint">8자 이상 · 영문·숫자·특수문자 포함</div></div></div>
+        <div class="row"><label>새 비밀번호 <small>8자 + 3종</small></label><div class="value"><input type="password" /></div></div>
         <div class="row"><label>새 비밀번호 확인</label><div class="value"><input type="password" /></div></div>
       </div>
       <div style="text-align:right;margin-top:14px"><button class="btn primary" data-action="save-password">변경</button></div>
@@ -1542,14 +1347,15 @@ function renderAccount(){
 function renderProjectNew(){
   return html`
     <h1 class="page-title">새 프로젝트</h1>
+    <p class="page-sub">전체 단계 24. 생성 시 워크스페이스 자동 초기화 · PM 자동 할당.</p>
 
     <section class="card">
       <div class="form">
-        <div class="row"><label>프로젝트명</label><div class="value"><input type="text" placeholder="예: A 프로젝트" /></div></div>
-        <div class="row"><label>고객사명</label><div class="value"><input type="text" placeholder="예: ㈜OO" /></div></div>
+        <div class="row"><label>프로젝트명 <small>필수</small></label><div class="value"><input type="text" placeholder="예: A 프로젝트" /></div></div>
+        <div class="row"><label>고객사명 <small>필수</small></label><div class="value"><input type="text" placeholder="예: ㈜OO" /></div></div>
         <div class="row"><label>유형</label><div class="value"><select><option>SaaS</option><option>웹사이트</option><option>모바일</option><option>기타</option></select></div></div>
         <div class="row"><label>기간</label><div class="value" style="display:flex;gap:8px;align-items:center"><input type="date" /><span>~</span><input type="date" /></div></div>
-        <div class="row"><label>설명 <small class="opt">(선택)</small></label><div class="value"><textarea placeholder="프로젝트 설명"></textarea></div></div>
+        <div class="row"><label>설명 <small>선택</small></label><div class="value"><textarea placeholder="프로젝트 설명"></textarea></div></div>
       </div>
       <div class="state-info" style="margin-top:18px">
         생성 시 자동 초기화:<br>· 워크스페이스 (요구사항·산출물·결함)<br>· 진행 단계 1로 설정<br>· 생성자(현재 사용자)가 PM으로 자동 할당
@@ -1567,6 +1373,7 @@ function renderProjectNew(){
 function renderSearch(){
   return html`
     <h1 class="page-title">통합 검색</h1>
+    <p class="page-sub">요구사항·코멘트·산출물 파일명·워크플로우 이력을 한 번에 (REQ-SCH-001)</p>
 
     <div class="search-page">
       <input class="search-input-big" type="text" placeholder="검색어 입력 (예: 대시보드)" value="대시보드" id="searchQ" />
@@ -1578,38 +1385,38 @@ function renderSearch(){
         <div class="filter">날짜 ▾</div>
       </div>
 
-      <p style="color:var(--muted);font-size:13px;margin:0 0 14px"><b>9건</b> 결과</p>
+      <p style="color:var(--muted);font-size:13px;margin:0 0 14px"><b>12건</b> 결과</p>
 
       <section class="card result-group" style="margin-bottom:10px">
-        <h4>📌 요구사항 (1)</h4>
+        <h4>📌 요구사항 (4)</h4>
         <div class="card-list">
-          <div class="item" data-route="/projects/A/requirements"><div class="body"><b>main-srs.pdf</b> — 메인 사이트 요구사항 (대시보드 영역 포함)</div><span class="t">v3 · 05-19</span></div>
+          <div class="item" data-route="/projects/A/requirements"><div class="body"><b>REQ-PRJ-002</b> 프로젝트 대시보드</div><span class="t">High · 검토</span></div>
+          <div class="item" data-route="/projects/A/requirements"><div class="body"><b>REQ-PRJ-001</b> 프로젝트 생성</div><span class="t">High · 대기</span></div>
+          <div class="item"><div class="body"><b>REQ-AUT-007</b> ID/PW 로그인</div><span class="t">High · 확정</span></div>
+          <div class="item"><div class="body"><b>REQ-DEV-001</b> 개발</div><span class="t">High · 확정</span></div>
         </div>
       </section>
 
       <section class="card result-group" style="margin-bottom:10px">
         <h4>💬 코멘트 (5)</h4>
         <div class="card-list">
-          <div class="item"><div class="body">"대시보드 미처리 카드 영역 보강 부탁" — 요구사항 정의서</div><span class="t">고객사 · 05-19</span></div>
-          <div class="item"><div class="body">"대시보드 단계 표시 위치 조정" — 요구사항 정의서</div><span class="t">팀 · 05-18</span></div>
+          <div class="item"><div class="body">"대시보드 미처리 카드 영역 보강 부탁" — REQ-PRJ-002</div><span class="t">고객 · 05-19</span></div>
+          <div class="item"><div class="body">"대시보드 단계 표시 위치 조정" — REQ-PRJ-002</div><span class="t">팀 · 05-18</span></div>
         </div>
       </section>
 
       <section class="card result-group" style="margin-bottom:10px">
         <h4>📁 산출물 파일 (2)</h4>
         <div class="card-list">
-          <div class="item" data-route="/projects/A/deliverables/ia"><div class="body"><b>ia-v1.pdf</b> — IA 사이트맵 (대시보드 영역 포함)</div><span class="t">05-19</span></div>
+          <div class="item" data-route="/projects/A/deliverables/ia"><div class="body"><b>ia-v1.0.pdf</b> — IA 사이트맵 (대시보드 영역 포함)</div><span class="t">05-19</span></div>
           <div class="item"><div class="body"><b>design-v2-A.png</b> — Precision grid 대시보드</div><span class="t">05-19</span></div>
         </div>
       </section>
 
       <section class="card result-group">
         <h4>📋 워크플로우 이력 (1)</h4>
-        <div class="activity">
-          <div class="activity-item activity"><div class="item">
-            <span class="marker approve"><span class="dot"></span></span>
-            <div class="body"><div class="meta"><b>Gate 9</b> · 05-19 · 컨펌</div><div class="desc">대시보드 영역 매트릭스 보강 후 컨펌</div></div>
-          </div></div>
+        <div class="card-list">
+          <div class="item"><div class="body">Gate 9 컨펌 통과 — "대시보드 영역 매트릭스 보강 후 컨펌"</div><span class="t">05-19</span></div>
         </div>
       </section>
     </div>`;
@@ -1621,48 +1428,37 @@ function renderSearch(){
 function renderDev(){
   return html`
     <h1 class="page-title">개발</h1>
+    <p class="page-sub">비동기 백그라운드 작업 · 5초 폴링 갱신 · 24h당 3회 재시도</p>
 
-    <div class="state-info" style="margin-bottom:14px;color:var(--warn);border-color:color-mix(in oklch,var(--warn) 30%,var(--surface));background:var(--warn-soft)">
+    <div class="state-info" style="margin-bottom:14px;color:var(--warn);border-color:color-mix(in oklch,var(--warn) 30%,white);background:var(--warn-soft)">
       🔒 <b>현재 상태: 잠금</b> — Gate 13 (디자인 시안 컨펌) 대기 중. 9·11·13·15 모든 게이트 통과 + 내부 산출물 등록 완료 후 시작 가능.
     </div>
 
     <section class="card" style="margin-bottom:14px">
       <div class="card-head"><h3>최근 작업 이력</h3><span class="meta">최근 5건</span></div>
-      <div class="activity">
-        <div class="activity-item activity"><div class="item">
-          <span class="marker reject"><span class="dot"></span></span>
-          <div class="body">
-            <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
-              <div class="meta"><b>2026-05-18 22:00</b> · 실패 · 입력 검증</div>
-              <button class="btn sm locked">재시도 (잠금)</button>
-            </div>
-            <div class="desc">요구사항 미컨펌으로 빌드 시작 차단</div>
-          </div>
-        </div></div>
-        <div class="activity-item activity"><div class="item">
-          <span class="marker approve"><span class="dot"></span></span>
-          <div class="body">
-            <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
-              <div class="meta"><b>2026-05-18 18:00</b> · 성공 · 패키지 생성</div>
-              <button class="btn sm">패키지 다운로드</button>
-            </div>
-            <div class="desc">8단계 / 1h 42m / 패키지 12MB</div>
-          </div>
-        </div></div>
+      <div class="card-list">
+        <div class="item">
+          <div class="body">2026-05-18 22:00 <span class="pill hot" style="margin-left:8px">실패</span><br><span style="color:var(--muted);font-size:12px">입력 검증 (요구사항 미컨펌)</span></div>
+          <button class="btn sm locked">재시도 (잠금)</button>
+        </div>
+        <div class="item">
+          <div class="body">2026-05-18 18:00 <span class="pill ok" style="margin-left:8px">성공</span><br><span style="color:var(--muted);font-size:12px">8단계 / 1h 42m / 패키지 12MB</span></div>
+          <button class="btn sm">패키지 다운로드</button>
+        </div>
       </div>
     </section>
 
     <section class="card">
       <div class="card-head"><h3>마지막 시도 — 단계별 진행</h3><span class="meta">2026-05-18 22:00</span></div>
       <div class="ai-progress">
-        <div class="step fail"><span class="ico"><span class="sdot"></span></span><span>입력 검증</span><span class="t">실패 (재시도)</span></div>
-        <div class="step pending"><span class="ico"><span class="sdot"></span></span><span>도메인 모델 생성</span><span class="t">대기</span></div>
-        <div class="step pending"><span class="ico"><span class="sdot"></span></span><span>엔티티/Mapper 생성</span><span class="t">대기</span></div>
-        <div class="step pending"><span class="ico"><span class="sdot"></span></span><span>Service 레이어 생성</span><span class="t">대기</span></div>
-        <div class="step pending"><span class="ico"><span class="sdot"></span></span><span>Controller·뷰 생성</span><span class="t">대기</span></div>
-        <div class="step pending"><span class="ico"><span class="sdot"></span></span><span>단위 테스트 생성</span><span class="t">대기</span></div>
-        <div class="step pending"><span class="ico"><span class="sdot"></span></span><span>빌드 검증</span><span class="t">대기</span></div>
-        <div class="step pending"><span class="ico"><span class="sdot"></span></span><span>패키징</span><span class="t">대기</span></div>
+        <div class="step done"><span class="ico">✅</span><span>입력 검증</span><span class="t">실패 (재시도)</span></div>
+        <div class="step pending"><span class="ico">⬜</span><span>도메인 모델 생성</span><span class="t">대기</span></div>
+        <div class="step pending"><span class="ico">⬜</span><span>엔티티/Mapper 생성</span><span class="t">대기</span></div>
+        <div class="step pending"><span class="ico">⬜</span><span>Service 레이어 생성</span><span class="t">대기</span></div>
+        <div class="step pending"><span class="ico">⬜</span><span>Controller·뷰 생성</span><span class="t">대기</span></div>
+        <div class="step pending"><span class="ico">⬜</span><span>단위 테스트 생성</span><span class="t">대기</span></div>
+        <div class="step pending"><span class="ico">⬜</span><span>빌드 검증</span><span class="t">대기</span></div>
+        <div class="step pending"><span class="ico">⬜</span><span>패키징</span><span class="t">대기</span></div>
       </div>
     </section>`;
 }
@@ -1673,14 +1469,14 @@ function renderDev(){
 function renderTests(){
   return html`
     <div class="page-bar">
-      <div><h1 class="page-title">테스트 케이스</h1></div>
-      ${state.role==='pm' ? `<div style="display:flex;gap:8px"><button class="btn" data-action="import-tc">CSV 가져오기</button><button class="btn primary" data-action="new-tc">+ TC 등록</button></div>` : ''}
+      <div><h1 class="page-title">테스트 케이스</h1><p class="page-sub">총 ${DATA.tests.length}건 · UAT(20단계) 전 작성</p></div>
+      ${state.role==='pm' ? `<button class="btn primary" data-action="new-tc">+ TC 등록</button>` : ''}
     </div>
 
     <div class="grid cols-3" style="margin-bottom:14px">
       <div class="stat"><span class="label">대기</span><span class="value" style="color:var(--muted)">${DATA.tests.filter(t=>t.status==='대기').length}</span></div>
-      <div class="stat"><span class="label">통과</span><span class="value" style="color:var(--ok)">${DATA.tests.filter(t=>t.status==='통과').length}</span></div>
-      <div class="stat"><span class="label">실패</span><span class="value" style="color:var(--hot)">${DATA.tests.filter(t=>t.status==='실패').length}</span></div>
+      <div class="stat"><span class="label">Pass</span><span class="value" style="color:var(--ok)">${DATA.tests.filter(t=>t.status==='Pass').length}</span></div>
+      <div class="stat"><span class="label">Fail</span><span class="value" style="color:var(--hot)">${DATA.tests.filter(t=>t.status==='Fail').length}</span></div>
     </div>
 
     <div class="filter-bar">
@@ -1698,9 +1494,9 @@ function renderTests(){
             <tr data-route="/projects/A/tests/${t.id}">
               <td class="id-cell">${t.id}</td>
               <td>${esc(t.title)}</td>
-              <td><span class="cat-tag">${esc(t.phase)}</span></td>
-              <td>${lvlBadge(t.priority)}</td>
-              <td>${t.status==='통과'?'<span class="pill ok">통과</span>':t.status==='실패'?'<span class="pill hot">실패</span>':'<span class="pill muted">대기</span>'}</td>
+              <td>${esc(t.phase)}</td>
+              <td>${esc(t.priority)}</td>
+              <td>${t.status==='Pass'?'<span class="pill ok">Pass</span>':t.status==='Fail'?'<span class="pill hot">Fail</span>':'<span class="pill muted">대기</span>'}</td>
               <td>${esc(t.assignee)}</td>
             </tr>`).join('')}
         </tbody>
@@ -1720,7 +1516,7 @@ function renderTestDetail(params){
         <h1 class="page-title">${tc.id} · ${esc(tc.title)}</h1>
         <p class="page-sub">${esc(tc.phase)} · ${esc(tc.priority)} · 담당 ${esc(tc.assignee)}</p>
       </div>
-      ${tc.status==='통과'?'<span class="pill ok lg">통과</span>':tc.status==='실패'?'<span class="pill hot lg">실패</span>':'<span class="pill muted lg">대기</span>'}
+      ${tc.status==='Pass'?'<span class="pill ok lg">Pass</span>':tc.status==='Fail'?'<span class="pill hot lg">Fail</span>':'<span class="pill muted lg">대기</span>'}
     </div>
 
     <section class="card" style="margin-bottom:14px">
@@ -1744,13 +1540,13 @@ function renderTestDetail(params){
       </section>
       <section class="card">
         <div class="card-head"><h3>실제 결과</h3></div>
-        <textarea style="width:100%;border:1px solid var(--border);background:var(--surface-2);border-radius:7px;padding:10px;min-height:80px;outline:none;font:inherit" placeholder="실제 결과 입력">${tc.status==='실패'?'redirect 파라미터 보존 안 됨':''}</textarea>
+        <textarea style="width:100%;border:1px solid var(--border);background:var(--surface-2);border-radius:7px;padding:10px;min-height:80px;outline:none;font:inherit" placeholder="실제 결과 입력">${tc.status==='Fail'?'redirect 파라미터 보존 안 됨':''}</textarea>
       </section>
     </div>
 
-    ${tc.status==='실패' ? `
+    ${tc.status==='Fail' ? `
       <section class="card" style="margin-bottom:14px">
-        <div class="card-head"><h3>연결 결함 (1)</h3>${state.role==='pm'?`<div style="display:flex;gap:6px"><button class="btn sm accent" data-action="new-defect-from-tc" data-tc="${tc.id}">+ 결함 등록</button><button class="btn sm" data-action="link-defect" data-tc="${tc.id}">+ 결함 연결</button></div>`:''}</div>
+        <div class="card-head"><h3>연결 결함 (1)</h3>${state.role==='pm'?`<button class="btn sm">+ 결함 연결</button>`:''}</div>
         <div class="card-list">
           <div class="item" data-route="/projects/A/defects/DEF-001"><div class="body"><b>DEF-001</b> 로그인 후 리다이렉트 미동작</div><span class="pill hot">미해결</span></div>
         </div>
@@ -1758,8 +1554,8 @@ function renderTestDetail(params){
 
     <section class="action-bar">
       <span class="label">결과 입력</span>
-      <button class="btn primary" data-action="tc-result" data-r="통과">통과</button>
-      <button class="btn danger" data-action="tc-result" data-r="실패">실패</button>
+      <button class="btn primary" data-action="tc-result" data-r="Pass">Pass</button>
+      <button class="btn danger" data-action="tc-result" data-r="Fail">Fail</button>
       <button class="btn" data-action="tc-result" data-r="보류">보류</button>
     </section>`;
 }
@@ -1770,7 +1566,7 @@ function renderTestDetail(params){
 function renderDefects(){
   return html`
     <div class="page-bar">
-      <div><h1 class="page-title">결함 관리</h1></div>
+      <div><h1 class="page-title">결함 관리</h1><p class="page-sub">총 ${DATA.defects.length}건 · Gate 22 사전조건 = 모든 결함 해결</p></div>
       <button class="btn primary" data-action="new-defect">+ 결함 등록</button>
     </div>
 
@@ -1795,7 +1591,7 @@ function renderDefects(){
             <tr data-route="/projects/A/defects/${d.id}">
               <td class="id-cell">${d.id}</td>
               <td>${esc(d.title)}</td>
-              <td>${lvlBadge(d.severity)}</td>
+              <td>${d.severity==='High'?'<span class="pill hot">High</span>':d.severity==='Medium'?'<span class="pill warn">Medium</span>':'<span class="pill muted">Low</span>'}</td>
               <td>${d.status==='해결완료'?'<span class="pill ok">해결 완료</span>':d.status==='진행중'?'<span class="pill warn">진행 중</span>':'<span class="pill hot">미해결</span>'}</td>
               <td>${esc(d.assignee)}</td>
               <td style="color:var(--muted);font-family:var(--mono);font-size:12px">${esc(d.created)}</td>
@@ -1841,31 +1637,29 @@ function renderDefectDetail(params){
     <section class="card" style="margin-bottom:14px">
       <div class="card-head"><h3>첨부 (2)</h3><button class="btn sm" data-action="add-attachment">+ 첨부 추가</button></div>
       <div style="display:flex;flex-direction:column;gap:8px">
-        <div class="file"><span class="icn">📸</span><div class="name"><b>screenshot-1.png</b><span class="sub">312KB · 재현 화면</span></div><div class="actions"><button class="btn sm">다운로드</button></div></div>
-        <div class="file"><span class="icn">📄</span><div class="name"><b>console-log.txt</b><span class="sub">8KB · 브라우저 콘솔 로그</span></div><div class="actions"><button class="btn sm">다운로드</button></div></div>
+        <div class="file"><span class="icn">📸</span><div class="name"><b>screenshot-1.png</b><span class="sub">312KB · 재현 화면</span></div><div class="actions"><button class="btn sm ghost">다운로드</button></div></div>
+        <div class="file"><span class="icn">📄</span><div class="name"><b>console-log.txt</b><span class="sub">8KB · 브라우저 콘솔 로그</span></div><div class="actions"><button class="btn sm ghost">다운로드</button></div></div>
       </div>
     </section>
 
     <section class="card" style="margin-bottom:14px">
       <div class="card-head"><h3>연결 TC (1)</h3></div>
       <div class="card-list">
-        <div class="item" data-route="/projects/A/tests/TC-001"><div class="body"><b>TC-001</b> 로그인 성공 케이스</div><span class="pill hot">실패</span></div>
+        <div class="item" data-route="/projects/A/tests/TC-001"><div class="body"><b>TC-001</b> 로그인 성공 케이스</div><span class="pill hot">Fail</span></div>
       </div>
     </section>
 
     <section class="card" style="margin-bottom:14px">
-      <div class="card-head"><h3>코멘트 (2)</h3></div>
-      <div class="comment-thread">
-        ${[{who:'고객사', time:'05-19 14:00', body:'로그인 후 원래 페이지로 안 갑니다.'}, {who:'김개발', time:'05-19 15:00', body:'redirect 파라미터 처리 누락 확인. 수정 중.'}].map(c => {
-          const a = commentAuthor(c.who);
-          return `<div class="comment-item">
-            <span class="comment-avatar ${a.role}">${esc(a.initial)}</span>
-            <div>
-              <div class="comment-meta"><span><span class="who">${esc(a.name)}</span><span class="role-badge ${a.role}">${a.roleLabel}</span> <span class="time">· ${esc(c.time)}</span></span></div>
-              <div class="comment-body">${esc(c.body)}</div>
-            </div>
-          </div>`;
-        }).join('')}
+      <div class="card-head"><h3>코멘트 (3)</h3></div>
+      <div class="activity">
+        <div class="activity-item activity"><div class="item">
+          <span class="dot comment"></span>
+          <div class="body"><div class="meta"><b>고객사</b> · 05-19 14:00</div><div class="desc">로그인 후 원래 페이지로 안 갑니다.</div></div>
+        </div></div>
+        <div class="activity-item activity"><div class="item">
+          <span class="dot comment"></span>
+          <div class="body"><div class="meta"><b>김개발</b> · 05-19 15:00</div><div class="desc">redirect 파라미터 처리 누락 확인. 수정 중.</div></div>
+        </div></div>
       </div>
       <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--divider)">
         <textarea style="width:100%;border:1px solid var(--border);background:var(--surface-2);border-radius:7px;padding:10px;min-height:48px;outline:none;font:inherit" placeholder="코멘트 입력"></textarea>
@@ -1875,12 +1669,12 @@ function renderDefectDetail(params){
 
     <section class="action-bar">
       <span class="label">상태 변경</span>
-      <button class="btn" data-action="defect-status" data-s="미해결">미해결</button>
+      <button class="btn ghost" data-action="defect-status" data-s="미해결">미해결</button>
       <button class="btn" data-action="defect-status" data-s="진행중">진행 중</button>
       <button class="btn primary" data-action="defect-status" data-s="해결완료">해결 완료</button>
       <button class="btn" data-action="defect-status" data-s="재현불가">재현 불가</button>
       <span style="margin-left:auto"></span>
-      <button class="btn" data-action="change-assignee" data-id="${d.id}">담당자 변경</button>
+      <button class="btn ghost" data-action="change-assignee">담당자 변경</button>
     </section>`;
 }
 
@@ -1890,6 +1684,7 @@ function renderDefectDetail(params){
 function renderSettings(){
   return html`
     <h1 class="page-title">프로젝트 설정</h1>
+    <p class="page-sub">기본 정보 · REQ-PRJ-001</p>
 
     <section class="card">
       <div class="form">
@@ -1904,13 +1699,14 @@ function renderSettings(){
         <button class="btn primary" data-action="save-settings">저장</button>
       </div>
     </section>
-    <p style="color:var(--muted);font-size:12px;margin-top:10px">※ 프로젝트 ID·생성일은 수정 불가. 변경 시 감사 로그에 기록.</p>`;
+    <p style="color:var(--muted);font-size:12px;margin-top:10px">※ 프로젝트 ID·생성일은 수정 불가. 변경 시 감사 로그(REQ-AUD-001)에 기록.</p>`;
 }
 
 function renderMembers(){
   const canInvite = state.role==='pm' || state.role==='admin';
   return html`
     <h1 class="page-title">팀 멤버 · 고객사 초대</h1>
+    <p class="page-sub">REQ-AUT-002 · REQ-AUT-004 · REQ-AUT-012</p>
 
     <section class="card" style="margin-bottom:14px">
       <div class="card-head"><h3>프로젝트팀 (${DATA.members.team.length})</h3>${canInvite?`<button class="btn sm primary" data-action="invite-member">+ 팀원 초대</button>`:''}</div>
@@ -1927,8 +1723,7 @@ function renderMembers(){
             <div class="body"><b>${esc(c.name)}</b> · ${esc(c.email)}</div>
             <div style="display:flex;align-items:center;gap:6px">
               ${c.status==='active'?'<span class="pill ok">활성</span>':`<span class="pill warn">초대 발송 · 만료 ${esc(c.expires)}</span>`}
-              ${c.status==='pending' && canInvite ? `<button class="btn sm" data-action="resend-invite" data-email="${esc(c.email)}">재발송</button><button class="btn sm">취소</button>` : ''}
-              ${c.status==='active' && canInvite ? `<button class="btn sm danger" data-action="remove-client" data-email="${esc(c.email)}">제외</button>` : ''}
+              ${c.status==='pending' && canInvite ? `<button class="btn sm ghost" data-action="resend-invite" data-email="${esc(c.email)}">재발송</button><button class="btn sm ghost">취소</button>` : ''}
             </div>
           </div>`).join('')}
       </div>
@@ -1938,6 +1733,7 @@ function renderMembers(){
 function renderDanger(){
   return html`
     <h1 class="page-title" style="color:var(--hot)">⚠ Danger Zone</h1>
+    <p class="page-sub">파괴적 액션 격리 · REQ-NFR-005 (소프트 삭제 30일 복구)</p>
 
     <div class="danger-zone">
       <div class="info">
@@ -1950,7 +1746,7 @@ function renderDanger(){
     <div class="danger-zone">
       <div class="info">
         <h4>프로젝트 삭제</h4>
-        <p>소프트 삭제 — 30일 복구 가능. 30일 후 영구 삭제 가능.<br>⚠ 모든 요구사항·산출물·코멘트가 함께 삭제 대상이 됩니다.</p>
+        <p>소프트 삭제 — 30일 복구 가능 (REQ-NFR-005). 30일 후 영구 삭제 가능.<br>⚠ 모든 요구사항·산출물·코멘트가 함께 삭제 대상이 됩니다.</p>
       </div>
       <button class="btn danger-solid" data-action="delete-project">삭제</button>
     </div>`;
@@ -1974,10 +1770,10 @@ function renderLogin(){
         <button class="btn primary btn-full" data-action="login-submit" style="margin-top:8px">로그인</button>
         <div class="footer">
           <a data-route="/password/reset">비밀번호 재설정</a>·
-          <a data-action="invite-help">계정이 없으신가요?</a>
+          <a data-action="invite-help">초대 받기?</a>
         </div>
       </div>
-      <p style="color:var(--muted-2);font-size:11px;margin-top:24px;text-align:center">5회 실패 시 잠금</p>
+      <p style="color:var(--muted-2);font-size:11px;margin-top:24px;text-align:center">💡 데모: 아무 이메일/비밀번호 입력 후 [로그인] · 5회 실패 시 잠금</p>
     </div>`;
 }
 
@@ -2005,7 +1801,7 @@ function renderPasswordResetInput(){
         <p class="sub">user@example.com 계정의 비밀번호를 재설정합니다.</p>
         <label class="label">새 비밀번호</label>
         <input type="password" id="newPw" placeholder="••••••••" />
-        <p class="policy">8자 이상 · 영문·숫자·특수문자 포함</p>
+        <p class="policy">8자 이상 + 대/소/숫자/특수문자 중 3종 이상</p>
         <label class="label">비밀번호 확인</label>
         <input type="password" id="newPwConfirm" placeholder="••••••••" />
         <button class="btn primary btn-full" data-action="reset-confirm">비밀번호 변경</button>
@@ -2027,7 +1823,7 @@ function renderInvitation(){
         <input type="text" placeholder="홍길동" />
         <label class="label">비밀번호</label>
         <input type="password" placeholder="••••••••" />
-        <p class="policy">8자 이상 · 영문·숫자·특수문자 포함</p>
+        <p class="policy">8자 이상 + 대/소/숫자/특수문자 중 3종 이상</p>
         <label class="label">비밀번호 확인</label>
         <input type="password" placeholder="••••••••" />
         <label class="check"><input type="checkbox" /> 이용약관·개인정보처리방침 동의</label>
@@ -2042,7 +1838,7 @@ function renderInvitation(){
 function renderAdminTeams(){
   return html`
     <div class="page-bar">
-      <div><h1 class="page-title">프로젝트팀 계정</h1></div>
+      <div><h1 class="page-title">프로젝트팀 계정</h1><p class="page-sub">총 ${DATA.adminTeams.length}명 · REQ-AUT-004</p></div>
       <button class="btn primary" data-action="new-admin-team">+ 계정 생성</button>
     </div>
     <div class="filter-bar">
@@ -2052,9 +1848,9 @@ function renderAdminTeams(){
     </div>
     <section class="card flat" style="padding:0;overflow:hidden">
       <table class="tbl">
-        <thead><tr><th>이름</th><th>이메일</th><th>역할</th><th>담당 프로젝트</th><th>상태</th><th></th></tr></thead>
+        <thead><tr><th>이름</th><th>이메일</th><th>역할</th><th>담당 PJT</th><th>상태</th><th></th></tr></thead>
         <tbody>${DATA.adminTeams.map(m => html`
-          <tr><td><b>${esc(m.name)}</b></td><td>${esc(m.email)}</td><td>${esc(m.role)}</td><td>${m.projects}</td><td>${m.active?'<span class="pill ok">활성</span>':'<span class="pill muted">비활성</span>'}</td><td class="actions"><button class="btn sm">편집</button><button class="btn sm ${m.active?'danger':'ok'}">${m.active?'비활성화':'활성화'}</button></td></tr>`).join('')}
+          <tr><td><b>${esc(m.name)}</b></td><td>${esc(m.email)}</td><td>${esc(m.role)}</td><td>${m.projects}</td><td>${m.active?'<span class="pill ok">활성</span>':'<span class="pill muted">비활성</span>'}</td><td class="actions"><button class="btn sm ghost">편집</button><button class="btn sm ghost">${m.active?'비활성화':'활성화'}</button></td></tr>`).join('')}
         </tbody>
       </table>
     </section>`;
@@ -2063,8 +1859,8 @@ function renderAdminTeams(){
 function renderAdminClients(){
   return html`
     <div class="page-bar">
-      <div><h1 class="page-title">고객사 계정</h1></div>
-      <button class="btn primary" data-action="invite-client" data-context="admin">+ 고객사 초대</button>
+      <div><h1 class="page-title">고객사 계정</h1><p class="page-sub">총 ${DATA.adminClients.length}명 · REQ-AUT-006·012</p></div>
+      <button class="btn primary" data-action="new-admin-client">+ 계정 생성</button>
     </div>
     <div class="filter-bar">
       <div class="filter">고객사 ▾</div>
@@ -2073,9 +1869,9 @@ function renderAdminClients(){
     </div>
     <section class="card flat" style="padding:0;overflow:hidden">
       <table class="tbl">
-        <thead><tr><th>이름</th><th>이메일</th><th>고객사</th><th>참여 프로젝트</th><th>상태</th><th></th></tr></thead>
+        <thead><tr><th>이름</th><th>이메일</th><th>고객사</th><th>참여 PJT</th><th>상태</th><th></th></tr></thead>
         <tbody>${DATA.adminClients.map(c => html`
-          <tr><td><b>${esc(c.name)}</b></td><td>${esc(c.email)}</td><td>${esc(c.client)}</td><td>${c.projects}</td><td>${c.status==='active'?'<span class="pill ok">활성</span>':'<span class="pill warn">초대 대기</span>'}</td><td class="actions"><button class="btn sm" data-action="edit-client-projects" data-email="${esc(c.email)}">참여 프로젝트</button>${c.status==='pending'?`<button class="btn sm" data-action="resend-invite" data-email="${esc(c.email)}">초대 재발송</button>`:''}<button class="btn sm ${c.status==='active'?'danger':'warn'}">${c.status==='active'?'비활성화':'초대 취소'}</button></td></tr>`).join('')}
+          <tr><td><b>${esc(c.name)}</b></td><td>${esc(c.email)}</td><td>${esc(c.client)}</td><td>${c.projects}</td><td>${c.status==='active'?'<span class="pill ok">활성</span>':'<span class="pill warn">초대 대기</span>'}</td><td class="actions"><button class="btn sm ghost">편집</button>${c.status==='pending'?`<button class="btn sm ghost" data-action="resend-invite" data-email="${esc(c.email)}">초대 재발송</button>`:''}<button class="btn sm ghost">${c.status==='active'?'비활성화':'활성화'}</button></td></tr>`).join('')}
         </tbody>
       </table>
     </section>`;
@@ -2084,7 +1880,7 @@ function renderAdminClients(){
 function renderAdminAudit(){
   return html`
     <div class="page-bar">
-      <div><h1 class="page-title">감사 로그</h1></div>
+      <div><h1 class="page-title">감사 로그</h1><p class="page-sub">변조 불가 append-only · 1년 보존 · REQ-AUD-001</p></div>
     </div>
     <div class="filter-bar">
       <div class="filter">기간 ▾</div>
@@ -2135,7 +1931,7 @@ function modalReview(slot){
     <div class="modal-body">
       <div class="row"><label>대상</label><div class="value static">A 프로젝트 — ${slotName}</div></div>
       <div class="row"><label>현재 버전</label><div class="value static">v2</div></div>
-      <div class="row"><label>요청 메시지<small class="opt">(선택)</small></label><div class="value"><textarea placeholder="고객사에 전달할 안내 메시지"></textarea></div></div>
+      <div class="row"><label>요청 메시지<small>(선택)</small></label><div class="value"><textarea placeholder="고객사에 전달할 안내 메시지"></textarea></div></div>
       <div class="note">발송 시 <b>현재 버전이 잠금</b>되고 고객사에 이메일 알림이 발송됩니다. 이후 변경하려면 새 버전 생성 필요.</div>
     </div>
     <div class="modal-foot">
@@ -2151,14 +1947,12 @@ function modalApprove(mode='approve'){
       <div class="row"><label>대상</label><div class="value static">A 프로젝트 — 디자인 시안 v2</div></div>
       <div class="row"><label>결과</label><div class="value">
         <div class="radio-group">
-          <label><input type="radio" name="result" value="approve" ${mode==='approve'?'checked':''} onchange="document.getElementById('reasonBlock').style.display='none'"> 컨펌</label>
-          <label><input type="radio" name="result" value="reject" ${mode==='reject'?'checked':''} onchange="document.getElementById('reasonBlock').style.display='flex'"> 반려</label>
+          <label><input type="radio" name="result" value="approve" ${mode==='approve'?'checked':''}> 컨펌</label>
+          <label><input type="radio" name="result" value="reject" ${mode==='reject'?'checked':''}> 반려</label>
         </div>
       </div></div>
-      <div id="reasonBlock" style="display:${mode==='reject'?'flex':'none'};flex-direction:column;gap:14px">
-        <div class="row"><label>사유</label><div class="value"><textarea id="rejectReason" placeholder="반려 사유를 입력하세요."></textarea><div id="rejectErr" class="err" style="display:none">반려 사유를 입력해 주세요</div></div></div>
-        <div class="note">반려 사유는 워크플로우 활동 이력에 <b>영구 보존</b>됩니다.</div>
-      </div>
+      <div class="row"><label>사유<small>(반려 시 필수)</small></label><div class="value"><textarea id="rejectReason" placeholder="반려 시 사유를 입력하세요. 영구 보존됩니다."></textarea><div id="rejectErr" class="err" style="display:none">반려 사유를 입력해 주세요</div></div></div>
+      <div class="note">반려 사유는 워크플로우 활동 이력에 <b>영구 보존</b>됩니다 (REQ-CMT-002).</div>
     </div>
     <div class="modal-foot">
       <button class="btn" data-action="close-modal">취소</button>
@@ -2184,7 +1978,7 @@ function modalDev(){
           <div class="item"><span>산출물 파일 (최신)</span><span class="t">12개</span></div>
         </div>
       </div></div>
-      <div class="note warn">⚠ 작업 최대 24시간 소요. 사전 조건이 모두 충족되어야 시작 가능합니다.</div>
+      <div class="note warn">⚠ 작업 최대 24시간 소요. 사전 조건이 모두 충족되어야 시작 가능합니다 (REQ-DEV-001).</div>
     </div>
     <div class="modal-foot">
       <button class="btn" data-action="close-modal">취소</button>
@@ -2201,16 +1995,16 @@ function modalNewVersion(slot){
     <div class="modal-head"><h2>새 버전 만들기 (${nextVer} 생성)</h2><button class="close" data-action="close-modal">✕</button></div>
     <div class="modal-body">
       <div class="row"><label>대상</label><div class="value static">A 프로젝트 — ${slotName}</div></div>
-      <div class="row"><label>베이스 → 신규</label><div class="value static">${curVer} → <b>${nextVer}</b></div></div>
-      <div class="row"><label>파일<small>(${curVer} 사본 자동 로드)</small></label><div class="value">
+      <div class="row"><label>베이스 → 신규</label><div class="value static">${curVer} (파일 ${files.length}개) → <b>${nextVer}</b> (자동 증가)</div></div>
+      <div class="row"><label>파일 묶음<small>(${curVer} 사본 자동 로드)</small></label><div class="value">
         <div class="file-list">
-          ${files.map(f => `<div class="file-row"><span>📄</span><span class="name"><b>${esc(f.name)}</b> <span style="color:var(--muted);font-size:11px">— ${esc(curVer)} 베이스</span></span><div class="actions"><button class="btn sm">교체</button><button class="btn sm danger">삭제</button></div></div>`).join('')}
-          <button class="btn sm accent" style="margin-top:4px;align-self:flex-start">+ 파일 추가</button>
+          ${files.map(f => `<div class="file-row"><span>📄</span><span class="name"><b>${esc(f.name)}</b> <span style="color:var(--muted);font-size:11px">— ${esc(curVer)} 베이스</span></span><div class="actions"><button class="btn sm ghost">교체</button><button class="btn sm ghost">삭제</button></div></div>`).join('')}
+          <button class="btn sm" style="margin-top:4px">+ 파일 추가</button>
           <p style="font-size:10px;color:var(--muted);margin:6px 0 0">PDF · 문서 등 (50MB/파일). 다중 파일 자유.</p>
         </div>
       </div></div>
-      <div class="row"><label>변경 요약</label><div class="value"><textarea id="changeNote" placeholder="예: §5 NFR 보안 요구사항 추가, 오타 수정"></textarea><div id="noteErr" class="err" style="display:none">변경 요약을 입력해 주세요</div></div></div>
-      <div class="note">· 생성 시 <b>${nextVer} 스냅샷이 draft 상태로 생성</b>, 활동 이력에 생성 이벤트 + 변경 요약 자동 기록<br>· draft 동안 파일 카드에서 직접 추가·교체·삭제 자유. [검토 요청 발송] 시 잠금<br>· 검토중·컨펌 상태에서 생성 시 자동 회수·무효화</div>
+      <div class="row"><label>변경 요약<small>(필수)</small></label><div class="value"><textarea id="changeNote" placeholder="예: §5 NFR 보안 요구사항 추가, 오타 수정"></textarea><div id="noteErr" class="err" style="display:none">변경 요약을 입력해 주세요</div></div></div>
+      <div class="note">· 생성 시 <b>${nextVer} 스냅샷이 draft 상태로 생성</b>, 활동 이력에 생성 이벤트 + 변경 요약 자동 기록<br>· draft 동안 파일 카드에서 직접 추가·교체·삭제 자유. [검토 요청 발송] 시 잠금<br>· 검토중·컨펌 상태에서 생성 시 자동 회수·무효화 (REQ-WF-001·005)</div>
     </div>
     <div class="modal-foot">
       <button class="btn" data-action="close-modal">취소</button>
@@ -2225,8 +2019,8 @@ function modalResendInvite(email){
       <div class="row"><label>대상</label><div class="value static">${esc(email||'choi@oo.co')}</div></div>
       <div class="row"><label>역할</label><div class="value static">고객사 · A 프로젝트 참여</div></div>
       <div class="row"><label>이전 토큰</label><div class="value static">2026-04-12 발급 (만료 또는 분실)</div></div>
-      <div class="row"><label>안내 메시지<small class="opt">(선택)</small></label><div class="value"><textarea placeholder="추가 안내가 있으면 입력"></textarea></div></div>
-      <div class="note">· <b>이전 토큰 즉시 무효화</b> 후 새 토큰 발급 (30분 유효)<br>· 새 초대 링크가 대상 이메일로 발송<br>· 감사 로그 자동 기록</div>
+      <div class="row"><label>안내 메시지<small>(선택)</small></label><div class="value"><textarea placeholder="추가 안내가 있으면 입력"></textarea></div></div>
+      <div class="note">· <b>이전 토큰 즉시 무효화</b> 후 새 토큰 발급 (30분 유효)<br>· 새 초대 링크가 대상 이메일로 발송 (REQ-NTF-001)<br>· 감사 로그 자동 기록 (REQ-AUD-001)</div>
     </div>
     <div class="modal-foot">
       <button class="btn" data-action="close-modal">취소</button>
@@ -2258,7 +2052,7 @@ function modalInviteMember(){
       <div class="row"><label>이메일</label><div class="value"><input type="email" placeholder="member@agency.com" /></div></div>
       <div class="row"><label>역할</label><div class="value"><select><option>PM</option><option>기획자</option><option>디자이너</option><option>개발자</option><option>QA</option></select></div></div>
       <div class="row"><label>참여 프로젝트</label><div class="value static">A 프로젝트</div></div>
-      <div class="note">초대 메일을 전송합니다. 30분 유효 토큰 · 수락 시 자동 활성.</div>
+      <div class="note">초대 메일을 전송합니다 (REQ-AUT-002). 30분 유효 토큰 · 수락 시 자동 활성.</div>
     </div>
     <div class="modal-foot">
       <button class="btn" data-action="close-modal">취소</button>
@@ -2266,216 +2060,19 @@ function modalInviteMember(){
     </div>`;
 }
 
-function modalNewTC(){
-  return `
-    <div class="modal-head"><h2>TC 등록</h2><button class="close" data-action="close-modal">✕</button></div>
-    <div class="modal-body">
-      <div class="row"><label>시나리오명</label><div class="value"><input type="text" id="tcTitle" placeholder="예: 로그인 성공 케이스" /></div></div>
-      <div class="row"><label>단계</label><div class="value"><select id="tcPhase"><option>인증</option><option>요구사항</option><option>워크플로우</option><option>코멘트</option><option>개발</option></select></div></div>
-      <div class="row"><label>우선순위</label><div class="value"><select id="tcPriority"><option>High</option><option selected>Medium</option><option>Low</option></select></div></div>
-      <div class="row"><label>담당자</label><div class="value"><select id="tcAssignee"><option>이QA</option><option>김개발</option><option>박개발</option><option>박디자이너</option></select></div></div>
-      <div class="note">등록 시 상태는 '대기'로 시작합니다.</div>
-    </div>
-    <div class="modal-foot">
-      <button class="btn" data-action="close-modal">취소</button>
-      <button class="btn primary" data-action="submit-new-tc">등록</button>
-    </div>`;
-}
-
-function modalImportTC(){
-  return `
-    <div class="modal-head"><h2>TC 일괄 가져오기</h2><button class="close" data-action="close-modal">✕</button></div>
-    <div class="modal-body">
-      <div class="note">CSV·Excel 파일로 여러 TC를 한 번에 등록합니다. 컬럼: 시나리오명 · 단계 · 우선순위 · 담당자.</div>
-      <div style="font-size:12px;color:var(--muted)">양식이 필요하면 <a data-action="tc-template" style="color:var(--accent);cursor:pointer">CSV 템플릿 다운로드</a></div>
-      <div class="dropzone" id="tcImpDrop" onclick="this.classList.add('has-file');document.getElementById('tcImpPreview').style.display='block';var b=document.getElementById('tcImpBtn');b.disabled=false;b.textContent='12건 가져오기';">
-        <div class="dz-icon">⬆</div>
-        <div class="dz-text"><b>CSV·XLSX 파일을 끌어놓거나 클릭하여 선택</b><br><span>최대 5MB · .csv .xlsx</span></div>
-      </div>
-      <div id="tcImpPreview" style="display:none">
-        <div class="dz-result"><b>main-tc.csv</b> · 12행 인식 · <span style="color:var(--ok)">오류 0</span></div>
-        <div class="card flat" style="padding:0;overflow:hidden;margin-top:8px">
-          <table class="tbl">
-            <thead><tr><th>시나리오명</th><th>단계</th><th>우선순위</th><th>담당자</th></tr></thead>
-            <tbody>
-              <tr><td>비밀번호 재설정 메일 수신</td><td>인증</td><td>High</td><td>이QA</td></tr>
-              <tr><td>대시보드 KPI 4종 표시</td><td>요구사항</td><td>Medium</td><td>이QA</td></tr>
-              <tr><td>컨펌 후 재업로드 무효화</td><td>워크플로우</td><td>High</td><td>이QA</td></tr>
-              <tr><td colspan="4" style="text-align:center;color:var(--muted);font-size:12px">… 외 9행</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-    <div class="modal-foot">
-      <button class="btn" data-action="close-modal">취소</button>
-      <button class="btn primary" id="tcImpBtn" data-action="submit-import-tc" disabled>가져오기</button>
-    </div>`;
-}
-
-function modalNewDefect(linkedTcId=''){
-  return `
-    <div class="modal-head"><h2>결함 등록</h2><button class="close" data-action="close-modal">✕</button></div>
-    <div class="modal-body">
-      <div class="row"><label>제목</label><div class="value"><input type="text" id="defTitle" placeholder="예: 로그인 후 리다이렉트 미동작" /></div></div>
-      <div class="row"><label>심각도</label><div class="value"><select id="defSeverity"><option>High</option><option selected>Medium</option><option>Low</option></select></div></div>
-      <div class="row"><label>담당자</label><div class="value"><select id="defAssignee"><option>김개발</option><option>박개발</option><option>박디자이너</option><option>이QA</option></select></div></div>
-      <div class="row"><label>연결 TC <small class="opt">(선택)</small></label><div class="value"><select id="defLinkTc"><option value="">연결 안 함</option>${DATA.tests.map(t => `<option value="${esc(t.id)}" ${t.id===linkedTcId?'selected':''}>${esc(t.id)} · ${esc(t.title)}</option>`).join('')}</select></div></div>
-      <div class="note">등록 시 상태는 '미해결'로 시작합니다. 연결 TC는 발견 출처를 추적하며, 선택은 생략 가능합니다.</div>
-    </div>
-    <div class="modal-foot">
-      <button class="btn" data-action="close-modal">취소</button>
-      <button class="btn primary" data-action="submit-new-defect">등록</button>
-    </div>`;
-}
-
-function modalLinkDefect(tcId){
-  const linked = ['DEF-001'];
-  const rows = DATA.defects.map(d => {
-    const st = d.status==='해결완료'?'<span class="pill ok">해결 완료</span>':d.status==='진행중'?'<span class="pill warn">진행 중</span>':'<span class="pill hot">미해결</span>';
-    return `<label style="display:flex;align-items:center;gap:10px;padding:9px 2px;border-bottom:1px solid var(--divider);cursor:pointer">
-      <input type="checkbox" ${linked.includes(d.id)?'checked':''} />
-      <span style="flex:1;font-size:13px"><b>${esc(d.id)}</b> ${esc(d.title)}</span>
-      ${lvlBadge(d.severity)} ${st}
-    </label>`;
-  }).join('');
-  return `
-    <div class="modal-head"><h2>기존 결함 연결</h2><button class="close" data-action="close-modal">✕</button></div>
-    <div class="modal-body">
-      <div class="note">이 TC(${esc(tcId)})에 연결할 기존 결함을 선택하세요. 결함↔TC는 다대다로 연결됩니다.</div>
-      ${rows}
-    </div>
-    <div class="modal-foot">
-      <button class="btn" data-action="close-modal">취소</button>
-      <button class="btn primary" data-action="submit-link-defect">연결</button>
-    </div>`;
-}
-
-function modalFileViewer(fileName, slug='requirements'){
-  const f = ((DATA.slot[slug] && DATA.slot[slug].files) || []).find(x => x.name === fileName) || {name:fileName, desc:''};
-  const isImg = /\.(png|jpe?g|gif|webp|svg)$/i.test(fileName);
-  const isPdf = /\.pdf$/i.test(fileName);
-  const docTitle = f.desc || fileName;
-  let body;
-  if(isImg){
-    body = `<div class="viewer-stage"><div class="viewer-img"><span class="icn">🖼</span><div>${esc(fileName)}</div><div class="sub">이미지 미리보기 (데모)</div></div></div>`;
-  } else if(isPdf){
-    body = `<div class="viewer-stage">
-        <div class="doc-page">
-          <div class="doc-title">${esc(docTitle)}</div>
-          <div class="doc-sub">${esc(fileName)} · 미리보기 (데모)</div>
-          <div class="doc-h">1. 개요</div>
-          <div class="doc-line w92"></div><div class="doc-line w78"></div>
-          <div class="doc-h">2. 기능 요구사항</div>
-          <div class="doc-line w95"></div><div class="doc-line w88"></div><div class="doc-line w70"></div>
-          <div class="doc-h">3. 비기능 요구사항</div>
-          <div class="doc-line w90"></div><div class="doc-line w60"></div>
-        </div>
-        <div class="doc-page">
-          <div class="doc-line w85"></div><div class="doc-line w92"></div><div class="doc-line w50"></div>
-          <div class="doc-line w88"></div><div class="doc-line w76"></div><div class="doc-line w95"></div>
-        </div>
-      </div>`;
-  } else {
-    body = `<div class="viewer-stage"><div class="viewer-img"><span class="icn">📄</span><div>${esc(fileName)}</div><div class="sub">이 형식은 미리보기를 지원하지 않습니다 — 다운로드 후 확인하세요</div></div></div>`;
-  }
-  return `
-    <div class="modal-head"><h2>${esc(fileName)}</h2><div style="display:flex;gap:8px;align-items:center"><button class="btn sm accent" data-action="download" data-file="${esc(fileName)}">다운로드</button><button class="close" data-action="close-modal">✕</button></div></div>
-    <div class="modal-body viewer-body">${body}</div>`;
-}
-
-function modalNewAdminTeam(){
-  return `
-    <div class="modal-head"><h2>프로젝트팀 계정 생성</h2><button class="close" data-action="close-modal">✕</button></div>
-    <div class="modal-body">
-      <div class="row"><label>이름</label><div class="value"><input type="text" id="atName" placeholder="김팀원" /></div></div>
-      <div class="row"><label>이메일</label><div class="value"><input type="email" id="atEmail" placeholder="member@agency.com" /></div></div>
-      <div class="row"><label>역할</label><div class="value"><select id="atRole"><option>PM</option><option>기획자</option><option>디자이너</option><option>개발자</option><option>QA</option></select></div></div>
-      <div class="note">멤버 초대와 동일한 초대-수락 방식입니다 — 초대 메일 발송 후 수락 시 계정 활성(30분 유효 토큰).</div>
-    </div>
-    <div class="modal-foot">
-      <button class="btn" data-action="close-modal">취소</button>
-      <button class="btn primary" data-action="submit-new-admin-team">초대 메일 보내기</button>
-    </div>`;
-}
-
-function modalChangeAssignee(defectId){
-  const d = DATA.defects.find(x => x.id === defectId) || DATA.defects[0];
-  const opts = ['김개발','박개발','박디자이너','이QA','김PM'].map(n => `<option ${n===d.assignee?'selected':''}>${n}</option>`).join('');
-  return `
-    <div class="modal-head"><h2>담당자 변경</h2><button class="close" data-action="close-modal">✕</button></div>
-    <div class="modal-body">
-      <div class="row"><label>대상</label><div class="value static">${esc(d.id)} · ${esc(d.title)}</div></div>
-      <div class="row"><label>담당자</label><div class="value"><select id="defNewAssignee">${opts}</select></div></div>
-    </div>
-    <div class="modal-foot">
-      <button class="btn" data-action="close-modal">취소</button>
-      <button class="btn primary" data-action="submit-change-assignee" data-id="${esc(d.id)}">변경</button>
-    </div>`;
-}
-
-function modalEditClientProjects(email){
-  const c = DATA.adminClients.find(x => x.email === email) || {name:'고객사', email, client:'', projects:0};
-  const checkedIds = DATA.projects.slice(0, c.projects || 0).map(p => p.id); // 데모: 참여 수만큼 앞에서 체크
-  const rows = DATA.projects.map(p => `
-    <label style="display:flex;align-items:center;gap:10px;padding:8px 2px;border-bottom:1px solid var(--divider);cursor:pointer">
-      <input type="checkbox" ${checkedIds.includes(p.id)?'checked':''} />
-      <span><b>${esc(p.name)}</b> <span style="color:var(--muted);font-size:11px">${esc(p.client)} · ${esc(p.type)}</span></span>
-    </label>`).join('');
-  return `
-    <div class="modal-head"><h2>참여 프로젝트 관리</h2><button class="close" data-action="close-modal">✕</button></div>
-    <div class="modal-body">
-      <div class="note" style="margin-bottom:12px"><b>${esc(c.name)}</b> · ${esc(c.email)}${c.client?` (${esc(c.client)})`:''} — 참여 프로젝트를 추가·제거합니다. 신규 추가분에는 참여 알림이 발송됩니다. 제거해도 계정·과거 이력은 보존됩니다.</div>
-      ${rows}
-    </div>
-    <div class="modal-foot">
-      <button class="btn" data-action="close-modal">취소</button>
-      <button class="btn primary" data-action="submit-edit-projects">저장</button>
-    </div>`;
-}
-
-/* 다중 프로젝트 멤버십 헬퍼 — 고객사 계정은 이메일당 1개, 참여는 N:M */
-function findClientByEmail(email){
-  email = (email||'').trim().toLowerCase();
-  if(!email) return null;
-  return DATA.adminClients.find(c => c.email.toLowerCase() === email) || null;
-}
-function clientInCurrentProject(email){
-  email = (email||'').trim().toLowerCase();
-  return DATA.members.clients.some(c => c.email.toLowerCase() === email);
-}
-function updateInviteHint(){
-  const inp = document.getElementById('inviteEmail');
-  const hint = document.getElementById('inviteHint');
-  if(!inp || !hint) return;
-  const v = inp.value.trim();
-  if(!v){ hint.innerHTML = ''; return; }
-  const existing = findClientByEmail(v);
-  hint.innerHTML = existing
-    ? `↳ 이미 가입된 고객사 (<b>${esc(existing.client)}</b>) — 비밀번호 설정 없이 <b>이 프로젝트 참여만 추가</b>됩니다.`
-    : `↳ 신규 이메일 — 온보딩 초대(비밀번호 설정) 메일이 발송됩니다.`;
-  hint.style.color = existing ? 'var(--accent)' : 'var(--muted)';
-}
-
-function modalInviteClient(opts={}){
-  const scope = opts.scope || 'project'; // 'project'(인-프로젝트, 고정) | 'admin'(프로젝트 선택)
-  const projectField = scope === 'admin'
-    ? `<div class="value"><select>${DATA.projects.map(p=>`<option>${esc(p.name)}</option>`).join('')}</select></div>`
-    : `<div class="value static">${esc(opts.project || 'A 프로젝트')} <span style="font-size:11px;color:var(--muted)">· 현재 프로젝트 (변경 불가)</span></div>`;
+function modalInviteClient(){
   return `
     <div class="modal-head"><h2>고객사 초대</h2><button class="close" data-action="close-modal">✕</button></div>
     <div class="modal-body">
-      ${scope==='admin' ? `<div class="note" style="margin-bottom:12px">관리자 발급 — 고객사를 참여시킬 프로젝트를 선택하세요. 기존 계정이면 참여만 추가됩니다.</div>` : ''}
       <div class="row"><label>이름</label><div class="value"><input type="text" placeholder="홍길동" /></div></div>
-      <div class="row"><label>이메일</label><div class="value"><input type="email" id="inviteEmail" placeholder="hong@client.co" /></div></div>
+      <div class="row"><label>이메일</label><div class="value"><input type="email" placeholder="hong@client.co" /></div></div>
       <div class="row"><label>고객사명</label><div class="value"><input type="text" value="㈜OO" /></div></div>
-      <div class="row"><label>참여 프로젝트</label>${projectField}</div>
-      <div id="inviteHint" style="font-size:11.5px;margin:2px 0 10px;min-height:14px"></div>
-      <div class="note">신규는 온보딩 초대(토큰·비밀번호 설정), 기존 고객사는 참여 추가 + 알림. 30분 유효 토큰.</div>
+      <div class="row"><label>참여 프로젝트</label><div class="value static">A 프로젝트</div></div>
+      <div class="note">초대 메일을 전송합니다 (REQ-AUT-002). 30분 유효 토큰 · 수락 시 자동 활성.</div>
     </div>
     <div class="modal-foot">
       <button class="btn" data-action="close-modal">취소</button>
-      <button class="btn primary" data-action="submit-invite-client" data-scope="${scope}">초대 메일 보내기</button>
+      <button class="btn primary" data-action="submit-invite-client">초대 메일 보내기</button>
     </div>`;
 }
 
@@ -2529,7 +2126,6 @@ document.addEventListener('click', e => {
   if(a==='upload-file'){ toast('파일 추가됨 (mock) — draft 안 변경은 활동 이력 미기록','info'); return; }
   if(a==='replace-file'){ toast('파일 교체됨 (mock)','info'); return; }
   if(a==='delete-file'){ toast('파일 삭제됨 (mock)','info'); return; }
-  if(a==='view-file'){ openModal(modalFileViewer(t.dataset.file, t.dataset.slug), true); return; }
   if(a==='download'){ toast(`${t.dataset.file} 다운로드 (mock)`,'info'); return; }
 
   // Comment
@@ -2539,16 +2135,9 @@ document.addEventListener('click', e => {
     const slug = t.dataset.slug;
     if(slug && DATA.slot[slug]){
       const who = {pm:'PM', client:'고객사', admin:'관리자'}[state.role] || 'PM';
-      const version = t.dataset.version || state.viewVersion[slug] || DATA.slot[slug].version;
-      DATA.slot[slug].comments = DATA.slot[slug].comments || [];
-      let group = DATA.slot[slug].comments.find((item) => item.version === version);
-      if(!group){
-        group = {version, items:[]};
-        DATA.slot[slug].comments.push(group);
-      }
-      group.items.push({who, time:'방금 전', body:ta.value.trim(), own:state.role!=='admin'});
+      DATA.slot[slug].activities.push({type:'comment', who, time:'방금 전', body:esc(ta.value.trim()), own:state.role!=='admin'});
       rerender();
-      toast(`${version} 스냅샷에 코멘트 등록됨`,'success');
+      toast('코멘트 등록됨','success');
       return;
     }
     if(ta) ta.value = '';
@@ -2562,23 +2151,13 @@ document.addEventListener('click', e => {
   if(a==='proj-switch'){
     const rect = t.getBoundingClientRect();
     const items = DATA.projects.map(p => `<a class="item" data-route="/projects/${p.id}"><span>${esc(p.name)}</span><span class="meta">${p.progress}%</span></a>`).join('');
-    openDropdown(items, rect.left, rect.bottom+4);
+    openDropdown(items + `<div class="divider"></div><a class="item" data-route="/"><span>프로젝트 목록</span><span class="meta">→</span></a>`, rect.left, rect.bottom+4);
     e.stopPropagation();
     return;
   }
 
   if(a==='open-search'){ navigate('/projects/A/search'); return; }
-  if(a==='notify'){
-    const rect = t.getBoundingClientRect();
-    openDropdown(`
-      <div class="dd-head">알림 <span class="meta">새 알림 3건</span></div>
-      <a class="item" data-route="/projects/A/deliverables/design"><span>시안 v2 컨펌 대기 — 디자인 시안</span><span class="meta">2h</span></a>
-      <a class="item" data-route="/projects/A/requirements"><span>요구사항 #12 코멘트</span><span class="meta">3h</span></a>
-      <a class="item" data-route="/projects/A/defects/DEF-001"><span>결함 DEF-001 미해결 (High)</span><span class="meta">1d</span></a>
-    `, rect.right - 280, rect.bottom + 6);
-    e.stopPropagation();
-    return;
-  }
+  if(a==='notify'){ toast('알림 — 새 알림 3건 (mock)','info'); return; }
   if(a==='acct'){
     const rect = t.getBoundingClientRect();
     openDropdown(`
@@ -2626,33 +2205,8 @@ document.addEventListener('click', e => {
   // Members
   if(a==='invite-member'){ openModal(modalInviteMember()); return; }
   if(a==='submit-invite-member'){ closeModals(); toast('팀원 초대 메일 발송됨 (30분 유효)','success'); return; }
-  if(a==='invite-client'){ openModal(modalInviteClient(t.dataset.context==='admin' ? {scope:'admin'} : {scope:'project', project:'A 프로젝트'})); return; }
-  if(a==='submit-invite-client'){
-    const inp = document.getElementById('inviteEmail');
-    const email = inp ? inp.value.trim() : '';
-    const scope = t.dataset.scope || 'project';
-    const existing = findClientByEmail(email);
-    closeModals();
-    if(existing){
-      if(scope==='project' && clientInCurrentProject(email)){
-        toast(`이미 이 프로젝트에 참여 중인 고객사입니다 (${existing.client})`,'info');
-      } else {
-        toast(`기존 고객사 (${existing.client}) — 프로젝트에 참여 추가됨 · 참여 알림 발송 (비밀번호 설정 없음)`,'success');
-      }
-    } else {
-      toast('신규 고객사 초대 메일 발송됨 — 온보딩 토큰 30분 유효','success');
-    }
-    return;
-  }
-  if(a==='remove-client'){
-    const email = t.dataset.email;
-    DATA.members.clients = DATA.members.clients.filter(c => c.email !== email);
-    rerender();
-    toast('고객사를 이 프로젝트에서 제외했습니다 (계정·과거 이력은 보존)','info');
-    return;
-  }
-  if(a==='edit-client-projects'){ openModal(modalEditClientProjects(t.dataset.email)); return; }
-  if(a==='submit-edit-projects'){ closeModals(); toast('참여 프로젝트 변경 저장됨 — 신규 추가분에 참여 알림 발송','success'); return; }
+  if(a==='invite-client'){ openModal(modalInviteClient()); return; }
+  if(a==='submit-invite-client'){ closeModals(); toast('초대 메일 발송됨 (30분 유효)','success'); return; }
   if(a==='resend-invite'){ openModal(modalResendInvite(t.dataset.email)); return; }
   if(a==='submit-resend'){ closeModals(); toast('이전 토큰 무효화 + 새 초대 메일 발송 (감사 로그 기록)','success'); return; }
 
@@ -2662,44 +2216,15 @@ document.addEventListener('click', e => {
   if(a==='submit-delete'){ closeModals(); navigate('/'); toast('프로젝트가 삭제되었습니다 (30일 내 복구 가능)','danger'); return; }
 
   // Tests / Defects
-  if(a==='new-tc'){ openModal(modalNewTC()); return; }
-  if(a==='import-tc'){ openModal(modalImportTC(), true); return; }
-  if(a==='tc-template'){ toast('CSV 템플릿 다운로드 (mock)','info'); return; }
-  if(a==='submit-import-tc'){ closeModals(); toast('CSV 일괄 가져오기 (UI 데모) — 실제 등록 연동은 구현 단계','info'); return; }
-  if(a==='submit-new-tc'){
-    const title = (document.getElementById('tcTitle').value||'').trim() || '새 TC';
-    const n = DATA.tests.length + 1;
-    DATA.tests.push({id:`TC-${String(n).padStart(3,'0')}`, title, phase:document.getElementById('tcPhase').value, priority:document.getElementById('tcPriority').value, status:'대기', assignee:document.getElementById('tcAssignee').value});
-    closeModals(); rerender(); toast('TC 등록됨','success'); return;
-  }
-  if(a==='new-defect'){ openModal(modalNewDefect()); return; }
-  if(a==='new-defect-from-tc'){ openModal(modalNewDefect(t.dataset.tc)); return; }
-  if(a==='link-defect'){ openModal(modalLinkDefect(t.dataset.tc), true); return; }
-  if(a==='submit-link-defect'){ const n = document.querySelectorAll('.modal-body input[type=checkbox]:checked').length; closeModals(); toast(`기존 결함 ${n}건 연결됨`,'success'); return; }
-  if(a==='submit-new-defect'){
-    const title = (document.getElementById('defTitle').value||'').trim() || '새 결함';
-    const n = DATA.defects.length + 1;
-    const tcId = document.getElementById('defLinkTc').value;
-    DATA.defects.push({id:`DEF-${String(n).padStart(3,'0')}`, title, severity:document.getElementById('defSeverity').value, status:'미해결', assignee:document.getElementById('defAssignee').value, created:'05-21', tcId: tcId || null});
-    closeModals(); rerender(); toast(tcId ? `결함 등록됨 · ${tcId} 연결` : '결함 등록됨','success'); return;
-  }
-  if(a==='tc-result'){ toast(`TC 결과: ${t.dataset.r}`,t.dataset.r==='실패'?'danger':'success'); return; }
+  if(a==='new-tc'){ toast('TC 등록 (mock)','info'); return; }
+  if(a==='new-defect'){ toast('결함 등록 (mock)','info'); return; }
+  if(a==='tc-result'){ toast(`TC 결과: ${t.dataset.r}`,t.dataset.r==='Fail'?'danger':'success'); return; }
   if(a==='defect-status'){ toast(`상태 변경: ${t.dataset.s}`,'success'); return; }
   if(a==='add-attachment'){ toast('첨부 추가 (mock)','info'); return; }
-  if(a==='change-assignee'){ openModal(modalChangeAssignee(t.dataset.id)); return; }
-  if(a==='submit-change-assignee'){
-    const id = t.dataset.id; const v = document.getElementById('defNewAssignee').value;
-    const d = DATA.defects.find(x => x.id === id); if(d) d.assignee = v;
-    closeModals(); rerender(); toast(`담당자가 ${v}(으)로 변경되었습니다`,'success'); return;
-  }
+  if(a==='change-assignee'){ toast('담당자 변경 (mock)','info'); return; }
 
   // Admin
-  if(a==='new-admin-team'){ openModal(modalNewAdminTeam()); return; }
-  if(a==='submit-new-admin-team'){
-    const name = (document.getElementById('atName').value||'').trim() || '새 팀원';
-    DATA.adminTeams.push({name, email:(document.getElementById('atEmail').value||'').trim()||'member@agency.com', role:document.getElementById('atRole').value, projects:0, active:false});
-    closeModals(); rerender(); toast('프로젝트팀 계정 초대 메일 발송됨 — 수락 시 활성','success'); return;
-  }
+  if(a==='new-admin-team' || a==='new-admin-client'){ toast('계정 생성 폼 (mock)','info'); return; }
 
   // Version dropdown
   if(a==='version-dropdown'){
@@ -2743,8 +2268,6 @@ document.addEventListener('click', e => {
 document.addEventListener('keydown', e => { if(e.key==='Escape'){ closeModals(); closeDropdowns(); } });
 // Click backdrop
 document.addEventListener('click', e => { if(e.target.classList.contains('modal-backdrop')){ closeModals(); }});
-// 초대 모달 이메일 입력 → 신규/기존 판별 힌트
-document.addEventListener('input', e => { if(e.target && e.target.id==='inviteEmail') updateInviteHint(); });
 
 /* Role switcher */
 document.querySelectorAll('.role-switcher button[data-role]').forEach(b => {
