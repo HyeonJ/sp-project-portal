@@ -6,10 +6,13 @@
     <div th:replace="~{fragments/shell :: projectSidebar('deliverables')}"></div>
     <div>
         <div th:replace="~{fragments/shell :: projectTopbar('산출물')}"></div>
-        <main class="main" id="deliverables" th:attr="data-project-id=${projId}, data-can-edit=${canEdit}">
+        <main class="main" id="deliverables"
+              th:attr="data-project-id=${projId}, data-can-edit=${canEdit}, data-tier=${navTier}">
             <div class="page-bar">
                 <h1 class="page-title">산출물</h1>
             </div>
+
+            <div id="gateStrip" class="action-bar" style="margin-bottom:16px"></div>
 
             <div id="slotGrid" class="grid cols-3">
                 <p class="page-sub">불러오는 중…</p>

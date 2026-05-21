@@ -10,9 +10,26 @@
         ORDER BY gate_stage
     </select>
 
+    <select id="findByProjectAndStageForUpdate" resultType="ProjectGate">
+        SELECT id, project_id, gate_stage, status, passed_at, passed_by
+        FROM project_gate
+        WHERE project_id = #{projectId} AND gate_stage = #{gateStage}
+        FOR UPDATE
+    </select>
+
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO project_gate (project_id, gate_stage, status)
         VALUES (#{projectId}, #{gateStage}, #{status})
     </insert>
+
+    <update id="markPass">
+        UPDATE project_gate
+        SET status = 'pass', passed_by = #{passedBy}, passed_at = now()
+        WHERE id = #{id}
+    </update>
+
+    <update id="unlockToWait">
+        UPDATE project_gate SET status = 'wait' WHERE id = #{id} AND status = 'lock'
+    </update>
 
 </mapper>

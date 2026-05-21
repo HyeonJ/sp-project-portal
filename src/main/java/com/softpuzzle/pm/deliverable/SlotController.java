@@ -5,6 +5,7 @@ import com.softpuzzle.pm.common.ApiException;
 import com.softpuzzle.pm.common.ApiResponse;
 import com.softpuzzle.pm.common.CurrentUser;
 import com.softpuzzle.pm.deliverable.dto.AddUrlRequest;
+import com.softpuzzle.pm.deliverable.dto.RejectRequest;
 import com.softpuzzle.pm.deliverable.dto.SlotDetail;
 import jakarta.validation.Valid;
 import java.io.IOException;
@@ -25,10 +26,12 @@ import org.springframework.web.multipart.MultipartFile;
 public class SlotController {
 
     private final SlotService slotService;
+    private final ReviewService reviewService;
     private final CurrentUser currentUser;
 
-    public SlotController(SlotService slotService, CurrentUser currentUser) {
+    public SlotController(SlotService slotService, ReviewService reviewService, CurrentUser currentUser) {
         this.slotService = slotService;
+        this.reviewService = reviewService;
         this.currentUser = currentUser;
     }
 
@@ -70,6 +73,31 @@ public class SlotController {
     public ApiResponse<Void> deleteAsset(@PathVariable Long projectId, @PathVariable String slotType,
                                          @PathVariable Long assetId) {
         slotService.deleteAsset(projectId, slotType, assetId, currentUser.require());
+        return ApiResponse.ok(null);
+    }
+
+    @PostMapping("/{slotType}/review-request")
+    public ApiResponse<Void> requestReview(@PathVariable Long projectId, @PathVariable String slotType) {
+        reviewService.requestReview(projectId, slotType, currentUser.require());
+        return ApiResponse.ok(null);
+    }
+
+    @PostMapping("/{slotType}/review-recall")
+    public ApiResponse<Void> recall(@PathVariable Long projectId, @PathVariable String slotType) {
+        reviewService.recall(projectId, slotType, currentUser.require());
+        return ApiResponse.ok(null);
+    }
+
+    @PostMapping("/{slotType}/confirm")
+    public ApiResponse<Void> confirm(@PathVariable Long projectId, @PathVariable String slotType) {
+        reviewService.confirm(projectId, slotType, currentUser.require());
+        return ApiResponse.ok(null);
+    }
+
+    @PostMapping("/{slotType}/reject")
+    public ApiResponse<Void> reject(@PathVariable Long projectId, @PathVariable String slotType,
+                                    @Valid @RequestBody RejectRequest req) {
+        reviewService.reject(projectId, slotType, req.reason(), currentUser.require());
         return ApiResponse.ok(null);
     }
 

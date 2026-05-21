@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.softpuzzle.pm.deliverable.ActivityEventMapper">
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO activity_event (slot_id, event_type, slot_version_id, actor_id, body)
+        VALUES (#{slotId}, #{eventType}, #{slotVersionId}, #{actorId}, #{body})
+    </insert>
+
+    <select id="findBySlot" resultType="ActivityEvent">
+        SELECT e.id, e.slot_id, e.event_type, e.slot_version_id, e.actor_id, e.body, e.created_at,
+               a.name AS actor_name, v.version_no
+        FROM activity_event e
+        JOIN account a ON a.id = e.actor_id
+        LEFT JOIN slot_version v ON v.id = e.slot_version_id
+        WHERE e.slot_id = #{slotId}
+        ORDER BY e.created_at DESC, e.id DESC
+    </select>
+
+</mapper>

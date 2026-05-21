@@ -19,4 +19,17 @@ public interface SlotVersionMapper {
     void insert(SlotVersion version);
 
     int updateStatus(@Param("id") Long id, @Param("status") String status);
+
+    /** draft → pending-review (review_requested_* 설정). */
+    int markPendingReview(@Param("id") Long id, @Param("requestedBy") Long requestedBy);
+
+    /** pending-review → confirmed (reviewed_* 설정, 선행 스탬프). */
+    int markConfirmed(@Param("id") Long id, @Param("reviewedBy") Long reviewedBy,
+                      @Param("upstreamVersionId") Long upstreamVersionId);
+
+    /** pending-review → rejected (reviewed_* 설정). */
+    int markRejected(@Param("id") Long id, @Param("reviewedBy") Long reviewedBy);
+
+    /** pending-review → draft (review_* 초기화). */
+    int markRecalledToDraft(@Param("id") Long id);
 }

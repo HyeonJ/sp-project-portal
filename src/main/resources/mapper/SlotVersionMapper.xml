@@ -46,4 +46,31 @@
         UPDATE slot_version SET status = #{status} WHERE id = #{id}
     </update>
 
+    <update id="markPendingReview">
+        UPDATE slot_version
+        SET status = 'pending-review', review_requested_by = #{requestedBy},
+            review_requested_at = now(), reviewed_by = NULL, reviewed_at = NULL
+        WHERE id = #{id}
+    </update>
+
+    <update id="markConfirmed">
+        UPDATE slot_version
+        SET status = 'confirmed', reviewed_by = #{reviewedBy}, reviewed_at = now(),
+            confirmed_upstream_version_id = #{upstreamVersionId}
+        WHERE id = #{id}
+    </update>
+
+    <update id="markRejected">
+        UPDATE slot_version
+        SET status = 'rejected', reviewed_by = #{reviewedBy}, reviewed_at = now()
+        WHERE id = #{id}
+    </update>
+
+    <update id="markRecalledToDraft">
+        UPDATE slot_version
+        SET status = 'draft', review_requested_by = NULL, review_requested_at = NULL,
+            reviewed_by = NULL, reviewed_at = NULL
+        WHERE id = #{id}
+    </update>
+
 </mapper>

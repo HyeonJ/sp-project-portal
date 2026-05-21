@@ -52,4 +52,22 @@ public class MembershipGuard {
             throw ApiException.forbidden("프로젝트 생성 권한이 없습니다.");
         }
     }
+
+    public boolean isClient(Account account) {
+        return "client".equals(account.getTier());
+    }
+
+    /** 검토 요청·회수·파일 편집: 프로젝트팀 멤버만. */
+    public void assertCanRequestReview(Long projectId, Account account) {
+        if (!isTeam(account) || !isMember(projectId, account)) {
+            throw ApiException.forbidden("프로젝트팀 멤버만 검토를 요청·회수할 수 있습니다.");
+        }
+    }
+
+    /** 컨펌·반려: 고객사 멤버만. */
+    public void assertCanReview(Long projectId, Account account) {
+        if (!isClient(account) || !isMember(projectId, account)) {
+            throw ApiException.forbidden("고객사 멤버만 컨펌·반려할 수 있습니다.");
+        }
+    }
 }
