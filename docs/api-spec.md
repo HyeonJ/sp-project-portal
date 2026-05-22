@@ -3,8 +3,8 @@
 | 항목 | 내용 |
 |------|------|
 | 프로젝트명 | SoftPuzzle PM |
-| 버전 | **v1.2 (구현 정합 — TC·결함 §9~10 코드 동기화)**. TC: result→`/status`, 템플릿 엔드포인트 제거(클라이언트 Blob), import 보강, `POST /test-cases/assign`(일괄 담당자), 본문 `assigneeId`. 결함: 생성 본문 `testCaseId·assigneeId`, `/assignee` 엔드포인트 제거(편집 본문으로 통합), 연결을 배열 `/links`→건별 `POST·DELETE /test-cases/{tcId}`, 편집 PATCH(team·등록자). |
-| 이전 버전 | v1.1 (문서 정합 리뷰 — 세션 SSR 정렬: JWT/refresh → Spring Security 세션 + Thymeleaf SSR) · v1.0 (마감 baseline — 커버리지·미결 0) · v0.3 (코덱스 리뷰) · v0.2 (미결 5건) · v0.1 (1차 도출) |
+| 버전 | **v1.3 (전체 구현 정합 — §2~§11 코드 대조 동기화)**. 슬롯 경로 평탄화(`/versions/{vno}/assets/*`→`/{slot}/files·urls`), `upstream-review`→`ack-upstream`, 알림 read `PATCH`→`POST`, `audit-logs`→`audit`, search 전역화(`/api/search`), Export 동기 단건(`GET /export`), 인증/계정 경로 정정. **미구현은 `🔲 미구현(MVP 범위 외)`로 표기** — 동결 스펙(v1.0)과 실제 구현이 광범위하게 드리프트해 일괄 정합. |
+| 이전 버전 | v1.2 (TC·결함 §9~10 동기화) · v1.1 (세션 SSR 정렬) · v1.0 (마감 baseline) · v0.3 (코덱스 리뷰) · v0.2 · v0.1 |
 | 작성일 | 2026-05-21 |
 | 기준 | ERD(`erd.md` v1.3) · 화면 설계서(`screen-design/` v1.5) · SRS(`requirements.md`) · 아키텍처(`architecture.md` v0.2) |
 | 스택 | Spring Boot · MyBatis · PostgreSQL · Thymeleaf SSR + jQuery · 세션(Spring Security + Spring Session JDBC) |
@@ -73,28 +73,20 @@
 
 ---
 
-## 2. 인증 · 온보딩 (`/api/auth`)
+## 2. 인증 · 온보딩
+
+> 로그인/로그아웃은 **Spring Security 폼 인증**(JSON 엔드포인트 아님). 비밀번호 재설정·온보딩만 `/api` JSON.
 
 | Method | Path | 권한 | 설명 |
 |--------|------|------|------|
-| POST | `/auth/login` | 공개 | 로그인. `{email, password}` → 세션 생성 + `SESSION` 쿠키. 5회 실패 시 10분 잠금(REQ-AUT-007) |
-| POST | `/auth/logout` | 인증 | 세션 즉시 무효화(REQ-AUT-008) → 로그인 페이지 |
-| POST | `/auth/password/reset-request` | 공개 | `{email}` → 재설정 메일 발송(존재 여부 노출 안 함) |
-| POST | `/auth/password/reset` | 공개 | `{token, newPassword}` → 비밀번호 설정, 토큰 무효화 |
-| GET | `/auth/invitations/{token}` | 공개 | 초대 정보 조회(조직·역할·참여 프로젝트) |
-| POST | `/auth/invitations/{token}/accept` | 공개 | 온보딩 수락 `{name?, password}` → 계정 활성 + 자동 로그인. 토큰 1회용 |
+| POST | `/login` (폼) | 공개 | **Spring Security 폼 로그인** — `username`·`password` 폼 전송 → 세션 생성. 실패 잠금(REQ-AUT-007) |
+| POST | `/logout` (폼) | 인증 | Spring Security 폼 로그아웃 → 세션 무효화(REQ-AUT-008) |
+| POST | `/api/password/reset-request` | 공개 | `{email}` → 재설정 메일 발송(존재 여부 노출 안 함) |
+| POST | `/api/password/reset` | 공개 | `{token, newPassword}` → 비밀번호 설정, 토큰 무효화 |
+| GET | `/invite/accept` (페이지) | 공개 | 초대 정보는 **SSR 페이지**가 렌더 (별도 JSON 조회 없음) |
+| POST | `/api/invite/accept` | 공개 | 온보딩 수락 — 토큰은 **요청 본문**(`{token, ...}`) → 계정 활성. 토큰 1회용 |
 
-**예) `POST /auth/login`**
-```jsonc
-// req
-{ "email": "pm@agency.com", "password": "••••••••" }
-// res 200 — 세션 생성, Set-Cookie: SESSION=...; HttpOnly; Secure; SameSite=Lax
-{ "success": true, "data": {
-  "account": { "id": 12, "name": "김PM", "tier": "team", "job": "pm" }
-} }
-// res 400 (5회 실패 잠금)
-{ "success": false, "code": "ACCOUNT_LOCKED", "message": "로그인 5회 실패로 계정이 잠겼습니다. 10분 후 다시 시도하세요." }
-```
+> v1.0~v1.1 스펙은 `/api/auth/login`·`/auth/invitations/{token}/accept`(토큰 path) 형태였으나, 실제는 Spring Security 폼 로그인 + `/api/invite/accept`(토큰 body)로 구현됨.
 
 ---
 
@@ -103,12 +95,12 @@
 | Method | Path | 권한 | 설명 |
 |--------|------|------|------|
 | GET | `/me` | 인증 | 현재 계정(이름·이메일·tier·job·참여 프로젝트) |
-| PATCH | `/me/password` | 인증 | `{currentPassword, newPassword}` 비밀번호 변경(정책 검증) |
+| PATCH | `/me/password` | 인증 | 🔲 미구현(MVP 범위 외) — 로그인 사용자 비밀번호 변경 |
 | GET | `/admin/accounts` | admin | 계정 목록 `?tier=&status=&q=` (팀/고객사) |
-| POST | `/admin/accounts/invite` | admin | 계정 초대 `{email, name, tier, job?, projectId}` (신규=온보딩 / 기존=참여 추가, 스마트 분기) |
-| PATCH | `/admin/accounts/{id}` | admin | 수정·비활성화 `{name?, job?, status?}` |
-| POST | `/admin/accounts/{id}/resend-invite` | admin | 초대 재발송(이전 토큰 무효화) |
-| PUT | `/admin/clients/{id}/projects` | admin | 고객사 참여 프로젝트 일괄 편집 `{projectIds:[...]}` (추가분 참여 알림) |
+| POST | `/admin/accounts` | admin | 계정 초대 (신규=온보딩 / 기존=참여 추가, 스마트 분기). *스펙 v1.0의 `/accounts/invite`에서 경로 변경* |
+| PATCH | `/admin/accounts/{id}/status` | admin | 활성/비활성 토글. *스펙 v1.0의 일반 수정(`{name?,job?,status?}`)이 아니라 **status 전용***. 이름·직무 편집 🔲 미구현 |
+| POST | `/admin/accounts/{id}/resend-invite` | admin | 🔲 미구현(MVP 범위 외) — 초대 재발송 |
+| PUT | `/admin/clients/{id}/projects` | admin | 🔲 미구현(MVP 범위 외) — 고객사 참여 프로젝트 일괄 편집 |
 
 ---
 
@@ -121,10 +113,11 @@
 | GET | `/projects/{id}` | 참여자 | 기본 정보 |
 | PATCH | `/projects/{id}` | team | 설정 편집 `{name?, type?, startDate?, endDate?, description?}` (생성일·ID 불변, 감사 기록) |
 | GET | `/projects/{id}/dashboard` | 참여자 | 대시보드 집계(현재 단계·게이트·진행률·미처리 항목·최근 활동·산출물 요약) |
-| GET | `/projects/{id}/roadmap` | 참여자 | 진행 현황(20단계·6게이트·8마일스톤 상태) |
+| GET | `/projects/{id}/roadmap` (페이지) | 참여자 | 진행 현황(20단계·6게이트·8마일스톤). **SSR 페이지로만 제공** — `/api` JSON 아님 |
 | GET | `/projects/{id}/gates` | 참여자 | 게이트 상태(5·7·9·11·13·18) |
-| POST | `/projects/{id}/archive` | team | 보관 — 읽기 전용 전환(복구 가능, SCR-SET-003) |
-| POST | `/projects/{id}/restore` | team | 보관·삭제(30일 내) 복구 |
+| POST | `/projects/{id}/uat-approve` | team | UAT 게이트 승인 (스펙 v1.0엔 없던 신규 — 코드에 존재) |
+| POST | `/projects/{id}/archive` | team | 보관 — 읽기 전용 전환(SCR-SET-003) |
+| POST | `/projects/{id}/restore` | team | 🔲 미구현(MVP 범위 외) — 보관·삭제 복구 |
 | DELETE | `/projects/{id}` | team | **소프트 삭제** — 프로젝트명 정확 입력 확인(요청 본문 `{confirmName}`), 30일 복구 가능. 영구 삭제는 30일 후 admin |
 
 > 대시보드 `미처리 항목`·진행률은 **파생 집계**(저장 X) — 슬롯 상태·미해결 결함·응답 대기 코멘트에서 계산. 보관/삭제는 감사 로그 기록(REQ-NFR-005).
@@ -155,22 +148,24 @@
 
 | Method | Path | 권한 | 설명 |
 |--------|------|------|------|
-| GET | `/projects/{id}/slots/{slot}` | 참여자 | 슬롯 + 최신 버전 + 파일 묶음 + 코멘트 + 활동 이력. 선행 변경 배지 여부 포함 |
-| GET | `/projects/{id}/slots/{slot}/versions` | 참여자 | 버전 목록 |
-| GET | `/projects/{id}/slots/{slot}/versions/{vno}` | 참여자 | 특정 버전 스냅샷(파일·코멘트, 읽기 전용) |
-| POST | `/projects/{id}/slots/{slot}/versions` | team | **새 버전 만들기** `{changeSummary}` → v+1 draft(현재 파일 사본). **컨펌 상태면 이전 컨펌 자동 무효화**(REQ-WF-005) |
-| POST | `.../versions/{vno}/assets/files` | team | 파일 업로드(multipart, draft만). 50MB/파일 |
-| POST | `.../versions/{vno}/assets/links` | team | 외부 링크 추가 `{name, url}` (Figma 등, draft만) |
-| PUT | `.../versions/{vno}/assets/{assetId}` | team | 자산 교체(파일=multipart, draft만) |
-| DELETE | `.../versions/{vno}/assets/{assetId}` | team | 자산(파일·링크) 삭제(draft만) |
-| GET | `/projects/{id}/assets/{assetId}/download` | 참여자 | 권한 확인 후 `200 {url, expiresAt}` (단명 presigned URL, §13-1). url은 envelope 안에 담아 단일 형태 |
-| POST | `.../versions/{vno}/review-request` | team | 검토 요청 발송 → 버전 잠금 + 고객 알림(draft만) |
-| POST | `.../versions/{vno}/review-recall` | team | 검토 요청 회수 → draft 복귀(검토중만, `review_recalled` 이벤트) |
-| POST | `.../versions/{vno}/confirm` | client | 컨펌 → 게이트 해제(검토중만, 게이트 순서) |
-| POST | `.../versions/{vno}/reject` | client | 반려 `{reason}` (사유 필수, 검토중만) |
-| POST | `/projects/{id}/slots/{slot}/upstream-review` | team | 선행 변경 `검토 완료(영향 없음)` — 배지 해소(REQ-WF-005) |
+| GET | `/projects/{id}/slots` | 참여자 | 전 슬롯 요약 목록 (스펙 v1.0엔 없던 신규 — 코드에 존재) |
+| GET | `/projects/{id}/slots/{slot}` | 참여자 | 슬롯 + 최신 버전 + 파일 묶음 + 코멘트 + 활동 이력. 선행 변경 배지 포함 |
+| POST | `/projects/{id}/slots/{slot}/versions` | team | **새 버전 만들기** `{changeSummary}` → v+1 draft(현재 파일 사본). 컨펌 상태면 이전 컨펌 자동 무효화(REQ-WF-005) |
+| POST | `/projects/{id}/slots/{slot}/files` | team | 파일 업로드(multipart, draft만). *스펙 v1.0 `.../versions/{vno}/assets/files`에서 **슬롯 평탄화*** |
+| POST | `/projects/{id}/slots/{slot}/urls` | team | 외부 링크 추가 `{name, url}`(Figma 등, draft만). *스펙 v1.0 `assets/links` → **urls*** |
+| DELETE | `/projects/{id}/slots/{slot}/files/{assetId}` | team | 자산(파일·링크) 삭제(draft만). *평탄화* |
+| GET | `/projects/{id}/slots/{slot}/files/{assetId}/download` | 참여자 | 권한 확인 후 `200 {url, expiresAt}`(단명 presigned, §13-1). *스펙 v1.0 `/assets/{id}/download` → 슬롯 스코프* |
+| POST | `/projects/{id}/slots/{slot}/review-request` | team | 검토 요청 → 버전 잠금 + 고객 알림(draft만) |
+| POST | `/projects/{id}/slots/{slot}/review-recall` | team | 검토 요청 회수 → draft 복귀(검토중만) |
+| POST | `/projects/{id}/slots/{slot}/confirm` | client | 컨펌 → 게이트 해제(검토중만, 게이트 순서) |
+| POST | `/projects/{id}/slots/{slot}/reject` | client | 반려 `{reason}` (사유 필수, 검토중만) |
+| POST | `/projects/{id}/slots/{slot}/ack-upstream` | team | 선행 변경 `검토 완료` — 배지 해소(REQ-WF-005). *스펙 v1.0 `upstream-review` → **ack-upstream*** |
+| GET | `/projects/{id}/slots/{slot}/activity` | 참여자 | 슬롯 활동 이력(append-only). *스펙 §8 `activities` → **activity*** |
+| GET | `/projects/{id}/slots/{slot}/versions` | 참여자 | 🔲 미구현(MVP 범위 외) — 버전 목록 |
+| GET | `/projects/{id}/slots/{slot}/versions/{vno}` | 참여자 | 🔲 미구현(MVP 범위 외) — 특정 버전 스냅샷 조회 |
+| PUT | `/projects/{id}/slots/{slot}/files/{assetId}` | team | 🔲 미구현(MVP 범위 외) — 자산 교체(삭제 후 재업로드로 대체) |
 
-> 자산(파일·링크)은 `file_asset` 단일 테이블이라 API도 `assets`로 통일(생성만 `/files`·`/links` 분기, 교체·삭제·다운로드는 `assetId` 공통). `.../`는 `/projects/{id}/slots/{slot}` 생략. **워크플로우 액션**(review-request/recall/confirm/reject/upstream-review)은 단순 상태 변경이 아니라 잠금·게이트·알림·이벤트를 동반하므로 `PATCH status`가 아닌 action 하위 리소스로 둔다.
+> **구현 정합(v1.3)**: 스펙 v1.0은 자산을 `.../versions/{vno}/assets/...`로 버전·자산 스코프했으나, 실제 구현은 **슬롯 평탄화** — 파일=`/{slot}/files`, 링크=`/{slot}/urls`(파일은 multipart, 링크는 `{name,url}`), 삭제·다운로드는 `/{slot}/files/{assetId}`. 워크플로우 액션(review-request/recall/confirm/reject/ack-upstream)도 버전번호 없이 슬롯에 직접. 현재 버전(draft/검토중)을 서버가 판별하므로 path에 `vno` 불필요.
 
 **예) `GET /projects/1/slots/requirements`**
 ```jsonc
@@ -201,12 +196,11 @@
 
 | Method | Path | 권한 | 설명 |
 |--------|------|------|------|
-| GET | `/projects/{id}/slots/{slot}/versions/{vno}/comments` | 참여자 | 스냅샷별 코멘트 |
-| POST | `/projects/{id}/slots/{slot}/versions/{vno}/comments` | 참여자 | 등록 `{body}` (현재 스냅샷 귀속) |
-| GET | `/projects/{id}/defects/{defectId}/comments` | 참여자 | 결함 코멘트 |
-| POST | `/projects/{id}/defects/{defectId}/comments` | 참여자 | 결함 코멘트 등록 `{body}` |
+| GET | `/projects/{id}/slots/{slot}/comments` | 참여자 | 슬롯 코멘트. *스펙 v1.0 `.../versions/{vno}/comments`에서 **버전 세그먼트 제거*** |
+| POST | `/projects/{id}/slots/{slot}/comments` | 참여자 | 등록 `{body}` (현재 스냅샷 귀속) |
 | PATCH | `/projects/{id}/comments/{commentId}` | 본인 | 수정 `{body}` (인라인 편집) |
 | DELETE | `/projects/{id}/comments/{commentId}` | 본인·admin | 삭제(소프트, 관리자 강제 삭제 시 감사 기록) |
+| GET·POST | `/projects/{id}/defects/{defectId}/comments` | 참여자 | 🔲 미구현(MVP 범위 외) — 결함 코멘트. 테이블(`comment.defect_id`)은 있으나 엔드포인트 없음 |
 
 > 모든 코멘트 경로는 **프로젝트 스코프**(IDOR 차단). 서버는 comment→(slot_version|defect)→project→project_member 조인으로 접근 검증.
 
@@ -218,9 +212,9 @@
 
 | Method | Path | 권한 | 설명 |
 |--------|------|------|------|
-| GET | `/projects/{id}/slots/{slot}/activities` | 참여자 | 슬롯 활동 이력(append-only, 전체) |
+| GET | `/projects/{id}/slots/{slot}/activity` | 참여자 | 슬롯 활동 이력(append-only, 전체). *§6과 동일 — `activities`→`activity`* |
 | GET | `/notifications` | 인증 | 내 알림 `?unread=true` |
-| PATCH | `/notifications/{id}/read` | 인증 | 읽음 처리 |
+| POST | `/notifications/{id}/read` | 인증 | 읽음 처리. *스펙 v1.0 `PATCH` → 코드는 **POST*** |
 | POST | `/notifications/read-all` | 인증 | 전체 읽음 |
 
 ---
@@ -266,12 +260,11 @@
 
 | Method | Path | 권한 | 설명 |
 |--------|------|------|------|
-| GET | `/projects/{id}/search` | 참여자 | 통합 검색 `?q=` (요구사항·산출물·파일·TC·결함·코멘트) |
-| GET | `/admin/audit-logs` | admin | 감사 로그 `?actorId=&action=&from=&to=` |
+| GET | `/search?projectId=&q=` | 참여자 | 통합 검색 (요구사항·산출물·파일·TC·결함·코멘트). *스펙 v1.0 `/projects/{id}/search`(경로 스코프) → **전역 `/api/search`**(projectId 쿼리)* |
+| GET | `/admin/audit` | admin | 감사 로그 `?actorId=&action=&from=&to=`. *스펙 v1.0 `audit-logs` → **audit*** |
 | POST | `/projects/{id}/dev-runs` | team | 개발 시작 트리거 — 사전조건(5·7·9·11·13 게이트 + 내부 산출물) 미충족 시 409 |
 | GET | `/projects/{id}/dev-runs` | 참여자 | 개발 실행 이력 |
-| POST | `/projects/{id}/exports` | 참여자 | 산출물 Export 생성 → `{exportId, status}` (Gate 18 통과 후만, REQ-DEV-002) |
-| GET | `/projects/{id}/exports/{exportId}` | 참여자 | Export 상태·다운로드 URL 조회 |
+| GET | `/projects/{id}/export` | 참여자 | 산출물 Export(**동기 단건** — 즉시 응답, Gate 18 통과 후만, REQ-DEV-002). *스펙 v1.0의 비동기 잡(`POST /exports` + `GET /exports/{exportId}`)이 아니라 동기 GET으로 구현* |
 
 ---
 
