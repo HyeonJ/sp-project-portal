@@ -2,113 +2,193 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
 
-<!-- 워크스페이스(전역) 사이드바 -->
+<!-- ============================================================
+     워크스페이스(전역) 사이드바 — renderGlobalSidebar
+     ============================================================ -->
 <aside class="sidebar" th:fragment="globalSidebar(active)">
     <div class="brand">
         <a class="logo" th:href="@{/}">SoftPuzzle PM</a>
-        <span class="proj">프로젝트 워크스페이스<small th:text="${navTier == 'admin'} ? '전체 시스템' : '내 프로젝트'">내 프로젝트</small></span>
+        <span class="proj">프로젝트 워크스페이스<small
+                th:text="${(navScopeLabel != null ? navScopeLabel : '내')} + ' 프로젝트 ' + ${(navProjectCount != null ? navProjectCount : 0)} + '개'">담당 프로젝트 0개</small></span>
     </div>
     <nav>
         <a class="nav-item" th:classappend="${active == 'projects'} ? 'active'" th:href="@{/}">
             <span>프로젝트 목록</span>
         </a>
-        <a class="nav-item" id="navNewProject" th:if="${navCanCreate}"
-           th:classappend="${active == 'new'} ? 'active'" href="javascript:void(0)">
-            <span>새 프로젝트</span><span class="tag">+</span>
+        <a class="nav-item" th:if="${navCanCreate}"
+           th:classappend="${active == 'new'} ? 'active'" th:href="@{/projects/new}">
+            <span>새 프로젝트</span>
+        </a>
+        <a class="nav-item" th:classappend="${active == 'account'} ? 'active'" th:href="@{/account}">
+            <span>계정 설정</span>
         </a>
         <th:block th:if="${navTier == 'admin'}">
             <div class="group">관리자</div>
-            <a class="nav-item" th:classappend="${active == 'admin'} ? 'active'"
-               th:href="@{/admin}"><span>관리자 콘솔</span></a>
+            <a class="nav-item" th:classappend="${active == 'admin'} ? 'active'" th:href="@{/admin/teams}">
+                <span>관리자 메뉴</span>
+            </a>
         </th:block>
     </nav>
 </aside>
 
-<!-- 프로젝트 사이드바 -->
+<!-- ============================================================
+     프로젝트 사이드바 — renderProjectSidebar
+     ============================================================ -->
 <aside class="sidebar" th:fragment="projectSidebar(active)">
     <div class="brand">
         <a class="logo" th:href="@{/}">SoftPuzzle PM</a>
-        <span class="proj" th:text="${projName}">프로젝트<small
-                th:text="${projClient} + (${projType} != null ? ' · ' + ${projType} : '')">고객사</small></span>
+        <span class="proj"><span th:text="${projName}">프로젝트</span><small
+                th:text="${projClient} + ' · ' + ${projType} + ' · W' + ${projWeek}">고객사 · 유형 · W1</small></span>
     </div>
     <nav>
-        <a class="nav-item" th:classappend="${active == 'pdash'} ? 'active'"
-           th:href="@{/projects/{id}/dashboard(id=${projId})}">
-            <span>대시보드</span>
-        </a>
+        <a class="nav-item" th:classappend="${active == 'dashboard'} ? 'active'"
+           th:href="@{/projects/{id}(id=${projId})}"><span>대시보드</span></a>
         <a class="nav-item" th:classappend="${active == 'roadmap'} ? 'active'"
-           th:href="@{/projects/{id}/roadmap(id=${projId})}">
-            <span>진행 현황</span>
-        </a>
+           th:href="@{/projects/{id}/roadmap(id=${projId})}"><span>진행 현황</span></a>
+        <a class="nav-item" th:classappend="${active == 'requirements'} ? 'active'"
+           th:href="@{/projects/{id}/requirements(id=${projId})}"><span>요구사항</span></a>
         <a class="nav-item" th:classappend="${active == 'deliverables'} ? 'active'"
-           th:href="@{/projects/{id}(id=${projId})}">
-            <span>산출물</span>
-        </a>
-        <a class="nav-item" th:classappend="${active == 'dev'} ? 'active'"
-           th:href="@{/projects/{id}/dev(id=${projId})}">
-            <span>개발</span>
-        </a>
-        <a class="nav-item" th:classappend="${active == 'tests'} ? 'active'"
-           th:href="@{/projects/{id}/test-cases(id=${projId})}">
-            <span>TC</span>
-        </a>
+           th:href="@{/projects/{id}/deliverables(id=${projId})}"><span>산출물</span></a>
+        <a class="nav-item locked" th:if="${navTier != 'client'}" th:classappend="${active == 'dev'} ? 'active'"
+           th:href="@{/projects/{id}/dev(id=${projId})}"><span>개발</span></a>
+        <a class="nav-item" th:if="${navTier != 'client'}" th:classappend="${active == 'tests'} ? 'active'"
+           th:href="@{/projects/{id}/test-cases(id=${projId})}"><span>TC</span></a>
         <a class="nav-item" th:classappend="${active == 'defects'} ? 'active'"
-           th:href="@{/projects/{id}/defects(id=${projId})}">
-            <span>결함</span>
-        </a>
+           th:href="@{/projects/{id}/defects(id=${projId})}"><span>결함</span></a>
         <a class="nav-item" th:classappend="${active == 'settings'} ? 'active'"
-           th:href="@{/projects/{id}/settings(id=${projId})}">
-            <span>설정</span>
-        </a>
+           th:href="${navTier == 'client'} ? @{/projects/{id}/settings/members(id=${projId})} : @{/projects/{id}/settings(id=${projId})}">
+            <span>설정</span></a>
+        <div class="subnav" th:if="${active == 'settings'}" aria-label="설정 하위 메뉴">
+            <a class="sub" th:if="${navTier != 'client'}" th:classappend="${settingSub == 'info'} ? 'active'"
+               th:href="@{/projects/{id}/settings(id=${projId})}">기본 정보</a>
+            <a class="sub" th:classappend="${settingSub == 'members'} ? 'active'"
+               th:href="@{/projects/{id}/settings/members(id=${projId})}">멤버·초대</a>
+            <a class="sub" th:if="${navTier != 'client'}" th:classappend="${settingSub == 'danger'} ? 'active'"
+               th:href="@{/projects/{id}/settings/danger(id=${projId})}">Danger Zone</a>
+        </div>
     </nav>
 </aside>
 
-<!-- 상단바 공통 도구 (검색·알림) -->
-<div th:fragment="topbarTools" style="display:flex;align-items:center;gap:10px">
-    <form action="/search" method="get" style="margin:0">
-        <input class="search" name="q" placeholder="⌕ 통합 검색"
-               style="min-width:200px;border:1px solid var(--divider);background:var(--surface);border-radius:99px;padding:7px 12px;font-size:13px">
-    </form>
-    <button class="icon-btn" id="notifBell" type="button" title="알림" aria-label="알림" style="position:relative">
+<!-- ============================================================
+     관리자 사이드바 — renderAdminSidebar
+     ============================================================ -->
+<aside class="sidebar" th:fragment="adminSidebar(active)">
+    <div class="brand">
+        <a class="logo" th:href="@{/}">SoftPuzzle PM</a>
+        <span class="proj">관리자 메뉴<small>전체 시스템 관리</small></span>
+    </div>
+    <nav>
+        <a class="nav-item" th:classappend="${active == 'teams'} ? 'active'"
+           th:href="@{/admin/teams}"><span>프로젝트팀 계정</span></a>
+        <a class="nav-item" th:classappend="${active == 'clients'} ? 'active'"
+           th:href="@{/admin/clients}"><span>고객사 계정</span></a>
+        <a class="nav-item" th:classappend="${active == 'audit'} ? 'active'"
+           th:href="@{/admin/audit}"><span>감사 로그</span></a>
+    </nav>
+</aside>
+
+<!-- ============================================================
+     상단바 — renderTopbar (project)
+     ============================================================ -->
+<header class="topbar" th:fragment="projectTopbar(pageName)">
+    <div class="breadcrumb"><a th:href="@{/}">프로젝트 목록</a> <span class="sep">/</span></div>
+    <div class="proj-switcher" data-action="proj-switch" th:attr="data-project-id=${projId}" style="position:relative">
+        <span th:text="${projName}">프로젝트</span> <span class="arrow">▾</span>
+        <div class="dropdown" id="projSwitchMenu" hidden style="left:0;top:calc(100% + 6px);max-height:60vh;overflow:auto">
+            <div class="dd-head">프로젝트 전환<span class="meta" th:text="${#lists.size(navProjects)} + '개'">N개</span></div>
+            <a th:each="p : ${navProjects}" class="item" th:classappend="${p.id == projId} ? 'active'"
+               th:href="@{/projects/{id}(id=${p.id})}" style="text-decoration:none">
+                <span th:text="${p.name}">프로젝트</span>
+                <span class="meta" th:if="${p.id == projId}">현재</span>
+            </a>
+        </div>
+    </div>
+    <span class="sep" style="color:var(--muted-2)">/</span><b th:text="${pageName}">대시보드</b>
+    <div class="spacer"></div>
+    <div class="search" data-action="open-search">⌕ 통합 검색<span class="kbd">/</span></div>
+    <button class="icon-btn" id="notifBell" data-action="notify" type="button" title="알림" aria-label="알림">
         <svg viewBox="0 0 24 24" aria-hidden="true">
             <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path>
             <path d="M10 21h4"></path>
         </svg>
         <span class="dot" id="notifDot" hidden></span>
     </button>
-</div>
-
-<!-- 프로젝트 상단바 -->
-<header class="topbar" th:fragment="projectTopbar(pageName)">
-    <div class="breadcrumb">
-        <a th:href="@{/}">프로젝트 목록</a> <span class="sep">/</span>
-        <b th:text="${projName}">프로젝트</b> <span class="sep">/</span>
-        <span th:text="${pageName}">산출물</span>
-    </div>
-    <div class="spacer"></div>
-    <div th:replace="~{fragments/shell :: topbarTools}"></div>
-    <div class="acct">
+    <div class="acct" data-action="acct">
         <span class="avatar" th:text="${navUserInitial}">U</span>
         <span class="name" th:text="${navUserName}">사용자</span>
+        <span class="arrow">▾</span>
     </div>
-    <form method="post" th:action="@{/logout}" style="margin:0">
-        <button class="btn ghost sm" type="submit">로그아웃</button>
-    </form>
+    <form method="post" th:action="@{/logout}" id="logoutForm" style="display:none"></form>
 </header>
 
-<!-- 상단바 -->
+<!-- 상단바 — renderTopbar (global) -->
+<header class="topbar" th:fragment="globalTopbar(pageName)">
+    <div class="breadcrumb" th:switch="${pageName}">
+        <th:block th:case="'프로젝트 목록'"><b>프로젝트 목록</b></th:block>
+        <th:block th:case="*"><a th:href="@{/}">프로젝트 목록</a> <span class="sep">/</span> <b th:text="${pageName}">페이지</b></th:block>
+    </div>
+    <div class="spacer"></div>
+    <button class="icon-btn" id="notifBell" data-action="notify" type="button" title="알림" aria-label="알림">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path>
+            <path d="M10 21h4"></path>
+        </svg>
+        <span class="dot" id="notifDot" hidden></span>
+    </button>
+    <div class="acct" data-action="acct">
+        <span class="avatar" th:text="${navUserInitial}">U</span>
+        <span class="name" th:text="${navUserName}">사용자</span>
+        <span class="arrow">▾</span>
+    </div>
+    <form method="post" th:action="@{/logout}" id="logoutForm" style="display:none"></form>
+</header>
+
+<!-- 상단바 — renderTopbar (admin) -->
+<header class="topbar" th:fragment="adminTopbar(pageName)">
+    <div class="breadcrumb"><a th:href="@{/}">프로젝트 목록</a> <span class="sep">/</span> <b th:text="${pageName}">관리자 메뉴</b></div>
+    <div class="spacer"></div>
+    <button class="icon-btn" id="notifBell" data-action="notify" type="button" title="알림" aria-label="알림">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path>
+            <path d="M10 21h4"></path>
+        </svg>
+        <span class="dot" id="notifDot" hidden></span>
+    </button>
+    <div class="acct" data-action="acct">
+        <span class="avatar" th:text="${navUserInitial}">U</span>
+        <span class="name" th:text="${navUserName}">사용자</span>
+        <span class="arrow">▾</span>
+    </div>
+    <form method="post" th:action="@{/logout}" id="logoutForm" style="display:none"></form>
+</header>
+
+<!-- 상단바 — 범용(레거시 호환): globalTopbar과 동일 -->
 <header class="topbar" th:fragment="topbar(pageName)">
-    <div class="breadcrumb"><b th:text="${pageName}">페이지</b></div>
+    <div class="breadcrumb" th:switch="${pageName}">
+        <th:block th:case="'프로젝트 목록'"><b>프로젝트 목록</b></th:block>
+        <th:block th:case="*"><a th:href="@{/}">프로젝트 목록</a> <span class="sep">/</span> <b th:text="${pageName}">페이지</b></th:block>
+    </div>
     <div class="spacer"></div>
-    <div th:replace="~{fragments/shell :: topbarTools}"></div>
-    <div class="acct">
+    <button class="icon-btn" id="notifBell" data-action="notify" type="button" title="알림" aria-label="알림">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path>
+            <path d="M10 21h4"></path>
+        </svg>
+        <span class="dot" id="notifDot" hidden></span>
+    </button>
+    <div class="acct" data-action="acct">
         <span class="avatar" th:text="${navUserInitial}">U</span>
         <span class="name" th:text="${navUserName}">사용자</span>
+        <span class="arrow">▾</span>
     </div>
-    <form method="post" th:action="@{/logout}" style="margin:0">
-        <button class="btn ghost sm" type="submit">로그아웃</button>
-    </form>
+    <form method="post" th:action="@{/logout}" id="logoutForm" style="display:none"></form>
 </header>
+
+<!-- 계정 드롭다운 (acct 클릭 시) — 공통 -->
+<div th:fragment="acctMenu" class="dropdown" id="acctMenu" hidden>
+    <a th:href="@{/account}">계정 설정</a>
+    <button type="button" onclick="document.getElementById('logoutForm').submit()">로그아웃</button>
+</div>
 
 </body>
 </html>

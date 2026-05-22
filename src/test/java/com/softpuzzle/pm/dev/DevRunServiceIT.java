@@ -85,19 +85,20 @@ class DevRunServiceIT {
     @Test
     void trigger_blocked_whenGatesNotAllPassed() {
         Project p = project();
-        confirmSlot(p.getId(), "requirements"); // G9만 통과
+        confirmSlot(p.getId(), "requirements"); // G5만 통과
         assertThatThrownBy(() -> devRunService.trigger(p.getId(), pm))
                 .isInstanceOf(ApiException.class)
                 .hasMessageContaining("Gate 11");
     }
 
     @Test
-    void trigger_succeeds_whenAllFourGatesPassed() {
+    void trigger_succeeds_whenAllGatesPassed() {
         Project p = project();
         confirmSlot(p.getId(), "requirements");
         confirmSlot(p.getId(), "ia");
         confirmSlot(p.getId(), "design");
         confirmSlot(p.getId(), "prototype");
+        confirmSlot(p.getId(), "figma");
 
         DevRun run = devRunService.trigger(p.getId(), pm);
         assertThat(run.getResult()).isEqualTo("success");

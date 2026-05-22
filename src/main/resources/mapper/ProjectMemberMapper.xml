@@ -26,7 +26,10 @@
         FROM project_member m
         JOIN account a ON a.id = m.account_id
         WHERE m.project_id = #{projectId} AND m.left_at IS NULL
-        ORDER BY a.tier, a.name
+        ORDER BY a.tier,
+                 CASE a.job WHEN 'pm' THEN 0 WHEN 'planner' THEN 1 WHEN 'designer' THEN 2
+                            WHEN 'developer' THEN 3 WHEN 'qa' THEN 4 ELSE 9 END,
+                 a.name
     </select>
 
     <select id="existsActive" resultType="boolean">

@@ -552,12 +552,12 @@ code{font-family:var(--mono);font-size:.92em;background:var(--surface-2);padding
 const DATA = {
   user: {pm: {name:'김PM', email:'pm@agency.com', role:'프로젝트팀', job:'PM'}, client:{name:'홍OO', email:'hong@oo.co', role:'고객사'}, admin:{name:'관리자', email:'admin@sp.co', role:'관리자'}},
   projects: [
-    {id:'A', name:'A 프로젝트', client:'㈜OO', type:'SaaS', stage:12, total:24, week:6, pending:3, updated:'2시간 전', progress:50},
-    {id:'B', name:'B 프로젝트', client:'㈜XX', type:'웹사이트', stage:9, total:24, week:3, pending:0, updated:'어제', progress:37},
-    {id:'C', name:'C 프로젝트', client:'㈜ZZ', type:'모바일', stage:22, total:24, week:11, pending:1, updated:'1일 전', progress:91},
-    {id:'D', name:'D 프로젝트', client:'㈜YY', type:'SaaS', stage:24, total:24, week:14, pending:0, updated:'3주 전', progress:100},
+    {id:'A', name:'A 프로젝트', client:'㈜OO', type:'SaaS', stage:8, total:20, week:6, pending:3, updated:'2시간 전', progress:40},
+    {id:'B', name:'B 프로젝트', client:'㈜XX', type:'웹사이트', stage:5, total:20, week:3, pending:0, updated:'어제', progress:25},
+    {id:'C', name:'C 프로젝트', client:'㈜ZZ', type:'모바일', stage:18, total:20, week:11, pending:1, updated:'1일 전', progress:90},
+    {id:'D', name:'D 프로젝트', client:'㈜YY', type:'SaaS', stage:20, total:20, week:14, pending:0, updated:'3주 전', progress:100},
   ],
-  gates: {9:'pass', 11:'pass', 13:'wait', 15:'lock', 22:'lock'},
+  gates: {5:'pass', 7:'pass', 9:'wait', 11:'lock', 13:'lock', 18:'lock'},
   slot: {
     requirements: {label:'요구사항 정의서', version:'v3', status:'draft', updated:'2026-05-19 16:20', files:[
       {name:'main-srs.pdf', size:'1.9MB', desc:'메인 사이트 요구사항', badge:'v2에서 교체'},
@@ -591,7 +591,7 @@ const DATA = {
     ], activities:[
       {type:'upload', who:'PM', time:'05-19 09:00', body:'<b>v1 스냅샷 생성</b> — IA 초안 (파일 1개)'},
       {type:'review', who:'PM', time:'05-19 09:05', body:'고객사에 v1 검토 요청 발송'},
-      {type:'approve', who:'고객사', time:'05-19 11:30', body:'<b>v1 컨펌 완료</b> (Gate 11 통과)'},
+      {type:'approve', who:'고객사', time:'05-19 11:30', body:'<b>v1 컨펌 완료</b> (Gate 7 통과)'},
     ], comments:[
       {version:'v1', items:[
         {who:'PM', time:'05-19 09:10', body:'메뉴 항목 누락 없는지 확인 부탁드립니다.', own:true},
@@ -664,7 +664,7 @@ const DATA = {
   ],
   audit: [
     {time:'2026-05-19 06:00', user:'김PM', role:'팀', action:'요구사항 파일 교체', target:'main-srs.pdf', ip:'1.2.3.4'},
-    {time:'2026-05-19 05:50', user:'홍OO', role:'고객사', action:'컨펌', target:'Gate 11 IA', ip:'5.6.7.8'},
+    {time:'2026-05-19 05:50', user:'홍OO', role:'고객사', action:'컨펌', target:'Gate 7 IA', ip:'5.6.7.8'},
     {time:'2026-05-19 05:30', user:'김PM', role:'팀', action:'로그인', target:'-', ip:'1.2.3.4'},
     {time:'2026-05-19 04:15', user:'박디자이너', role:'팀', action:'파일 업로드', target:'design-v2-A.png', ip:'1.2.3.5'},
     {time:'2026-05-19 03:42', user:'관리자', role:'관리자', action:'고객사 계정 초대 재발송', target:'choi@oo.co', ip:'10.0.0.1'},
@@ -723,10 +723,10 @@ function fmtSize(bytes){ if(bytes>=1048576) return (bytes/1048576).toFixed(1)+'M
 
 /* 산출물 슬롯의 진입 게이트 — 이전 게이트 미통과면 '선행 작업'(소프트 잠금: 허용 + 경고) */
 const SLOT_ENTRY_GATE = {
-  ia: {stage:9, label:'Gate 9 요구사항 컨펌'},
-  design: {stage:11, label:'Gate 11 IA 컨펌'},
-  prototype: {stage:13, label:'Gate 13 디자인 시안 컨펌'},
-  figma: {stage:15, label:'Gate 15 프로토타입 컨펌'},
+  ia: {stage:5, label:'Gate 5 요구사항 컨펌'},
+  design: {stage:7, label:'Gate 7 IA 컨펌'},
+  prototype: {stage:9, label:'Gate 9 디자인 시안 컨펌'},
+  figma: {stage:11, label:'Gate 11 프로토타입 컨펌'},
 };
 function gateAhead(slug){
   const g = SLOT_ENTRY_GATE[slug];
@@ -1084,10 +1084,10 @@ function renderDashboard(params){
         <div>
           <h1>${esc(proj.name)}</h1>
           <p class="meta">고객사: <b>${esc(proj.client)}</b> · 유형: ${esc(proj.type)} · 기간: 2026-05 ~ 2026-08</p>
-          <p class="stage">현재 단계: <b>12. 디자인 시안 등록</b> — <span style="color:var(--warn)">Gate 13 컨펌 대기</span></p>
+          <p class="stage">현재 단계: <b>8. 디자인 시안 등록</b> — <span style="color:var(--warn)">Gate 9 컨펌 대기</span></p>
         </div>
         <aside class="dashboard-health" aria-label="프로젝트 상태 요약">
-          <div class="row gate-row"><span class="gate-badge">Gate 13 컨펌 대기</span></div>
+          <div class="row gate-row"><span class="gate-badge">Gate 9 컨펌 대기</span></div>
           <div class="row"><span class="value">디자인 시안 v2</span></div>
         </aside>
       </div>
@@ -1124,7 +1124,7 @@ function renderDashboard(params){
           </div></div>
           <div class="activity-item activity"><div class="item">
             <span class="marker approve"><span class="dot"></span></span>
-            <div class="body"><div class="meta"><b>Gate 11</b> · 1d · 컨펌</div><div class="desc">IA 컨펌 통과</div></div>
+            <div class="body"><div class="meta"><b>Gate 7</b> · 1d · 컨펌</div><div class="desc">IA 컨펌 통과</div></div>
           </div></div>
           <div class="activity-item activity"><div class="item">
             <span class="marker approve"><span class="dot"></span></span>
@@ -1137,83 +1137,77 @@ function renderDashboard(params){
     <section class="card" data-od-id="dashboard-deliverables">
       <div class="card-head"><h3>산출물 요약</h3><span class="meta">단계별 최신 버전</span></div>
       <div class="grid cols-4">
-        <div class="deliverable" data-route="/projects/A/deliverables/ia"><div class="stage-num">단계 10~11</div><div class="name">IA</div><span class="pill ok">✓ v1 컨펌</span></div>
-        <div class="deliverable" data-route="/projects/A/deliverables/design"><div class="stage-num">단계 12~13</div><div class="name">디자인 시안</div><span class="pill warn">v2 검토중</span></div>
-        <div class="deliverable" data-route="/projects/A/deliverables/prototype"><div class="stage-num">단계 14~15</div><div class="name">프로토타입</div><span class="pill muted">대기</span></div>
-        <div class="deliverable" data-route="/projects/A/deliverables/figma"><div class="stage-num">단계 16~17</div><div class="name">Figma</div><span class="pill muted">대기</span></div>
+        <div class="deliverable" data-route="/projects/A/deliverables/ia"><div class="stage-num">단계 6~7</div><div class="name">IA</div><span class="pill ok">✓ v1 컨펌</span></div>
+        <div class="deliverable" data-route="/projects/A/deliverables/design"><div class="stage-num">단계 8~9</div><div class="name">디자인 시안</div><span class="pill warn">v2 검토중</span></div>
+        <div class="deliverable" data-route="/projects/A/deliverables/prototype"><div class="stage-num">단계 10~11</div><div class="name">프로토타입</div><span class="pill muted">대기</span></div>
+        <div class="deliverable" data-route="/projects/A/deliverables/figma"><div class="stage-num">단계 12~13</div><div class="name">Figma</div><span class="pill muted">대기</span></div>
       </div>
     </section>`;
 }
 
 /* ============================================================
  * RENDER — Roadmap (SCR-RDM-001) — 진행 현황
- * 24단계 + 5게이트 + 7마일스톤 시각화
+ * 20단계 + 6게이트 + 8마일스톤 시각화
  * ============================================================ */
 const ROADMAP = {
-  // 시뮬레이션: 프로젝트 A — 12단계 진행 중, Gates 9·11 통과, Gate 13 검토 중
+  // 시뮬레이션: 프로젝트 A — 8단계 진행 중, Gates 5·7 통과, Gate 9 검토 중
   milestones:[
-    {code:'M1', label:'요구사항 확정', gate:9, status:'done', when:'W3 · 05-19'},
-    {code:'M2', label:'IA 확정', gate:11, status:'done', when:'W5 · 05-19'},
-    {code:'M3', label:'시안 확정', gate:13, status:'current', when:'고객사 검토 중'},
-    {code:'M4', label:'프로토타입 확정', gate:15, status:'lock', when:'W9 예정'},
-    {code:'M5', label:'개발 완료', gate:18, status:'lock', when:'W10 예정'},
-    {code:'M6', label:'UAT 통과', gate:22, status:'lock', when:'W12 예정', major:true},
-    {code:'M7', label:'서비스 오픈', gate:24, status:'lock', when:'W13 예정'},
+    {code:'M1', label:'요구사항 확정', gate:5, status:'done', when:'W3 · 05-19'},
+    {code:'M2', label:'IA 확정', gate:7, status:'done', when:'W5 · 05-19'},
+    {code:'M3', label:'시안 확정', gate:9, status:'current', when:'고객사 검토 중'},
+    {code:'M4', label:'프로토타입 확정', gate:11, status:'lock', when:'W9 예정'},
+    {code:'M5', label:'Figma 확정', gate:13, status:'lock', when:'W9 예정'},
+    {code:'M6', label:'개발 완료', gate:14, status:'lock', when:'W10 예정'},
+    {code:'M7', label:'UAT 통과', gate:18, status:'lock', when:'W12 예정', major:true},
+    {code:'M8', label:'서비스 오픈', gate:20, status:'lock', when:'W13 예정'},
   ],
   phases:[
     {
       label:'프로젝트 착수',
       stages:[
-        {n:'1~2', name:'프로젝트 생성·워크스페이스 초기화', status:'done', badge:'W1 · 05-18'},
-      ]
-    },
-    {
-      label:'계정·접근', muted:true, note:'시스템 미개발 — 스킵',
-      stages:[
-        {n:'3', name:'3-tier 접근 구분 설정', status:'skip', badge:'스킵'},
-        {n:'4', name:'고객사 계정 발급·초대', status:'skip', badge:'스킵'},
-        {n:'5', name:'고객사 최초 로그인', status:'skip', badge:'스킵'},
+        {n:'1', name:'프로젝트 생성·워크스페이스 초기화', status:'done', badge:'W1 · 05-18'},
       ]
     },
     {
       label:'요구사항 협의',
       stages:[
-        {n:'6', name:'요구사항 등록 (팀 대행 입력)', status:'done', badge:'W1~2', deliverable:{label:'SRS v1.3 →', route:'/projects/A/requirements'}},
-        {n:'7~8', name:'검토·수정 왕복 ↻', detail:'협의 26회차 완료', status:'done', badge:'W2~3'},
-        {n:'9', name:'최종 컨펌', detail:'SRS v1.3 컨펌', status:'pass', gate:true, major:true, badge:'W3 · 05-19'},
+        {n:'2', name:'요구사항 등록 (팀 대행 입력)', status:'done', badge:'W1~2', deliverable:{label:'SRS v1.3 →', route:'/projects/A/requirements'}},
+        {n:'3~4', name:'검토·수정 왕복 ↻', detail:'협의 26회차 완료', status:'done', badge:'W2~3'},
+        {n:'5', name:'최종 컨펌', detail:'SRS v1.3 컨펌', status:'pass', gate:true, major:true, badge:'W3 · 05-19'},
       ]
     },
     {
       label:'설계 협의',
       stages:[
-        {n:'10', name:'IA 등록', status:'done', badge:'W4', deliverable:{label:'IA v0.2 →', route:'/projects/A/deliverables/ia'}},
-        {n:'11', name:'IA 컨펌', status:'pass', gate:true, badge:'W5 · 05-19'},
-        {n:'12', name:'디자인 시안 등록', detail:'6안 → A. Precision grid 선택', status:'current', badge:'W6 · 진행 중', deliverable:{label:'시안 v2 →', route:'/projects/A/deliverables/design'}},
-        {n:'13', name:'시안 컨펌', detail:'고객사 검토 중', status:'pending', gate:true, badge:'검토 중'},
-        {n:'14', name:'프로토타입(HTML) 등록', detail:'Gate 13 통과 후 진입', status:'lock', badge:'잠금'},
-        {n:'15', name:'프로토타입 컨펌', status:'lock', gate:true, badge:'잠금'},
-        {n:'16~17', name:'Figma 정제·핸드오프', detail:'Gate 15 통과 후', status:'lock', badge:'잠금'},
+        {n:'6', name:'IA 등록', status:'done', badge:'W4', deliverable:{label:'IA v0.2 →', route:'/projects/A/deliverables/ia'}},
+        {n:'7', name:'IA 컨펌', status:'pass', gate:true, badge:'W5 · 05-19'},
+        {n:'8', name:'디자인 시안 등록', detail:'6안 → A. Precision grid 선택', status:'current', badge:'W6 · 진행 중', deliverable:{label:'시안 v2 →', route:'/projects/A/deliverables/design'}},
+        {n:'9', name:'시안 컨펌', detail:'고객사 검토 중', status:'pending', gate:true, badge:'검토 중'},
+        {n:'10', name:'프로토타입(HTML) 등록', detail:'Gate 9 통과 후 진입', status:'lock', badge:'잠금'},
+        {n:'11', name:'프로토타입 컨펌', status:'lock', gate:true, badge:'잠금'},
+        {n:'12', name:'Figma 핸드오프 등록', detail:'Gate 11 통과 후', status:'lock', badge:'잠금'},
+        {n:'13', name:'Figma 컨펌', detail:'고객사 컨펌', status:'lock', gate:true, badge:'잠금'},
       ]
     },
     {
       label:'개발',
       stages:[
-        {n:'18', name:'개발', detail:'Gates 9·11·13·15 모두 통과 시 트리거 가능', status:'lock', badge:'조건부'},
+        {n:'14', name:'개발', detail:'Gates 5·7·9·11·13 모두 통과 시 트리거 가능', status:'lock', badge:'조건부'},
       ]
     },
     {
       label:'테스트',
       stages:[
-        {n:'19', name:'TC 목록 관리 + 결함 추적', status:'lock', badge:'잠금'},
-        {n:'20~21', name:'UAT · 수정 반복 ↻', status:'lock', badge:'잠금'},
-        {n:'22', name:'최종 검수 컨펌', detail:'산출물 확정', status:'lock', gate:true, major:true, badge:'잠금'},
+        {n:'15', name:'TC 목록 관리 + 결함 추적', status:'lock', badge:'잠금'},
+        {n:'16~17', name:'UAT · 수정 반복 ↻', status:'lock', badge:'잠금'},
+        {n:'18', name:'최종 검수 컨펌', detail:'산출물 확정', status:'lock', gate:true, major:true, badge:'잠금'},
       ]
     },
     {
       label:'이행·운영',
       stages:[
-        {n:'23', name:'산출물 Export', status:'lock', badge:'잠금'},
-        {n:'24', name:'서비스 오픈·운영 전환', status:'lock', badge:'잠금'},
+        {n:'19', name:'산출물 Export', status:'lock', badge:'잠금'},
+        {n:'20', name:'서비스 오픈·운영 전환', status:'lock', badge:'잠금'},
       ]
     },
   ]
@@ -1288,7 +1282,7 @@ function renderRoadmap(params){
       <div class="kpi">
         <div class="label">현재 단계</div>
         <div class="value">${proj.stage}<span class="unit"> · 시안 등록</span></div>
-        <div class="sub">Gate 13 컨펌 대기</div>
+        <div class="sub">Gate 9 컨펌 대기</div>
       </div>
       <div class="kpi">
         <div class="label">다음 메이저 마일스톤</div>
@@ -1297,7 +1291,7 @@ function renderRoadmap(params){
       </div>
     </section>
 
-    <h3 class="roadmap-section-title">마일스톤 (M1 ~ M7)</h3>
+    <h3 class="roadmap-section-title">마일스톤 (M1 ~ M8)</h3>
     <div class="milestone-strip">${milestoneHtml}</div>
 
     <h3 class="roadmap-section-title">단계별 상세</h3>
@@ -1725,7 +1719,7 @@ function renderDev(){
     <h1 class="page-title">개발</h1>
 
     <div class="state-info" style="margin-bottom:14px;color:var(--warn);border-color:color-mix(in oklch,var(--warn) 30%,var(--surface));background:var(--warn-soft)">
-      🔒 <b>현재 상태: 잠금</b> — Gate 13 (디자인 시안 컨펌) 대기 중. 9·11·13·15 모든 게이트 통과 + 내부 산출물 등록 완료 후 시작 가능.
+      🔒 <b>현재 상태: 잠금</b> — Gate 9 (디자인 시안 컨펌) 대기 중. 5·7·9·11·13 모든 게이트 통과 + 내부 산출물 등록 완료 후 시작 가능.
     </div>
 
     <section class="card" style="margin-bottom:14px">
@@ -2274,10 +2268,11 @@ function modalDev(){
     <div class="modal-body">
       <div class="row"><label>사전 조건</label><div class="value">
         <div class="gate-check">
-          <div class="gate-row ok"><span>요구사항 컨펌 (Gate 9)</span><span class="checkmark">✓</span></div>
-          <div class="gate-row ok"><span>IA 컨펌 (Gate 11)</span><span class="checkmark">✓</span></div>
-          <div class="gate-row" style="color:var(--warn)"><span>시안 컨펌 (Gate 13)</span><span class="checkmark">⏳ 대기</span></div>
-          <div class="gate-row" style="color:var(--muted)"><span>프로토타입 컨펌 (Gate 15)</span><span class="checkmark">🔒 잠금</span></div>
+          <div class="gate-row ok"><span>요구사항 컨펌 (Gate 5)</span><span class="checkmark">✓</span></div>
+          <div class="gate-row ok"><span>IA 컨펌 (Gate 7)</span><span class="checkmark">✓</span></div>
+          <div class="gate-row" style="color:var(--warn)"><span>시안 컨펌 (Gate 9)</span><span class="checkmark">⏳ 대기</span></div>
+          <div class="gate-row" style="color:var(--muted)"><span>프로토타입 컨펌 (Gate 11)</span><span class="checkmark">🔒 잠금</span></div>
+          <div class="gate-row" style="color:var(--muted)"><span>Figma 컨펌 (Gate 13)</span><span class="checkmark">🔒 잠금</span></div>
         </div>
       </div></div>
       <div class="row"><label>입력 자료</label><div class="value">
@@ -2629,7 +2624,7 @@ document.addEventListener('click', e => {
 
   // AI Build
   if(a==='open-dev'){ openModal(modalDev()); return; }
-  if(a==='export-locked'){ toast('Gate 22 통과 후 가능합니다','danger'); return; }
+  if(a==='export-locked'){ toast('Gate 18 통과 후 가능합니다','danger'); return; }
 
   // New version
   if(a==='open-new-version'){ openModal(modalNewVersion(t.dataset.slot||'requirements'),true); return; }

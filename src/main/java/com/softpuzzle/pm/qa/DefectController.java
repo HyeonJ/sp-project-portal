@@ -55,6 +55,13 @@ public class DefectController {
         return ApiResponse.ok(defectService.create(projectId, req, currentUser.require()));
     }
 
+    @PatchMapping("/{defectId}")
+    public ApiResponse<Void> update(@PathVariable Long projectId, @PathVariable Long defectId,
+                                    @Valid @RequestBody CreateDefectRequest req) {
+        defectService.update(projectId, defectId, req, currentUser.require());
+        return ApiResponse.ok(null);
+    }
+
     @PatchMapping("/{defectId}/status")
     public ApiResponse<Void> updateStatus(@PathVariable Long projectId, @PathVariable Long defectId,
                                           @Valid @RequestBody Requests.DefectStatus req) {

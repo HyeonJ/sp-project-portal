@@ -90,9 +90,9 @@ class ProjectServiceIT {
 
         Map<Short, String> gates = gateMapper.findByProject(p.getId()).stream()
                 .collect(Collectors.toMap(ProjectGate::getGateStage, ProjectGate::getStatus));
-        assertThat(gates).containsOnlyKeys((short) 9, (short) 11, (short) 13, (short) 15, (short) 22);
-        assertThat(gates.get((short) 9)).isEqualTo("wait");
-        assertThat(gates.get((short) 11)).isEqualTo("lock");
+        assertThat(gates).containsOnlyKeys((short) 5, (short) 7, (short) 9, (short) 11, (short) 13, (short) 18);
+        assertThat(gates.get((short) 5)).isEqualTo("wait");
+        assertThat(gates.get((short) 7)).isEqualTo("lock");
 
         assertThat(memberMapper.existsActive(p.getId(), pm.getId())).isTrue();
     }

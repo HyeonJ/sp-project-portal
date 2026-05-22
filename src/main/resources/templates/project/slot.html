@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head th:replace="~{fragments/head :: head(${slotTitle} + ' · SoftPuzzle PM')}"></head>
+<body>
+<div class="app">
+    <div th:replace="~{fragments/shell :: projectSidebar(${activeNav})}"></div>
+    <div>
+        <div th:replace="~{fragments/shell :: projectTopbar(${withTabs} ? '산출물' : '요구사항')}"></div>
+        <main class="main" id="slotPage"
+              th:attr="data-project-id=${projId}, data-slot=${slotType}, data-can-edit=${canEdit}, data-tier=${navTier}, data-uid=${myId}, data-status=${slot.status}"
+              th:with="editable=${canEdit and (slot.status == 'empty' or slot.status == 'draft') and !viewingOld}">
+
+            <!-- 산출물: 제목 + 탭 -->
+            <th:block th:if="${withTabs}">
+                <h1 class="page-title">산출물</h1>
+                <div class="tabs">
+                    <a class="tab" th:classappend="${slotType == 'ia'} ? 'active'"
+                       th:href="@{/projects/{id}/deliverables/ia(id=${projId})}">IA</a>
+                    <a class="tab" th:classappend="${slotType == 'design'} ? 'active'"
+                       th:href="@{/projects/{id}/deliverables/design(id=${projId})}">디자인 시안</a>
+                    <a class="tab" th:classappend="${slotType == 'prototype'} ? 'active'"
+                       th:href="@{/projects/{id}/deliverables/prototype(id=${projId})}">프로토타입</a>
+                    <a class="tab" th:classappend="${slotType == 'figma'} ? 'active'"
+                       th:href="@{/projects/{id}/deliverables/figma(id=${projId})}">Figma</a>
+                </div>
+            </th:block>
+
+            <!-- 빈 슬롯 전용 뷰 (renderEmptySlot) -->
+            <section th:if="${slot.status == 'empty'}">
+                <div class="empty">
+                    <span class="ico">📁</span>
+                    <p><b><span th:text="${slotTitle}">산출물</span> — 아직 등록 없음</b></p>
+                    <p>[+ 파일 업로드]로 첫 스냅샷(v1)을 등록하세요.</p>
+                    <label class="btn primary" th:if="${canEdit}" style="margin-top:14px;cursor:pointer">+ 파일 업로드<input type="file" id="fileInput" hidden></label>
+                    <div class="err" id="fileErr" style="display:none;color:var(--hot);margin-top:10px"></div>
+                </div>
+            </section>
+
+            <th:block th:unless="${slot.status == 'empty'}">
+            <div class="page-bar">
+                <div>
+                    <h1 class="page-title" th:text="${slotTitle}">산출물</h1>
+                </div>
+                <div style="display:flex;align-items:center;gap:8px">
+                    <span th:switch="${slot.status}">
+                        <span th:case="'draft'" class="pill warn">draft (작성 중)</span>
+                        <span th:case="'pending-review'" class="pill warn">검토중 (잠김)</span>
+                        <span th:case="'confirmed'" class="pill ok">✓ 컨펌 완료</span>
+                        <span th:case="'rejected'" class="pill hot">반려</span>
+                        <span th:case="*" class="pill muted">비어 있음</span>
+                    </span>
+                    <div style="position:relative" th:if="${!#lists.isEmpty(versions)}">
+                        <button class="btn sm" type="button" id="versionBtn">
+                            <span th:text="${viewVersionNo > 0 ? 'v' + viewVersionNo : '버전 없음'}">v1</span>
+                            <span th:if="${!viewingOld and slot.status == 'draft'}"> · draft (미발송)</span>
+                            <span th:if="${!viewingOld and slot.status == 'confirmed'}"> (컨펌)</span>
+                            <span th:if="${viewingOld}"> · 과거</span>
+                            <span class="btn-caret">▾</span>
+                        </button>
+                        <div class="dropdown" id="versionMenu" hidden
+                             style="position:absolute;right:0;top:calc(100% + 4px);min-width:180px;background:var(--surface);border:1px solid var(--layer-border);border-radius:10px;box-shadow:var(--panel-shadow-hover);z-index:50;overflow:hidden">
+                            <a th:each="ver : ${versions}"
+                               th:href="${ver.versionNo == currentVersionNo} ? @{|/projects/${projId}/${withTabs ? 'deliverables/' + slotType : 'requirements'}|} : @{|/projects/${projId}/${withTabs ? 'deliverables/' + slotType : 'requirements'}?v=${ver.versionNo}|}"
+                               style="display:block;padding:9px 13px;text-decoration:none;color:var(--fg);font-size:13px;border-bottom:1px solid var(--divider)">
+                                <b th:text="'v' + ${ver.versionNo}">v1</b>
+                                <span style="color:var(--muted);font-size:11px"
+                                      th:text="${ver.versionNo == currentVersionNo} ? ' · 최신' : ' · 과거 스냅샷'"> · 최신</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="state-info" th:if="${slot.upstreamChanged and slot.status == 'confirmed'}"
+                 style="margin-bottom:14px;border-color:color-mix(in oklab,var(--warn),transparent 55%);color:var(--warn);display:flex;align-items:center;gap:12px;justify-content:space-between">
+                <span>⚠ <b>선행 산출물 변경 · 검토 권장</b> — 선행 산출물이 새 버전으로 바뀌었습니다. 영향이 없으면 검토 완료, 수정이 필요하면 새 버전을 만드세요. (REQ-WF-005)</span>
+                <button class="btn sm" type="button" data-action="ack-upstream" th:if="${navTier == 'team'}" style="flex-shrink:0">검토 완료(영향 없음)</button>
+            </div>
+
+            <section class="card" style="margin-bottom:14px">
+                <div class="card-head">
+                    <h3 th:text="'파일 (v' + ${viewVersionNo} + ' 스냅샷 — ' + ${#lists.size(files)} + '개)'">파일</h3>
+                    <span class="meta" th:text="${viewingOld} ? '과거 버전 · 읽기 전용' : (${editable} ? '편집 가능 · 검토 요청 시 잠금' : '읽기 전용 · 다운로드만')">읽기 전용</span>
+                </div>
+                <div class="state-info" th:if="${viewingOld}" style="margin-bottom:12px">
+                    📌 <b th:text="'v' + ${viewVersionNo} + ' 스냅샷'">v1 스냅샷</b>을 조회 중입니다 (읽기 전용).
+                    <a th:href="@{|/projects/${projId}/${withTabs ? 'deliverables/' + slotType : 'requirements'}|}"
+                       style="color:var(--accent);text-decoration:underline" th:text="'최신 v' + ${currentVersionNo} + '으로 돌아가기'">최신으로 돌아가기</a>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:8px">
+                    <div class="file" th:each="f : ${files}">
+                        <span class="icn" th:text="${f.assetKind == 'url'} ? '🔗' : '📄'">📄</span>
+                        <div class="name">
+                            <b th:text="${f.originalName}">파일명</b>
+                            <span class="sub" th:if="${f.assetKind == 'url'}" th:text="${f.externalUrl}">url</span>
+                            <span class="sub" th:unless="${f.assetKind == 'url'}"
+                                  th:text="${f.description != null ? f.description : ''}"></span>
+                        </div>
+                        <span class="badge" th:if="${f.assetKind == 'url'}"
+                              style="background:var(--surface-2);color:var(--muted)">링크</span>
+                        <div class="actions">
+                            <a class="btn sm accent" th:if="${f.assetKind == 'url'}" th:href="${f.externalUrl}"
+                               target="_blank" rel="noopener">열기</a>
+                            <button class="btn sm accent" type="button"
+                                    th:if="${f.assetKind != 'url' and (f.contentType == 'application/pdf' or (f.contentType != null and #strings.startsWith(f.contentType, 'image/')))}"
+                                    th:attr="data-view=${f.id}, data-ct=${f.contentType}, data-name=${f.originalName}">보기</button>
+                            <a class="btn sm" th:if="${f.assetKind != 'url'}"
+                               th:href="@{/api/projects/{p}/slots/{s}/files/{f}/download(p=${projId},s=${slotType},f=${f.id})}"
+                               th:attr="download=${f.originalName}">다운로드</a>
+                            <button class="btn sm danger" type="button" th:if="${editable}"
+                                    th:attr="data-del=${f.id}">삭제</button>
+                        </div>
+                    </div>
+                    <div class="empty" th:if="${#lists.isEmpty(files)}">
+                        <span class="ico">📁</span>
+                        <p>파일 없음 — [+ 파일 업로드]로 시작</p>
+                    </div>
+                </div>
+                <div style="margin-top:14px;display:flex;align-items:center;gap:10px" th:if="${editable}">
+                    <label class="btn primary" style="cursor:pointer">+ 파일 업로드<input type="file" id="fileInput" hidden></label>
+                    <button class="btn" type="button" data-action="add-link">+ 외부 링크 추가</button>
+                </div>
+                <div class="state-info" th:if="${slot.status == 'confirmed' and navTier == 'team'}"
+                     style="margin-top:12px;border-color:color-mix(in oklch,var(--warn) 30%,var(--surface));color:var(--warn)">
+                    주의: 컨펌 완료 상태에서 새 버전 생성 시 <b>이전 컨펌 자동 무효화 → 상태 '검토중' 복귀</b>
+                </div>
+                <div class="err" id="fileErr" style="display:none;color:var(--hot);margin-top:8px"></div>
+            </section>
+
+            <section class="card" style="margin-bottom:14px">
+                <div class="card-head">
+                    <h3 th:text="'코멘트 (' + ${#lists.size(comments)} + ')'">코멘트</h3>
+                    <span class="meta" th:text="'v' + ${viewVersionNo} + ' 스냅샷 기준'">스냅샷 기준</span>
+                </div>
+                <div class="snapshot-comments">
+                    <div class="comment-thread">
+                        <div class="comment-item" th:each="c : ${comments}" th:attr="data-cid=${c.id}">
+                            <span th:class="'comment-avatar ' + (${c.authorTier != null} ? ${c.authorTier} : 'team')"
+                                  th:text="${#strings.isEmpty(c.authorName) ? '?' : #strings.substring(c.authorName,0,1)}">U</span>
+                            <div style="flex:1;min-width:0">
+                                <div class="comment-meta">
+                                    <span><span class="who" th:text="${c.authorName}">작성자</span>
+                                        <span th:class="'role-badge ' + (${c.authorTier != null} ? ${c.authorTier} : 'team')" th:switch="${c.authorTier}">
+                                            <span th:case="'admin'">관리자</span>
+                                            <span th:case="'client'">고객사</span>
+                                            <span th:case="*">팀</span>
+                                        </span>
+                                        <span class="time" th:text="'· ' + ${#strings.replace(#strings.substring(c.createdAt.toString(),5,16),'T',' ')} + (${c.editedAt != null} ? ' · 수정됨' : '')">· 시간</span></span>
+                                    <div class="actions" th:if="${c.authorId == myId or navTier == 'admin'}" style="margin-top:0;flex-shrink:0;display:flex;gap:2px">
+                                        <button class="icon-action accent" type="button" th:if="${c.authorId == myId}"
+                                                th:attr="data-cedit=${c.id}" title="수정" aria-label="수정">✎</button>
+                                        <button class="icon-action danger" type="button"
+                                                th:attr="data-cdel=${c.id}" title="삭제" aria-label="삭제">✕</button>
+                                    </div>
+                                </div>
+                                <div class="comment-body" th:text="${c.body}" style="white-space:pre-wrap">본문</div>
+                            </div>
+                        </div>
+                        <div class="empty" th:if="${#lists.isEmpty(comments)}">
+                            <span class="ico">💬</span>
+                            <p>아직 코멘트가 없습니다.</p>
+                        </div>
+                    </div>
+                    <div class="comment-composer" th:if="${slot.status != 'empty' and !viewingOld}">
+                        <textarea id="newComment" placeholder="코멘트 작성"></textarea>
+                        <div style="text-align:right;margin-top:6px">
+                            <button class="btn primary sm" type="button" data-action="post-comment">등록</button>
+                        </div>
+                    </div>
+                    <div class="err" id="commentErr" style="display:none;color:var(--hot);margin-top:6px"></div>
+                </div>
+            </section>
+
+            <section class="card" style="margin-bottom:14px">
+                <div class="card-head">
+                    <h3 th:text="'활동 이력 (' + ${#lists.size(activity)} + ')'">활동 이력</h3>
+                    <span class="meta">상태 변경 · 검토 요청 · 승인/반려 기록</span>
+                </div>
+                <div class="activity">
+                    <div class="activity-item activity" th:each="e : ${activity}">
+                        <div class="item">
+                            <span th:switch="${e.eventType}" th:remove="tag">
+                                <span th:case="'confirmed'" class="marker approve"><span class="dot"></span></span>
+                                <span th:case="'rejected'" class="marker reject"><span class="dot"></span></span>
+                                <span th:case="'version_created'" class="marker upload"><span class="dot"></span></span>
+                                <span th:case="'review_requested'" class="marker review"><span class="dot"></span></span>
+                                <span th:case="'review_recalled'" class="marker review"><span class="dot"></span></span>
+                                <span th:case="'invalidated'" class="marker invalidate"><span class="dot"></span></span>
+                                <span th:case="'upstream_reviewed'" class="marker upstream"><span class="dot"></span></span>
+                                <span th:case="*" class="marker comment"><span class="dot"></span></span>
+                            </span>
+                            <div class="body">
+                                <div class="meta" style="margin-bottom:0">
+                                    <b th:text="${e.actorName}">사용자</b> ·
+                                    <span th:if="${e.versionNo != null}" th:text="'v' + ${e.versionNo} + ' · '">v1 · </span>
+                                    <span th:switch="${e.eventType}">
+                                        <span th:case="'version_created'">새 버전 생성</span>
+                                        <span th:case="'review_requested'">검토 요청</span>
+                                        <span th:case="'review_recalled'">검토 회수</span>
+                                        <span th:case="'confirmed'">컨펌</span>
+                                        <span th:case="'rejected'">반려</span>
+                                        <span th:case="'invalidated'">무효화</span>
+                                        <span th:case="'upstream_reviewed'">선행 검토 완료</span>
+                                        <span th:case="*" th:text="${e.eventType}">활동</span>
+                                    </span>
+                                </div>
+                                <div class="desc" style="margin-top:4px" th:if="${e.body != null}" th:text="${e.body}">상세</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="empty" th:if="${#lists.isEmpty(activity)}">
+                        <span class="ico">🕘</span>
+                        <p>아직 기록된 운영 이벤트가 없습니다.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="action-bar" style="margin-bottom:0">
+                <span class="label">액션</span>
+                <th:block th:if="${navTier == 'team'}">
+                    <button class="btn" type="button" data-action="new-version">+ 새 버전 만들기</button>
+                    <button class="btn primary" type="button" th:if="${slot.status == 'draft'}" data-action="review-request">검토 요청 발송</button>
+                    <button class="btn locked" type="button" th:unless="${slot.status == 'draft'}" title="draft에서만 활성">검토 요청 발송</button>
+                    <button class="btn" type="button" th:if="${slot.status == 'pending-review'}" data-action="review-recall">검토 요청 회수</button>
+                    <button class="btn locked" type="button">[고객사] 컨펌</button>
+                    <button class="btn locked" type="button">[고객사] 반려</button>
+                </th:block>
+                <th:block th:if="${navTier == 'client'}">
+                    <th:block th:if="${slot.status == 'pending-review'}">
+                        <button class="btn locked" type="button">+ 새 버전 만들기</button>
+                        <button class="btn locked" type="button">검토 요청 발송</button>
+                        <button class="btn primary" type="button" data-action="confirm">컨펌</button>
+                        <button class="btn danger" type="button" data-action="reject">반려</button>
+                    </th:block>
+                    <button class="btn locked" type="button" th:unless="${slot.status == 'pending-review'}">컨펌 (검토 요청 수신 시 활성)</button>
+                </th:block>
+                <span th:if="${navTier == 'admin'}" style="color:var(--muted);font-size:12px">관리자: 조회만 가능. 편집·컨펌 권한 없음.</span>
+            </section>
+            </th:block>
+
+        </main>
+    </div>
+</div>
+<script th:src="@{/js/slot.js}" defer></script>
+</body>
+</html>

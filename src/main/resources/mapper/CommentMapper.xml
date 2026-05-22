@@ -5,7 +5,7 @@
 
     <select id="findByVersion" resultType="Comment">
         SELECT c.id, c.slot_version_id, c.defect_id, c.author_id, c.body,
-               c.created_at, c.edited_at, c.deleted_at, a.name AS author_name
+               c.created_at, c.edited_at, c.deleted_at, a.name AS author_name, a.tier AS author_tier
         FROM comment c
         JOIN account a ON a.id = c.author_id
         WHERE c.slot_version_id = #{versionId} AND c.deleted_at IS NULL

@@ -301,7 +301,7 @@ sequenceDiagram
     T->>C: POST /projects/{id}/dev-runs
     C->>S: trigger(projectId)
     S->>P: assertDevReady(projectId)
-    P->>GM: 게이트 9·11·13·15 상태 조회
+    P->>GM: 게이트 5·7·9·11·13 상태 조회
     P->>P: 내부 산출물 등록 확인 (ERD·API·아키텍처·시스템구성도·화면설계서·Figma)
     alt 사전조건 미충족
         P-->>S: 실패(미충족 항목)
@@ -327,4 +327,5 @@ sequenceDiagram
 - **자산 삭제 보상**: `FileAssetMapper.delete`는 **draft 한정**, `kind=file`이면 DB row 삭제 + S3 object 삭제(또는 GC 큐), `kind=url`이면 row만.
 - **반려 사유**·**활동 이력**: `activity_event`(append-only)에 기록, 코멘트와 분리(REQ-WF-004/CMT-002).
 - **보안**: **Spring Security 세션 인증**(JWT 아님), 로그아웃=세션 무효화·30분 만료, CSRF 토큰(상태 변경), 초대/재설정 토큰 해시 저장, presigned 단명 URL — ERD·api-spec과 동일.
-- **미작성(후속 필요 시)**: TC 실패→결함 등록·연결, CSV import, 검색 인덱싱, 알림 fan-out 상세. (단순 CRUD·JIT로 충분)
+- **구현됨(MVP)**: TC 실패→결함 등록·양방향 연결/해제, TC CSV import(클라이언트 파싱·미리보기 후 일괄 등록), TC 수정·담당자 단건/일괄 지정(팀 QA), 결함 수정(팀 또는 본인 등록 고객사·담당자는 팀만). 모두 단순 CRUD + 서비스 가드.
+- **미작성(후속 필요 시)**: 검색 인덱싱, 알림 fan-out 상세. (단순 CRUD·JIT로 충분)

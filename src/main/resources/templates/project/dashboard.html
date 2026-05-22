@@ -3,36 +3,128 @@
 <head th:replace="~{fragments/head :: head('대시보드 · SoftPuzzle PM')}"></head>
 <body>
 <div class="app">
-    <div th:replace="~{fragments/shell :: projectSidebar('pdash')}"></div>
+    <div th:replace="~{fragments/shell :: projectSidebar('dashboard')}"></div>
     <div>
         <div th:replace="~{fragments/shell :: projectTopbar('대시보드')}"></div>
-        <main class="main" id="projDash" th:attr="data-project-id=${projId}">
-            <section class="proj-header">
+        <main class="main" th:attr="data-project-id=${projId}">
+
+            <section class="proj-header" data-od-id="dashboard-header">
                 <div class="proj-header-top">
                     <div>
-                        <p class="dashboard-overline">프로젝트</p>
                         <h1 th:text="${projName}">프로젝트</h1>
-                        <p class="meta" id="dashMeta">불러오는 중…</p>
-                        <p class="stage" id="dashStage"></p>
+                        <p class="meta">고객사: <b th:text="${projClient}">고객사</b> · 유형:
+                            <span th:text="${projType}">유형</span> · 기간:
+                            <span th:text="${projStart}">2026-05</span> ~ <span th:text="${projEnd}">2026-08</span></p>
+                        <p class="stage">현재 단계: <b th:text="${dashStageLabel}">12. 디자인 시안 등록</b> —
+                            <span style="color:var(--warn)" th:text="${dashGateBadge}">Gate 5 예정</span></p>
+                    </div>
+                    <aside class="dashboard-health" aria-label="프로젝트 상태 요약">
+                        <div class="row gate-row"><span class="gate-badge" th:text="${dashGateBadge}">Gate 5 예정</span></div>
+                        <div class="row"><span class="value"
+                                th:text="'산출물 ' + ${dash.counts.confirmedSlots} + '건 컨펌'">산출물 1건 컨펌</span></div>
+                    </aside>
+                </div>
+                <div class="progress">
+                    <div class="bar"><i th:style="'width:' + ${dash.progress.stagePercent} + '%'" style="width:50%"></i></div>
+                    <div class="label">
+                        <span>진행률 <b style="color:var(--fg)"
+                                th:text="${dash.project.currentStage} + ' / 20'">12 / 20</b></span>
+                        <span th:text="${dash.progress.stagePercent} + '%'">50%</span>
                     </div>
                 </div>
             </section>
 
-            <div class="grid cols-4" id="kpiRow" style="margin-bottom:16px"></div>
+            <section class="action-bar" data-od-id="dashboard-actions">
+                <span class="label">액션</span>
+                <th:block th:if="${navTier == 'team'}">
+                    <button class="btn" data-action="open-review"><span class="role-tag">팀</span>검토 요청 발송</button>
+                    <button class="btn locked" data-action="open-dev"><span class="role-tag">팀</span>개발 시작</button>
+                    <button class="btn locked" data-action="export-locked"><span class="role-tag">공통</span>산출물 Export</button>
+                </th:block>
+                <th:block th:if="${navTier == 'client'}">
+                    <button class="btn primary" data-action="open-approve" data-mode="approve"><span class="role-tag">고객사</span>컨펌</button>
+                    <button class="btn danger" data-action="open-approve" data-mode="reject"><span class="role-tag">고객사</span>반려</button>
+                </th:block>
+                <th:block th:if="${navTier == 'admin'}">
+                    <a class="btn" th:href="@{/admin/teams}">전체 프로젝트팀</a>
+                    <a class="btn" th:href="@{/admin/audit}">감사 로그</a>
+                </th:block>
+            </section>
 
-            <div class="grid cols-2">
-                <section class="card">
-                    <div class="card-head"><h3>산출물</h3></div>
-                    <div id="dashDeliverables" class="card-list"></div>
-                </section>
-                <section class="card">
-                    <div class="card-head"><h3>최근 활동</h3></div>
-                    <div id="dashActivity" class="card-list"></div>
-                </section>
-            </div>
+            <section class="grid cols-2" data-od-id="dashboard-work-queue" style="margin-bottom:14px">
+                <div class="card">
+                    <div class="card-head"><h3>미처리 항목</h3><span class="meta">우선순위 순</span></div>
+                    <div class="card-list">
+                        <a class="item" th:each="d : ${dash.deliverables}" th:if="${d.status == 'pending-review'}"
+                           th:href="@{/projects/{id}/deliverables(id=${projId})}">
+                            <div class="body">
+                                <span th:switch="${d.slotType}">
+                                    <span th:case="'requirements'">요구사항</span>
+                                    <span th:case="'ia'">IA</span>
+                                    <span th:case="'design'">디자인 시안</span>
+                                    <span th:case="'prototype'">프로토타입</span>
+                                    <span th:case="'figma'">Figma</span>
+                                    <span th:case="*" th:text="${d.slotType}">산출물</span>
+                                </span>
+                                v<span th:text="${d.versionNo}">2</span> 컨펌 대기</div>
+                            <span class="pill warn">고객사</span>
+                        </a>
+                        <a class="item" th:if="${dash.counts.openDefects > 0}"
+                           th:href="@{/projects/{id}/defects(id=${projId})}">
+                            <div class="body">미해결 결함 <b th:text="${dash.counts.openDefects}">1</b>건</div>
+                            <span class="pill hot">팀</span>
+                        </a>
+                        <div class="page-sub" style="padding:14px;text-align:center"
+                             th:if="${dash.counts.pendingReviews == 0 and dash.counts.openDefects == 0}">
+                            미처리 항목이 없습니다.
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-head"><h3>최근 활동</h3><span class="meta">최근 5건</span></div>
+                    <div class="activity">
+                        <div class="activity-item activity" th:each="e : ${dash.recentActivity}">
+                            <div class="item">
+                                <span th:class="'marker ' + (${e.eventType == 'confirmed'} ? 'approve' : (${e.eventType == 'version_created' or e.eventType == 'file_uploaded'} ? 'upload' : 'comment'))">
+                                    <span class="dot"></span></span>
+                                <div class="body">
+                                    <div class="meta"><b th:text="${e.actorName}">사용자</b> ·
+                                        <span th:switch="${e.eventType}">
+                                            <span th:case="'version_created'">새 버전 생성</span>
+                                            <span th:case="'review_requested'">검토 요청</span>
+                                            <span th:case="'review_recalled'">검토 회수</span>
+                                            <span th:case="'confirmed'">컨펌</span>
+                                            <span th:case="'rejected'">반려</span>
+                                            <span th:case="'comment_added'">코멘트</span>
+                                            <span th:case="*" th:text="${e.eventType}">활동</span>
+                                        </span>
+                                    </div>
+                                    <div class="desc" th:text="${e.body != null ? e.body : (e.slotType != null ? e.slotType : '')}">상세</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="page-sub" style="padding:14px;text-align:center" th:if="${#lists.isEmpty(dash.recentActivity)}">
+                            활동이 없습니다.
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="card" data-od-id="dashboard-deliverables">
+                <div class="card-head"><h3>산출물 요약</h3><span class="meta">단계별 최신 버전</span></div>
+                <div class="grid cols-4">
+                    <a class="deliverable" th:each="s : ${summaryDeliverables}"
+                       th:href="@{/projects/{id}/deliverables(id=${projId})}">
+                        <div class="stage-num" th:text="${s.stageRange}">단계 6~7</div>
+                        <div class="name" th:text="${s.name}">IA</div>
+                        <span th:class="'pill ' + ${s.pillClass}" th:text="${s.pillText}">대기</span>
+                    </a>
+                </div>
+            </section>
+
         </main>
     </div>
 </div>
-<script th:src="@{/js/project-dashboard.js}" defer></script>
+<script th:src="@{/js/project-dash.js}" defer></script>
 </body>
 </html>

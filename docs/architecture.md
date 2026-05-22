@@ -149,7 +149,7 @@ flowchart LR
                        ├─ CD: dev 자동 배포 (main 브랜치)
                        │
                        ├─ CD: staging 배포 (release 태그)
-                       │   └─ UAT (20~21단계)
+                       │   └─ UAT (16~17단계)
                        │
                        └─ CD: prod 배포 (release 승인 후)
                            └─ 무중단 배포 (Blue-Green 또는 Rolling)
@@ -208,7 +208,15 @@ flowchart LR
 | 이력 추적 | 요구사항·산출물 변경 시 누가·언제·무엇 기록 | REQ-REQ-002, REQ-AUD-001 |
 | 시크릿 관리 | JWT secret·DB 비밀번호 등은 환경변수 필수. 기본값 하드코딩 금지 | 글로벌 컨벤션 |
 
-### 3-4. 감사 로그 (REQ-AUD-001)
+### 3-4. HTTP 보안 헤더
+
+| 헤더 | 정책 | 근거 |
+|------|------|------|
+| CSRF 토큰 | 상태 변경 요청(POST/PATCH/DELETE)에 필수. `<meta>` 토큰 + `$.ajaxSetup`으로 비-GET 자동 첨부 | 상태 변경 보호 |
+| `X-Frame-Options` | `SAMEORIGIN` — 동일 출처 iframe 허용(산출물 **PDF 미리보기** 임베드). `DENY`이면 미리보기 차단됨 | 산출물 미리보기 |
+| `Cache-Control` (정적 JS) | `no-store` — 배포 후 구버전 스크립트 캐시 방지 | 배포 일관성 |
+
+### 3-5. 감사 로그 (REQ-AUD-001)
 
 기록 대상:
 - 로그인·로그아웃·로그인 실패

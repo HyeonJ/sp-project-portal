@@ -15,14 +15,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-/** 개발(코드 자동 생성) 트리거. 하드 사전조건: 게이트 9·11·13·15 전부 통과(REQ-DEV-001). */
+/** 개발(코드 자동 생성) 트리거. 하드 사전조건: 게이트 5·7·9·11·13 전부 통과(REQ-DEV-001). */
 @Service
 public class DevRunService {
 
     private static final Logger log = LoggerFactory.getLogger(DevRunService.class);
-    private static final short[] REQUIRED_GATES = {9, 11, 13, 15};
+    private static final short[] REQUIRED_GATES = {5, 7, 9, 11, 13};
     private static final Map<Short, String> GATE_LABEL = Map.of(
-            (short) 9, "요구사항", (short) 11, "IA", (short) 13, "디자인 시안", (short) 15, "프로토타입");
+            (short) 5, "요구사항", (short) 7, "IA", (short) 9, "디자인 시안",
+            (short) 11, "프로토타입", (short) 13, "Figma");
 
     private final DevRunMapper devRunMapper;
     private final ProjectGateMapper gateMapper;
@@ -55,8 +56,8 @@ public class DevRunService {
         run.setResult("success");
         run.setTriggeredBy(actor.getId());
         devRunMapper.insert(run);
-        projectMapper.bumpStage(projectId, 18);
-        ProjectGate uat = gateMapper.findByProjectAndStageForUpdate(projectId, (short) 22);
+        projectMapper.bumpStage(projectId, 14);
+        ProjectGate uat = gateMapper.findByProjectAndStageForUpdate(projectId, (short) 18);
         if (uat != null && "lock".equals(uat.getStatus())) {
             gateMapper.unlockToWait(uat.getId()); // 개발 완료 → UAT 게이트 해제(lock→wait)
         }

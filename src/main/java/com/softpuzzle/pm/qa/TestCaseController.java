@@ -44,11 +44,25 @@ public class TestCaseController {
         return ApiResponse.ok(testCaseService.create(projectId, req, currentUser.require()));
     }
 
+    @PatchMapping("/{tcId}")
+    public ApiResponse<Void> update(@PathVariable Long projectId, @PathVariable Long tcId,
+                                    @Valid @RequestBody CreateTestCaseRequest req) {
+        testCaseService.update(projectId, tcId, req, currentUser.require());
+        return ApiResponse.ok(null);
+    }
+
     @PostMapping("/import")
     public ApiResponse<Map<String, Integer>> importCsv(@PathVariable Long projectId,
                                                        @Valid @RequestBody Requests.CsvImport req) {
         int count = testCaseService.importCsv(projectId, req.csv(), currentUser.require());
         return ApiResponse.ok(Map.of("imported", count));
+    }
+
+    @PostMapping("/assign")
+    public ApiResponse<Map<String, Integer>> bulkAssign(@PathVariable Long projectId,
+                                                        @Valid @RequestBody Requests.BulkAssign req) {
+        int count = testCaseService.bulkAssign(projectId, req.testCaseIds(), req.assigneeId(), currentUser.require());
+        return ApiResponse.ok(Map.of("assigned", count));
     }
 
     @PatchMapping("/{tcId}/status")

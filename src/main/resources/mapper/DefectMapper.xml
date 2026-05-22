@@ -41,6 +41,13 @@
         UPDATE defect SET assignee_id = #{assigneeId} WHERE id = #{id}
     </update>
 
+    <update id="updateFields">
+        UPDATE defect
+        SET title = #{title}, severity = #{severity}, repro_steps = #{reproSteps}, environment = #{environment},
+            assignee_id = #{assigneeId}
+        WHERE id = #{id}
+    </update>
+
     <insert id="insertLink">
         INSERT INTO test_defect_link (test_case_id, defect_id)
         VALUES (#{testCaseId}, #{defectId})

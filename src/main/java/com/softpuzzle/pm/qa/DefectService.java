@@ -76,12 +76,44 @@ public class DefectService {
         d.setReproSteps(blankToNull(req.reproSteps()));
         d.setEnvironment(blankToNull(req.environment()));
         d.setReporterId(actor.getId());
+        if (guard.isTeam(actor)) {
+            d.setAssigneeId(validateAssignee(projectId, req.assigneeId())); // 담당자 배정은 팀만
+        }
         defectMapper.insert(d);
         if (req.testCaseId() != null) {
             requireTcInProject(projectId, req.testCaseId());
             defectMapper.insertLink(req.testCaseId(), d.getId());
         }
         return d;
+    }
+
+    /** 결함 필드 수정 — 팀 전체 + 고객사는 본인 등록분만. 상태·연결·코드는 유지. */
+    @Transactional
+    public void update(Long projectId, Long defectId, CreateDefectRequest req, Account actor) {
+        requireProject(projectId);
+        guard.assertMember(projectId, actor); // 관리자(읽기 전용) 차단
+        Defect d = requireDefect(projectId, defectId);
+        if ("client".equals(actor.getTier()) && !actor.getId().equals(d.getReporterId())) {
+            throw ApiException.forbidden("본인이 등록한 결함만 수정할 수 있습니다.");
+        }
+        d.setTitle(req.title().trim());
+        d.setSeverity(req.severity() == null ? "Medium" : req.severity());
+        d.setReproSteps(blankToNull(req.reproSteps()));
+        d.setEnvironment(blankToNull(req.environment()));
+        if (guard.isTeam(actor)) {
+            d.setAssigneeId(validateAssignee(projectId, req.assigneeId())); // 팀만 담당자 변경, 고객사는 기존 유지
+        }
+        defectMapper.updateFields(d);
+    }
+
+    private Long validateAssignee(Long projectId, Long assigneeId) {
+        if (assigneeId == null) {
+            return null;
+        }
+        if (!guard.isActiveMember(projectId, assigneeId)) {
+            throw ApiException.conflict("BAD_ASSIGNEE", "담당자는 프로젝트 멤버여야 합니다.");
+        }
+        return assigneeId;
     }
 
     @Transactional

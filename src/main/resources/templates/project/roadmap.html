@@ -6,13 +6,92 @@
     <div th:replace="~{fragments/shell :: projectSidebar('roadmap')}"></div>
     <div>
         <div th:replace="~{fragments/shell :: projectTopbar('진행 현황')}"></div>
-        <main class="main" id="roadmapPage" th:attr="data-project-id=${projId}">
-            <div class="page-bar"><h1 class="page-title">진행 현황</h1></div>
-            <p class="page-sub" id="roadmapMeta"></p>
-            <section class="card"><div id="roadmapList" class="card-list"></div></section>
+        <main class="main">
+
+            <div class="page-bar">
+                <div>
+                    <h1 class="page-title">진행 현황</h1>
+                </div>
+            </div>
+
+            <section class="kpi-row">
+                <div class="kpi accent">
+                    <div class="label">전체 진행률</div>
+                    <div class="value" th:text="${roadmap.kpi.stage}">12<span class="unit"
+                            th:text="'/ ' + ${roadmap.kpi.total}">/ 20</span></div>
+                    <div class="sub" th:text="${roadmap.kpi.percent} + '% · W' + ${projWeek}">50% · W6</div>
+                </div>
+                <div class="kpi">
+                    <div class="label">통과한 게이트</div>
+                    <div class="value" th:text="${roadmap.kpi.passedGates}">1<span class="unit"
+                            th:text="'/ ' + ${roadmap.kpi.totalGates}">/ 5</span></div>
+                    <div class="sub" th:text="'Major 게이트: ' + ${roadmap.kpi.majorPassed} + '/' + ${roadmap.kpi.majorTotal} + ' 통과'">Major 게이트: 1/2 통과</div>
+                </div>
+                <div class="kpi">
+                    <div class="label">현재 단계</div>
+                    <div class="value" th:text="${roadmap.kpi.stage}">12<span class="unit"
+                            th:text="' · ' + ${roadmap.kpi.currentStageName}"> · 시안 등록</span></div>
+                    <div class="sub" th:text="${roadmap.kpi.gateBadge}">Gate 5 예정</div>
+                </div>
+                <div class="kpi">
+                    <div class="label">다음 메이저 마일스톤</div>
+                    <div class="value" style="font-size:18px" th:text="${roadmap.kpi.nextMajorCode}">M6<span
+                            class="unit" th:text="' ' + ${roadmap.kpi.nextMajorLabel}"> UAT 통과</span></div>
+                    <div class="sub" th:text="${roadmap.kpi.nextMajorWhen}">Gate 18</div>
+                </div>
+            </section>
+
+            <h3 class="roadmap-section-title">마일스톤 (M1 ~ M8)</h3>
+            <div class="milestone-strip">
+                <div th:each="m : ${roadmap.milestones}" th:class="'ms ' + ${m.status}">
+                    <span class="code" th:text="${m.code} + ' · Gate ' + ${m.gate}">M1 · Gate 5</span>
+                    <span class="ttl" th:text="${m.label}">요구사항 확정</span>
+                    <span class="meta" th:text="${m.when}">통과</span>
+                </div>
+            </div>
+
+            <h3 class="roadmap-section-title">단계별 상세</h3>
+            <div th:each="ph : ${roadmap.phases}" th:class="${ph.muted} ? 'phase muted' : 'phase'">
+                <div class="phase-head">
+                    <span class="num" th:text="${ph.index}">1</span>
+                    <span class="name" th:text="${ph.label}">프로젝트 착수</span>
+                    <span class="count" th:text="${ph.count} + '단계'">1단계</span>
+                    <span class="phase-note" th:if="${ph.note != null}" th:text="${ph.note}">스킵</span>
+                </div>
+                <div class="stage-list">
+                    <div th:each="s : ${ph.stages}"
+                         th:class="'stage-row ' + ${s.status} + (${s.gate} ? ' gate' : '') + (${s.major} ? ' major' : '')">
+                        <span class="stage-marker" aria-hidden="true"></span>
+                        <span class="num" th:text="${s.n}">9</span>
+                        <div class="name">
+                            <span th:text="${s.name}">최종 컨펌</span>
+                            <span class="detail" th:if="${s.detail != null}" th:text="${s.detail}">상세</span>
+                        </div>
+                        <span class="gate-flag" th:if="${s.gate}"
+                              th:text="(${s.major} ? 'Major ' : '') + 'Gate ' + ${s.n}">Gate 5</span>
+                        <a class="deliv" th:if="${s.deliv != null}" th:href="@{/projects/{id}/deliverables(id=${projId})}">
+                            <span th:switch="${s.deliv}">
+                                <span th:case="'requirements'">요구사항 →</span>
+                                <span th:case="'ia'">IA →</span>
+                                <span th:case="'design'">디자인 시안 →</span>
+                                <span th:case="'prototype'">프로토타입 →</span>
+                                <span th:case="'figma'">Figma →</span>
+                                <span th:case="*">산출물 →</span>
+                            </span>
+                        </a>
+                        <span class="badge" th:if="${s.deliv == null}" th:text="${s.badge}">통과</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="state-info" style="margin-top:18px">
+                <b>범례</b> · 얇은 tick 색상으로 완료/진행/검토/대기 상태를 구분합니다. 긴 진행 바 대신 행의 상태 pill과
+                산출물 액션이 다음 확인 지점을 보여줍니다.<br>
+                <b>게이트</b> · Gate pill은 컨펌 전 다음 단계 진행 불가 지점을 의미합니다. <b>Major</b>(5·18)는 프로젝트 진행 전체 차단.
+            </div>
+
         </main>
     </div>
 </div>
-<script th:src="@{/js/roadmap.js}" defer></script>
 </body>
 </html>

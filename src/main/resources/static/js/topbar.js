@@ -65,9 +65,44 @@
         e.stopPropagation();
         if ($panel) { closePanel(); } else { openPanel(); }
     });
+
+    // 계정 드롭다운 (acct 클릭) — 계정 설정 / 로그아웃
+    let $acctMenu = null;
+    function closeAcct() { if ($acctMenu) { $acctMenu.remove(); $acctMenu = null; } }
+    $('.acct[data-action="acct"]').on('click', function (e) {
+        e.stopPropagation();
+        if ($acctMenu) { closeAcct(); return; }
+        $acctMenu = $(`<div class="dropdown" style="position:fixed;top:54px;right:24px;min-width:160px;background:var(--surface);border:1px solid var(--layer-border);border-radius:12px;box-shadow:var(--panel-shadow-hover);z-index:120;overflow:hidden">
+                <a href="/account" style="display:block;padding:10px 14px;text-decoration:none;color:var(--fg);font-size:13px;border-bottom:1px solid var(--divider)">계정 설정</a>
+                <button type="button" id="acctLogout" style="display:block;width:100%;text-align:left;padding:10px 14px;background:none;border:0;color:var(--fg);font-size:13px;cursor:pointer">로그아웃</button>
+            </div>`);
+        $('body').append($acctMenu);
+        $acctMenu.on('click', '#acctLogout', function () {
+            const f = document.getElementById('logoutForm');
+            if (f) { f.submit(); }
+        });
+    });
+
+    // 상단바 검색 pill → 통합 검색 페이지
+    $('[data-action="open-search"]').on('click', function () { window.location = '/search'; });
+
+    // 프로젝트 전환 드롭다운
+    const $projMenu = $('#projSwitchMenu');
+    $('.proj-switcher[data-action="proj-switch"]').on('click', function (e) {
+        if ($(e.target).closest('#projSwitchMenu').length) { return; } // 메뉴 항목 클릭 → 이동
+        e.stopPropagation();
+        $projMenu.prop('hidden', !$projMenu.prop('hidden'));
+    });
+
     $(document).on('click', function (e) {
         if ($panel && !$(e.target).closest('#notifBell').length && !$(e.target).closest($panel).length) {
             closePanel();
+        }
+        if ($acctMenu && !$(e.target).closest('.acct').length && !$(e.target).closest($acctMenu).length) {
+            closeAcct();
+        }
+        if ($projMenu.length && !$projMenu.prop('hidden') && !$(e.target).closest('.proj-switcher').length) {
+            $projMenu.prop('hidden', true);
         }
     });
 

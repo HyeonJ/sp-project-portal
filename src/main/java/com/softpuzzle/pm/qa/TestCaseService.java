@@ -56,8 +56,50 @@ public class TestCaseService {
         int no = codeSequenceMapper.allocate(projectId, "test_case", 1);
         TestCase tc = toTestCase(projectId, code(no), req.title(), req.phase(),
                 req.priority(), req.precondition(), req.steps(), req.expectedResult());
+        tc.setAssigneeId(validateAssignee(projectId, req.assigneeId()));
         tcMapper.insert(tc);
         return tc;
+    }
+
+    private Long validateAssignee(Long projectId, Long assigneeId) {
+        if (assigneeId == null) {
+            return null;
+        }
+        if (!guard.isActiveMember(projectId, assigneeId)) {
+            throw ApiException.conflict("BAD_ASSIGNEE", "담당자는 프로젝트 멤버여야 합니다.");
+        }
+        return assigneeId;
+    }
+
+    /** TC 필드 수정 — 팀 전용. 상태·실제결과·코드는 유지. */
+    @Transactional
+    public void update(Long projectId, Long tcId, CreateTestCaseRequest req, Account actor) {
+        requireProject(projectId);
+        guard.assertTeamMember(projectId, actor);
+        TestCase tc = requireTc(projectId, tcId);
+        tc.setTitle(req.title().trim());
+        tc.setPhase(req.phase() == null || req.phase().isBlank() ? "기타" : req.phase().trim());
+        tc.setPriority(normalizePriority(req.priority()));
+        tc.setPrecondition(blankToNull(req.precondition()));
+        tc.setSteps(blankToNull(req.steps()));
+        tc.setExpectedResult(blankToNull(req.expectedResult()));
+        tc.setAssigneeId(validateAssignee(projectId, req.assigneeId()));
+        tcMapper.updateFields(tc);
+    }
+
+    /** 담당자 일괄 지정 — 팀 전용. assigneeId null이면 미지정 해제. */
+    @Transactional
+    public int bulkAssign(Long projectId, List<Long> tcIds, Long assigneeId, Account actor) {
+        requireProject(projectId);
+        guard.assertTeamMember(projectId, actor);
+        Long validated = validateAssignee(projectId, assigneeId);
+        int n = 0;
+        for (Long id : tcIds) {
+            requireTc(projectId, id);
+            tcMapper.updateAssignee(id, validated);
+            n++;
+        }
+        return n;
     }
 
     /** CSV 일괄 가져오기 — 헤더(제목/단계/우선순위...) 한 줄, 이후 행. 최소: 제목,단계,우선순위. */
@@ -131,27 +173,73 @@ public class TestCaseService {
         return "Medium";
     }
 
+    /** RFC4180 CSV 파서 — 따옴표 필드(쉼표·개행·"" 이스케이프) 처리, BOM·빈 행·헤더 행 무시. */
     private List<String[]> parseCsv(String csv) {
-        List<String[]> rows = new ArrayList<>();
+        List<String[]> all = new ArrayList<>();
         if (csv == null) {
-            return rows;
+            return all;
         }
-        String[] lines = csv.replace("\r\n", "\n").replace("\r", "\n").split("\n");
-        boolean first = true;
-        for (String line : lines) {
-            if (line.isBlank()) {
-                continue;
+        String text = csv.replace("\r\n", "\n").replace("\r", "\n");
+        if (text.startsWith("﻿")) {
+            text = text.substring(1); // 엑셀 UTF-8 BOM 제거
+        }
+        List<String> fields = new ArrayList<>();
+        StringBuilder cur = new StringBuilder();
+        boolean inQuotes = false;
+        for (int i = 0; i < text.length(); i++) {
+            char c = text.charAt(i);
+            if (inQuotes) {
+                if (c == '"') {
+                    if (i + 1 < text.length() && text.charAt(i + 1) == '"') {
+                        cur.append('"');
+                        i++; // 이스케이프된 따옴표("")
+                    } else {
+                        inQuotes = false;
+                    }
+                } else {
+                    cur.append(c);
+                }
+            } else if (c == '"') {
+                inQuotes = true;
+            } else if (c == ',') {
+                fields.add(cur.toString());
+                cur.setLength(0);
+            } else if (c == '\n') {
+                fields.add(cur.toString());
+                cur.setLength(0);
+                all.add(fields.toArray(new String[0]));
+                fields = new ArrayList<>();
+            } else {
+                cur.append(c);
             }
-            String[] cells = line.split(",", -1);
-            String c0 = cells[0].trim();
-            if (first && (c0.equalsIgnoreCase("title") || c0.equals("제목"))) {
-                first = false;
-                continue; // 헤더 스킵
+        }
+        if (cur.length() > 0 || !fields.isEmpty()) {
+            fields.add(cur.toString());
+            all.add(fields.toArray(new String[0]));
+        }
+
+        List<String[]> rows = new ArrayList<>();
+        for (String[] r : all) {
+            if (!isBlankRow(r)) {
+                rows.add(r);
             }
-            first = false;
-            rows.add(cells);
+        }
+        if (!rows.isEmpty()) {
+            String c0 = rows.get(0).length > 0 && rows.get(0)[0] != null ? rows.get(0)[0].trim() : "";
+            if (c0.equalsIgnoreCase("title") || c0.equals("제목")) {
+                rows.remove(0); // 헤더 행 스킵
+            }
         }
         return rows;
+    }
+
+    private boolean isBlankRow(String[] r) {
+        for (String f : r) {
+            if (f != null && !f.trim().isEmpty()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private String col(String[] r, int i) {

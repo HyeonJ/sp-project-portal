@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head th:replace="~{fragments/head :: head('프로젝트팀 계정 · SoftPuzzle PM')}"></head>
+<body>
+<div class="app">
+    <div th:replace="~{fragments/shell :: adminSidebar('teams')}"></div>
+    <div>
+        <div th:replace="~{fragments/shell :: adminTopbar('프로젝트팀 계정')}"></div>
+        <main class="main" id="adminTeams">
+            <div class="page-bar">
+                <div><h1 class="page-title">프로젝트팀 계정</h1></div>
+                <button class="btn primary" type="button" id="newTeamBtn">+ 계정 생성</button>
+            </div>
+
+            <section id="newTeamCard" class="card" hidden style="margin-bottom:16px">
+                <div class="card-head"><h3>프로젝트팀 계정 생성</h3></div>
+                <form id="teamForm" class="form">
+                    <div class="row"><label>이메일</label><div class="value"><input type="email" name="email" required></div></div>
+                    <div class="row"><label>이름</label><div class="value"><input type="text" name="name" required maxlength="50"></div></div>
+                    <div class="row"><label>직무</label><div class="value"><select name="job"><option value="pm">PM</option><option value="planner">기획자</option><option value="designer">디자이너</option><option value="developer">개발자</option><option value="qa">QA</option></select></div></div>
+                    <div id="teamErr" class="err" style="display:none;color:var(--hot)"></div>
+                    <div style="display:flex;gap:8px;justify-content:flex-end"><button type="button" id="teamCancel" class="btn ghost">취소</button><button type="submit" class="btn primary">생성</button></div>
+                </form>
+            </section>
+
+            <div class="filter-bar">
+                <div class="filter">역할 ▾</div>
+                <div class="filter">상태 ▾</div>
+                <div class="filter search-input"><span style="color:var(--muted)">⌕</span><input type="text" placeholder="이름·이메일 검색"></div>
+            </div>
+
+            <section class="card flat" style="padding:0;overflow:hidden">
+                <table class="tbl">
+                    <thead><tr><th>이름</th><th>이메일</th><th>역할</th><th>상태</th><th></th></tr></thead>
+                    <tbody id="adminTeamsBody"><tr><td colspan="5" style="text-align:center;color:var(--muted);padding:24px">불러오는 중…</td></tr></tbody>
+                </table>
+            </section>
+        </main>
+    </div>
+</div>
+<script th:src="@{/js/admin.js}" defer></script>
+</body>
+</html>

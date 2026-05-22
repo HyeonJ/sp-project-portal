@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ProjectService {
 
     private static final Logger log = LoggerFactory.getLogger(ProjectService.class);
-    private static final short[] GATE_STAGES = {9, 11, 13, 15, 22};
+    private static final short[] GATE_STAGES = {5, 7, 9, 11, 13, 18};
     private static final String[] SLOT_TYPES = {"requirements", "ia", "design", "prototype", "figma"};
 
     private final ProjectMapper projectMapper;
@@ -82,14 +82,14 @@ public class ProjectService {
         return p;
     }
 
-    /** UAT 최종 승인(고객사) → 게이트 22 통과 + 프로젝트 완료. 개발(dev_run) 후에만 가능. */
+    /** UAT 최종 승인(고객사) → 게이트 18 통과 + 프로젝트 완료. 개발(dev_run) 후에만 가능. */
     @Transactional
     public void uatApprove(Long projectId, Account actor) {
         if (projectMapper.findById(projectId) == null) {
             throw ApiException.notFound("프로젝트를 찾을 수 없습니다.");
         }
         guard.assertCanReview(projectId, actor); // 고객사 멤버
-        ProjectGate gate = gateMapper.findByProjectAndStageForUpdate(projectId, (short) 22);
+        ProjectGate gate = gateMapper.findByProjectAndStageForUpdate(projectId, (short) 18);
         if (gate == null) {
             throw ApiException.notFound("UAT 게이트가 없습니다.");
         }
@@ -158,7 +158,7 @@ public class ProjectService {
             ProjectGate gate = new ProjectGate();
             gate.setProjectId(projectId);
             gate.setGateStage(stage);
-            gate.setStatus(stage == 9 ? "wait" : "lock");
+            gate.setStatus(stage == 5 ? "wait" : "lock");
             gateMapper.insert(gate);
         }
     }

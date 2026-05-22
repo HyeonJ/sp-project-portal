@@ -1,6 +1,5 @@
 (function () {
     'use strict';
-    if (!$('#adminPage').length) { return; }
 
     function esc(s) { return $('<div>').text(s == null ? '' : s).html(); }
     function errMessage(xhr, f) { const r = xhr.responseJSON; return (r && r.message) ? r.message : (f || `오류 (HTTP ${xhr.status})`); }
@@ -10,73 +9,79 @@
         const p = (n) => String(n).padStart(2, '0');
         return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`;
     }
-
-    let currentTier = 'team';
-
     function statusPill(s) {
-        const m = { active: ['ok', '활성'], inactive: ['hot', '비활성'], pending: ['warn', '대기'] };
+        const m = { active: ['ok', '활성'], inactive: ['muted', '비활성'], pending: ['warn', '초대 대기'] };
         const x = m[s] || ['muted', s];
         return `<span class="pill ${x[0]}">${esc(x[1])}</span>`;
     }
+    function reload() { window.location.reload(); }
 
-    function loadAccounts() {
-        $('.acct-tab').removeClass('primary');
-        $(`.acct-tab[data-tier=${currentTier}]`).addClass('primary');
-        $.getJSON('/api/admin/accounts', { tier: currentTier }).done(function (res) {
-            const accounts = (res && res.data) || [];
-            const $list = $('#accountList');
-            if (!accounts.length) { $list.html('<p class="page-sub" style="margin:0">계정이 없습니다.</p>'); return; }
-            $list.html(accounts.map(function (a) {
-                const next = a.status === 'active' ? 'inactive' : 'active';
-                const toggle = `<button class="btn sm" data-acct="${esc(a.id)}" data-next="${next}">${next === 'inactive' ? '비활성화' : '활성화'}</button>`;
-                const meta = a.job ? esc(a.job) : (a.clientOrgId ? '고객사' : '관리자');
-                return `<div class="item" style="cursor:default"><span class="body"><b>${esc(a.name)}</b> · ${esc(a.email)} <span class="cat-tag">${meta}</span></span>
-                    <span style="display:flex;gap:10px;align-items:center">${statusPill(a.status)}${toggle}</span></div>`;
-            }).join(''));
-        });
-    }
-
-    function loadProjects() {
-        $.getJSON('/api/admin/projects').done(function (res) {
-            const projects = (res && res.data) || [];
-            $('#projCount').text(`${projects.length}개`);
-            $('#adminProjects').html(projects.length
-                ? projects.map(p => `<a class="item" href="/projects/${p.id}" style="text-decoration:none;color:var(--fg)"><span class="body"><b>${esc(p.name)}</b> · ${esc(p.clientOrgName)}</span><span class="pill accent">단계 ${esc(p.currentStage)}</span></a>`).join('')
-                : '<p class="page-sub" style="margin:0">프로젝트가 없습니다.</p>');
-        });
-    }
-
-    function loadAudit() {
-        $.getJSON('/api/admin/audit').done(function (res) {
-            const logs = (res && res.data) || [];
-            $('#auditList').html(logs.length
-                ? logs.map(l => `<div class="item" style="cursor:default"><span class="body"><b style="font-family:var(--mono)">${esc(l.action)}</b> · ${esc(l.actorName || '시스템')} <span class="cat-tag">${esc(l.actorRole)}</span> ${esc(l.target || '')}</span><span class="t">${esc(fmtDate(l.createdAt))}</span></div>`).join('')
-                : '<p class="page-sub" style="margin:0">감사 로그가 없습니다.</p>');
-        });
-    }
-
-    $('.acct-tab').on('click', function () { currentTier = $(this).data('tier'); loadAccounts(); });
-    $('#newAccountBtn').on('click', function () { $('#newAccountCard').prop('hidden', false); });
-    $('#accountCancel').on('click', function () { $('#newAccountCard').prop('hidden', true); });
-
-    $('#accountList').on('click', '[data-acct]', function () {
-        const id = $(this).data('acct'); const next = $(this).data('next');
+    function toggleStatus(id, next) {
         $.ajax({ url: `/api/admin/accounts/${id}/status`, method: 'PATCH', contentType: 'application/json', data: JSON.stringify({ status: next }) })
-            .done(loadAccounts).fail(function (xhr) { alert(errMessage(xhr, '변경 실패')); });
-    });
+            .done(reload).fail(function (xhr) { alert(errMessage(xhr, '상태 변경 실패')); });
+    }
 
-    $('#accountForm').on('submit', function (e) {
-        e.preventDefault();
-        const $f = $(this); const $err = $('#accountErr').hide();
-        const payload = {
-            email: $f.find('[name=email]').val().trim(), name: $f.find('[name=name]').val().trim(),
-            tier: $f.find('[name=tier]').val(), job: $f.find('[name=job]').val(),
-            clientOrgName: $f.find('[name=clientOrgName]').val().trim() || null
-        };
+    function createAccount(payload, $err) {
         $.ajax({ url: '/api/admin/accounts', method: 'POST', contentType: 'application/json', data: JSON.stringify(payload) })
-            .done(function () { $('#newAccountCard').prop('hidden', true); $f[0].reset(); currentTier = payload.tier; loadAccounts(); loadAudit(); })
-            .fail(function (xhr) { $err.text(errMessage(xhr, '생성 실패')).show(); });
-    });
+            .done(reload).fail(function (xhr) { $err.text(errMessage(xhr, '생성 실패')).show(); });
+    }
 
-    $(function () { loadAccounts(); loadProjects(); loadAudit(); });
+    // --- 프로젝트팀 계정 ---
+    if ($('#adminTeams').length) {
+        $.getJSON('/api/admin/accounts', { tier: 'team' }).done(function (res) {
+            const rows = ((res && res.data) || []).map(function (a) {
+                const next = a.status === 'active' ? 'inactive' : 'active';
+                return `<tr>
+                    <td><b>${esc(a.name)}</b></td><td>${esc(a.email)}</td><td>${esc(a.job || '-')}</td>
+                    <td>${statusPill(a.status)}</td>
+                    <td class="actions"><button class="btn sm ${a.status === 'active' ? 'danger' : 'ok'}" data-acct="${esc(a.id)}" data-next="${next}">${a.status === 'active' ? '비활성화' : '활성화'}</button></td></tr>`;
+            }).join('');
+            $('#adminTeamsBody').html(rows || '<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:24px">계정이 없습니다.</td></tr>');
+        });
+        $('#newTeamBtn').on('click', function () { $('#newTeamCard').prop('hidden', false); });
+        $('#teamCancel').on('click', function () { $('#newTeamCard').prop('hidden', true); });
+        $('#teamForm').on('submit', function (e) {
+            e.preventDefault();
+            const f = this; const $err = $('#teamErr').hide();
+            if (!f.email.value.trim() || !f.name.value.trim()) { $err.text('이메일과 이름을 입력하세요.').show(); return; }
+            createAccount({ email: f.email.value.trim(), name: f.name.value.trim(), tier: 'team', job: f.job.value }, $err);
+        });
+        $('#adminTeamsBody').on('click', '[data-acct]', function () { toggleStatus($(this).data('acct'), $(this).data('next')); });
+    }
+
+    // --- 고객사 계정 ---
+    if ($('#adminClients').length) {
+        $.getJSON('/api/admin/accounts', { tier: 'client' }).done(function (res) {
+            const rows = ((res && res.data) || []).map(function (a) {
+                const next = a.status === 'active' ? 'inactive' : 'active';
+                return `<tr>
+                    <td><b>${esc(a.name)}</b></td><td>${esc(a.email)}</td>
+                    <td>${statusPill(a.status)}</td>
+                    <td class="actions"><button class="btn sm ${a.status === 'active' ? 'danger' : 'ok'}" data-acct="${esc(a.id)}" data-next="${next}">${a.status === 'active' ? '비활성화' : '활성화'}</button></td></tr>`;
+            }).join('');
+            $('#adminClientsBody').html(rows || '<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:24px">계정이 없습니다.</td></tr>');
+        });
+        $('#newClientBtn').on('click', function () { $('#newClientCard').prop('hidden', false); });
+        $('#clientCancel').on('click', function () { $('#newClientCard').prop('hidden', true); });
+        $('#clientForm').on('submit', function (e) {
+            e.preventDefault();
+            const f = this; const $err = $('#clientErr').hide();
+            if (!f.email.value.trim() || !f.name.value.trim() || !f.clientOrgName.value.trim()) { $err.text('이메일·이름·고객사명을 입력하세요.').show(); return; }
+            createAccount({ email: f.email.value.trim(), name: f.name.value.trim(), tier: 'client', clientOrgName: f.clientOrgName.value.trim() }, $err);
+        });
+        $('#adminClientsBody').on('click', '[data-acct]', function () { toggleStatus($(this).data('acct'), $(this).data('next')); });
+    }
+
+    // --- 감사 로그 ---
+    if ($('#adminAudit').length) {
+        $.getJSON('/api/admin/audit').done(function (res) {
+            const rows = ((res && res.data) || []).map(function (l) {
+                return `<tr>
+                    <td style="font-family:var(--mono);font-size:12px">${esc(fmtDate(l.createdAt))}</td>
+                    <td>${esc(l.actorName || '시스템')}</td><td>${esc(l.actorRole || '-')}</td>
+                    <td>${esc(l.action)}</td><td><code>${esc(l.target || '')}</code></td></tr>`;
+            }).join('');
+            $('#adminAuditBody').html(rows || '<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:24px">감사 로그가 없습니다.</td></tr>');
+        });
+    }
 })();

@@ -3,16 +3,16 @@
 | 항목 | 내용 |
 |------|------|
 | 프로젝트명 | SoftPuzzle PM |
-| 버전 | **v1.1 (문서 정합 리뷰 — 세션 SSR 정렬)**. JWT/refresh → **Spring Security 세션 + Thymeleaf SSR**로 수정(SRS·아키텍처·인프라 정합). 프런트=SSR+jQuery AJAX 성격 명시 |
-| 이전 버전 | v1.0 (마감 baseline — 커버리지·미결 0) · v0.3 (코덱스 리뷰) · v0.2 (미결 5건) · v0.1 (1차 도출) |
+| 버전 | **v1.2 (구현 정합 — TC·결함 §9~10 코드 동기화)**. TC: result→`/status`, 템플릿 엔드포인트 제거(클라이언트 Blob), import 보강, `POST /test-cases/assign`(일괄 담당자), 본문 `assigneeId`. 결함: 생성 본문 `testCaseId·assigneeId`, `/assignee` 엔드포인트 제거(편집 본문으로 통합), 연결을 배열 `/links`→건별 `POST·DELETE /test-cases/{tcId}`, 편집 PATCH(team·등록자). |
+| 이전 버전 | v1.1 (문서 정합 리뷰 — 세션 SSR 정렬: JWT/refresh → Spring Security 세션 + Thymeleaf SSR) · v1.0 (마감 baseline — 커버리지·미결 0) · v0.3 (코덱스 리뷰) · v0.2 (미결 5건) · v0.1 (1차 도출) |
 | 작성일 | 2026-05-21 |
 | 기준 | ERD(`erd.md` v1.3) · 화면 설계서(`screen-design/` v1.5) · SRS(`requirements.md`) · 아키텍처(`architecture.md` v0.2) |
 | 스택 | Spring Boot · MyBatis · PostgreSQL · Thymeleaf SSR + jQuery · 세션(Spring Security + Spring Session JDBC) |
-| 관련 단계 | 16~17 (화면 설계서·ERD 안정 후, 17단계 종료 전 v1.0) |
+| 관련 단계 | 12~13 (화면 설계서·ERD 안정 후, 13단계 종료 전 v1.0) |
 
 > 산출물 No.11. **설계 시점 명세는 이 문서(사람이 읽는 계약)**, **런타임 Swagger UI는 구현 시 springdoc-openapi가 코드에서 자동 생성**한다 (이중관리 회피). 화면 설계서 컨트롤·ERD 변경 시 동기화.
 >
-> **v1.0 마감 기준**: 화면 설계서 v1.5의 모든 화면·컨트롤에 대응 엔드포인트 존재(커버리지 점검 완료), ERD v1.2 정합, 미결 0, 코덱스 리뷰 반영. **개발(18단계) 입력 baseline으로 동결** — 이후 변경은 버전 증가로 추적. 엔드포인트별 상세 스키마(요청/응답 전체 필드)는 구현 시 springdoc 어노테이션이 SoT.
+> **v1.0 마감 기준**: 화면 설계서 v1.5의 모든 화면·컨트롤에 대응 엔드포인트 존재(커버리지 점검 완료), ERD v1.2 정합, 미결 0, 코덱스 리뷰 반영. **개발(14단계) 입력 baseline으로 동결** — 이후 변경은 버전 증가로 추적. 엔드포인트별 상세 스키마(요청/응답 전체 필드)는 구현 시 springdoc 어노테이션이 SoT.
 
 ---
 
@@ -29,7 +29,7 @@
 // 성공
 { "success": true, "data": { /* ... */ } }
 // 에러 — code(머신 식별)·message(사람용)·fieldErrors(검증 실패 시)
-{ "success": false, "code": "GATE_OUT_OF_ORDER", "message": "이전 게이트(Gate 11) 미통과로 컨펌할 수 없습니다.",
+{ "success": false, "code": "GATE_OUT_OF_ORDER", "message": "이전 게이트(Gate 7) 미통과로 컨펌할 수 없습니다.",
   "fieldErrors": { "newPassword": "8자 이상·영문·숫자·특수문자" } }
 ```
 `code` 예: `VALIDATION_FAILED`(400) · `UNAUTHORIZED`(401) · `FORBIDDEN`(403) · `NOT_FOUND`(404) · `STATE_CONFLICT`/`GATE_OUT_OF_ORDER`/`DUPLICATE`(409). `fieldErrors`는 검증 실패 시에만.
@@ -121,8 +121,8 @@
 | GET | `/projects/{id}` | 참여자 | 기본 정보 |
 | PATCH | `/projects/{id}` | team | 설정 편집 `{name?, type?, startDate?, endDate?, description?}` (생성일·ID 불변, 감사 기록) |
 | GET | `/projects/{id}/dashboard` | 참여자 | 대시보드 집계(현재 단계·게이트·진행률·미처리 항목·최근 활동·산출물 요약) |
-| GET | `/projects/{id}/roadmap` | 참여자 | 진행 현황(24단계·5게이트·7마일스톤 상태) |
-| GET | `/projects/{id}/gates` | 참여자 | 게이트 상태(9·11·13·15·22) |
+| GET | `/projects/{id}/roadmap` | 참여자 | 진행 현황(20단계·6게이트·8마일스톤 상태) |
+| GET | `/projects/{id}/gates` | 참여자 | 게이트 상태(5·7·9·11·13·18) |
 | POST | `/projects/{id}/archive` | team | 보관 — 읽기 전용 전환(복구 가능, SCR-SET-003) |
 | POST | `/projects/{id}/restore` | team | 보관·삭제(30일 내) 복구 |
 | DELETE | `/projects/{id}` | team | **소프트 삭제** — 프로젝트명 정확 입력 확인(요청 본문 `{confirmName}`), 30일 복구 가능. 영구 삭제는 30일 후 admin |
@@ -192,7 +192,7 @@
 // 검토중이 아닌 버전에 confirm
 { "success": false, "message": "검토 요청된 버전만 컨펌할 수 있습니다." }
 // 게이트 순서 위반
-{ "success": false, "message": "이전 게이트(Gate 11) 미통과로 컨펌할 수 없습니다." }
+{ "success": false, "message": "이전 게이트(Gate 7) 미통과로 컨펌할 수 없습니다." }
 ```
 
 ---
@@ -230,12 +230,14 @@
 | Method | Path | 권한 | 설명 |
 |--------|------|------|------|
 | GET | `/projects/{id}/test-cases` | 참여자 | 목록 `?phase=&priority=&status=&q=` |
-| POST | `/projects/{id}/test-cases` | team(QA) | 등록 `{title, phase, priority, assigneeId?}` (status=pending 시작) |
-| GET | `/projects/{id}/test-cases/{tcId}` | 참여자 | 상세(전제·절차·기대·실제·연결 결함) |
-| PATCH | `/projects/{id}/test-cases/{tcId}` | team(QA) | 편집 `{title?, precondition?, steps?, expectedResult?, ...}` |
-| PATCH | `/projects/{id}/test-cases/{tcId}/result` | team(QA) | 결과 `{status:"passed"\|"failed"\|"pending", actualResult?}` |
-| GET | `/projects/{id}/test-cases/template` | team | CSV 템플릿 다운로드 |
-| POST | `/projects/{id}/test-cases/import` | team(QA) | CSV/Excel 일괄 등록(multipart, **동기** §13-3). `{created, errors[]}` 반환 |
+| POST | `/projects/{id}/test-cases` | team(QA) | 등록 `{title, phase, priority, precondition?, steps?, expectedResult?, assigneeId?}` (status=pending 시작) |
+| GET | `/projects/{id}/test-cases/{tcId}` | 참여자 | 상세(전제·절차·기대·실제·담당자·연결 결함) |
+| PATCH | `/projects/{id}/test-cases/{tcId}` | team(QA) | 편집 `{title, phase, priority, precondition?, steps?, expectedResult?, assigneeId?}` (상태·실제결과·코드는 유지) |
+| PATCH | `/projects/{id}/test-cases/{tcId}/status` | team(QA) | 결과 `{status:"passed"\|"failed"\|"pending", actualResult?}` |
+| POST | `/projects/{id}/test-cases/import` | team(QA) | CSV 일괄 등록 `{csv}`(텍스트 — 파일은 클라이언트서 읽어 전송). `{imported}` 반환. RFC4180 파서(따옴표·필드 내 쉼표/개행·BOM·헤더 행 처리) |
+| POST | `/projects/{id}/test-cases/assign` | team(QA) | 담당자 일괄 지정 `{testCaseIds:[...], assigneeId}` (assigneeId=null이면 미지정 해제). `{assigned}` 반환 |
+
+> CSV 템플릿(헤더 + 예시 행)은 **클라이언트에서 Blob으로 생성·다운로드** — 별도 API 없음. 일괄 등록은 단건 폼과 달리 **multipart 아닌 텍스트 JSON**(브라우저서 FileReader로 읽음).
 
 ---
 
@@ -244,16 +246,17 @@
 | Method | Path | 권한 | 설명 |
 |--------|------|------|------|
 | GET | `/projects/{id}/defects` | 참여자 | 목록 `?status=&severity=&assigneeId=&q=` |
-| POST | `/projects/{id}/defects` | 공통(UAT는 client도) | 등록 `{title, severity, assigneeId?, repro?, environment?, linkedTestCaseId?}` (status=open) |
-| GET | `/projects/{id}/defects/{defectId}` | 참여자 | 상세(재현·환경·첨부·연결 TC·코멘트) |
-| PATCH | `/projects/{id}/defects/{defectId}` | team | 일반 편집 `{title?, severity?, reproSteps?, environment?}` |
+| POST | `/projects/{id}/defects` | 공통(UAT는 client도) | 등록 `{title, severity, reproSteps?, environment?, testCaseId?, assigneeId?}` (status=open. 담당자 배정은 팀만, testCaseId 지정 시 해당 TC에 자동 연결) |
+| GET | `/projects/{id}/defects/{defectId}` | 참여자 | 상세(재현·환경·담당자·첨부·연결 TC·코멘트) |
+| PATCH | `/projects/{id}/defects/{defectId}` | team·등록자 | 편집 `{title, severity?, reproSteps?, environment?, assigneeId?}` (고객사는 **본인 등록분만**, 담당자 변경은 팀만 — 고객사 수정 시 기존 담당자 유지) |
 | PATCH | `/projects/{id}/defects/{defectId}/status` | team | `{status:"open"\|"in_progress"\|"resolved"\|"cannot_reproduce"}` |
-| PATCH | `/projects/{id}/defects/{defectId}/assignee` | team | `{assigneeId}` |
 | POST | `/projects/{id}/defects/{defectId}/attachments` | 참여자 | 증거 파일 추가(multipart) |
 | GET | `/projects/{id}/defects/{defectId}/attachments/{attId}/download` | 참여자 | 첨부 다운로드(`200 {url, expiresAt}`, §13-1) |
 | DELETE | `/projects/{id}/defects/{defectId}/attachments/{attId}` | team·등록자 | 첨부 삭제 |
-| POST | `/projects/{id}/defects/{defectId}/links` | team | TC 연결 `{testCaseIds:[...]}` (다대다) |
-| DELETE | `/projects/{id}/defects/{defectId}/links/{tcId}` | team | TC 연결 해제 |
+| POST | `/projects/{id}/defects/{defectId}/test-cases/{tcId}` | team | TC 연결(건별, 다대다) |
+| DELETE | `/projects/{id}/defects/{defectId}/test-cases/{tcId}` | team | TC 연결 해제 |
+
+> 담당자 변경은 **별도 엔드포인트 없이** 등록·편집 본문의 `assigneeId`로 처리(팀만). 연결은 spec상 배열(`/links`)이 아니라 **건별 리소스**(`/test-cases/{tcId}` POST·DELETE)로 구현.
 
 > **삭제 정책(MVP)**: TC·결함은 **하드 삭제 미지원** — 상태(`pending`/`open`…)·연결로 관리. 잘못 등록 시 상태 전이로 처리, 영구 삭제는 후속(archive). 슬롯 파일 삭제는 draft 한정(§6).
 
@@ -265,9 +268,9 @@
 |--------|------|------|------|
 | GET | `/projects/{id}/search` | 참여자 | 통합 검색 `?q=` (요구사항·산출물·파일·TC·결함·코멘트) |
 | GET | `/admin/audit-logs` | admin | 감사 로그 `?actorId=&action=&from=&to=` |
-| POST | `/projects/{id}/dev-runs` | team | 개발 시작 트리거 — 사전조건(9·11·13·15 게이트 + 내부 산출물) 미충족 시 409 |
+| POST | `/projects/{id}/dev-runs` | team | 개발 시작 트리거 — 사전조건(5·7·9·11·13 게이트 + 내부 산출물) 미충족 시 409 |
 | GET | `/projects/{id}/dev-runs` | 참여자 | 개발 실행 이력 |
-| POST | `/projects/{id}/exports` | 참여자 | 산출물 Export 생성 → `{exportId, status}` (Gate 22 통과 후만, REQ-DEV-002) |
+| POST | `/projects/{id}/exports` | 참여자 | 산출물 Export 생성 → `{exportId, status}` (Gate 18 통과 후만, REQ-DEV-002) |
 | GET | `/projects/{id}/exports/{exportId}` | 참여자 | Export 상태·다운로드 URL 조회 |
 
 ---

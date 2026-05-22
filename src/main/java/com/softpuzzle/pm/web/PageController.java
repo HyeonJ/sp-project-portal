@@ -2,6 +2,9 @@ package com.softpuzzle.pm.web;
 
 import com.softpuzzle.pm.account.Account;
 import com.softpuzzle.pm.common.CurrentUser;
+import com.softpuzzle.pm.project.Project;
+import com.softpuzzle.pm.project.ProjectService;
+import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,9 +14,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class PageController {
 
     private final CurrentUser currentUser;
+    private final ProjectService projectService;
 
-    public PageController(CurrentUser currentUser) {
+    public PageController(CurrentUser currentUser, ProjectService projectService) {
         this.currentUser = currentUser;
+        this.projectService = projectService;
     }
 
     @GetMapping("/login")
@@ -42,6 +47,28 @@ public class PageController {
         return "dashboard";
     }
 
+    @GetMapping("/projects/new")
+    public String projectNew(Model model) {
+        Account me = currentUser.require();
+        if (!"team".equals(me.getTier()) && !"admin".equals(me.getTier())) {
+            return "redirect:/";
+        }
+        addNavAttributes(model);
+        return "project-new";
+    }
+
+    @GetMapping("/account")
+    public String account(Model model) {
+        Account me = currentUser.require();
+        addNavAttributes(model);
+        model.addAttribute("acctName", me.getName());
+        model.addAttribute("acctEmail", me.getEmail());
+        model.addAttribute("acctTier", me.getTier());
+        model.addAttribute("acctJob", me.getJob());
+        model.addAttribute("myProjects", projectService.myProjects(me));
+        return "account";
+    }
+
     @GetMapping("/search")
     public String search(Model model) {
         addNavAttributes(model);
@@ -49,13 +76,33 @@ public class PageController {
     }
 
     @GetMapping("/admin")
-    public String admin(Model model) {
+    public String admin() {
+        return "redirect:/admin/teams";
+    }
+
+    @GetMapping("/admin/teams")
+    public String adminTeams(Model model) {
+        return adminPage(model, "teams", "admin/teams");
+    }
+
+    @GetMapping("/admin/clients")
+    public String adminClients(Model model) {
+        return adminPage(model, "clients", "admin/clients");
+    }
+
+    @GetMapping("/admin/audit")
+    public String adminAudit(Model model) {
+        return adminPage(model, "audit", "admin/audit");
+    }
+
+    private String adminPage(Model model, String active, String view) {
         Account me = currentUser.require();
         if (!"admin".equals(me.getTier())) {
             return "redirect:/";
         }
         addNavAttributes(model);
-        return "admin";
+        model.addAttribute("adminActive", active);
+        return view;
     }
 
     /** 레이아웃 셸(사이드바·상단바)이 쓰는 현재 사용자 속성. */
@@ -65,5 +112,13 @@ public class PageController {
         model.addAttribute("navUserInitial", me.getName().isBlank() ? "?" : me.getName().substring(0, 1));
         model.addAttribute("navTier", me.getTier());
         model.addAttribute("navCanCreate", "team".equals(me.getTier()) || "admin".equals(me.getTier()));
+
+        List<Project> mine = projectService.myProjects(me);
+        model.addAttribute("navProjectCount", mine.size());
+        model.addAttribute("navScopeLabel", switch (me.getTier()) {
+            case "admin" -> "전체";
+            case "client" -> "참여";
+            default -> "담당";
+        });
     }
 }

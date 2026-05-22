@@ -19,6 +19,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDate;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -101,6 +102,19 @@ class QaServiceIT {
     }
 
     @Test
+    void tc_csvImport_handlesQuotedFieldsBomAndEmbeddedNewline() {
+        Project p = project();
+        String csv = "\uFEFF제목,단계,우선순위,전제조건,절차,기대결과\n"
+                + "\"제목, 콤마\",요구사항,High,,\"1단계\n2단계\",\"통과 시, 이동\"\n";
+        int n = tcService.importCsv(p.getId(), csv, pm);
+        assertThat(n).isEqualTo(1);
+        TestCase tc = tcService.list(p.getId(), pm).get(0);
+        assertThat(tc.getTitle()).isEqualTo("제목, 콤마");
+        assertThat(tc.getSteps()).isEqualTo("1단계\n2단계");
+        assertThat(tc.getExpectedResult()).isEqualTo("통과 시, 이동");
+    }
+
+    @Test
     void tc_create_byClient_isForbidden() {
         Project p = project();
         assertThatThrownBy(() -> tcService.create(p.getId(), tcReq("x"), client))
@@ -154,5 +168,60 @@ class QaServiceIT {
 
         defectService.deleteAttachment(p.getId(), d.getId(), a.getId(), pm);
         assertThat(defectService.detail(p.getId(), d.getId(), pm).attachments()).isEmpty();
+    }
+
+    @Test
+    void tc_update_byTeam_changesFields_butClientForbidden() {
+        Project p = project();
+        TestCase tc = tcService.create(p.getId(), tcReq("원제목"), pm);
+        tcService.update(p.getId(), tc.getId(),
+                new CreateTestCaseRequest("새 제목", "요구사항", "Low", "전제", "절차", "기대"), pm);
+        TestCase updated = tcService.detail(p.getId(), tc.getId(), pm).testCase();
+        assertThat(updated.getTitle()).isEqualTo("새 제목");
+        assertThat(updated.getPhase()).isEqualTo("요구사항");
+        assertThat(updated.getPriority()).isEqualTo("Low");
+        assertThatThrownBy(() -> tcService.update(p.getId(), tc.getId(), tcReq("y"), client))
+                .isInstanceOf(ApiException.class);
+    }
+
+    @Test
+    void defect_update_byTeam_changesFields() {
+        Project p = project();
+        Defect d = defectService.create(p.getId(), new CreateDefectRequest("버그", "Medium", null, null, null), pm);
+        defectService.update(p.getId(), d.getId(),
+                new CreateDefectRequest("버그 수정됨", "High", "재현 단계", "Chrome", null), pm);
+        Defect updated = defectService.detail(p.getId(), d.getId(), pm).defect();
+        assertThat(updated.getTitle()).isEqualTo("버그 수정됨");
+        assertThat(updated.getSeverity()).isEqualTo("High");
+    }
+
+    @Test
+    void tc_bulkAssign_byTeam_setsAndClears_butClientForbidden() {
+        Project p = project();
+        TestCase a = tcService.create(p.getId(), tcReq("로그인"), pm);
+        TestCase b = tcService.create(p.getId(), tcReq("로그아웃"), pm);
+        int n = tcService.bulkAssign(p.getId(), List.of(a.getId(), b.getId()), pm.getId(), pm);
+        assertThat(n).isEqualTo(2);
+        assertThat(tcService.detail(p.getId(), a.getId(), pm).testCase().getAssigneeId()).isEqualTo(pm.getId());
+        assertThat(tcService.detail(p.getId(), b.getId(), pm).testCase().getAssigneeId()).isEqualTo(pm.getId());
+        // null → 미지정 해제
+        tcService.bulkAssign(p.getId(), List.of(a.getId()), null, pm);
+        assertThat(tcService.detail(p.getId(), a.getId(), pm).testCase().getAssigneeId()).isNull();
+        // 고객사는 일괄 지정 불가
+        assertThatThrownBy(() -> tcService.bulkAssign(p.getId(), List.of(b.getId()), pm.getId(), client))
+                .isInstanceOf(ApiException.class);
+    }
+
+    @Test
+    void defect_update_clientCanEditOwn_butNotOthers() {
+        Project p = project();
+        Defect own = defectService.create(p.getId(), new CreateDefectRequest("고객버그", "Low", null, null, null), client);
+        defectService.update(p.getId(), own.getId(), new CreateDefectRequest("고객버그 수정", "Low", null, null, null), client);
+        assertThat(defectService.detail(p.getId(), own.getId(), client).defect().getTitle()).isEqualTo("고객버그 수정");
+
+        Defect teamDef = defectService.create(p.getId(), new CreateDefectRequest("팀버그", "High", null, null, null), pm);
+        assertThatThrownBy(() -> defectService.update(p.getId(), teamDef.getId(),
+                new CreateDefectRequest("탈취", "High", null, null, null), client))
+                .isInstanceOf(ApiException.class);
     }
 }

@@ -10,54 +10,64 @@
               th:attr="data-project-id=${projId}, data-tier=${navTier}, data-uid=${navUserId},
                        data-name=${projName}, data-type=${projType},
                        data-desc=${projDescription}, data-start=${projStartDate}, data-end=${projEndDate}">
-            <div class="page-bar"><h1 class="page-title">설정</h1></div>
 
-            <section class="card" style="margin-bottom:16px">
-                <div class="card-head"><h3>기본 정보</h3></div>
-                <form id="infoForm" class="form">
-                    <div class="row"><label>프로젝트명</label><div class="value"><input type="text" name="name" maxlength="100"></div></div>
-                    <div class="row"><label>유형</label><div class="value"><select name="type"><option value="">선택</option><option>SaaS</option><option>웹사이트</option><option>모바일</option></select></div></div>
-                    <div class="row"><label>기간</label><div class="value" style="display:flex;gap:8px;align-items:center"><input type="date" name="startDate"> <span style="color:var(--muted-2)">~</span> <input type="date" name="endDate"></div></div>
-                    <div class="row"><label>설명</label><div class="value"><textarea name="description" maxlength="5000"></textarea></div></div>
-                    <div id="infoMsg" class="page-sub" style="margin:0"></div>
-                    <div style="display:flex;justify-content:flex-end"><button type="submit" class="btn primary" id="infoSave">저장</button></div>
-                </form>
-            </section>
-
-            <section class="card" style="margin-bottom:16px">
-                <div class="card-head">
-                    <h3>멤버 · 초대</h3>
-                    <button id="inviteBtn" class="btn primary sm" type="button" hidden>+ 초대</button>
-                </div>
-                <section id="inviteCard" hidden style="margin-bottom:12px;padding:14px;border:1px solid var(--divider);border-radius:8px">
-                    <form id="inviteForm" class="form">
-                        <div class="row"><label>이메일</label><div class="value"><input type="email" name="email" required></div></div>
-                        <div class="row"><label>유형</label><div class="value"><select name="inviteType"><option value="team_member">프로젝트팀</option><option value="client">고객사</option></select></div></div>
-                        <div id="inviteResult" class="page-sub" style="margin:0"></div>
-                        <div style="display:flex;gap:8px;justify-content:flex-end"><button type="button" id="inviteCancel" class="btn ghost sm">취소</button><button type="submit" class="btn primary sm">초대</button></div>
+            <!-- 기본 정보 (settingSub=info) -->
+            <th:block th:if="${settingSub == 'info'}">
+                <h1 class="page-title">프로젝트 설정</h1>
+                <section class="card">
+                    <form id="infoForm" class="form">
+                        <div class="row"><label>프로젝트명</label><div class="value"><input type="text" name="name" maxlength="100"></div></div>
+                        <div class="row"><label>고객사명</label><div class="value"><input type="text" th:value="${projClient}" disabled></div></div>
+                        <div class="row"><label>유형</label><div class="value"><select name="type"><option value="">선택</option><option>SaaS</option><option>웹사이트</option><option>모바일</option></select></div></div>
+                        <div class="row"><label>기간</label><div class="value" style="display:flex;gap:8px;align-items:center"><input type="date" name="startDate"> <span style="color:var(--muted-2)">~</span> <input type="date" name="endDate"></div></div>
+                        <div class="row"><label>설명</label><div class="value"><textarea name="description" maxlength="5000"></textarea></div></div>
+                        <div id="infoMsg" class="page-sub" style="margin:0"></div>
+                        <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:6px"><button type="submit" class="btn primary" id="infoSave">저장</button></div>
                     </form>
                 </section>
-                <div id="memberList" class="card-list"></div>
-            </section>
+                <p style="color:var(--muted);font-size:12px;margin-top:10px">※ 고객사명·프로젝트 ID·생성일은 수정 불가. 변경 시 감사 로그에 기록.</p>
+            </th:block>
 
-            <section class="card" id="dangerCard" style="border-color:color-mix(in oklch,var(--hot) 25%,var(--surface))">
-                <div class="card-head"><h3 style="color:var(--hot)">Danger Zone</h3></div>
-                <div class="danger-zone" style="border:0;box-shadow:none;padding:0">
-                    <div>
-                        <b>프로젝트 보관</b>
-                        <p class="page-sub" style="margin:2px 0 0">보관하면 목록에서 숨겨지고 읽기 전용이 됩니다.</p>
+            <!-- 멤버 · 초대 (settingSub=members) -->
+            <th:block th:if="${settingSub == 'members'}">
+                <h1 class="page-title">팀 멤버 · 고객사 초대</h1>
+                <section class="card">
+                    <div class="card-head">
+                        <h3>멤버</h3>
+                        <button id="inviteBtn" class="btn primary sm" type="button" hidden>+ 초대</button>
+                    </div>
+                    <section id="inviteCard" hidden style="margin-bottom:12px;padding:14px;border:1px solid var(--divider);border-radius:8px">
+                        <form id="inviteForm" class="form">
+                            <div class="row"><label>이메일</label><div class="value"><input type="email" name="email" required></div></div>
+                            <div class="row"><label>유형</label><div class="value"><select name="inviteType"><option value="team_member">프로젝트팀</option><option value="client">고객사</option></select></div></div>
+                            <div id="inviteResult" class="page-sub" style="margin:0"></div>
+                            <div style="display:flex;gap:8px;justify-content:flex-end"><button type="button" id="inviteCancel" class="btn ghost sm">취소</button><button type="submit" class="btn primary sm">초대</button></div>
+                        </form>
+                    </section>
+                    <div id="memberList" class="card-list"><p class="page-sub" style="margin:0">불러오는 중…</p></div>
+                </section>
+            </th:block>
+
+            <!-- Danger Zone (settingSub=danger) -->
+            <th:block th:if="${settingSub == 'danger'}">
+                <h1 class="page-title" style="color:var(--hot)">⚠ Danger Zone</h1>
+                <div class="danger-zone">
+                    <div class="info">
+                        <h4>프로젝트 보관 처리</h4>
+                        <p>진행 중지 + 읽기 전용 전환. 다시 활성화 가능. 목록에서 숨겨집니다.</p>
                     </div>
                     <button class="btn warn" id="archiveBtn" type="button">보관</button>
                 </div>
-                <div class="danger-zone" style="border:0;box-shadow:none;padding:0;margin-top:12px">
-                    <div>
-                        <b style="color:var(--hot)">프로젝트 삭제</b>
-                        <p class="page-sub" style="margin:2px 0 0">30일 후 영구 삭제. 프로젝트명을 정확히 입력해야 합니다.</p>
+                <div class="danger-zone">
+                    <div class="info">
+                        <h4 style="color:var(--hot)">프로젝트 삭제</h4>
+                        <p>소프트 삭제 — 30일 복구 가능. 30일 후 영구 삭제.<br>⚠ 모든 요구사항·산출물·코멘트가 함께 삭제 대상이 됩니다. 프로젝트명을 정확히 입력해야 합니다.</p>
                     </div>
                     <button class="btn danger-solid" id="deleteBtn" type="button">삭제</button>
                 </div>
                 <div id="dangerMsg" class="page-sub" style="margin:10px 0 0"></div>
-            </section>
+            </th:block>
+
         </main>
     </div>
 </div>

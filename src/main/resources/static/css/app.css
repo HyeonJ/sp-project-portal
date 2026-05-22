@@ -193,16 +193,18 @@ code{font-family:var(--mono);font-size:.92em;background:var(--surface-2);padding
 .modal-body .row label small{display:block;color:var(--muted-2);font-size:10px;margin-top:2px}
 .modal-body .row .value{flex:1;font-size:13px;min-width:0}
 .modal-body .row .value.static{background:color-mix(in oklab,var(--surface),var(--bg) 48%);border:1px solid var(--divider);border-radius:9px;padding:9px 11px;color:var(--fg-2);box-shadow:var(--soft-inset)}
-.modal-body input[type=text],.modal-body input[type=email],.modal-body input[type=password],.modal-body input[type=date],.modal-body textarea,.modal-body select{width:100%;border:1px solid var(--divider);background:var(--surface);border-radius:9px;padding:9px 11px;color:var(--fg);outline:none;box-shadow:var(--soft-inset)}
-.modal-body input:focus,.modal-body textarea:focus,.modal-body select:focus{border-color:color-mix(in oklab,var(--accent),var(--surface) 55%);background:var(--surface);box-shadow:var(--focus-ring)}
+.modal-body input[type=text],.modal-body input[type=email],.modal-body input[type=password],.modal-body input[type=date],.modal-body input[type=url],.modal-body textarea,.modal-body select{width:100%;border:1px solid var(--divider);background:var(--surface);border-radius:9px;padding:9px 11px;color:var(--fg);outline:none;box-shadow:var(--soft-inset)}
+.modal-body input:focus,.modal-body textarea:focus,.modal-body select:focus{border-color:color-mix(in oklab,var(--accent),var(--surface) 55%);background-color:var(--surface);box-shadow:var(--focus-ring)}
+/* select 화살표 — 네이티브 제거 후 커스텀 chevron(우측 12px 여백) */
+.modal-body select,.form select{appearance:none;-webkit-appearance:none;-moz-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b6b6b' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:34px}
 .modal-body textarea{min-height:64px;resize:vertical;font:inherit}
 .modal-body .radio-group{display:flex;gap:18px;font-size:13px;padding-top:6px}
 .modal-body .radio-group label{flex:none;color:var(--fg);padding:0;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
 .modal-body .note{padding:11px 13px;background:var(--accent-soft);border-radius:10px;font-size:12px;line-height:1.7;color:var(--accent-deep);border:1px solid color-mix(in oklab,var(--accent),var(--surface) 82%);box-shadow:var(--soft-inset)}
 .modal-body .note.warn{background:var(--warn-soft);color:var(--warn);border-color:color-mix(in oklch,var(--warn) 18%,var(--surface))}
 .modal-body .note.danger{background:var(--hot-soft);color:var(--hot);border-color:color-mix(in oklch,var(--hot) 18%,var(--surface))}
-.dropzone{margin-top:12px;border:1.5px dashed var(--divider);border-radius:12px;padding:22px;text-align:center;cursor:pointer;color:var(--muted);transition:border-color var(--motion-fast) var(--ease-standard),background var(--motion-fast) var(--ease-standard)}
-.dropzone:hover{border-color:color-mix(in oklch,var(--accent) 40%,var(--surface));background:color-mix(in oklab,var(--surface),var(--accent) 3%)}
+.dropzone{margin-top:12px;border:1.5px dashed var(--muted-2);border-radius:12px;padding:22px;text-align:center;cursor:pointer;color:var(--muted);transition:border-color var(--motion-fast) var(--ease-standard),background var(--motion-fast) var(--ease-standard)}
+.dropzone:hover,.dropzone.drag-over{border-color:color-mix(in oklch,var(--accent) 40%,var(--surface));background:color-mix(in oklab,var(--surface),var(--accent) 3%)}
 .dropzone.has-file{border-style:solid;border-color:color-mix(in oklch,var(--ok) 40%,var(--surface));background:var(--ok-soft)}
 .dropzone .dz-icon{font-size:20px;margin-bottom:6px}
 .dropzone .dz-text{font-size:12px;line-height:1.6;color:var(--fg-2)}
@@ -290,7 +292,7 @@ code{font-family:var(--mono);font-size:.92em;background:var(--surface-2);padding
 .form .row label small.opt,.modal-body .row label small.opt{display:inline;font-size:11px;font-weight:400;margin:0 0 0 3px}
 .form .row .value{flex:1;font-size:13px;min-width:0}
 .form .value .field-hint{font-size:11px;color:var(--muted-2);margin-top:6px;line-height:1.35}
-.form input[type=text],.form input[type=email],.form input[type=password],.form input[type=date],.form textarea,.form select{width:100%;border:1px solid var(--divider);background:var(--surface);border-radius:9px;padding:9px 11px;color:var(--fg);outline:none;box-shadow:var(--soft-inset)}
+.form input[type=text],.form input[type=email],.form input[type=password],.form input[type=date],.form input[type=url],.form textarea,.form select{width:100%;border:1px solid var(--divider);background:var(--surface);border-radius:9px;padding:9px 11px;color:var(--fg);outline:none;box-shadow:var(--soft-inset)}
 .form input:focus,.form textarea:focus,.form select:focus{border-color:color-mix(in oklab,var(--accent),var(--surface) 55%);box-shadow:var(--focus-ring)}
 .form textarea{min-height:64px;resize:vertical;font:inherit}
 .form .static{background:color-mix(in oklab,var(--bg),var(--fg) 4%);border:1px solid var(--divider);border-radius:9px;padding:9px 11px;color:var(--muted);box-shadow:none;cursor:not-allowed}
@@ -461,7 +463,7 @@ code{font-family:var(--mono);font-size:.92em;background:var(--surface-2);padding
 .milestone-strip .ms.done .code{color:var(--ok)}
 .milestone-strip .ms.current{border-color:color-mix(in oklab,var(--accent),var(--surface) 70%);box-shadow:0 0 0 1px color-mix(in oklab,var(--accent),transparent 76%) inset,var(--panel-shadow);background:var(--accent-soft)}
 .milestone-strip .ms.current .code{color:var(--accent)}
-.milestone-strip .ms+.ms::before{content:'??;position:absolute;left:-14px;top:50%;transform:translateY(-50%);color:var(--muted-2);font-size:14px}
+.milestone-strip .ms+.ms::before{content:"›";position:absolute;left:-14px;top:50%;transform:translateY(-50%);color:var(--muted-2);font-size:14px}
 
 .roadmap-section-title{font:600 12px/1 var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin:0 0 10px}
 .phase{margin-bottom:14px;border:1px solid var(--layer-border);border-radius:14px;background:color-mix(in oklab,var(--surface),transparent 1%);box-shadow:var(--panel-shadow),var(--soft-inset);overflow:hidden}

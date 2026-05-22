@@ -7,11 +7,17 @@
     <div>
         <div th:replace="~{fragments/shell :: topbar('통합 검색')}"></div>
         <main class="main" id="searchPage">
-            <div class="page-bar">
-                <h1 class="page-title">통합 검색</h1>
+            <h1 class="page-title">통합 검색</h1>
+            <div class="search-page">
+                <input class="search-input-big" type="text" id="searchQ" placeholder="검색어 입력 (프로젝트·TC·결함)">
+                <div class="filter-bar" style="margin-top:0">
+                    <div class="filter">구분 ▾</div>
+                    <div class="filter">상태 ▾</div>
+                    <div class="filter">날짜 ▾</div>
+                </div>
+                <p style="color:var(--muted);font-size:13px;margin:0 0 14px" id="searchCount"></p>
+                <div id="searchResults"></div>
             </div>
-            <p class="page-sub" id="searchQuery"></p>
-            <div id="searchResults"></div>
         </main>
     </div>
 </div>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head th:replace="~{fragments/head :: head('내 계정 · SoftPuzzle PM')}"></head>
+<body>
+<div class="app">
+    <div th:replace="~{fragments/shell :: globalSidebar('account')}"></div>
+    <div>
+        <div th:replace="~{fragments/shell :: topbar('계정 설정')}"></div>
+        <main class="main" id="accountPage">
+            <h1 class="page-title">내 계정</h1>
+
+            <section class="card" style="margin-bottom:14px">
+                <div class="card-head"><h3>기본 정보</h3></div>
+                <div class="form">
+                    <div class="row"><label>이름</label><div class="value"><div class="static" th:text="${acctName}">이름</div></div></div>
+                    <div class="row"><label>이메일</label><div class="value"><div class="static" th:text="${acctEmail}">이메일</div></div></div>
+                    <div class="row"><label>역할</label><div class="value"><div class="static">
+                        <span th:switch="${acctTier}">
+                            <span th:case="'admin'">관리자</span>
+                            <span th:case="'client'">고객사</span>
+                            <span th:case="*">프로젝트팀</span>
+                        </span><span th:if="${acctJob != null}" th:text="' · ' + ${acctJob}"></span>
+                    </div></div></div>
+                </div>
+            </section>
+
+            <section class="card" style="margin-bottom:14px">
+                <div class="card-head"><h3>비밀번호 변경</h3></div>
+                <p class="page-sub" style="margin:0 0 10px">비밀번호 재설정 링크를 이메일로 받으려면 아래 버튼을 누르세요.</p>
+                <div style="text-align:right"><a class="btn" th:href="@{/password/reset}">비밀번호 재설정</a></div>
+            </section>
+
+            <section class="card">
+                <div class="card-head"><h3 th:text="'참여 프로젝트 (' + ${#lists.size(myProjects)} + ')'">참여 프로젝트</h3></div>
+                <div class="card-list">
+                    <a class="item" th:each="p : ${myProjects}" th:href="@{/projects/{id}(id=${p.id})}"
+                       style="text-decoration:none;color:var(--fg)">
+                        <div class="body"><b th:text="${p.name}">프로젝트</b> <span th:text="'— ' + ${p.clientOrgName}">고객사</span></div>
+                        <span th:switch="${p.status}">
+                            <span th:case="'completed'" class="t">완료</span>
+                            <span th:case="*" class="t">참여 중</span>
+                        </span>
+                    </a>
+                    <p class="page-sub" style="margin:0" th:if="${#lists.isEmpty(myProjects)}">참여 중인 프로젝트가 없습니다.</p>
+                </div>
+            </section>
+        </main>
+    </div>
+</div>
+</body>
+</html>

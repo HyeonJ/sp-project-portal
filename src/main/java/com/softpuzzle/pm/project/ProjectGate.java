@@ -2,7 +2,7 @@ package com.softpuzzle.pm.project;
 
 import java.time.OffsetDateTime;
 
-/** 게이트 상태 (9·11·13·15·22). status pass/wait/lock — 컨펌 순서 검증용(소프트 게이트). */
+/** 게이트 상태 (5·7·9·11·13·18). status pass/wait/lock — 컨펌 순서 검증용(소프트 게이트). */
 public class ProjectGate {
     private Long id;
     private Long projectId;

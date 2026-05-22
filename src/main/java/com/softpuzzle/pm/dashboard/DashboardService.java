@@ -57,7 +57,7 @@ public class DashboardService {
         List<DeliverableSlot> slots = slotMapper.findByProject(projectId);
         List<Defect> defects = defectMapper.findByProject(projectId);
         List<TestCase> tcs = tcMapper.findByProject(projectId);
-        List<ActivityEvent> recent = activityMapper.findByProject(projectId, 10);
+        List<ActivityEvent> recent = activityMapper.findByProject(projectId, 5);
 
         long gatesPassed = gates.stream().filter(g -> "pass".equals(g.getStatus())).count();
         long pendingReviews = slots.stream().filter(s -> "pending-review".equals(s.getStatus())).count();
@@ -73,7 +73,7 @@ public class DashboardService {
                         "currentStage", project.getCurrentStage()),
                 "progress", Map.of(
                         "gatesPassed", gatesPassed, "gatesTotal", gates.size(),
-                        "stagePercent", Math.round(project.getCurrentStage() * 100.0 / 24)),
+                        "stagePercent", Math.round(project.getCurrentStage() * 100.0 / 20)),
                 "counts", Map.of(
                         "pendingReviews", pendingReviews, "confirmedSlots", confirmed,
                         "openDefects", openDefects, "totalTc", tcs.size(), "passedTc", passedTc),

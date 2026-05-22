@@ -104,6 +104,28 @@ public class SlotService {
         return new SlotDetail(slot, version, files);
     }
 
+    /** 슬롯의 전체 버전 목록 (버전 드롭다운용). */
+    @Transactional(readOnly = true)
+    public List<SlotVersion> versions(Long projectId, String slotType, Account actor) {
+        requireProject(projectId);
+        guard.assertCanView(projectId, actor);
+        DeliverableSlot slot = requireSlot(projectId, slotType);
+        return versionMapper.findBySlot(slot.getId());
+    }
+
+    /** 특정 버전의 파일 (과거 스냅샷 읽기 전용 조회). */
+    @Transactional(readOnly = true)
+    public List<FileAsset> versionFiles(Long projectId, String slotType, Long versionId, Account actor) {
+        requireProject(projectId);
+        guard.assertCanView(projectId, actor);
+        DeliverableSlot slot = requireSlot(projectId, slotType);
+        SlotVersion v = versionMapper.findById(versionId);
+        if (v == null || !v.getSlotId().equals(slot.getId())) {
+            throw ApiException.notFound("버전을 찾을 수 없습니다.");
+        }
+        return assetMapper.findByVersion(versionId);
+    }
+
     /** REQ-WF-005: 컨펌된 슬롯이 스탬프한 선행 버전 ≠ 선행 슬롯의 현재 컨펌 버전 → 배지. */
     private void computeUpstreamBadges(List<DeliverableSlot> slots) {
         Map<String, DeliverableSlot> byType =

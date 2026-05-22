@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="ko">
-<head th:replace="~{fragments/head :: head('결함 · SoftPuzzle PM')}"></head>
+<head th:replace="~{fragments/head :: head('결함 관리 · SoftPuzzle PM')}"></head>
 <body>
 <div class="app">
     <div th:replace="~{fragments/shell :: projectSidebar('defects')}"></div>
@@ -8,35 +8,59 @@
         <div th:replace="~{fragments/shell :: projectTopbar('결함')}"></div>
         <main class="main" id="defectPage" th:attr="data-project-id=${projId}, data-tier=${navTier}">
             <div class="page-bar">
-                <h1 class="page-title">결함</h1>
-                <button id="newDefectBtn" class="btn primary" type="button">+ 새 결함</button>
+                <div><h1 class="page-title">결함 관리</h1></div>
+                <button id="newDefectBtn" class="btn primary" type="button" th:if="${navTier != 'admin'}">+ 결함 등록</button>
             </div>
 
-            <section id="newDefectCard" class="card" hidden style="margin-bottom:16px">
-                <div class="card-head"><h3>새 결함</h3></div>
-                <form id="defectForm" class="form">
-                    <div class="row"><label>제목</label><div class="value"><input type="text" name="title" required maxlength="200"></div></div>
-                    <div class="row"><label>심각도</label><div class="value"><select name="severity"><option>Medium</option><option>High</option><option>Low</option></select></div></div>
-                    <div class="row"><label>연결 TC <small class="opt">선택</small></label><div class="value"><select name="testCaseId"><option value="">없음</option></select></div></div>
-                    <div class="row"><label>환경 <small class="opt">선택</small></label><div class="value"><input type="text" name="environment" placeholder="브라우저·OS·시각" maxlength="200"></div></div>
-                    <div class="row"><label>재현 단계 <small class="opt">선택</small></label><div class="value"><textarea name="reproSteps"></textarea></div></div>
-                    <div id="defectErr" class="err" style="display:none;color:var(--hot)"></div>
-                    <div style="display:flex;gap:8px;justify-content:flex-end">
-                        <button type="button" id="defectCancel" class="btn ghost">취소</button>
-                        <button type="submit" class="btn primary">등록</button>
-                    </div>
-                </form>
-            </section>
+            <div class="grid cols-3" style="margin-bottom:14px">
+                <div class="stat"><span class="label">미해결</span><span class="value" style="color:var(--hot)" th:text="${defOpen}">0</span></div>
+                <div class="stat"><span class="label">진행 중</span><span class="value" style="color:var(--warn)" th:text="${defProgress}">0</span></div>
+                <div class="stat"><span class="label">해결 완료</span><span class="value" style="color:var(--ok)" th:text="${defResolved}">0</span></div>
+            </div>
 
-            <section class="card">
-                <div class="card-head"><h3>목록</h3><span class="meta" id="defectCount"></span></div>
-                <div id="defectList" class="card-list"><p class="page-sub" style="margin:0">불러오는 중…</p></div>
-            </section>
+            <div class="filter-bar">
+                <div class="filter">상태 ▾</div>
+                <div class="filter">심각도 ▾</div>
+                <div class="filter">담당자 ▾</div>
+                <div class="filter search-input"><span style="color:var(--muted)">⌕</span><input type="text" placeholder="ID·제목 검색"></div>
+            </div>
 
-            <section id="defectDetail" class="card" hidden style="margin-top:16px"></section>
+            <section class="card flat" style="padding:0;overflow:hidden">
+                <table class="tbl">
+                    <thead><tr><th>ID</th><th>제목</th><th>심각도</th><th>상태</th><th>담당</th><th>등록일</th></tr></thead>
+                    <tbody>
+                        <tr th:each="d : ${defects}" style="cursor:pointer"
+                            th:attr="data-href=@{/projects/{id}/defects/{def}(id=${projId},def=${d.id})}">
+                            <td class="id-cell" th:text="${d.code}">DEF-001</td>
+                            <td th:text="${d.title}">제목</td>
+                            <td>
+                                <span th:switch="${d.severity}">
+                                    <span th:case="'High'" class="pill hot">High</span>
+                                    <span th:case="'Low'" class="pill muted">Low</span>
+                                    <span th:case="*" class="pill warn">Medium</span>
+                                </span>
+                            </td>
+                            <td>
+                                <span th:switch="${d.status}">
+                                    <span th:case="'resolved'" class="pill ok">해결 완료</span>
+                                    <span th:case="'in_progress'" class="pill warn">진행 중</span>
+                                    <span th:case="'cannot_reproduce'" class="pill muted">재현 불가</span>
+                                    <span th:case="*" class="pill hot">미해결</span>
+                                </span>
+                            </td>
+                            <td th:text="${d.assigneeName != null ? d.assigneeName : '-'}">담당</td>
+                            <td style="color:var(--muted);font-family:var(--mono);font-size:12px"
+                                th:text="${d.createdAt != null ? #strings.substring(d.createdAt.toString(),0,10) : '-'}">2026-05-22</td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(defects)}">
+                            <td colspan="6" style="text-align:center;color:var(--muted);padding:28px">등록된 결함이 없습니다.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
         </main>
     </div>
 </div>
-<script th:src="@{/js/defects.js}" defer></script>
+<script th:src="@{/js/qa-defect.js}" defer></script>
 </body>
 </html>

@@ -15,6 +15,7 @@ public class Comment {
 
     // 조인 조회용
     private String authorName;
+    private String authorTier;     // admin | team | client
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -42,4 +43,7 @@ public class Comment {
 
     public String getAuthorName() { return authorName; }
     public void setAuthorName(String authorName) { this.authorName = authorName; }
+
+    public String getAuthorTier() { return authorTier; }
+    public void setAuthorTier(String authorTier) { this.authorTier = authorTier; }
 }

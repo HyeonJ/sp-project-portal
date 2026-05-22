@@ -37,6 +37,8 @@ public class SecurityConfig {
                 .logoutSuccessUrl("/login?logout")
                 .invalidateHttpSession(true)
                 .deleteCookies("SESSION"))
+            // 산출물 PDF/이미지 미리보기는 same-origin iframe 사용 — 기본 DENY 대신 SAMEORIGIN 허용.
+            .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()))
             // CSRF: 세션 토큰. Thymeleaf 폼 hidden + jQuery는 X-CSRF-TOKEN 헤더(기본 헤더명).
             .csrf(csrf -> {});
         return http.build();

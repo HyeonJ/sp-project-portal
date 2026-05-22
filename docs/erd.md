@@ -8,7 +8,7 @@
 | 작성일 | 2026-05-21 |
 | 기준 | SRS(`requirements.md`) · IA(`ia.md`) · 화면 설계서(`screen-design/`) · 프로토타입(`prototype/index.html`)의 데이터 모델에서 역도출 |
 | 대상 DBMS | PostgreSQL 16 (운영) · MyBatis 매핑 |
-| 관련 단계 | 14~15 (화면 설계서·프로토타입과 병행, Gate 15 전 v1.0 목표) |
+| 관련 단계 | 10~11 (화면 설계서·프로토타입과 병행, Gate 11 전 v1.0 목표) |
 
 > 산출물 No.9 (deliverables.md). 화면 설계서 v0.5+ 도메인을 근거로 작성하며, 화면 설계서·프로토타입 변경 시 동기화한다.
 
@@ -76,7 +76,7 @@ erDiagram
         text description
         date start_date
         date end_date
-        smallint current_stage "1~24"
+        smallint current_stage "1~20"
         varchar status
     }
     PROJECT_MEMBER {
@@ -99,7 +99,7 @@ erDiagram
     PROJECT_GATE {
         bigint id PK
         bigint project_id FK
-        smallint gate_stage "9/11/13/15/22"
+        smallint gate_stage "5/7/9/11/13/18"
         varchar status "pass/wait/lock"
         timestamptz passed_at
     }
@@ -254,7 +254,7 @@ erDiagram
 | description | TEXT | NULL | 프로젝트 설명 (SCR-SET-001 편집) |
 | start_date | DATE | NULL | 기간 시작 |
 | end_date | DATE | NULL | 기간 종료 |
-| current_stage | SMALLINT | NN, default 1 | 1~24 진행 단계 |
+| current_stage | SMALLINT | NN, default 1 | 1~20 진행 단계 |
 | status | VARCHAR(20) | NN | 진행/완료 등 |
 | created_at | TIMESTAMPTZ | NN | 생성일(수정 불가, SCR-SET-001) |
 | | | CHECK | `end_date >= start_date` (둘 다 NN일 때) |
@@ -296,7 +296,7 @@ erDiagram
 |------|------|------|------|
 | id | BIGSERIAL | PK | |
 | project_id | BIGINT | FK→project, NN | |
-| gate_stage | SMALLINT | NN, CHECK | `9`/`11`/`13`/`15`/`22` |
+| gate_stage | SMALLINT | NN, CHECK | `5`/`7`/`9`/`11`/`13`/`18` |
 | status | VARCHAR(10) | NN, CHECK | `pass`/`wait`/`lock` |
 | passed_at | TIMESTAMPTZ | NULL | |
 | passed_by | BIGINT | FK→account, NULL | 컨펌한 고객사 계정 |
@@ -480,7 +480,7 @@ erDiagram
 | triggered_by | BIGINT | FK→account, NULL | |
 | created_at | TIMESTAMPTZ | NN | |
 
-> 18단계(REQ-DEV-001) 트리거. 하드 사전조건(4개 게이트 통과) 미충족 시 차단.
+> 14단계(REQ-DEV-001) 트리거. 하드 사전조건(5개 게이트 통과) 미충족 시 차단.
 
 #### `code_sequence` — 업무코드 채번 카운터
 | 컬럼 | 타입 | 제약 | 설명 |
@@ -505,7 +505,7 @@ erDiagram
 | client_org → project | 1:N | 발주사가 여러 프로젝트 |
 | client_org → account(고객사) | 1:N | 고객사 회사 소속 계정 |
 | account ↔ project | N:M (`project_member`) | 팀 배정·고객사 참여 통합 |
-| project → project_gate | 1:N (5행) | 9·11·13·15·22 |
+| project → project_gate | 1:N (6행) | 5·7·9·11·13·18 |
 | project → deliverable_slot | 1:N (5행) | 요구사항·IA·시안·프로토타입·Figma |
 | deliverable_slot → slot_version | 1:N | 버전 스냅샷 누적 |
 | slot_version → file_asset | 1:N | 한 버전 = 파일 묶음 |
@@ -527,7 +527,7 @@ erDiagram
 | account.job | pm · planner · designer · developer · qa |
 | account.status | active · pending · inactive |
 | project.type | SaaS · 웹사이트 · 모바일 |
-| project_gate.gate_stage | 9 · 11 · 13 · 15 · 22 |
+| project_gate.gate_stage | 5 · 7 · 9 · 11 · 13 · 18 |
 | project_gate.status | pass · wait · lock |
 | deliverable_slot.slot_type | requirements · ia · design · prototype · figma |
 | file_asset.asset_kind | file · url |
@@ -581,7 +581,7 @@ erDiagram
 ## 7. 설계 노트 · 미결 사항 (검토 대상)
 
 1. ~~`slot_version.upstream_baseline`~~ **(결정 완료 2026-05-21)** — REQ-WF-005 배지 저장은 **단일 FK `slot_version.confirmed_upstream_version_id`** 채택. 선행 관계가 고정 직선 체인(요구사항→IA→시안→프로토타입)이라 JSONB/별도 테이블 불필요. 직속 선행만 추적 → 재컨펌 시 체인 따라 자연 전파. 해소는 재컨펌 또는 `검토 완료(영향 없음)`(`activity_event.upstream_reviewed` 기록). **Figma는 게이트 외 핸드오프라 배지 적용 회색지대 — 후속 결정.** (프로토타입 미구현, 정책만 SRS 명시)
-2. ~~외부 URL(Figma) 저장~~ **(결정 완료 2026-05-21)** — `file_asset`에 **흡수**(별도 테이블 X). `asset_kind`(file/url) 구분자 + 전용 `external_url` 컬럼 + CHECK. 한 버전 묶음에 파일·링크 혼재. **Figma 핸드오프 = url 1개(필수) + 선택 export 에셋(file)** — `.fig` 업로드 강제 안 함(실무상 링크 핸드오프, Dev Mode). 라이브 URL 가변성은 버전 링크 권장으로 완화(강제 불가, Figma는 고객 게이트 아님). SRS REQ-FILE-001·REQ-DSN-004 반영.
+2. ~~외부 URL(Figma) 저장~~ **(결정 완료 2026-05-21)** — `file_asset`에 **흡수**(별도 테이블 X). `asset_kind`(file/url) 구분자 + 전용 `external_url` 컬럼 + CHECK. 한 버전 묶음에 파일·링크 혼재. **Figma 핸드오프 = url 1개(필수) + 선택 export 에셋(file)** — `.fig` 업로드 강제 안 함(실무상 링크 핸드오프, Dev Mode). 라이브 URL 가변성은 버전 링크 권장으로 완화(강제 불가). Figma 컨펌은 고객 게이트(Gate 13). SRS REQ-FILE-001·REQ-DSN-004 반영.
 3. ~~`project_member` 제외(라운드 40 소프트 제외)~~ **(결정 완료 2026-05-21)** — `left_at` 소프트 삭제 채택. NULL=참여, 값=제외. 1쌍 1행 reactivate. 활성 조회 `left_at IS NULL` 필터 필수(부분 인덱스/뷰로 방어).
 4. ~~업무 코드 채번~~ **(결정 완료 2026-05-21)** — **프로젝트별 채번** 채택(`UNIQUE(project_id, code)`). `code_sequence` 카운터 테이블 + 트랜잭션 내 원자적 증가(CSV 일괄은 연속 블록 할당). 표시 `TC-%03d`·`DEF-%03d`.
 5. ~~반려 사유 중복~~ **(결정 완료 2026-05-21)** — `activity_event(rejected).body` **단일 소스**(append-only·영구 보존). `comment.comment_type` 제거(코멘트는 일반 토론 전용). 코멘트는 수정·삭제 가능하므로 영구 보존 대상인 반려 사유와 분리.

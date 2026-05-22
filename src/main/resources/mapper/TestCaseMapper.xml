@@ -35,4 +35,16 @@
         UPDATE test_case SET status = #{status}, actual_result = #{actualResult} WHERE id = #{id}
     </update>
 
+    <update id="updateFields">
+        UPDATE test_case
+        SET title = #{title}, phase = #{phase}, priority = #{priority},
+            precondition = #{precondition}, steps = #{steps}, expected_result = #{expectedResult},
+            assignee_id = #{assigneeId}
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateAssignee">
+        UPDATE test_case SET assignee_id = #{assigneeId} WHERE id = #{id}
+    </update>
+
 </mapper>

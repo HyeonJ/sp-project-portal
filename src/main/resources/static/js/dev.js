@@ -7,8 +7,8 @@
     }
     const projectId = $root.data('project-id');
     const tier = String($root.data('tier') || '');
-    const REQUIRED = [9, 11, 13, 15];
-    const GATE_LABEL = { 9: '요구사항', 11: 'IA', 13: '디자인', 15: '프로토타입' };
+    const REQUIRED = [5, 7, 9, 11, 13];
+    const GATE_LABEL = { 5: '요구사항', 7: 'IA', 9: '디자인', 11: '프로토타입', 13: 'Figma' };
     const GATE_STATUS = {
         'pass': { txt: '통과', cls: 'ok' }, 'wait': { txt: '대기', cls: 'warn' }, 'lock': { txt: '잠김', cls: 'muted' }
     };
@@ -48,7 +48,7 @@
                 ready ? (tier === 'team' ? '' : '개발 시작은 프로젝트팀만 가능합니다.')
                       : '게이트 4개(요구사항·IA·디자인·프로토타입)를 모두 통과해야 합니다.');
 
-            const uat = byStage[22] || 'lock';
+            const uat = byStage[18] || 'lock';
             const $uatBtn = $('#uatApproveBtn');
             if (uat === 'pass') {
                 $('#uatMeta').text('완료'); $uatBtn.prop('hidden', true);

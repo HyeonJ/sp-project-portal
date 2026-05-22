@@ -17,6 +17,8 @@ public interface DefectMapper {
 
     int updateAssignee(@Param("id") Long id, @Param("assigneeId") Long assigneeId);
 
+    int updateFields(Defect defect);
+
     // TC↔결함 링크
     void insertLink(@Param("testCaseId") Long testCaseId, @Param("defectId") Long defectId);
 

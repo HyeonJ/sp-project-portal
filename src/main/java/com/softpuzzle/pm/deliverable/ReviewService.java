@@ -23,9 +23,9 @@ public class ReviewService {
 
     private static final Logger log = LoggerFactory.getLogger(ReviewService.class);
 
-    /** 게이트 통과 시 해제할 다음 게이트 (15 이후 22는 UAT에서 별도 해제). */
+    /** 게이트 통과 시 해제할 다음 게이트 (13 이후 18은 개발 완료 시 별도 해제). */
     private static final Map<Short, Short> NEXT_GATE = Map.of(
-            (short) 9, (short) 11, (short) 11, (short) 13, (short) 13, (short) 15);
+            (short) 5, (short) 7, (short) 7, (short) 9, (short) 9, (short) 11, (short) 11, (short) 13);
     private static final Map<String, String> SLOT_LABEL = Map.of(
             "requirements", "요구사항", "ia", "IA", "design", "디자인 시안",
             "prototype", "프로토타입", "figma", "Figma");
@@ -158,9 +158,10 @@ public class ReviewService {
 
     private short previousStage(short stage) {
         return switch (stage) {
+            case 7 -> 5;
+            case 9 -> 7;
             case 11 -> 9;
             case 13 -> 11;
-            case 15 -> 13;
             default -> stage;
         };
     }

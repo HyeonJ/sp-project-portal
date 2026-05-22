@@ -7,52 +7,17 @@
     <div>
         <div th:replace="~{fragments/shell :: topbar('프로젝트 목록')}"></div>
         <main class="main">
-            <div class="page-bar">
-                <h1 class="page-title">프로젝트</h1>
-                <button id="newProjectBtn" class="btn primary" type="button" th:if="${navCanCreate}">+ 새 프로젝트</button>
+            <h1 class="page-title">프로젝트 목록</h1>
+
+            <div class="filter-bar">
+                <div class="filter">상태 ▾</div>
+                <div class="filter">고객사 ▾</div>
+                <div class="filter">정렬: 최근 ▾</div>
+                <div class="filter search-input"><span style="color:var(--muted)">⌕</span><input type="text" placeholder="프로젝트명·고객사 검색"></div>
+                <a class="btn primary sm" th:if="${navCanCreate}" th:href="@{/projects/new}" style="margin-left:auto">+ 새 프로젝트</a>
             </div>
 
-            <section id="createCard" class="card" hidden style="margin-bottom:16px">
-                <div class="card-head"><h3>새 프로젝트</h3></div>
-                <form id="createForm" class="form">
-                    <div class="row">
-                        <label>프로젝트명</label>
-                        <div class="value"><input type="text" name="name" required maxlength="100"></div>
-                    </div>
-                    <div class="row">
-                        <label>고객사</label>
-                        <div class="value"><input type="text" name="clientOrgName" required maxlength="100"></div>
-                    </div>
-                    <div class="row">
-                        <label>유형 <small class="opt">선택</small></label>
-                        <div class="value">
-                            <select name="type">
-                                <option value="">선택</option>
-                                <option value="SaaS">SaaS</option>
-                                <option value="웹사이트">웹사이트</option>
-                                <option value="모바일">모바일</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <label>기간 <small class="opt">선택</small></label>
-                        <div class="value" style="display:flex;gap:8px;align-items:center">
-                            <input type="date" name="startDate"> <span style="color:var(--muted-2)">~</span> <input type="date" name="endDate">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <label>설명 <small class="opt">선택</small></label>
-                        <div class="value"><textarea name="description" maxlength="5000"></textarea></div>
-                    </div>
-                    <div id="createErr" class="err" style="display:none;color:var(--hot);font-size:12px"></div>
-                    <div style="display:flex;justify-content:flex-end;gap:8px">
-                        <button type="button" id="cancelCreate" class="btn ghost">취소</button>
-                        <button type="submit" class="btn primary">생성</button>
-                    </div>
-                </form>
-            </section>
-
-            <div id="projectList" class="grid cols-3">
+            <div id="projectList" class="grid cols-2">
                 <p class="page-sub">불러오는 중…</p>
             </div>
         </main>

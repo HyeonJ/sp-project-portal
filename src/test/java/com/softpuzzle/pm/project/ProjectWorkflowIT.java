@@ -91,18 +91,19 @@ class ProjectWorkflowIT {
         Project p = project();
         assertThat(stage(p.getId())).isEqualTo((short) 1);
         confirmSlot(p.getId(), "requirements");
-        assertThat(stage(p.getId())).isEqualTo((short) 9);
+        assertThat(stage(p.getId())).isEqualTo((short) 5);
     }
 
     @Test
-    void devTrigger_advancesTo18_andUnlocksUatGate() {
+    void devTrigger_advancesTo14_andUnlocksUatGate() {
         Project p = project();
         confirmSlot(p.getId(), "requirements");
         confirmSlot(p.getId(), "ia");
         confirmSlot(p.getId(), "design");
         confirmSlot(p.getId(), "prototype");
+        confirmSlot(p.getId(), "figma");
         devRunService.trigger(p.getId(), pm);
-        assertThat(stage(p.getId())).isEqualTo((short) 18);
+        assertThat(stage(p.getId())).isEqualTo((short) 14);
     }
 
     @Test
@@ -112,12 +113,13 @@ class ProjectWorkflowIT {
         confirmSlot(p.getId(), "ia");
         confirmSlot(p.getId(), "design");
         confirmSlot(p.getId(), "prototype");
+        confirmSlot(p.getId(), "figma");
         devRunService.trigger(p.getId(), pm);
 
         projectService.uatApprove(p.getId(), client);
         Project done = projectMapper.findById(p.getId());
         assertThat(done.getStatus()).isEqualTo("completed");
-        assertThat(done.getCurrentStage()).isEqualTo((short) 24);
+        assertThat(done.getCurrentStage()).isEqualTo((short) 20);
     }
 
     @Test

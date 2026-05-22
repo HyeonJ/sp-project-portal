@@ -13,9 +13,10 @@ public final class SlotTypes {
     public static final Map<String, String> UPSTREAM =
             Map.of("ia", "requirements", "design", "ia", "prototype", "design", "figma", "prototype");
 
-    /** 슬롯 컨펌 → 통과 게이트. figma는 게이트 없음. */
+    /** 슬롯 컨펌 → 통과 게이트. (20단계 재번호 기준, Figma 컨펌 게이트 13 포함) */
     public static final Map<String, Short> GATE =
-            Map.of("requirements", (short) 9, "ia", (short) 11, "design", (short) 13, "prototype", (short) 15);
+            Map.of("requirements", (short) 5, "ia", (short) 7, "design", (short) 9,
+                    "prototype", (short) 11, "figma", (short) 13);
 
     private SlotTypes() {
     }

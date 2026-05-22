@@ -15,4 +15,8 @@ public interface TestCaseMapper {
 
     int updateStatus(@Param("id") Long id, @Param("status") String status,
                      @Param("actualResult") String actualResult);
+
+    int updateFields(TestCase tc);
+
+    int updateAssignee(@Param("id") Long id, @Param("assigneeId") Long assigneeId);
 }

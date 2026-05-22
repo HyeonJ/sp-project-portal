@@ -1,0 +1,154 @@
+%PDF-1.4
+%‚„œ”
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R 4 0 R 5 0 R] /Count 3 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 9 0 R >> >> /Contents 6 0 R >>
+endobj
+4 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 9 0 R >> >> /Contents 7 0 R >>
+endobj
+5 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 9 0 R >> >> /Contents 8 0 R >>
+endobj
+6 0 obj
+<< /Length 876 >>
+stream
+BT
+/F1 22 Tf
+1 0 0 1 72 760 Tm
+(SoftPuzzle PM) Tj
+/F1 15 Tf
+1 0 0 1 72 730 Tm
+(Software Requirements Specification \(Sample\)) Tj
+/F1 11 Tf
+1 0 0 1 72 700 Tm
+(Project: ACME Portal Build  |  Version: v1.0  |  Page 1 of 3) Tj
+/F1 13 Tf
+1 0 0 1 72 660 Tm
+(1. Overview) Tj
+/F1 11 Tf
+1 0 0 1 72 636 Tm
+(This document is a sample 3-page PDF used to verify the in-app) Tj
+/F1 11 Tf
+1 0 0 1 72 620 Tm
+(preview \(iframe\) feature of the requirements deliverable slot.) Tj
+/F1 13 Tf
+1 0 0 1 72 590 Tm
+(2. Scope) Tj
+/F1 11 Tf
+1 0 0 1 72 566 Tm
+(- Approval / confirmation workflow between client and agency) Tj
+/F1 11 Tf
+1 0 0 1 72 550 Tm
+(- Deliverable slots: requirements, IA, design, prototype, figma) Tj
+/F1 11 Tf
+1 0 0 1 72 534 Tm
+(- Soft gates \(5, 7, 9, 11, 13\) + major gates \(5, 18\)) Tj
+/F1 9 Tf
+1 0 0 1 72 100 Tm
+(SoftPuzzle PM - Sample SRS - Confidential \(demo data\)) Tj
+ET
+endstream
+endobj
+7 0 obj
+<< /Length 1001 >>
+stream
+BT
+/F1 16 Tf
+1 0 0 1 72 760 Tm
+(3. Functional Requirements  \(Page 2 of 3\)) Tj
+/F1 11 Tf
+1 0 0 1 72 726 Tm
+(REQ-PRJ-001  Create project and initialize workspace.) Tj
+/F1 11 Tf
+1 0 0 1 72 706 Tm
+(REQ-REQ-001  Upload requirements file as versioned snapshot.) Tj
+/F1 11 Tf
+1 0 0 1 72 686 Tm
+(REQ-WF-001   Request review; slot locks while pending.) Tj
+/F1 11 Tf
+1 0 0 1 72 666 Tm
+(REQ-WF-003   Client confirms or rejects a deliverable version.) Tj
+/F1 11 Tf
+1 0 0 1 72 646 Tm
+(REQ-WF-005   New version after confirm auto-invalidates prior.) Tj
+/F1 11 Tf
+1 0 0 1 72 626 Tm
+(REQ-DSN-004  Figma handoff registered and confirmed \(Gate 13\).) Tj
+/F1 11 Tf
+1 0 0 1 72 606 Tm
+(REQ-DEV-001  Dev trigger requires gates 5,7,9,11,13 passed.) Tj
+/F1 11 Tf
+1 0 0 1 72 586 Tm
+(REQ-TST-001  Test cases linked bidirectionally with defects.) Tj
+/F1 11 Tf
+1 0 0 1 72 566 Tm
+(REQ-CMT-001  Per-version comments with role badges.) Tj
+/F1 9 Tf
+1 0 0 1 72 100 Tm
+(SoftPuzzle PM - Sample SRS - Confidential \(demo data\)) Tj
+ET
+endstream
+endobj
+8 0 obj
+<< /Length 816 >>
+stream
+BT
+/F1 16 Tf
+1 0 0 1 72 760 Tm
+(4. Non-Functional Requirements  \(Page 3 of 3\)) Tj
+/F1 11 Tf
+1 0 0 1 72 726 Tm
+(NFR-001  Desktop 1280px+ baseline; mobile out of MVP scope.) Tj
+/F1 11 Tf
+1 0 0 1 72 706 Tm
+(NFR-002  File upload limit 50MB per asset.) Tj
+/F1 11 Tf
+1 0 0 1 72 686 Tm
+(NFR-003  Session auth; CSRF protected mutations.) Tj
+/F1 11 Tf
+1 0 0 1 72 666 Tm
+(NFR-004  Audit log retains workflow events permanently.) Tj
+/F1 13 Tf
+1 0 0 1 72 636 Tm
+(5. Appendix) Tj
+/F1 11 Tf
+1 0 0 1 72 612 Tm
+(20-step flow: 1 init / 2-5 requirements / 6-13 design /) Tj
+/F1 11 Tf
+1 0 0 1 72 596 Tm
+(14 dev / 15-18 test / 19-20 transition & launch.) Tj
+/F1 11 Tf
+1 0 0 1 72 576 Tm
+(Milestones M1..M8 \(M5 = Figma confirmed, Gate 13\).) Tj
+/F1 9 Tf
+1 0 0 1 72 100 Tm
+(SoftPuzzle PM - Sample SRS - Confidential \(demo data\)) Tj
+ET
+endstream
+endobj
+9 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+xref
+0 10
+0000000000 65535 f 
+0000000015 00000 n 
+0000000064 00000 n 
+0000000133 00000 n 
+0000000259 00000 n 
+0000000385 00000 n 
+0000000511 00000 n 
+0000001438 00000 n 
+0000002491 00000 n 
+0000003358 00000 n 
+trailer
+<< /Size 10 /Root 1 0 R >>
+startxref
+3428
+%%EOF

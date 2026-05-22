@@ -107,9 +107,9 @@ class ReviewServiceIT {
                 .isEqualTo("confirmed");
 
         Map<Short, String> gates = gates(p.getId());
-        assertThat(gates.get((short) 9)).isEqualTo("pass");
-        assertThat(gates.get((short) 11)).isEqualTo("wait");
-        assertThat(gates.get((short) 13)).isEqualTo("lock");
+        assertThat(gates.get((short) 5)).isEqualTo("pass");
+        assertThat(gates.get((short) 7)).isEqualTo("wait");
+        assertThat(gates.get((short) 9)).isEqualTo("lock");
 
         Long slotId = slotMapper.findByProjectAndType(p.getId(), "requirements").getId();
         assertThat(activityMapper.findBySlot(slotId)).extracting(ActivityEvent::getEventType)

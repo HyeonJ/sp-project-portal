@@ -71,7 +71,7 @@ table.spec td .vref{display:inline-block;padding:1px 6px;border-radius:4px;font-
 <div class="layout">
 <aside class="side">
   <h1>화면 설계서</h1>
-  <span class="ver">v1.5 · 선행 산출물 변경 배지(REQ-WF-005)·외부 링크/Figma url 항목·새 버전 stateful + 파일/코멘트 액션 UX·파일 뷰어(MOD-FILE-001)·CSV·결함↔TC (31 화면)</span>
+  <span class="ver">v1.6 · 선행 산출물 변경 배지(REQ-WF-005)·외부 링크/Figma url 항목·새 버전 stateful + 파일/코멘트 액션 UX·파일 뷰어(MOD-FILE-001)·CSV 미리보기 모달·결함↔TC 연결/해제·TC 담당자 일괄 지정·결함 [수정](담당자 통합) (31 화면)</span>
 
   <div class="group">공통 (그룹 1)</div>
   <a href="#design-tokens">디자인 토큰 <small>색·타이포·간격</small></a>
@@ -128,7 +128,7 @@ table.spec td .vref{display:inline-block;padding:1px 6px;border-radius:4px;font-
   <div class="screen-head">
     <p class="eyebrow">화면 설계서 · 그룹 1 · 공통</p>
     <h2>디자인 토큰 (Design Tokens)</h2>
-    <p class="meta">출처: Gate 13 컨펌된 시안 <b>A. Precision grid</b> (<code>docs/design/candidates.html</code>)</p>
+    <p class="meta">출처: Gate 9 컨펌된 시안 <b>A. Precision grid</b> (<code>docs/design/candidates.html</code>)</p>
     <p class="desc"><b>Description:</b> 모든 화면이 공통으로 사용하는 색·타이포·간격·모서리·그림자 토큰. 와이어프레임 단계에서는 회색조 골격이고, 본 토큰은 디자인 시안 채택 후 추출. 코드 구현 시 CSS 변수로 매핑.</p>
   </div>
 
@@ -399,10 +399,10 @@ table.spec td .vref{display:inline-block;padding:1px 6px;border-radius:4px;font-
     <table class="spec matrix">
       <thead><tr><th>slug</th><th>관련 게이트</th><th>현재 케이스</th></tr></thead>
       <tbody>
-        <tr><td class="row-h"><code>ia</code></td><td>Gate 11</td><td>v1.0 컨펌 완료 (시범 시나리오)</td></tr>
-        <tr><td class="row-h"><code>design</code></td><td>Gate 13</td><td>v2 컨펌 완료 (A. Precision grid)</td></tr>
-        <tr><td class="row-h"><code>prototype</code></td><td>Gate 15</td><td>14단계 등록 예정 — draft 진입 시 활성</td></tr>
-        <tr><td class="row-h"><code>figma</code></td><td>—</td><td>16~17단계 산출. 게이트 없음, 개발 사전조건</td></tr>
+        <tr><td class="row-h"><code>ia</code></td><td>Gate 7</td><td>v1.0 컨펌 완료 (시범 시나리오)</td></tr>
+        <tr><td class="row-h"><code>design</code></td><td>Gate 9</td><td>v2 컨펌 완료 (A. Precision grid)</td></tr>
+        <tr><td class="row-h"><code>prototype</code></td><td>Gate 11</td><td>10단계 등록 예정 — draft 진입 시 활성</td></tr>
+        <tr><td class="row-h"><code>figma</code></td><td>Gate 13</td><td>12~13단계 산출. Gate 13 컨펌, 개발 사전조건</td></tr>
       </tbody>
     </table>
     <div class="callout"><b>SCR-REQ-001과 동일 패턴</b>이지만 차이점: ① 단계 탭(B) 추가, ② 컨펌 완료가 게이트 통과로 연결, ③ 개발 사전조건 자료의 일부.</div>
@@ -627,9 +627,9 @@ table.spec td .vref{display:inline-block;padding:1px 6px;border-radius:4px;font-
       <tbody>
         <tr><td class="id info"><span class="badge">1</span></td><td>프로젝트명</td><td class="type">String</td><td class="type">project.name</td></tr>
         <tr><td class="id info"><span class="badge">2</span></td><td>고객사·유형·기간 (예: "㈜OO · SaaS · 2026-05~2026-08")</td><td class="type">String</td><td class="type">project.client + type + duration</td></tr>
-        <tr><td class="id info"><span class="badge">3</span></td><td>현재 단계 라벨 (예: "12. 디자인 시안 등록 (게이트 13 대기)")</td><td class="type">String</td><td class="type">project.current_step + gate_status</td></tr>
+        <tr><td class="id info"><span class="badge">3</span></td><td>현재 단계 라벨 (예: "8. 디자인 시안 등록 (게이트 9 대기)")</td><td class="type">String</td><td class="type">project.current_step + gate_status</td></tr>
         <tr><td class="id info"><span class="badge">4</span></td><td>게이트 잠금 배지 (예: "🔒 13 게이트 잠금")</td><td class="type">Badge</td><td class="type">gate.locked_at_step</td></tr>
-        <tr><td class="id info"><span class="badge">5</span></td><td>진행률 바 + 비율 (12/24 = 50%)</td><td class="type">ProgressBar + Percent</td><td class="type">current_step / 24</td></tr>
+        <tr><td class="id info"><span class="badge">5</span></td><td>진행률 바 + 비율 (8/20 = 50%)</td><td class="type">ProgressBar + Percent</td><td class="type">current_step / 20</td></tr>
         <tr><td class="id info"><span class="badge">6</span></td><td>미처리 항목 목록 (역할별 항목)</td><td class="type">List&lt;PendingTask&gt;</td><td class="type">pending_tasks[] (role-filtered)</td></tr>
         <tr><td class="id info"><span class="badge">7</span></td><td>최근 활동 (최근 20건)</td><td class="type">List&lt;Activity&gt;</td><td class="type">recent_activities[] (limit 20)</td></tr>
         <tr><td class="id info"><span class="badge">8</span></td><td>산출물 요약 (IA·시안·프로토타입·Figma 4개, 단계별 최신 버전)</td><td class="type">List&lt;DeliverableSummary&gt;</td><td class="type">deliverables[].latest_version</td></tr>
@@ -644,10 +644,10 @@ table.spec td .vref{display:inline-block;padding:1px 6px;border-radius:4px;font-
       <tbody>
         <tr><td class="id ctrl"><span class="badge">A</span></td><td>사이드바 메뉴</td><td class="type">Nav Link</td><td class="type">→ SCR-LAY 참조 (8개 메뉴)</td></tr>
         <tr><td class="id ctrl"><span class="badge">B</span></td><td>[팀] 검토 요청 발송</td><td class="type">Button → MOD-WF-001</td><td class="type">draft 버전 존재 시 활성. SCR-REQ-001 또는 SCR-DSN-001에서도 동일 액션 가능</td></tr>
-        <tr><td class="id ctrl"><span class="badge">C</span></td><td>[팀] 개발 시작</td><td class="type">Button → MOD-DEV-001</td><td class="type">9·11·13·15 게이트 모두 통과 + 내부 산출물 등록 완료 시 활성 (REQ-DEV-001)</td></tr>
+        <tr><td class="id ctrl"><span class="badge">C</span></td><td>[팀] 개발 시작</td><td class="type">Button → MOD-DEV-001</td><td class="type">5·7·9·11·13 게이트 모두 통과 + 내부 산출물 등록 완료 시 활성 (REQ-DEV-001)</td></tr>
         <tr><td class="id ctrl"><span class="badge">D</span></td><td>[고객] 컨펌</td><td class="type">Button → MOD-WF-002</td><td class="type">검토 요청 수신 시 활성</td></tr>
         <tr><td class="id ctrl"><span class="badge">E</span></td><td>[고객] 반려</td><td class="type">Button → MOD-WF-002</td><td class="type">동일</td></tr>
-        <tr><td class="id ctrl"><span class="badge">F</span></td><td>[공통] 산출물 Export</td><td class="type">Button → SCR-DEV-002</td><td class="type">Gate 22 통과 후만 활성 (REQ-DEV-002)</td></tr>
+        <tr><td class="id ctrl"><span class="badge">F</span></td><td>[공통] 산출물 Export</td><td class="type">Button → SCR-DEV-002</td><td class="type">Gate 18 통과 후만 활성 (REQ-DEV-002)</td></tr>
         <tr><td class="id ctrl"><span class="badge">G</span></td><td>미처리 항목 클릭</td><td class="type">Link</td><td class="type">해당 화면 진입 (예: 시안 컨펌 대기 → SCR-DSN-001/design)</td></tr>
         <tr><td class="id ctrl"><span class="badge">H</span></td><td>최근 활동 항목 클릭</td><td class="type">Link</td><td class="type">해당 객체 화면 진입 (요구사항/산출물/코멘트)</td></tr>
         <tr><td class="id ctrl"><span class="badge">I</span></td><td>산출물 요약 박스 클릭</td><td class="type">Link</td><td class="type">→ SCR-DSN-001 해당 slug 페이지</td></tr>
@@ -662,9 +662,9 @@ table.spec td .vref{display:inline-block;padding:1px 6px;border-radius:4px;font-
       <thead><tr><th>액션</th><th>관리자</th><th>프로젝트팀(PM)</th><th>고객사</th><th>사전조건</th></tr></thead>
       <tbody>
         <tr><td class="row-h">B 검토 요청 발송</td><td>❌</td><td>✅</td><td>❌</td><td>최신 버전 = draft + 파일 ≥1</td></tr>
-        <tr><td class="row-h">C 개발 시작</td><td>❌</td><td>✅</td><td>❌</td><td>9·11·13·15 게이트 통과 + 내부 산출물 6종 등록</td></tr>
+        <tr><td class="row-h">C 개발 시작</td><td>❌</td><td>✅</td><td>❌</td><td>5·7·9·11·13 게이트 통과 + 내부 산출물 6종 등록</td></tr>
         <tr><td class="row-h">D·E 컨펌·반려</td><td>❌</td><td>❌</td><td>✅</td><td>검토 요청 수신 (= 최신 버전 검토중)</td></tr>
-        <tr><td class="row-h">F 산출물 Export</td><td>✅</td><td>✅</td><td>✅</td><td>Gate 22 통과</td></tr>
+        <tr><td class="row-h">F 산출물 Export</td><td>✅</td><td>✅</td><td>✅</td><td>Gate 18 통과</td></tr>
         <tr><td class="row-h">6 미처리 항목</td><td>표시 (전체)</td><td>표시 (팀 액션)</td><td>표시 (고객 액션)</td><td>역할별 필터링</td></tr>
       </tbody>
     </table>
@@ -678,7 +678,7 @@ table.spec td .vref{display:inline-block;padding:1px 6px;border-radius:4px;font-
     <p class="eyebrow">화면 설계서 · 그룹 3 · 진입·랜딩</p>
     <h2>SCR-RDM-001 · 진행 현황</h2>
     <p class="meta">Path: 프로젝트 사이드바 메뉴 &nbsp;·&nbsp; URL: <code>/projects/{id}/roadmap</code> &nbsp;·&nbsp; 권한: 공통 (읽기 전용)</p>
-    <p class="desc"><b>Description:</b> 단일 프로젝트의 24단계 전체 여정·5게이트·7마일스톤을 시각화. 대시보드(SCR-PRJ-001, 현재 중심)와 책임 분리. 액션 없음 — 산출물 링크만 클릭 가능. 모든 역할이 동일하게 접근 (자신이 볼 수 있는 프로젝트의 로드맵만).</p>
+    <p class="desc"><b>Description:</b> 단일 프로젝트의 20단계 전체 여정·6게이트·8마일스톤을 시각화. 대시보드(SCR-PRJ-001, 현재 중심)와 책임 분리. 액션 없음 — 산출물 링크만 클릭 가능. 모든 역할이 동일하게 접근 (자신이 볼 수 있는 프로젝트의 로드맵만).</p>
   </div>
 
   <div class="section">
@@ -691,12 +691,12 @@ table.spec td .vref{display:inline-block;padding:1px 6px;border-radius:4px;font-
     <table class="spec">
       <thead><tr><th>No</th><th>설명</th><th>Type</th><th>출처</th></tr></thead>
       <tbody>
-        <tr><td class="id info"><span class="badge">1</span></td><td>페이지 제목·서브 ("진행 현황 / {프로젝트명} · 24단계 전체 여정...")</td><td class="type">String</td><td class="type">project.name (정적 카피)</td></tr>
-        <tr><td class="id info"><span class="badge">2</span></td><td>KPI 카드 4종 (전체 진행률 stage/24 · 통과 게이트 N/5 · 현재 단계 라벨 · 다음 메이저 마일스톤)</td><td class="type">Card×4</td><td class="type">project.current_step, gates[].status, milestones[]</td></tr>
-        <tr><td class="id info"><span class="badge">3</span></td><td>마일스톤 스트립 M1~M7 (코드, 라벨, Gate 번호, 상태, 예상/완료 일자)</td><td class="type">List&lt;Milestone&gt;</td><td class="type">milestones[] (7개 고정)</td></tr>
+        <tr><td class="id info"><span class="badge">1</span></td><td>페이지 제목·서브 ("진행 현황 / {프로젝트명} · 20단계 전체 여정...")</td><td class="type">String</td><td class="type">project.name (정적 카피)</td></tr>
+        <tr><td class="id info"><span class="badge">2</span></td><td>KPI 카드 4종 (전체 진행률 stage/20 · 통과 게이트 N/6 · 현재 단계 라벨 · 다음 메이저 마일스톤)</td><td class="type">Card×4</td><td class="type">project.current_step, gates[].status, milestones[]</td></tr>
+        <tr><td class="id info"><span class="badge">3</span></td><td>마일스톤 스트립 M1~M8 (코드, 라벨, Gate 번호, 상태, 예상/완료 일자)</td><td class="type">List&lt;Milestone&gt;</td><td class="type">milestones[] (8개 고정)</td></tr>
         <tr><td class="id info"><span class="badge">4</span></td><td>Phase 7개 그룹 (착수·계정·요구사항·설계·개발·테스트·이행운영)</td><td class="type">List&lt;Phase&gt;</td><td class="type">roadmap.phases[]</td></tr>
         <tr><td class="id info"><span class="badge">5</span></td><td>각 단계 행 — 노드(원/마름모) + 번호 + 단계명 + 세부설명(옵션) + 상태 뱃지</td><td class="type">List&lt;Stage&gt;</td><td class="type">phase.stages[]</td></tr>
-        <tr><td class="id info"><span class="badge">6</span></td><td>Major Gate 플래그 (9·22 단계 전용 표식)</td><td class="type">Badge (조건부)</td><td class="type">stage.gate === 'major'</td></tr>
+        <tr><td class="id info"><span class="badge">6</span></td><td>Major Gate 플래그 (5·18 단계 전용 표식)</td><td class="type">Badge (조건부)</td><td class="type">stage.gate === 'major'</td></tr>
         <tr><td class="id info"><span class="badge">7</span></td><td>산출물 링크 (예: "SRS v1.3 →", "IA v0.2 →", "시안 v2 →")</td><td class="type">Link (조건부)</td><td class="type">stage.deliverable {label, route}</td></tr>
         <tr><td class="id info"><span class="badge">8</span></td><td>범례 (상태 색상·게이트 표시 설명)</td><td class="type">String (정적)</td><td class="type">i18n</td></tr>
       </tbody>
@@ -710,7 +710,7 @@ table.spec td .vref{display:inline-block;padding:1px 6px;border-radius:4px;font-
       <tbody>
         <tr><td class="id ctrl"><span class="badge">A</span></td><td>사이드바 메뉴 (다른 화면 진입)</td><td class="type">Nav Link</td><td class="type">→ SCR-LAY 참조 (8개 메뉴)</td></tr>
         <tr><td class="id ctrl"><span class="badge">B</span></td><td>산출물 링크 클릭 (예: "SRS v1.3 →")</td><td class="type">Link</td><td class="type">→ 해당 산출물 페이지 (SCR-REQ-001 · SCR-DSN-001/{slug})</td></tr>
-        <tr><td class="id ctrl"><span class="badge">C</span></td><td>잠금 단계 마우스 오버</td><td class="type">Tooltip (Hover)</td><td class="type">잠금 사유 표시 (예: "Gate 13 통과 후 진입")</td></tr>
+        <tr><td class="id ctrl"><span class="badge">C</span></td><td>잠금 단계 마우스 오버</td><td class="type">Tooltip (Hover)</td><td class="type">잠금 사유 표시 (예: "Gate 9 통과 후 진입")</td></tr>
       </tbody>
     </table>
     <div class="callout"><b>액션 버튼 없음</b>: 검토 요청·컨펌·반려·개발 시작 등은 모두 대시보드(SCR-PRJ-001)·산출물 페이지(SCR-DSN-001·SCR-REQ-001)에 있음. 진행 현황은 정보 제공·탐색 전용.</div>
@@ -1132,7 +1132,7 @@ table.spec td .vref{display:inline-block;padding:1px 6px;border-radius:4px;font-
     <p class="eyebrow">화면 설계서 · 그룹 4 · 부가</p>
     <h2>SCR-DEV-001 · 개발 진행 상태</h2>
     <p class="meta">Path: 사이드바 메뉴 / 대시보드 [개발 시작] 후 자동 진입 &nbsp;·&nbsp; URL: <code>/projects/{id}/dev</code> &nbsp;·&nbsp; 권한: 팀</p>
-    <p class="desc"><b>Description:</b> 18단계 개발의 비동기 작업 진행 상태. 5초 폴링 갱신. 과거 작업 이력 + 재시도(24h당 3회, REQ-DEV-001).</p>
+    <p class="desc"><b>Description:</b> 14단계 개발의 비동기 작업 진행 상태. 5초 폴링 갱신. 과거 작업 이력 + 재시도(24h당 3회, REQ-DEV-001).</p>
   </div>
   <div class="section"><h3><span class="num">1</span> 화면</h3><iframe class="wf-frame" src="../wireframe/index.html?screen=s8" title="SCR-DEV-001 와이어프레임"></iframe></div>
   <div class="section">
@@ -1171,7 +1171,7 @@ table.spec td .vref{display:inline-block;padding:1px 6px;border-radius:4px;font-
     <p class="eyebrow">화면 설계서 · 그룹 4 · 부가</p>
     <h2>SCR-TST-001 · TC 목록</h2>
     <p class="meta">Path: 사이드바 메뉴 &nbsp;·&nbsp; URL: <code>/projects/{id}/tests</code> &nbsp;·&nbsp; 권한: 팀(QA), UAT 시 고객사 조회</p>
-    <p class="desc"><b>Description:</b> 테스트 케이스 목록·관리. 19단계 작성·20~21단계 UAT 실행. 결함과 양방향 link (REQ-TST-001).</p>
+    <p class="desc"><b>Description:</b> 테스트 케이스 목록·관리. 15단계 작성·16~17단계 UAT 실행. 결함과 양방향 link (REQ-TST-001).</p>
   </div>
   <div class="section"><h3><span class="num">1</span> 화면</h3><iframe class="wf-frame" src="../wireframe/index.html?screen=s13" title="SCR-TST-001 와이어프레임"></iframe></div>
   <div class="section">
@@ -1189,7 +1189,8 @@ table.spec td .vref{display:inline-block;padding:1px 6px;border-radius:4px;font-
       <tr><td class="id ctrl"><span class="badge">B·C·D</span></td><td>단계·우선순위·상태 필터</td><td class="type">Dropdown</td><td class="type">목록 즉시 필터</td></tr>
       <tr><td class="id ctrl"><span class="badge">E</span></td><td>검색 (TC ID·제목)</td><td class="type">Input</td><td class="type">부분 일치</td></tr>
       <tr><td class="id ctrl"><span class="badge">F</span></td><td>TC 행 클릭</td><td class="type">Link</td><td class="type">→ SCR-TST-002</td></tr>
-      <tr><td class="id ctrl"><span class="badge">G</span></td><td>[CSV 가져오기]</td><td class="type">Button</td><td class="type">CSV·Excel 일괄 가져오기 모달 — 템플릿 다운로드 → 파일 업로드 → 인식 행·컬럼 매핑 미리보기 → 등록 (REQ-TST-001). 단건 [+ TC 등록]과 병행, 대량 작성용</td></tr>
+      <tr><td class="id ctrl"><span class="badge">G</span></td><td>[CSV 가져오기]</td><td class="type">Button → Modal</td><td class="type">CSV 일괄 가져오기 모달 — 템플릿 다운로드(클라 생성) → 파일 드롭존 업로드 → 인식 행·오류 수 미리보기 → 등록 (REQ-TST-001). 단건 [+ TC 등록]과 병행, 대량 작성용. 파서는 RFC4180(따옴표·BOM)</td></tr>
+      <tr><td class="id ctrl"><span class="badge">H</span></td><td>행 체크박스 + [담당자 일괄 지정]</td><td class="type">Checkbox + Button → Modal</td><td class="type">행 다중 선택(전체 선택·shift 범위) 후 담당자 일괄 지정 — 테스트 범위별 담당 분담(예: 1~10 김개발, 11~20 한개발). 팀(QA) 전용</td></tr>
     </tbody></table>
   </div>
   <div class="section">
@@ -1197,7 +1198,7 @@ table.spec td .vref{display:inline-block;padding:1px 6px;border-radius:4px;font-
     <table class="spec matrix"><thead><tr><th>역할</th><th>접근</th><th>등록·편집</th><th>결과 입력</th></tr></thead><tbody>
       <tr><td class="row-h">팀 (QA)</td><td>✅</td><td>✅</td><td>✅</td></tr>
       <tr><td class="row-h">팀 (PM·디자이너 등)</td><td>✅ 조회</td><td>❌</td><td>❌</td></tr>
-      <tr><td class="row-h">고객사</td><td>UAT(20~21) 동안만 조회</td><td>❌</td><td>❌</td></tr>
+      <tr><td class="row-h">고객사</td><td>UAT(16~17) 동안만 조회</td><td>❌</td><td>❌</td></tr>
       <tr><td class="row-h">관리자</td><td>✅ 조회 (감사용)</td><td>❌</td><td>❌</td></tr>
     </tbody></table>
   </div>
@@ -1230,9 +1231,9 @@ table.spec td .vref{display:inline-block;padding:1px 6px;border-radius:4px;font-
     <table class="spec"><thead><tr><th>No</th><th>액션</th><th>Type</th><th>Effect</th></tr></thead><tbody>
       <tr><td class="id ctrl"><span class="badge">B</span></td><td>실제 결과 입력</td><td class="type">Textarea</td><td class="type">PATCH tc.actual</td></tr>
       <tr><td class="id ctrl"><span class="badge">C</span></td><td>연결 결함 클릭</td><td class="type">Link</td><td class="type">→ SCR-TST-004</td></tr>
-      <tr><td class="id ctrl"><span class="badge">D</span></td><td>[+ 결함 등록] · [+ 결함 연결]</td><td class="type">Button</td><td class="type">[+ 결함 등록] 신규 결함 — 이 TC가 연결 TC로 자동 선택(REQ-TST-001). [+ 결함 연결] 기존 결함 검색·선택. 양방향 link</td></tr>
+      <tr><td class="id ctrl"><span class="badge">D</span></td><td>[+ 결함 등록] · [+ 결함 연결] · 해제 [✕]</td><td class="type">Button</td><td class="type">[+ 결함 등록] 신규 결함 — 이 TC가 연결 TC로 자동 연결(REQ-TST-001). [+ 결함 연결] 기존 미연결 결함 체크박스 선택·연결. 각 항목 [✕] 연결 해제. 양방향 link, 팀 전용</td></tr>
       <tr><td class="id ctrl"><span class="badge">E·F·G</span></td><td>통과 / 실패 / 보류 결과</td><td class="type">Button</td><td class="type">tc.status 전이. 실패 시 결함 등록 옵션 안내</td></tr>
-      <tr><td class="id ctrl"><span class="badge">H</span></td><td>[편집]</td><td class="type">Button</td><td class="type">전제·절차·기대 결과 편집 모드</td></tr>
+      <tr><td class="id ctrl"><span class="badge">H</span></td><td>[수정]</td><td class="type">Button → Modal</td><td class="type">제목·단계·우선순위·전제·절차·기대 결과 + **담당자** 편집 모달 → PATCH (팀 QA 전용)</td></tr>
     </tbody></table>
   </div>
   <div class="section">
@@ -1252,7 +1253,7 @@ table.spec td .vref{display:inline-block;padding:1px 6px;border-radius:4px;font-
     <p class="eyebrow">화면 설계서 · 그룹 4 · 부가</p>
     <h2>SCR-TST-003 · 결함 목록</h2>
     <p class="meta">Path: 사이드바 메뉴 &nbsp;·&nbsp; URL: <code>/projects/{id}/defects</code> &nbsp;·&nbsp; 권한: 공통 (UAT 동안 고객사 등록 가능)</p>
-    <p class="desc"><b>Description:</b> UAT 결함 추적. Gate 22 사전조건 = 모든 결함 해결 완료 (REQ-TST-003).</p>
+    <p class="desc"><b>Description:</b> UAT 결함 추적. Gate 18 사전조건 = 모든 결함 해결 완료 (REQ-TST-003).</p>
   </div>
   <div class="section"><h3><span class="num">1</span> 화면</h3><iframe class="wf-frame" src="../wireframe/index.html?screen=s10" title="SCR-TST-003 와이어프레임"></iframe></div>
   <div class="section">
@@ -1275,9 +1276,9 @@ table.spec td .vref{display:inline-block;padding:1px 6px;border-radius:4px;font-
   <div class="section">
     <h3><span class="num">4</span> States (등록 권한)</h3>
     <table class="spec matrix"><thead><tr><th>단계</th><th>고객사 등록</th><th>팀 등록</th><th>비고</th></tr></thead><tbody>
-      <tr><td class="row-h">UAT (20~21)</td><td>✅</td><td>✅</td><td>고객사 주도 등록</td></tr>
+      <tr><td class="row-h">UAT (16~17)</td><td>✅</td><td>✅</td><td>고객사 주도 등록</td></tr>
       <tr><td class="row-h">UAT 외</td><td>❌</td><td>✅</td><td>팀 내부 발견 결함</td></tr>
-      <tr><td class="row-h">Gate 22 사전조건</td><td colspan="2">모든 결함 = 해결 완료/재현 불가</td><td>REQ-TST-003</td></tr>
+      <tr><td class="row-h">Gate 18 사전조건</td><td colspan="2">모든 결함 = 해결 완료/재현 불가</td><td>REQ-TST-003</td></tr>
     </tbody></table>
   </div>
 </section>
@@ -1309,11 +1310,11 @@ table.spec td .vref{display:inline-block;padding:1px 6px;border-radius:4px;font-
     <table class="spec"><thead><tr><th>No</th><th>액션</th><th>Type</th><th>Effect</th></tr></thead><tbody>
       <tr><td class="id ctrl"><span class="badge">B</span></td><td>첨부 [다운로드]</td><td class="type">Button</td><td class="type">파일 응답</td></tr>
       <tr><td class="id ctrl"><span class="badge">C</span></td><td>[+ 첨부 추가] <a class="vref" href="#validation">V-001</a></td><td class="type">File picker</td><td class="type">파일 50MB 이하</td></tr>
-      <tr><td class="id ctrl"><span class="badge">D</span></td><td>연결 TC 클릭</td><td class="type">Link</td><td class="type">→ SCR-TST-002</td></tr>
+      <tr><td class="id ctrl"><span class="badge">D</span></td><td>연결 TC 클릭 / 해제 [✕]</td><td class="type">Link / Button</td><td class="type">클릭 → SCR-TST-002. [✕] 연결 해제(DELETE, 팀 전용)</td></tr>
       <tr><td class="id ctrl"><span class="badge">E</span></td><td>코멘트 입력 <a class="vref" href="#validation">V-003</a></td><td class="type">Textarea</td><td class="type">POST → comments[]</td></tr>
       <tr><td class="id ctrl"><span class="badge">F</span></td><td>코멘트 [등록]</td><td class="type">Button</td><td class="type">submit</td></tr>
-      <tr><td class="id ctrl"><span class="badge">G·H·I·J</span></td><td>상태 변경 (미해결/진행 중/해결 완료/재현 불가)</td><td class="type">Button</td><td class="type">PATCH defect.status</td></tr>
-      <tr><td class="id ctrl"><span class="badge">K</span></td><td>[담당자 변경]</td><td class="type">Button → Modal</td><td class="type">담당자 선택 모달 → PATCH defect.assignee</td></tr>
+      <tr><td class="id ctrl"><span class="badge">G·H·I·J</span></td><td>상태 변경 (미해결/진행 중/해결 완료/재현 불가)</td><td class="type">Button</td><td class="type">PATCH defect.status (팀)</td></tr>
+      <tr><td class="id ctrl"><span class="badge">K</span></td><td>[수정]</td><td class="type">Button → Modal</td><td class="type">제목·심각도·재현·환경 + **담당자** 편집 모달 → PATCH defect. 팀 또는 **본인 등록 고객사**(고객사는 담당자 필드 없음 — 담당자 변경은 팀만)</td></tr>
     </tbody></table>
   </div>
   <div class="section">
@@ -1324,7 +1325,7 @@ table.spec td .vref{display:inline-block;padding:1px 6px;border-radius:4px;font-
       <tr><td class="row-h">해결 완료</td><td>미해결 (재발견 시)</td></tr>
       <tr><td class="row-h">재현 불가</td><td>미해결 (추가 정보 입력 시)</td></tr>
     </tbody></table>
-    <div class="callout"><b>Gate 22</b>: 모든 결함이 <code>해결 완료</code> 또는 <code>재현 불가</code>여야 22 게이트 컨펌 가능 (REQ-TST-003).</div>
+    <div class="callout"><b>Gate 18</b>: 모든 결함이 <code>해결 완료</code> 또는 <code>재현 불가</code>여야 18 게이트 컨펌 가능 (REQ-TST-003).</div>
   </div>
 </section>
 
@@ -1334,13 +1335,13 @@ table.spec td .vref{display:inline-block;padding:1px 6px;border-radius:4px;font-
     <p class="eyebrow">화면 설계서 · 그룹 4 · 부가</p>
     <h2>MOD-DEV-001 · 개발 시작 모달</h2>
     <p class="meta">트리거: SCR-PRJ-001 [팀] 개발 시작 &nbsp;·&nbsp; 권한: 프로젝트팀 PM</p>
-    <p class="desc"><b>Description:</b> 18단계 개발 시작 컨펌. 사전 조건(9·11·13·15 게이트 + 내부 산출물 6종) 확인 후 큐 등록 (REQ-DEV-001).</p>
+    <p class="desc"><b>Description:</b> 14단계 개발 시작 컨펌. 사전 조건(5·7·9·11·13 게이트 + 내부 산출물 6종) 확인 후 큐 등록 (REQ-DEV-001).</p>
   </div>
   <div class="section"><h3><span class="num">1</span> 화면</h3><iframe class="wf-frame" src="../wireframe/index.html?screen=m3" title="MOD-DEV-001 와이어프레임"></iframe></div>
   <div class="section">
     <h3><span class="num">2</span> Information</h3>
     <table class="spec"><thead><tr><th>No</th><th>설명</th><th>Type</th><th>출처</th></tr></thead><tbody>
-      <tr><td class="id info"><span class="badge">1</span></td><td>사전 조건 체크리스트 (4개 게이트)</td><td class="type">List&lt;Gate&gt;</td><td class="type">gates[9, 11, 13, 15].status</td></tr>
+      <tr><td class="id info"><span class="badge">1</span></td><td>사전 조건 체크리스트 (5개 게이트)</td><td class="type">List&lt;Gate&gt;</td><td class="type">gates[5, 7, 9, 11, 13].status</td></tr>
       <tr><td class="id info"><span class="badge">2</span></td><td>입력 자료 (요구사항 수·산출물 파일 수)</td><td class="type">Integer×N</td><td class="type">project.requirements.count + deliverables.files.count</td></tr>
       <tr><td class="id info"><span class="badge">3</span></td><td>경고 ("24시간 소요")</td><td class="type">String (정적)</td><td class="type">i18n</td></tr>
     </tbody></table>
@@ -1355,7 +1356,7 @@ table.spec td .vref{display:inline-block;padding:1px 6px;border-radius:4px;font-
   <div class="section">
     <h3><span class="num">4</span> States (사전 조건 미충족 시)</h3>
     <table class="spec matrix"><thead><tr><th>조건</th><th>[개발 시작] 활성 여부</th><th>안내</th></tr></thead><tbody>
-      <tr><td class="row-h">9·11·13·15 게이트 모두 통과</td><td>✅ 활성</td><td>—</td></tr>
+      <tr><td class="row-h">5·7·9·11·13 게이트 모두 통과</td><td>✅ 활성</td><td>—</td></tr>
       <tr><td class="row-h">게이트 1개 이상 미통과</td><td>❌ 비활성</td><td>"Gate {N} 미통과 — {화면}에서 컨펌 필요"</td></tr>
       <tr><td class="row-h">내부 산출물(No.5·6·9·10·11·Figma) 미등록</td><td>❌ 비활성</td><td>"내부 설계 산출물 N개 미등록"</td></tr>
       <tr><td class="row-h">24h당 3회 재시도 초과</td><td>❌ 비활성</td><td>"24시간 후 가능"</td></tr>

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="ko">
-<head th:replace="~{fragments/head :: head('TC · SoftPuzzle PM')}"></head>
+<head th:replace="~{fragments/head :: head('테스트 케이스 · SoftPuzzle PM')}"></head>
 <body>
 <div class="app">
     <div th:replace="~{fragments/shell :: projectSidebar('tests')}"></div>
@@ -8,50 +8,62 @@
         <div th:replace="~{fragments/shell :: projectTopbar('TC')}"></div>
         <main class="main" id="tcPage" th:attr="data-project-id=${projId}, data-tier=${navTier}">
             <div class="page-bar">
-                <h1 class="page-title">테스트 케이스</h1>
+                <div><h1 class="page-title">테스트 케이스</h1></div>
                 <div style="display:flex;gap:8px" th:if="${navTier == 'team'}">
+                    <button id="bulkAssignBtn" class="btn" type="button" disabled>담당자 일괄 지정</button>
                     <button id="csvBtn" class="btn" type="button">CSV 가져오기</button>
-                    <button id="newTcBtn" class="btn primary" type="button">+ 새 TC</button>
+                    <button id="newTcBtn" class="btn primary" type="button">+ TC 등록</button>
                 </div>
             </div>
 
-            <section id="csvCard" class="card" hidden style="margin-bottom:16px">
-                <div class="card-head"><h3>CSV 일괄 가져오기</h3></div>
-                <p class="page-sub">형식: <code>제목,단계,우선순위(High/Medium/Low),전제조건,절차,기대결과</code> — 헤더 행은 자동 무시.</p>
-                <textarea id="csvText" rows="5" style="width:100%;border:1px solid var(--divider);border-radius:8px;padding:9px 11px;font-family:var(--mono);font-size:12px"></textarea>
-                <div style="margin-top:8px;display:flex;gap:8px;justify-content:flex-end">
-                    <button class="btn ghost" id="csvCancel" type="button">취소</button>
-                    <button class="btn primary" id="csvSubmit" type="button">가져오기</button>
-                </div>
-                <p id="csvErr" class="err" style="display:none;color:var(--hot);margin-top:6px"></p>
-            </section>
+            <div class="grid cols-3" style="margin-bottom:14px">
+                <div class="stat"><span class="label">대기</span><span class="value" style="color:var(--muted)" th:text="${tcPending}">0</span></div>
+                <div class="stat"><span class="label">통과</span><span class="value" style="color:var(--ok)" th:text="${tcPassed}">0</span></div>
+                <div class="stat"><span class="label">실패</span><span class="value" style="color:var(--hot)" th:text="${tcFailed}">0</span></div>
+            </div>
 
-            <section id="newTcCard" class="card" hidden style="margin-bottom:16px">
-                <div class="card-head"><h3>새 테스트 케이스</h3></div>
-                <form id="tcForm" class="form">
-                    <div class="row"><label>제목</label><div class="value"><input type="text" name="title" required maxlength="200"></div></div>
-                    <div class="row"><label>단계</label><div class="value"><input type="text" name="phase" placeholder="인증·요구사항·워크플로우 등" maxlength="30"></div></div>
-                    <div class="row"><label>우선순위</label><div class="value"><select name="priority"><option>Medium</option><option>High</option><option>Low</option></select></div></div>
-                    <div class="row"><label>전제조건 <small class="opt">선택</small></label><div class="value"><textarea name="precondition"></textarea></div></div>
-                    <div class="row"><label>절차 <small class="opt">선택</small></label><div class="value"><textarea name="steps"></textarea></div></div>
-                    <div class="row"><label>기대결과 <small class="opt">선택</small></label><div class="value"><textarea name="expectedResult"></textarea></div></div>
-                    <div id="tcErr" class="err" style="display:none;color:var(--hot)"></div>
-                    <div style="display:flex;gap:8px;justify-content:flex-end">
-                        <button type="button" id="tcCancel" class="btn ghost">취소</button>
-                        <button type="submit" class="btn primary">등록</button>
-                    </div>
-                </form>
-            </section>
+            <div class="filter-bar">
+                <div class="filter">단계 ▾</div>
+                <div class="filter">우선순위 ▾</div>
+                <div class="filter">상태 ▾</div>
+                <div class="filter search-input"><span style="color:var(--muted)">⌕</span><input type="text" placeholder="TC ID·제목 검색"></div>
+            </div>
 
-            <section class="card">
-                <div class="card-head"><h3>목록</h3><span class="meta" id="tcCount"></span></div>
-                <div id="tcList" class="card-list"><p class="page-sub" style="margin:0">불러오는 중…</p></div>
+            <section class="card flat" style="padding:0;overflow:hidden">
+                <table class="tbl">
+                    <thead><tr><th style="width:34px"><input type="checkbox" id="tcChkAll" aria-label="전체 선택"></th><th>ID</th><th>제목</th><th>단계</th><th>우선순위</th><th>상태</th><th>담당</th></tr></thead>
+                    <tbody>
+                        <tr th:each="t, rowStat : ${testCases}" style="cursor:pointer"
+                            th:attr="data-href=@{/projects/{id}/test-cases/{tc}(id=${projId},tc=${t.id})}">
+                            <td class="chk-cell" style="cursor:default;text-align:center"><input type="checkbox" class="tc-chk" th:attr="data-tc-id=${t.id}, data-row=${rowStat.index}"></td>
+                            <td class="id-cell" th:text="${t.code}">TC-001</td>
+                            <td th:text="${t.title}">제목</td>
+                            <td><span class="cat-tag" th:text="${t.phase}">단계</span></td>
+                            <td>
+                                <span th:switch="${t.priority}">
+                                    <span th:case="'High'" class="pill hot">High</span>
+                                    <span th:case="'Low'" class="pill muted">Low</span>
+                                    <span th:case="*" class="pill warn">Medium</span>
+                                </span>
+                            </td>
+                            <td>
+                                <span th:switch="${t.status}">
+                                    <span th:case="'passed'" class="pill ok">통과</span>
+                                    <span th:case="'failed'" class="pill hot">실패</span>
+                                    <span th:case="*" class="pill muted">대기</span>
+                                </span>
+                            </td>
+                            <td th:text="${t.assigneeName != null ? t.assigneeName : '-'}">담당</td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(testCases)}">
+                            <td colspan="7" style="text-align:center;color:var(--muted);padding:28px">등록된 테스트 케이스가 없습니다.</td>
+                        </tr>
+                    </tbody>
+                </table>
             </section>
-
-            <section id="tcDetail" class="card" hidden style="margin-top:16px"></section>
         </main>
     </div>
 </div>
-<script th:src="@{/js/tc.js}" defer></script>
+<script th:src="@{/js/qa-tc.js}" defer></script>
 </body>
 </html>

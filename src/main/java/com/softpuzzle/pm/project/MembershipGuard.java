@@ -29,6 +29,11 @@ public class MembershipGuard {
         return memberMapper.existsActive(projectId, account.getId());
     }
 
+    /** 임의 계정이 프로젝트의 활성 멤버인지 (담당자 검증 등). */
+    public boolean isActiveMember(Long projectId, Long accountId) {
+        return accountId != null && memberMapper.existsActive(projectId, accountId);
+    }
+
     /** 조회 권한: admin 전역 허용, 그 외 활성 멤버만. */
     public void assertCanView(Long projectId, Account account) {
         if (isAdmin(account)) {

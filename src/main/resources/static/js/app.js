@@ -50,14 +50,22 @@
 
     function renderProject(p) {
         const type = p.type ? ` · ${esc(p.type)}` : '';
+        const stage = p.currentStage || 1;
+        const pct = Math.round(stage * 100 / 20);
+        const pill = p.status === 'completed'
+            ? '<span class="pill ok">완료</span>'
+            : (pct >= 90 ? '<span class="pill warn">검수 단계</span>' : '<span class="pill accent">진행 중</span>');
         const $card = $(`
-            <div class="card" data-id="${esc(p.id)}" style="cursor:pointer">
-                <div class="card-head" style="border:0;padding:0;margin-bottom:10px">
-                    <h3>${esc(p.name)}</h3>
-                    ${statusPill(p.status)}
+            <div class="proj-card" data-id="${esc(p.id)}">
+                <div class="top">
+                    <div>
+                        <h3>${esc(p.name)}</h3>
+                        <div class="client">${esc(p.clientOrgName)}${type}</div>
+                    </div>
+                    ${pill}
                 </div>
-                <p class="page-sub" style="margin:0">${esc(p.clientOrgName)}${type}</p>
-                <p style="margin:8px 0 0;font:500 12px/1 var(--mono);color:var(--muted)">단계 ${esc(p.currentStage)} / 24</p>
+                <div class="stage">단계 <b>${stage}/20</b></div>
+                <div class="progress"><div class="bar"><i style="width:${pct}%"></i></div></div>
             </div>
         `);
         $card.on('click', function () { window.location.href = `/projects/${p.id}`; });

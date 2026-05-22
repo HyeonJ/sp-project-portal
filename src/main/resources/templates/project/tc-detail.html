@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head th:replace="~{fragments/head :: head('TC 상세 · SoftPuzzle PM')}"></head>
+<body>
+<div class="app">
+    <div th:replace="~{fragments/shell :: projectSidebar('tests')}"></div>
+    <div>
+        <div th:replace="~{fragments/shell :: projectTopbar('TC 상세')}"></div>
+        <main class="main" id="tcDetailPage" th:attr="data-project-id=${projId}, data-tc-id=${tc.id}, data-tier=${navTier}">
+
+            <div class="page-bar">
+                <div>
+                    <p class="page-sub" style="margin-bottom:4px"><a th:href="@{/projects/{id}/test-cases(id=${projId})}">← TC 목록</a></p>
+                    <h1 class="page-title" th:text="${tc.code} + ' · ' + ${tc.title}">TC-001 · 제목</h1>
+                    <p class="page-sub" th:text="${tc.phase} + ' · ' + ${tc.priority} + ' · 담당 ' + (${tc.assigneeName != null ? tc.assigneeName : '-'})">단계 · 우선순위 · 담당</p>
+                </div>
+                <div style="display:flex;gap:8px;align-items:center">
+                    <button class="btn sm" type="button" id="tcEditBtn" th:if="${navTier == 'team'}">수정</button>
+                    <span th:switch="${tc.status}">
+                        <span th:case="'passed'" class="pill ok lg">통과</span>
+                        <span th:case="'failed'" class="pill hot lg">실패</span>
+                        <span th:case="*" class="pill muted lg">대기</span>
+                    </span>
+                </div>
+            </div>
+
+            <section class="card" style="margin-bottom:14px">
+                <div class="card-head"><h3>전제 조건</h3></div>
+                <p style="font-size:13px;line-height:1.7;white-space:pre-wrap"
+                   th:text="${tc.precondition != null and !#strings.isEmpty(tc.precondition) ? tc.precondition : '—'}">전제 조건</p>
+            </section>
+
+            <section class="card" style="margin-bottom:14px">
+                <div class="card-head"><h3>테스트 절차</h3></div>
+                <p style="font-size:13px;line-height:1.8;white-space:pre-wrap"
+                   th:text="${tc.steps != null and !#strings.isEmpty(tc.steps) ? tc.steps : '—'}">절차</p>
+            </section>
+
+            <div class="grid cols-2" style="margin-bottom:14px">
+                <section class="card">
+                    <div class="card-head"><h3>기대 결과</h3></div>
+                    <p style="font-size:13px;line-height:1.7;white-space:pre-wrap"
+                       th:text="${tc.expectedResult != null and !#strings.isEmpty(tc.expectedResult) ? tc.expectedResult : '—'}">기대 결과</p>
+                </section>
+                <section class="card">
+                    <div class="card-head"><h3>실제 결과</h3></div>
+                    <textarea id="actualResult" style="width:100%;border:1px solid var(--border);background:var(--surface-2);border-radius:7px;padding:10px;min-height:80px;outline:none;font:inherit"
+                              placeholder="실제 결과 입력" th:text="${tc.actualResult}"></textarea>
+                </section>
+            </div>
+
+            <section class="card" style="margin-bottom:14px">
+                <div class="card-head">
+                    <h3 th:text="'연결 결함 (' + ${#lists.size(linkedDefects)} + ')'">연결 결함</h3>
+                    <div style="display:flex;gap:6px" th:if="${navTier == 'team'}">
+                        <button class="btn sm accent" type="button" id="newDefectFromTc">+ 결함 등록</button>
+                        <button class="btn sm" type="button" id="linkDefectBtn">+ 결함 연결</button>
+                    </div>
+                </div>
+                <div class="card-list" id="linkedDefectList">
+                    <div class="item" th:each="d : ${linkedDefects}">
+                        <a class="body" th:href="@{/projects/{id}/defects/{def}(id=${projId},def=${d.id})}"
+                           th:attr="data-defect-id=${d.id}" style="text-decoration:none;color:inherit;flex:1;min-width:0">
+                            <b th:text="${d.code}">DEF-001</b> <span th:text="${d.title}">제목</span>
+                        </a>
+                        <span th:switch="${d.status}">
+                            <span th:case="'resolved'" class="pill ok">해결 완료</span>
+                            <span th:case="'in_progress'" class="pill warn">진행 중</span>
+                            <span th:case="'cannot_reproduce'" class="pill muted">재현 불가</span>
+                            <span th:case="*" class="pill hot">미해결</span>
+                        </span>
+                        <button class="icon-action danger" type="button" th:if="${navTier == 'team'}"
+                                th:attr="data-unlink-defect=${d.id}" title="연결 해제" aria-label="연결 해제">✕</button>
+                    </div>
+                    <div class="page-sub" th:if="${#lists.isEmpty(linkedDefects)}" style="padding:10px 8px;margin:0">연결된 결함이 없습니다.</div>
+                </div>
+                <p id="tcLinkErr" class="err" style="display:none;color:var(--hot);margin-top:8px"></p>
+            </section>
+
+            <section class="action-bar" th:if="${navTier == 'team'}">
+                <span class="label">결과 입력</span>
+                <button class="btn primary" type="button" data-tc-result="passed">통과</button>
+                <button class="btn danger" type="button" data-tc-result="failed">실패</button>
+                <button class="btn" type="button" data-tc-result="pending">보류</button>
+                <span class="err" id="tcDetailErr" style="display:none;color:var(--hot);margin-left:12px"></span>
+            </section>
+
+        </main>
+    </div>
+</div>
+<script th:src="@{/js/qa-tc.js}" defer></script>
+</body>
+</html>
