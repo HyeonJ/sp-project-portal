@@ -13,8 +13,8 @@
 
 - **무엇이**: api-spec "v1.0 동결 baseline"이 실제 구현과 §2~§11 전 섹션에서 불일치.
 - **증상**: 미구현 9건, 슬롯 API 경로 전면 평탄화, 네이밍/메서드/스코프 10건+, 스펙에 없는 신규 2건.
-- **원인**: 동결 선언 + **springdoc/contract test 미연결** → 코드 자유 드리프트. 프론트와 동일한 근본 원인.
-- 상세: [`api-spec-divergence-inventory.md`](api-spec-divergence-inventory.md) · 정합 결과: api-spec **v1.3**
+- **원인(dev-plan 근거)**: ① 계획이 엔드포인트 계약이 아니라 기능·데이터모델로 분해(스펙은 "기준 6개 중 하나") ② Phase C breadth를 "시간 허용 시"로 명시 → 2차 엔드포인트 컷이 스펙 미반영 ③ 스펙이 의존한 drift 방지 장치(springdoc) 미연결 ④ 정합 게이트 부재. *단, B·C 불일치 상당수는 더 나은 설계(스펙이 너무 일찍 쓰임), A는 스코프 누락 — 구분 필요.*
+- 상세: [`api-spec-divergence-inventory.md`](api-spec-divergence-inventory.md)(원인·개선안 포함) · 개선 프롬프트: [`prompt-spec-driven-backend-dev.md`](prompt-spec-driven-backend-dev.md) · 정합 결과: api-spec **v1.3**
 
 ## 공통 교훈
 
