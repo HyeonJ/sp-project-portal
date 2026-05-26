@@ -3,7 +3,7 @@ package com.softpuzzle.pm.project;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 
-/** 프로젝트. current_stage 1~24, status 진행/완료 등. */
+/** 프로젝트. current_stage 1~20, status 진행/완료 등. */
 public class Project {
     private Long id;
     private String name;

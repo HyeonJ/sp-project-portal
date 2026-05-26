@@ -16,7 +16,7 @@
 
 ## 주요 문서
 
-- `docs/flow-diagram.md` — 24단계 프로젝트 플로우
+- `docs/flow-diagram.md` — 20단계 프로젝트 플로우
 - `docs/requirements.md` — 요구사항 정의서 (SRS)
 - `docs/deliverables.md` — 산출물 목록
 - `PROGRESS.md` — 현재 진행 단계 추적
